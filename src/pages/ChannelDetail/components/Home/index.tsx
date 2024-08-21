@@ -24,8 +24,8 @@ const Home: FC<HomeProps> = ({ channelData }) => {
       mode={FeedModeEnum.Channel}
       leftWidgets={[WidgetEnum.Links]}
       rightWidgets={[
-        WidgetEnum.ChannelMember,
         WidgetEnum.ChannelRequest,
+        WidgetEnum.ChannelMember,
         WidgetEnum.ChannelAdmin,
       ]}
       widgetProps={{

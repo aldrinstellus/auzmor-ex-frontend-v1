@@ -51,15 +51,12 @@ const ChannelRequestWidget: FC<ChannelRequestWidgetProps> = ({
       }) || []
     );
   }) as IChannelRequest[];
+  const totalCount = data?.pages[0]?.data?.result?.totalCount;
 
   const widgetTitle = (
     <p className="flex">
       Channel requests &#40;&nbsp;
-      {isLoading ? (
-        <Skeleton count={1} className="!w-8 h-5" />
-      ) : (
-        data?.pages[0]?.data?.result?.totalCount
-      )}
+      {isLoading ? <Skeleton count={1} className="!w-8 h-5" /> : totalCount}
       &nbsp;&#41;
     </p>
   );
@@ -119,17 +116,19 @@ const ChannelRequestWidget: FC<ChannelRequestWidgetProps> = ({
               })}
             </>
           </div>
-          <Button
-            variant={Variant.Secondary}
-            size={Size.Small}
-            label={'View all requests'}
-            dataTestId={`requestwidget-viewall-request`}
-            onClick={() =>
-              mode === ChannelRequestWidgetModeEnum.Channel
-                ? navigate(`/channels/${channelId}/members?type=requests`)
-                : openAllRequestModal()
-            }
-          />
+          {totalCount > 3 && (
+            <Button
+              variant={Variant.Secondary}
+              size={Size.Small}
+              label={'View all requests'}
+              dataTestId={`requestwidget-viewall-request`}
+              onClick={() =>
+                mode === ChannelRequestWidgetModeEnum.Channel
+                  ? navigate(`/channels/${channelId}/members?type=requests`)
+                  : openAllRequestModal()
+              }
+            />
+          )}
         </div>
       </div>
       {openAllRequest && (

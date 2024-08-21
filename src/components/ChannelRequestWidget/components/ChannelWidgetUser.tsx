@@ -136,6 +136,10 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
               text={createdBy?.designation || ''}
               className="text-neutral-500 text-xs"
             />
+            <Truncate
+              text={createdBy?.email || ''}
+              className="text-neutral-500 text-xs"
+            />
           </div>
         </div>
       )}

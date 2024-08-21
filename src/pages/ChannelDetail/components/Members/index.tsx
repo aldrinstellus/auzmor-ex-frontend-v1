@@ -311,7 +311,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
           )}
         </div>
         {isGrid ? (
-          <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 xl:grid-cols-4 1.5xl:grid-cols-5">
+          <div className="flex gap-6 flex-wrap">
             {isLoading
               ? [...Array(10)].map((element) => (
                   <div key={element}>
