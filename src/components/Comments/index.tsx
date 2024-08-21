@@ -25,6 +25,7 @@ import {
 } from 'contexts/CreatePostContext';
 import { useUploadState } from 'hooks/useUploadState';
 import { useFeedStore } from 'stores/feedStore';
+import { useTranslation } from 'react-i18next';
 
 export const validImageTypesForComments = [
   'image/png',
@@ -36,18 +37,6 @@ export const validImageTypesForComments = [
 interface CommentsProps {
   entityId: string;
 }
-
-const WORK_ANNIVERSARY_SUGGESTIONS = [
-  'Happy work anniversary! 🎉',
-  'Congratulations! 🎉',
-  'Great work 🎉',
-];
-
-const BIRTHDAY_SUGGESTIONS = [
-  'Happy birthday 🎂',
-  'Many many happy returns of the day 🎂',
-  'Wishes to you 🎂',
-];
 
 export interface IComment {
   content: {
@@ -73,6 +62,18 @@ export interface IComment {
 }
 
 const Comments: FC<CommentsProps> = ({ entityId }) => {
+  const { t } = useTranslation('post', { keyPrefix: 'commentComponent' });
+  const WORK_ANNIVERSARY_SUGGESTIONS = [
+    t('workAnniversary.title'),
+    t('workAnniversary.congratulations'),
+    t('workAnniversary.greatWork'),
+  ];
+
+  const BIRTHDAY_SUGGESTIONS = [
+    t('birthday.title'),
+    t('birthday.manyReturns'),
+    t('birthday.wishes'),
+  ];
   const { user } = useAuth();
   const {
     inputRef,
@@ -190,7 +191,7 @@ const Comments: FC<CommentsProps> = ({ entityId }) => {
               {hasNextPage && !isFetchingNextPage && (
                 <LoadMore
                   onClick={fetchNextPage}
-                  label="Load more comments"
+                  label={t('loadMoreComments')}
                   dataTestId="comments-loadmorecta"
                 />
               )}
@@ -229,7 +230,10 @@ const Comments: FC<CommentsProps> = ({ entityId }) => {
                     if (eachFile.size > IMG_FILE_SIZE_LIMIT * 1024 * 1024) {
                       mediaErrors.push({
                         errorType: MediaValidationError.ImageSizeExceed,
-                        errorMsg: `The file “${eachFile.name}" you are trying to upload exceeds the 50MB attachment limit. Try uploading a smaller file`,
+                        errorMsg: t('imageSizeExceedError', {
+                          fileName: eachFile.name,
+                          sizeLimit: IMG_FILE_SIZE_LIMIT,
+                        }),
                         fileName: eachFile.name,
                       });
                       return false;
@@ -252,7 +256,7 @@ const Comments: FC<CommentsProps> = ({ entityId }) => {
           }
         }}
         data-testid="comment-uploadphoto"
-        aria-label="upload file"
+        aria-label={t('uploadFile')}
       />
     </div>
   );
