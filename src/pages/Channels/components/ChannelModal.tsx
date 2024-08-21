@@ -77,13 +77,22 @@ const ChannelModal: FC<IChannelModalProps> = ({
     channelName: yup
       .string()
       .min(2, t('channelModal.channelNameMinChars'))
+      .test(
+        'len',
+        t('channelModal.channelNameMaxChars'),
+        (val) => (val || '').toString().length <= 100,
+      )
       .matches(/^[a-zA-Z0-9 ]*$/, t('channelModal.channelNameNoSpecialChars'))
       .required(t('channelModal.channelNameRequired')),
     channelCategory: yup.object().required(),
     channelPrivacy: yup.object().required(),
     channelDescription: yup
       .string()
-      .max(200, 'description should not exceed 200 characters'),
+      .test(
+        'len',
+        t('channelModal.channelDescriptionMaxChars'),
+        (val) => (val || '').toString().length <= 200,
+      ),
   });
   const channelFlow = channelData?.id
     ? ChannelFlow.EditChannel
@@ -239,12 +248,13 @@ const ChannelModal: FC<IChannelModalProps> = ({
                 label: t('channelModal.channelNameLabel'),
                 placeholder: t('channelModal.channelNamePlaceholder'),
                 dataTestId: `${dataTestId}-name`,
-                showCounter: true,
-                maxLength: 100,
                 required: true,
                 clearErrors,
                 error: errors.channelName?.message,
                 autofocus: !focusDescription,
+                maxLength: 100,
+                disableMaxLength: true,
+                showCounter: true,
               },
             ]}
           />
@@ -354,9 +364,10 @@ const ChannelModal: FC<IChannelModalProps> = ({
                 dataTestId: `${dataTestId}-description`,
                 rows: 5,
                 maxLength: 200,
+                disableMaxLength: true,
                 showCounter: true,
                 clearErrors,
-                errors: errors?.channelDescription?.message,
+                error: errors?.channelDescription?.message,
                 counterPosition: 'top',
                 autoFocus: focusDescription,
               },
