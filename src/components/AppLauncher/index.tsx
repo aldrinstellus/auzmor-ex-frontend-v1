@@ -39,6 +39,7 @@ const AppLauncher = () => {
       !channelId
         ? {
             limit: 3,
+            sort: `name:ASC`,
           }
         : { limit: 3, channelIds: channelId },
     ),
