@@ -38,6 +38,7 @@ interface CommentProps {
 }
 
 export const Comment: FC<CommentProps> = ({ commentId }) => {
+  const { t: tp } = useTranslation('profile');
   const { t } = useTranslation('post', { keyPrefix: 'commentComponent' });
   const getPost = useFeedStore((state) => state.getPost);
   const [getComments, storedcomments, setComment] = useCommentStore(
@@ -126,7 +127,7 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
                 <UserCard
                   user={getUserCardTooltipProps(
                     comment?.createdBy,
-                    t('fieldNotSpecified'),
+                    tp('fieldNotSpecified'),
                   )}
                 />
               }

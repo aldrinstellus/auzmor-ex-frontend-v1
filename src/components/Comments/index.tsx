@@ -37,17 +37,6 @@ export const validImageTypesForComments = [
 interface CommentsProps {
   entityId: string;
 }
-// const WORK_ANNIVERSARY_SUGGESTIONS = [
-//   'Happy work anniversary! 🎉',
-//   'Congratulations! 🎉',
-//   'Great work 🎉',
-// ];
-
-// const BIRTHDAY_SUGGESTIONS = [
-//   'Happy birthday 🎂',
-//   'Many many happy returns of the day 🎂',
-//   'Wishes to you 🎂',
-// ];
 
 export interface IComment {
   content: {
@@ -74,6 +63,17 @@ export interface IComment {
 
 const Comments: FC<CommentsProps> = ({ entityId }) => {
   const { t } = useTranslation('post', { keyPrefix: 'commentComponent' });
+  const WORK_ANNIVERSARY_SUGGESTIONS = [
+    t('workAnniversary.title'),
+    t('workAnniversary.congratulations'),
+    t('workAnniversary.greatWork'),
+  ];
+
+  const BIRTHDAY_SUGGESTIONS = [
+    t('birthday.title'),
+    t('birthday.manyReturns'),
+    t('birthday.wishes'),
+  ];
   const { user } = useAuth();
   const {
     inputRef,
@@ -143,47 +143,29 @@ const Comments: FC<CommentsProps> = ({ entityId }) => {
       </div>
       {getPost(entityId)?.occasionContext?.type === 'WORK_ANNIVERSARY' && (
         <div className="flex mt-2 w-full justify-center">
-          <div
-            className="px-3 py-1.5 rounded-17xl border border-neutral-200 mx-2 text-xxs font-medium cursor-pointer"
-            onClick={() => setSuggestions(t('workAnniversary.title'))}
-          >
-            {t('workAnniversary.title')}
-          </div>
-          <div
-            className="px-3 py-1.5 rounded-17xl border border-neutral-200 mx-2 text-xxs font-medium cursor-pointer"
-            onClick={() => setSuggestions(t('workAnniversary.congratulations'))}
-          >
-            {t('workAnniversary.congratulations')}
-          </div>
-          <div
-            className="px-3 py-1.5 rounded-17xl border border-neutral-200 mx-2 text-xxs font-medium cursor-pointer"
-            onClick={() => setSuggestions(t('workAnniversary.greatWork'))}
-          >
-            {t('workAnniversary.greatWork')}
-          </div>
+          {WORK_ANNIVERSARY_SUGGESTIONS.map((suggestions: string) => (
+            <div
+              className="px-3 py-1.5 rounded-17xl border border-neutral-200 mx-2 text-xxs font-medium cursor-pointer"
+              onClick={() => setSuggestions(suggestions)}
+              key={suggestions}
+            >
+              {suggestions}
+            </div>
+          ))}
         </div>
       )}
 
       {getPost(entityId)?.occasionContext?.type === 'BIRTHDAY' && (
         <div className="flex mt-2 w-full justify-center">
-          <div
-            className="px-3 py-1.5 rounded-17xl border border-neutral-200 mx-2 text-xxs font-medium cursor-pointer"
-            onClick={() => setSuggestions(t('birthday.title'))}
-          >
-            {t('birthday.title')}
-          </div>
-          <div
-            className="px-3 py-1.5 rounded-17xl border border-neutral-200 mx-2 text-xxs font-medium cursor-pointer"
-            onClick={() => setSuggestions(t('birthday.manyReturns'))}
-          >
-            {t('birthday.manyReturns')}
-          </div>
-          <div
-            className="px-3 py-1.5 rounded-17xl border border-neutral-200 mx-2 text-xxs font-medium cursor-pointer"
-            onClick={() => setSuggestions(t('birthday.wishes'))}
-          >
-            {t('birthday.wishes')}
-          </div>
+          {BIRTHDAY_SUGGESTIONS.map((suggestions: string) => (
+            <div
+              className="px-3 py-1.5 rounded-17xl border border-neutral-200 mx-2 text-xxs font-medium cursor-pointer"
+              onClick={() => setSuggestions(suggestions)}
+              key={suggestions}
+            >
+              {suggestions}
+            </div>
+          ))}
         </div>
       )}
 
@@ -274,7 +256,7 @@ const Comments: FC<CommentsProps> = ({ entityId }) => {
           }
         }}
         data-testid="comment-uploadphoto"
-        aria-label={t('uploadImage')}
+        aria-label={t('uploadFile')}
       />
     </div>
   );
