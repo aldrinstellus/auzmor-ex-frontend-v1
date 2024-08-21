@@ -41,7 +41,7 @@ export interface IAddAppForm {
   description?: string;
   category?: any;
   audience?: IAudience[];
-  icon?: AppIcon & { file: File | null } & { clear?: boolean };
+  icon?: AppIcon & { file: File };
   acsUrl?: string;
   entityId?: string;
   relayState?: string;
@@ -195,8 +195,7 @@ const AddApp: FC<AddAppProps> = ({
           formPayload.append('url', formData?.icon?.file);
           const res = await uploadImageMutation(formPayload);
           uploadedFile = res.result?.data?.url;
-        }
-        if (formData?.icon?.clear) {
+        } else if (mode != APP_MODE.Create) {
           uploadedFile = '';
         }
         // upload category to learn

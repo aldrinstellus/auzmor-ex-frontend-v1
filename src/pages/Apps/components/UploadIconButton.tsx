@@ -88,12 +88,7 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
 
   const clearInput = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    setValue('icon', {
-      id: '',
-      original: '',
-      file: null,
-      clear: true,
-    });
+    setValue('icon', undefined);
   };
 
   // Edit flow prefill icon
