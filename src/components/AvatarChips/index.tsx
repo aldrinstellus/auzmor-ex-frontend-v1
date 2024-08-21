@@ -24,7 +24,9 @@ const AvatarChips: FC<IAvatarChipsProps> = ({
 
   return (
     <>
-      <div className={`flex items-center flex-wrap gap-2 ${className}`}>
+      <div
+        className={`flex items-center overflow-hidden hover:overflow-x-scroll gap-2 ${className}`}
+      >
         {users.length > 0 &&
           users
             .slice(0, showCount)

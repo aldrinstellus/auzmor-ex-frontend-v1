@@ -216,7 +216,7 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
       {data?.shoutoutRecipients &&
         data?.shoutoutRecipients.length > 0 &&
         !isAnnouncementWidgetPreview && (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 h-18 justify-between overflow-hidden">
             <p
               className="text-xs text-neutral-500"
               data-testid="feed-post-shoutoutto-list"
