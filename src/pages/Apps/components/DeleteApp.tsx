@@ -40,6 +40,8 @@ const DeleteApp: FC<IDeleteAppProps> = ({ open, closeModal, appId }) => {
       closeModal(true);
       queryClient.invalidateQueries({ queryKey: ['apps'] });
       queryClient.invalidateQueries({ queryKey: ['my-apps'] });
+      queryClient.invalidateQueries({ queryKey: ['my-featured-apps'] });
+      queryClient.invalidateQueries({ queryKey: ['featured-apps'] });
       successToastConfig({
         content: t('appDeletedSuccess'),
         dataTestId: 'delete-app-toaster',
