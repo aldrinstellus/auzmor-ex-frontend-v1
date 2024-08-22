@@ -195,7 +195,7 @@ const AddApp: FC<AddAppProps> = ({
           formPayload.append('url', formData?.icon?.file);
           const res = await uploadImageMutation(formPayload);
           uploadedFile = res.result?.data?.url;
-        } else if (mode != APP_MODE.Create) {
+        } else if (mode == APP_MODE.Edit && !formData.icon?.original) {
           uploadedFile = '';
         }
         // upload category to learn
