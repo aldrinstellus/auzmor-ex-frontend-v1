@@ -6,6 +6,7 @@ import { getMentionProps } from '../utils';
 import Hashtag from './Hashtag';
 import Emoji from './Emoji';
 import { ICreatedBy, IMention } from 'queries/post';
+import { useTranslation } from 'react-i18next';
 
 interface IListProps {
   op: DeltaOperation;
@@ -23,13 +24,18 @@ const List: FC<IListProps> = ({
     i: number,
     type: 'ORDERED' | 'UNORDERED',
   ) => {
-    console.log(op);
+    const { t } = useTranslation('profile');
     switch (true) {
       case op.insert.hasOwnProperty('mention'):
         return (
           <Mention
             value={op.insert.mention?.value}
-            {...getMentionProps(mentions, intendedUsers, op.insert.mention)}
+            {...getMentionProps(
+              mentions,
+              intendedUsers,
+              op.insert.mention,
+              t('fieldNotSpecified'),
+            )}
             userId={op.insert.mention.id}
             key={`quill-content-mention-${i}-${op.insert.mention.id}`}
           />
