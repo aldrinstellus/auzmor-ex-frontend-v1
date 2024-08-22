@@ -8,6 +8,33 @@
   "bookmarkSuccess": "Successfully Bookmarked",
   "viewBookmarks": "View Bookmarks",
   "removeBookmark": "Bookmark Removed",
+  "commentComponent": {
+    "imageSizeExceedError": "The file \"{{fileName}}\" you are trying to upload exceeds the {{sizeLimit}}MB attachment limit. Try uploading a smaller file",
+    "uploadFile": "upload file",
+    "loadMoreComments": "Load more comments",
+    "workAnniversary": {
+      "title": "Happy work anniversary! 🎉",
+      "congratulations": "Congratulations! 🎉",
+      "greatWork": "Great work 🎉"
+    },
+    "birthday": {
+      "title": "Happy birthday 🎂",
+      "manyReturns": "Many many happy returns of the day 🎂",
+      "wishes": "Wishes to you 🎂"
+    },
+    "editComment": "Edit comment",
+    "deleteComment": "Delete comment",
+    "cancelLabel": "Cancel",
+    "deleteLabel": "Delete",
+    "deleteFailToast": "Error deleting comment",
+    "deleteSuccessToast": "Comment has been deleted",
+    "deleteFailedError": "Are you sure you want to delete this comment?",
+    "deleteFailedUndo": "This cannot be undone.",
+    "reply": {
+      "single": "Reply",
+      "multiple": "Replies"
+    }
+  },
   "announcementAnalytics": {
     "title": "Acknowledgement Report",
     "acknowledged": "Acknowledged",

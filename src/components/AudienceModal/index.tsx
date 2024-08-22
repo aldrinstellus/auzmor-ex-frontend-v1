@@ -70,6 +70,7 @@ const AudienceModal: FC<IAudienceModalProps> = ({
                 className={getClassName(isActive)}
               >{`All (${audienceCounts.all})`}</div>
             ),
+            hidden: true, // All tab is not needed
             tabContent: (
               <AudienceTab
                 entity={entity}
@@ -86,6 +87,7 @@ const AudienceModal: FC<IAudienceModalProps> = ({
                 >{`Teams (${audienceCounts.teams})`}</div>
               </>
             ),
+            hidden: false,
             tabContent: (
               <AudienceTab
                 entity={entity}
@@ -102,6 +104,7 @@ const AudienceModal: FC<IAudienceModalProps> = ({
                 >{`Channels (${audienceCounts.channels})`}</div>
               </>
             ),
+            hidden: false,
             tabContent: (
               <AudienceTab
                 entity={entity}
@@ -118,6 +121,7 @@ const AudienceModal: FC<IAudienceModalProps> = ({
                 >{`Users (${audienceCounts.users})`}</div>
               </>
             ),
+            hidden: false,
             tabContent: (
               <AudienceTab
                 entity={entity}
@@ -128,6 +132,7 @@ const AudienceModal: FC<IAudienceModalProps> = ({
           },
         ]
           .filter((_tab, index) => {
+            if (_tab.hidden) return false;
             if (index === 0) return true;
             else {
               return !!(audienceCounts as Record<string, number>)[

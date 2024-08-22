@@ -7,12 +7,12 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Layout, { FieldType } from 'components/Form';
-import { URL_REGEX } from 'utils/constants';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createLinks, updateChannelLink } from 'queries/channel';
 import { getPreviewLink } from 'queries/post';
 import { useDebounce } from 'hooks/useDebounce';
+import { URL_REGEX } from 'utils/constants';
 
 interface IAddLinksModalProps {
   open: boolean;
@@ -122,7 +122,7 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
           channelId: channelId,
           linkId: linkDetails?.id,
           title,
-          url,
+          url: url?.startsWith('http') ? url : `https://${url}`,
         });
       }
       closeModal();

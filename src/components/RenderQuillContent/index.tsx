@@ -95,9 +95,15 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
 
   const updatedContent = transformContent(content);
 
+  console.log(updatedContent);
+
   const postContent = updatedContent?.ops?.map(
     (op: DeltaOperation, i: number) => {
       switch (true) {
+        case !!op.attributes?.list:
+          return (
+            <List op={op} mentions={mentions} intendedUsers={intendedUsers} />
+          );
         case op.insert.hasOwnProperty('mention'):
           return (
             <Mention
@@ -126,8 +132,6 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
               key={`quill-content-${i}-emoji-${data.id}`}
             />
           );
-        case !!op.attributes?.listType:
-          return <List op={op} />;
         default:
           return (
             <Text

@@ -48,6 +48,7 @@
     "channelNameLabel": "Channel Name",
     "channelNamePlaceholder": "e.g., Product and Design Team",
     "channelNameMinChars": "Channel name must be at least 2 characters long.",
+    "channelNameMaxChars": "Channel name cannot have more than 100 characters.",
     "channelNameNoSpecialChars": "Channel name cannot contain special characters.",
     "channelNameRequired": "Channel name is required.",
     "channelCategoryLabel": "Channel Category",
@@ -60,7 +61,8 @@
     "createChannelSuccess": "Channel created successfully.",
     "createChannelError": "Error creating channel.",
     "editChannelSuccess": "Channel updated successfully.",
-    "editChannelError": "Error updating channel."
+    "editChannelError": "Error updating channel.",
+    "channelDescriptionMaxChars": "description should not exceed 200 characters"
   },
   "public": "Public",
   "private": "Private",
