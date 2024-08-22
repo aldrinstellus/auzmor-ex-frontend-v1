@@ -22,6 +22,9 @@ export const patternWithoutHTTP = new RegExp(
     '(\\#[-a-z\\d_]*)?$',
   'i',
 ); // fragment locator
+
+export const patternDomainExtension =
+  /\.(com|in|net|org|edu|gov|co|io|[a-zA-Z]{2,})$/;
 // Found this regex here - https://stackoverflow.com/questions/16369642/javascript-how-to-use-a-regular-expression-to-remove-blank-lines-from-a-string
 export const EMPTY_REGEX = /^\s*$(?:\r\n?|\n){3,}/gm;
 

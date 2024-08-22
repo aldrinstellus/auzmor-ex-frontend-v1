@@ -22,6 +22,7 @@ import moment from 'moment';
 import {
   EMPTY_REGEX,
   HEX_REGEX,
+  patternDomainExtension,
   patternHTTP,
   patternWithoutHTTP,
   SESSION_ID,
@@ -41,10 +42,10 @@ export const humanFileSize = (size: number) => {
   );
 };
 export const getValidURL = (str: any) => {
-  if (patternHTTP.test(str) && str.endsWith('.com')) {
+  if (patternHTTP.test(str) && patternDomainExtension.test(str)) {
     return str;
   }
-  if (patternWithoutHTTP.test(str) && str.endsWith('.com')) {
+  if (patternWithoutHTTP.test(str) && patternDomainExtension.test(str)) {
     return `https://${str}`;
   }
   return null;
