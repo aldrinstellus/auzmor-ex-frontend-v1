@@ -17,7 +17,7 @@ import Header from 'components/ModalHeader';
 import { createCatergory, uploadImage } from 'queries/learn';
 import useProduct from 'hooks/useProduct';
 import { useTranslation } from 'react-i18next';
-import { getValidURL } from 'utils/misc';
+import { isValidUrl } from 'utils/misc';
 
 export enum APP_MODE {
   Create = 'CREATE',
@@ -62,10 +62,8 @@ const AddApp: FC<AddAppProps> = ({
     url: yup
       .string()
       .required(t('requiredError'))
-      .test(
-        'is-valid-url',
-        t('validUrlError'),
-        (value) => !!getValidURL(value || ''),
+      .test('is-valid-url', t('validUrlError'), (value) =>
+        isValidUrl(value || ''),
       ),
     label: yup
       .string()
@@ -220,7 +218,9 @@ const AddApp: FC<AddAppProps> = ({
       }
       // Construct request body
       const req = {
-        url: getValidURL(formData.url),
+        url: formData.url?.startsWith('http')
+          ? formData.url
+          : `https://${formData.url}`,
         label: formData.label,
         featured: mode === APP_MODE.Edit ? !!data?.featured : false,
         ...(formData.description && { description: formData.description }),
@@ -230,7 +230,9 @@ const AddApp: FC<AddAppProps> = ({
         audience: audience || [],
       };
       const lxpReq = {
-        url: getValidURL(formData.url),
+        url: formData.url?.startsWith('http')
+          ? formData.url
+          : `https://${formData.url}`,
         label: formData.label,
         featured: mode === APP_MODE.Edit ? !!data?.featured : false,
         ...(formData.description && { description: formData.description }),

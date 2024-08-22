@@ -10,7 +10,7 @@ import Layout, { FieldType } from 'components/Form';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createLinks, updateChannelLink } from 'queries/channel';
-import { getValidURL } from 'utils/misc';
+import { isValidUrl } from 'utils/misc';
 
 interface IAddLinksModalProps {
   open: boolean;
@@ -43,10 +43,8 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
     url: yup
       .string()
       .required(t('urlField.requiredError'))
-      .test(
-        'is-valid-url',
-        t('urlField.invalidUrlError'),
-        (value) => !!getValidURL(value || ''),
+      .test('is-valid-url', t('urlField.invalidUrlError'), (value) =>
+        isValidUrl(value || ''),
       )
       .max(256, t('urlField.maxLengthError')),
   });
@@ -105,7 +103,10 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
       const { title, url } = getValues();
 
       if (isCreateMode) {
-        updateLinksMutation.mutate({ title, url: getValidURL(url) });
+        updateLinksMutation.mutate({
+          title,
+          url: url?.startsWith('http') ? url : `https://${url}`,
+        });
         return;
       }
       if (isEditMode) {
@@ -113,7 +114,7 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
           channelId: channelId,
           linkId: linkDetails?.id,
           title,
-          url: getValidURL(url),
+          url: url?.startsWith('http') ? url : `https://${url}`,
         });
       }
       closeModal();
