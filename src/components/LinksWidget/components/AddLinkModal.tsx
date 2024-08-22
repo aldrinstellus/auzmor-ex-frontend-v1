@@ -11,6 +11,8 @@ import { URL_REGEX } from 'utils/constants';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createLinks, updateChannelLink } from 'queries/channel';
+import { getPreviewLink } from 'queries/post';
+import { useDebounce } from 'hooks/useDebounce';
 
 interface IAddLinksModalProps {
   open: boolean;
@@ -20,6 +22,11 @@ interface IAddLinksModalProps {
   channelId?: string;
   isEditMode?: boolean;
 }
+
+type InputForm = {
+  title: string;
+  url: string;
+};
 
 const AddLinkModal: FC<IAddLinksModalProps> = ({
   open,
@@ -42,14 +49,9 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
       .max(20, t('labelField.maxLengthError')),
     url: yup
       .string()
-      .required(t('urlField.requiredError'))
-      .test('is-valid-url', t('urlField.protocolError'), (value) =>
-        /^(http|https):\/\//.test(value || ''),
+      .test('is-valid-url', t('urlField.invalidUrlError'), (value) =>
+        URL_REGEX.test(getUrlWithProtocol(value)),
       )
-      .matches(URL_REGEX, {
-        message: t('urlField.invalidUrlError'),
-        excludeEmptyString: true,
-      })
       .max(256, t('urlField.maxLengthError')),
   });
   const updateLinksMutation = useMutation(
@@ -72,39 +74,47 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
   const {
     handleSubmit,
     control,
-    getValues,
     setValue,
-    reset,
     watch,
     formState: { errors },
-  } = useForm<any>({
+  } = useForm<InputForm>({
     resolver: yupResolver(schema),
-    mode: 'onSubmit',
-  });
-
-  useEffect(() => {
-    reset({
+    mode: 'onBlur',
+    defaultValues: {
       title: linkDetails?.title,
       url: linkDetails?.url,
-    });
-  }, [linkDetails]);
+    },
+  });
+
+  const url = useDebounce(watch('url'), 200);
+
+  const getUrlWithProtocol = (url?: string): string => {
+    if (!url) return '';
+    let protocol = 'https://';
+    if (url.startsWith('https://') || url.startsWith('http://')) {
+      protocol = '';
+    }
+    return `${protocol}${url}`;
+  };
 
   useEffect(() => {
-    const subscription = watch((value, { name }) => {
-      if (name === 'url' && value.url) {
-        const titleMatch = value.url.match(/https?:\/\/(?:www\.)?([^.]+)\./);
-        const title = titleMatch ? titleMatch[1] : '';
-        setValue('title', title);
-      }
+    if (!url) {
+      return;
+    }
+    getPreviewLink(getUrlWithProtocol(url)).then((response) => {
+      setValue(
+        'title',
+        response?.title ||
+          response?.url.replace(/^https?:\/\//, '').replace(/\/$/, ''),
+      );
     });
-    return () => subscription.unsubscribe();
-  }, [watch, setValue]);
+  }, [url, setValue]);
 
-  const onSubmit = () => {
+  const onSubmit = (formData: InputForm) => {
     try {
-      const { title, url } = getValues();
+      const { title, url } = formData;
       if (isCreateMode) {
-        updateLinksMutation.mutate({ title, url });
+        updateLinksMutation.mutate({ title, url: getUrlWithProtocol(url) });
         return;
       }
       if (isEditMode) {
@@ -144,7 +154,6 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
       className: '',
       dataTestId: 'add-link-title',
       maxLength: 20,
-      required: false,
     },
   ];
 
