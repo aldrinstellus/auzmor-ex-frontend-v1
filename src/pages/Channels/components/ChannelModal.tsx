@@ -28,18 +28,13 @@ interface IChannelModalProps {
   isOpen: boolean;
   closeModal: () => void;
   channelData?: IChannel;
+  focusDescription?: boolean;
 }
 
 enum ChannelFlow {
   CreateChannel = 'CREATE_CHANNEL',
   EditChannel = 'EDIT_CHANNEL',
 }
-// interface IChannelForm {
-//   channelName: string;
-//   channelCategory: ICategoryDetail;
-//   channelPrivacy: IOption;
-//   channelDescription: string;
-// }
 
 const getChannelPrivacyOption = (
   visibility: ChannelVisibilityEnum,
@@ -73,28 +68,38 @@ const ChannelModal: FC<IChannelModalProps> = ({
   isOpen,
   closeModal,
   channelData,
+  focusDescription = false,
 }) => {
   const { t } = useTranslation('channels');
-  // const { t:tm } = useTranslation('channels',{keyPrefix:"channelModal"});
   const { t: tc } = useTranslation('common');
   const { isLxp } = useProduct();
   const schema = yup.object({
     channelName: yup
       .string()
       .min(2, t('channelModal.channelNameMinChars'))
+      .test(
+        'len',
+        t('channelModal.channelNameMaxChars'),
+        (val) => (val || '').toString().length <= 100,
+      )
       .matches(/^[a-zA-Z0-9 ]*$/, t('channelModal.channelNameNoSpecialChars'))
       .required(t('channelModal.channelNameRequired')),
     channelCategory: yup.object().required(),
     channelPrivacy: yup.object().required(),
     channelDescription: yup
       .string()
-      .max(200, 'description should not exceed 200 characters'),
+      .test(
+        'len',
+        t('channelModal.channelDescriptionMaxChars'),
+        (val) => (val || '').toString().length <= 200,
+      ),
   });
   const channelFlow = channelData?.id
     ? ChannelFlow.EditChannel
     : ChannelFlow.CreateChannel;
   const navigate = useNavigate();
   const { setChannels } = useChannelStore();
+
   const {
     handleSubmit,
     control,
@@ -118,7 +123,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
               }))
               .pop()
           : undefined,
-      channelDescription: channelData?.description || undefined,
+      channelDescription: channelData?.description,
     },
     resolver: yupResolver(schema),
     mode: 'onChange',
@@ -243,12 +248,13 @@ const ChannelModal: FC<IChannelModalProps> = ({
                 label: t('channelModal.channelNameLabel'),
                 placeholder: t('channelModal.channelNamePlaceholder'),
                 dataTestId: `${dataTestId}-name`,
-                showCounter: true,
-                maxLength: 100,
                 required: true,
                 clearErrors,
                 error: errors.channelName?.message,
-                autofocus: true,
+                autofocus: !focusDescription,
+                maxLength: 100,
+                disableMaxLength: true,
+                showCounter: true,
               },
             ]}
           />
@@ -358,10 +364,12 @@ const ChannelModal: FC<IChannelModalProps> = ({
                 dataTestId: `${dataTestId}-description`,
                 rows: 5,
                 maxLength: 200,
+                disableMaxLength: true,
                 showCounter: true,
                 clearErrors,
-                errors: errors?.channelDescription?.message,
+                error: errors?.channelDescription?.message,
                 counterPosition: 'top',
+                autoFocus: focusDescription,
               },
             ]}
           />

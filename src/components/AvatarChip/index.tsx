@@ -72,7 +72,9 @@ const AvatarChip: FC<IAvatarChipProps> = ({
             image={getProfileImage(user)}
             size={size}
           />
-          <span>{getFullName(user) || user.email}</span>
+          <span className="whitespace-nowrap">
+            {getFullName(user) || user.email}
+          </span>
         </div>
       </Link>
     </Tooltip>

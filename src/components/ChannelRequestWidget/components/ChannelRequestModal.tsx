@@ -11,6 +11,7 @@ import SkeletonLoader from './SkeletonLoader';
 import Divider from 'components/Divider';
 import { groupByDate } from 'utils/time';
 import Skeleton from 'react-loading-skeleton';
+import { useTranslation } from 'react-i18next';
 
 type ChannelRequestModalProps = {
   open: boolean;
@@ -22,6 +23,9 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
   open,
   closeModal,
 }) => {
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'channelRequestWidget',
+  });
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isLoading } =
     useInfiniteChannelsRequest(
       channelId,
@@ -61,7 +65,7 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
 
   const modalTitle = (
     <p className="flex">
-      Channel request &nbsp;&nbsp;
+      {t('modalTitle')} &nbsp;&nbsp;
       {isLoading ? (
         <Skeleton count={1} className="!w-8 h-5" />
       ) : (
@@ -69,12 +73,13 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
       )}
     </p>
   );
+
   return (
     <Modal
       open={open}
       dataTestId="requestwidget-viewall-request-modal"
       closeModal={closeModal}
-      className="max-w-[648px] "
+      className="max-w-[648px]"
     >
       <Header title={modalTitle} onClose={closeModal} />
       <ul className="h-[390px] flex flex-col overflow-y-auto w-full px-6 pt-4">
@@ -84,7 +89,9 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
           <>
             {!!requests.today.length && (
               <>
-                <p className="mb-3 text-sm font-semibold">Today</p>
+                <p className="mb-3 text-sm font-semibold">
+                  {t('timeLabels.today')}
+                </p>
                 {requests.today?.map(
                   (request: IChannelRequest, index: number) => {
                     return (
@@ -101,7 +108,9 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
             )}
             {!!requests.yesterday.length && (
               <>
-                <p className="mb-3 mt-4 text-sm font-semibold">Yesterday</p>
+                <p className="mb-3 mt-4 text-sm font-semibold">
+                  {t('timeLabels.yesterday')}
+                </p>
                 {requests.yesterday?.map(
                   (request: IChannelRequest, index: number) => {
                     return (
@@ -118,7 +127,9 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
             )}
             {!!requests.older.length && (
               <>
-                <p className="mb-3 mt-4 text-sm font-semibold">Older</p>
+                <p className="mb-3 mt-4 text-sm font-semibold">
+                  {t('timeLabels.older')}
+                </p>
                 {requests.older?.map(
                   (request: IChannelRequest, index: number) => {
                     return (
@@ -145,7 +156,7 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
       {/* Footer */}
       <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
         <Button
-          label="Close"
+          label={t('close')}
           variant={Variant.Secondary}
           size={Size.Small}
           className="py-[7px]"

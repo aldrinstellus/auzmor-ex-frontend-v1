@@ -108,6 +108,7 @@
     "cancel": "Cancel",
     "save": "Save",
     "requiredError": "This field cannot be empty",
+    "validUrlError": "Enter a valid URL",
     "protocolError": "The URL must start with http:// or https://",
     "descriptionError": "Description cannot exceed 300 characters",
     "labelMaxError": "Label cannot exceed 60 characters"

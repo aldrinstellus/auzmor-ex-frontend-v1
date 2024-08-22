@@ -30,7 +30,6 @@ const CreateShoutout: FC<ICreateShoutoutProps> = ({ closeModal }) => {
     shoutoutUsers,
     editorValue,
     setShoutoutUsers,
-
     setShoutoutTemplate,
     setEditorValue,
     shoutoutTemplate,
@@ -98,7 +97,7 @@ const CreateShoutout: FC<ICreateShoutoutProps> = ({ closeModal }) => {
       setShoutoutUsers(users);
       setStep(SHOUTOUT_STEPS.ImageSelect);
     } else {
-      if (editorValue?.text == '\n') {
+      if (editorValue?.text == '\n' || editorValue?.text == '') {
         updateContext();
       } // only update context if text editor  empty
       setIsLoading(true);

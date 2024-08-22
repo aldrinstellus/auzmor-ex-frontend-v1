@@ -1,0 +1,102 @@
+{
+  "login": {
+    "title": "User Login",
+    "description": "Securely log in to your account."
+  },
+  "signup": {
+    "title": "Sign Up",
+    "description": "Create a new account."
+  },
+  "register": {
+    "title": "Register",
+    "description": "Register for a new account."
+  },
+  "logout": {
+    "title": "Logout",
+    "description": "Log out of your account safely and securely."
+  },
+  "forgotPassword": {
+    "title": "Forgot Password",
+    "description": "Recover your account by resetting your forgotten password."
+  },
+  "resetPassword": {
+    "title": "Reset Password",
+    "description": "Create a new password to regain access to your account."
+  },
+  "acceptInvite": {
+    "title": "Accept Invite",
+    "description": "Accept your invitation to join and start collaborating."
+  },
+  "feed": {
+    "title": "Your Feed",
+    "description": "View and interact with the latest updates and posts from your network."
+  },
+  "users": {
+    "title": "Users Directory",
+    "description": "Browse and connect with other users in the organization."
+  },
+  "teams": {
+    "title": "Teams Directory",
+    "description": "Explore and join different teams within the organization."
+  },
+  "userProfile": {
+    "title": "User Profile",
+    "description": "View detailed information and posts from this user."
+  },
+  "teamProfile": {
+    "title": "Team Profile",
+    "description": "View detailed information for this team."
+  },
+  "profile": {
+    "title": "Your Profile",
+    "description": "Manage your personal information, posts, and settings."
+  },
+  "apps": {
+    "title": "Applications",
+    "description": "Explore and manage applications connected to your account."
+  },
+  "scheduledPosts": {
+    "title": "Scheduled Posts",
+    "description": "View and manage your posts scheduled to be published."
+  },
+  "bookmarks": {
+    "title": "Bookmarks",
+    "description": "Access and manage your saved bookmarks."
+  },
+  "settings": {
+    "title": "Account Settings",
+    "description": "Customize your account settings and preferences."
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "description": "Access administrative tools and settings."
+  },
+  "postDetails": {
+    "title": "Post Details",
+    "description": "View detailed information about this post."
+  },
+  "notifications": {
+    "title": "Notifications",
+    "description": "View and manage your recent notifications."
+  },
+  "channels": {
+    "title": "Channels",
+    "description": "Explore and join different communication channels."
+  },
+  "channelDetails": {
+    "title": "Channel Details",
+    "description": "View detailed information and posts from this channel."
+  },
+  "searchResults": {
+    "title": "Search Results",
+    "description": "Find content and users based on your search query."
+  },
+  "pageNotFound": {
+    "title": "Page Not Found",
+    "description": "The page you are looking for does not exist. Check the URL or return to the homepage."
+  },
+  "serverError": {
+    "title": "Server Error",
+    "description": "An internal server error occurred. Please try again later or contact support."
+  }
+}

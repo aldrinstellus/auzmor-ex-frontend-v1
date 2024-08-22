@@ -36,6 +36,10 @@
   display: inline-flex;
 }
 
+.mention[data-denotation-char='#'] {
+  color: var(--neutral-900);
+}
+
 .ql-mention-list-item.selected {
   background-color: #ecfdf5 !important;
   text-decoration: none;
@@ -128,7 +132,7 @@
 }
 
 .hashtag {
-  color: var(--primary-500);
+  color: var(--neutral-900);
   padding: 0px 1px;
   font-weight: 700;
 }

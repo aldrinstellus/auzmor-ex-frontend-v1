@@ -11,6 +11,7 @@ import {
 } from 'queries/channel';
 import { FC, memo, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { IChannelRequest, useChannelStore } from 'stores/channelStore';
 import { getProfileImage } from 'utils/misc';
 import queryClient from 'utils/queryClient';
@@ -33,6 +34,10 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
 }) => {
   const { channelId } = useParams();
   const { id, createdBy } = request;
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'channelRequestWidget',
+  });
+
   const [updateChannel, getChannel] = useChannelStore((action) => [
     action.updateChannel,
     action.getChannel,
@@ -44,11 +49,11 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
       approveChannelJoinRequest(request.channel?.id || channelId!, id),
     onError: () =>
       failureToastConfig({
-        content: 'Something went wrong...! Please try again',
+        content: t('toastMessages.approveError'),
       }),
     onSuccess: () => {
       successToastConfig({
-        content: 'Successfully added a new member to channel',
+        content: t('toastMessages.approveSuccess'),
       });
       if (channelId) {
         const channel = getChannel(channelId);
@@ -67,11 +72,11 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
       rejectChannelJoinRequest(request?.channel?.id || channelId!, id),
     onError: () =>
       failureToastConfig({
-        content: 'Something went wrong...! Please try again',
+        content: t('toastMessages.rejectError'),
       }),
     onSuccess: () => {
       successToastConfig({
-        content: 'Request to join channel declined successfully',
+        content: t('toastMessages.rejectSuccess'),
       });
       queryClient.invalidateQueries(['channel-requests'], { exact: false });
       queryClient.invalidateQueries(['channel-members'], { exact: false });
@@ -90,6 +95,7 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
       ),
     [className],
   );
+
   return (
     <div className={styles}>
       {mode === ChannelRequestWidgetModeEnum.Feed && (
@@ -112,7 +118,7 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
             >
               {createdBy?.fullName || ''}
             </b>{' '}
-            <span>requested to join </span>
+            <span>{t('requestToJoin')}</span>
             <Truncate
               text={request.channel?.name || ''}
               className="w-24 font-bold"
@@ -133,7 +139,11 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
           <div className="flex flex-col">
             <Truncate text={createdBy?.fullName} className="font-bold" />
             <Truncate
-              text={createdBy?.designation || ''}
+              text={createdBy?.designation || t('notSpecified')}
+              className="text-neutral-500 text-xs"
+            />
+            <Truncate
+              text={createdBy?.email || ''}
               className="text-neutral-500 text-xs"
             />
           </div>
@@ -141,14 +151,14 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
       )}
       <div className="flex justify-end gap-2 items-center">
         <Button
-          label={'Decline'}
+          label={t('decline')}
           variant={Variant.Secondary}
           size={Size.Small}
           loading={rejectMutation.isLoading}
           onClick={() => rejectMutation.mutate()}
         />
         <Button
-          label={'Accept'}
+          label={t('accept')}
           size={Size.Small}
           loading={approveMutation.isLoading}
           onClick={() => approveMutation.mutate()}

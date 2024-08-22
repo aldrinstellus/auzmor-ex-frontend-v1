@@ -7,10 +7,10 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Layout, { FieldType } from 'components/Form';
-import { URL_REGEX } from 'utils/constants';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createLinks, updateChannelLink } from 'queries/channel';
+import { getValidURL } from 'utils/misc';
 
 interface IAddLinksModalProps {
   open: boolean;
@@ -43,13 +43,11 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
     url: yup
       .string()
       .required(t('urlField.requiredError'))
-      .test('is-valid-url', t('urlField.protocolError'), (value) =>
-        /^(http|https):\/\//.test(value || ''),
+      .test(
+        'is-valid-url',
+        t('urlField.invalidUrlError'),
+        (value) => !!getValidURL(value || ''),
       )
-      .matches(URL_REGEX, {
-        message: t('urlField.invalidUrlError'),
-        excludeEmptyString: true,
-      })
       .max(256, t('urlField.maxLengthError')),
   });
   const updateLinksMutation = useMutation(
@@ -92,8 +90,10 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
   useEffect(() => {
     const subscription = watch((value, { name }) => {
       if (name === 'url' && value.url) {
-        const titleMatch = value.url.match(/https?:\/\/(?:www\.)?([^.]+)\./);
-        const title = titleMatch ? titleMatch[1] : '';
+        const urlMatch = value.url.match(
+          /^(?:https?:\/\/)?(?:www\.)?([^.]+)\./,
+        );
+        const title = urlMatch ? urlMatch[1] : '';
         setValue('title', title);
       }
     });
@@ -103,8 +103,9 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
   const onSubmit = () => {
     try {
       const { title, url } = getValues();
+
       if (isCreateMode) {
-        updateLinksMutation.mutate({ title, url });
+        updateLinksMutation.mutate({ title, url: getValidURL(url) });
         return;
       }
       if (isEditMode) {
@@ -112,7 +113,7 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
           channelId: channelId,
           linkId: linkDetails?.id,
           title,
-          url,
+          url: getValidURL(url),
         });
       }
       closeModal();

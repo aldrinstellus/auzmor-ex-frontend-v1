@@ -38,7 +38,8 @@ interface CommentProps {
 }
 
 export const Comment: FC<CommentProps> = ({ commentId }) => {
-  const { t } = useTranslation('profile');
+  const { t: tp } = useTranslation('profile');
+  const { t } = useTranslation('post', { keyPrefix: 'commentComponent' });
   const getPost = useFeedStore((state) => state.getPost);
   const [getComments, storedcomments, setComment] = useCommentStore(
     ({ getComments, comment, setComment }) => [
@@ -58,11 +59,6 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
 
   const comment = storedcomments[commentId];
   const replies = getComments(comment?.relevantComments || []);
-
-  // const menuItemStyle = clsx({
-  //   'flex flex-row items-center py-3 px-6 gap-2.5 border-b text-sm hover:bg-primary-50 cursor-pointer rounded-b-9xl':
-  //     true,
-  // });
 
   const totalCount = Object.values(comment?.reactionsCount || {}).reduce(
     (total, count) => total + count,
@@ -93,12 +89,12 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
     },
     onError: () =>
       failureToastConfig({
-        content: 'Error deleting comment',
+        content: t('deleteFailToast'),
         dataTestId: 'comment-toaster',
       }),
     onSuccess: () =>
       successToastConfig({
-        content: 'Comment has been deleted',
+        content: t('deleteSuccessToast'),
         dataTestId: 'comment-toaster',
       }),
   });
@@ -131,7 +127,7 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
                 <UserCard
                   user={getUserCardTooltipProps(
                     comment?.createdBy,
-                    t('fieldNotSpecified'),
+                    tp('fieldNotSpecified'),
                   )}
                 />
               }
@@ -165,7 +161,7 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
                 menuItems={[
                   {
                     icon: 'edit',
-                    label: 'Edit comment',
+                    label: t('editComment'),
                     onClick: () => {
                       setEditComment(true);
                     },
@@ -174,7 +170,7 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
                   },
                   {
                     icon: 'delete',
-                    label: 'Delete comment',
+                    label: t('deleteComment'),
                     onClick: showConfirm,
                     stroke: 'text-neutral-900',
                     dataTestId: 'post-ellipsis-edit-comment',
@@ -217,6 +213,7 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
           />
           {/* ellipse */}
           <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
+
           {/* Show Reaction */}
           {totalCount > 0 ? (
             <div className="flex justify-between cursor-pointer">
@@ -277,7 +274,7 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
               className="text-xs font-normal text-neutral-500 ml-1.5 group-hover:text-primary-500 group-focus:text-primary-500"
               data-testid="comment-replies-count"
             >
-              Reply
+              {t('reply.single')}
             </div>
           </div>
 
@@ -297,7 +294,9 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
                   data-testid="comment-replies-count"
                 >
                   {comment?.repliesCount}
-                  {comment?.repliesCount > 1 ? ' Replies' : ' Reply'}
+                  {comment?.repliesCount > 1
+                    ? t('reply.multiple')
+                    : t('reply.single')}
                 </div>
               </div>
             </>
@@ -332,19 +331,19 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
         title="Delete"
         description={
           <span>
-            Are you sure you want to delete this comment?
-            <br /> This cannot be undone.
+            {t('deleteFailedError')}
+            <br /> {t('deleteFailedUndo')}
           </span>
         }
         success={{
-          label: 'Delete',
+          label: t('deleteLabel'),
           className: 'bg-red-500 text-white ',
           onSubmit: () => {
             deleteCommentMutation.mutate(comment?.id || '');
           },
         }}
         discard={{
-          label: 'Cancel',
+          label: t('cancelLabel'),
           className: 'text-neutral-900 bg-white ',
           onCancel: closeConfirm,
         }}

@@ -348,7 +348,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         navigate(`/channels/${channelData?.id}/settings`);
       },
       dataTestId: '',
-      hidden: !isChannelJoined,
+      hidden: !isChannelAdmin,
     },
     {
       icon: 'logout',
@@ -495,7 +495,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
       </div>
       <div className="absolute left-0 right-0 bottom-4 text-white ">
         <div className="flex items-center justify-between mx-8">
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6 w-3/5">
             <div className="relative">
               <Avatar
                 image={getChannelLogoImage(channelData)}
@@ -517,18 +517,20 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
             </div>
 
             <div
-              className={`flex flex-col  ${channelData?.description && 'h-14'}`}
+              className={`flex flex-col gap-1 w-full ${
+                channelData?.description && 'h-14'
+              }`}
             >
               <Truncate
-                toolTipTextClassName="w-64"
+                toolTipTextClassName="w-full"
                 text={channelData?.name || ''}
                 className="text-2xl font-bold "
                 data-testid="channel-name"
               />
               <Truncate
-                toolTipTextClassName="w-64"
+                toolTipTextClassName="w-full"
                 text={channelData?.description || ''}
-                className="text-xs  "
+                className="text-xs"
                 data-testid="channel-description"
               />
             </div>

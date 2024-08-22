@@ -80,7 +80,12 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
     return page?.data?.result?.data
       .map((user: any) => {
         try {
-          return { id: user.id, role: user.role, ...user.user };
+          return {
+            id: user.id,
+            role: user.role,
+            createdAt: user.createdAt,
+            ...user.user,
+          };
         } catch (e) {
           console.log('Error', { user });
         }

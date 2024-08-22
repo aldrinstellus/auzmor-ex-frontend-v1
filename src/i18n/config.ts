@@ -27,6 +27,8 @@ const resources = {
     document: require('locales/en-US/document.json'),
     learnWidget: require('locales/en-US/learnWidget.json'),
     post: require('locales/en-US/post.json'),
+    notifications: require('locales/en-US/notifications.json'),
+    pageTitle: require('locales/en-US/pageTitle.json'),
   },
 };
 

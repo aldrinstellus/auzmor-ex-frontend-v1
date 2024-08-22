@@ -56,9 +56,9 @@ const HomeFeed: FC<IHomeFeedProps> = () => {
       ]}
       rightWidgets={[
         WidgetEnum.ProgressTracker,
+        WidgetEnum.ChannelRequest,
         WidgetEnum.CelebrationBirthday,
         WidgetEnum.CelebrationAnniversary,
-        WidgetEnum.ChannelRequest,
         WidgetEnum.Event,
         WidgetEnum.AnnouncementCard,
       ]}

@@ -69,7 +69,8 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
               name={'edit'}
               size={20}
               color="text-neutral-900"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setIsEditMode(true);
                 openEditLinksModal();
               }}

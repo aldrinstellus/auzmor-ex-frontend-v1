@@ -94,6 +94,27 @@
     "finishedSettingUp": "You have finished setting up your profile.",
     "inviteMore": "Now you can invite more people to your channel so that your channel reaches a bigger audience."
   },
+  "channelRequestWidget": {
+    "title": "Channel requests",
+    "viewAllRequests": "View all requests",
+    "modalTitle": "Channel request",
+    "timeLabels": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "older": "Older"
+    },
+    "close": "Close",
+    "requestToJoin": "requested to join",
+    "notSpecified": "Not specified",
+    "decline": "Decline",
+    "accept": "Accept",
+    "toastMessages": {
+      "approveError": "Something went wrong...! Please try again",
+      "approveSuccess": "Successfully added a new member to channel",
+      "rejectError": "Something went wrong...! Please try again",
+      "rejectSuccess": "Request to join channel rejected successfully"
+    }
+  },
   "memberTab": {
     "title": "Members",
     "addMemberCTA": "Add Member",
@@ -152,7 +173,8 @@
       "channelNamePlaceholder": "e.g., Product and Design Team"
     },
     "descriptionRow": {
-      "label": "Description"
+      "label": "Description",
+      "fieldNotSpecified": "Field Not Specified"
     },
     "privacyRow": {
       "label": "Privacy",
