@@ -119,7 +119,7 @@ const InfoRow = forwardRef(
           )}
         </div>
         {!editMode && canEdit && isHovered && (
-          <div className="absolute right-4 top-7">
+          <div className="absolute right-0 top-7">
             <Icon
               name="edit"
               size={16}
