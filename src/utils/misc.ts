@@ -330,29 +330,64 @@ export const transformContent = (quillDelta?: DeltaStatic) => {
       op.insert.mention.denotationChar === '#'
     ) {
       transformedOp.insert = { hashtag: { ...op.insert.mention } };
-    } else if (quillDelta?.ops && quillDelta?.ops[i + 1]?.attributes?.list) {
-      const type = quillDelta?.ops && quillDelta?.ops[i + 1]?.attributes?.list;
-      let skipIndex = 1;
-      const listGroup = {
-        attributes: { listType: type },
-        insert: [quillDelta?.ops[i]],
-      };
-      while (
-        quillDelta?.ops &&
-        quillDelta?.ops[i + 1 + 2 * skipIndex]?.attributes?.list === type
-      ) {
-        listGroup.insert.push(quillDelta?.ops[i + 2 * skipIndex]);
-        skipIndex += 1;
-      }
-      transformedQuillDelta.ops.push(listGroup);
-      i += skipIndex * 2 - 1;
-      continue;
-    } else {
-      transformedOp.insert = op.insert;
     }
     transformedQuillDelta.ops.push(transformedOp);
   }
+
+  transformedQuillDelta.ops = transformedList(transformedQuillDelta.ops).ops;
+
   return transformedQuillDelta;
+};
+
+export const transformedList = (ops: any) => {
+  const transformedData: TransformedQuillDelta = { ops: [] };
+  let listItem: Array<any> = [];
+  for (let i = 0; i < (ops?.length || 0); i += 1) {
+    if (ops[i]?.attributes?.list) {
+      const listOp = {
+        attributes: { list: ops[i].attributes.list },
+        insert: [[...listItem]],
+      };
+      listItem = [];
+      let update = false;
+      let j = i + 1;
+      for (; j < ops.length; j += 1) {
+        if (typeof ops[j].insert === 'object') {
+          listItem.push(ops[j]);
+        } else {
+          if (ops[j].insert.includes('\n') && !ops[j]?.attributes?.list) {
+            transformedData.ops = [...transformedData.ops, listOp, ops[j]];
+            listItem = [];
+            i = j;
+            update = false;
+            break;
+          } else if (ops[j].insert.includes('\n') && ops[j].attributes.list) {
+            listOp.insert.push([...listItem]);
+            listItem = [];
+            update = true;
+          } else if (!ops[j].insert.includes('\n')) {
+            listItem.push(ops[j]);
+          }
+        }
+      }
+      if (update) {
+        transformedData.ops = [...transformedData.ops, listOp];
+        i = j;
+      }
+    } else {
+      if (typeof ops[i].insert === 'object') {
+        listItem.push(ops[i]);
+      } else if (typeof ops[i].insert === 'string') {
+        if (ops[i].insert.includes('\n')) {
+          transformedData.ops = [...transformedData.ops, ...listItem, ops[i]];
+          listItem = [];
+        } else {
+          listItem.push(ops[i]);
+        }
+      }
+    }
+  }
+  return transformedData;
 };
 
 // Converting mention key to hashtag (if denotation is #)
