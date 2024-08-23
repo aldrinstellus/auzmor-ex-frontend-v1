@@ -65,12 +65,13 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
 
   const modalTitle = (
     <p className="flex">
-      {t('modalTitle')} &nbsp;&nbsp;
+      {t('modalTitle')} &#40;&nbsp;
       {isLoading ? (
         <Skeleton count={1} className="!w-8 h-5" />
       ) : (
         requests?.length
       )}
+      &nbsp;&#41;
     </p>
   );
 
