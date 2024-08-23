@@ -295,8 +295,8 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
                 >
                   {comment?.repliesCount}
                   {comment?.repliesCount > 1
-                    ? t('reply.multiple')
-                    : t('reply.single')}
+                    ? ` ${t('reply.multiple')}`
+                    : ` ${t('reply.single')}`}
                 </div>
               </div>
             </>
