@@ -97,7 +97,14 @@ export const isValidUrl = (url: string) => {
     /((https?|ftp):\/\/)?([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}|[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5})(:[0-9]{1,5})?(\/.*)?/gi;
   return urlPattern.exec(url)?.[0] === url;
 };
-
+export const getUrlWithProtocol = (url?: string): string => {
+  if (!url) return '';
+  let protocol = 'https://';
+  if (url.startsWith('https://') || url.startsWith('http://')) {
+    protocol = '';
+  }
+  return `${protocol}${url}`;
+};
 interface IRedirect {
   redirectUrl?: string;
   token?: string;

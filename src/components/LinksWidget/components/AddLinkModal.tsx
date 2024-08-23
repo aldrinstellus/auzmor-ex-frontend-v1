@@ -13,6 +13,7 @@ import { createLinks, updateChannelLink } from 'queries/channel';
 import { getPreviewLink } from 'queries/post';
 import { useDebounce } from 'hooks/useDebounce';
 import { URL_REGEX } from 'utils/constants';
+import { getUrlWithProtocol } from 'utils/misc';
 
 interface IAddLinksModalProps {
   open: boolean;
@@ -76,6 +77,7 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
     control,
     setValue,
     watch,
+    getValues,
     formState: { errors },
   } = useForm<InputForm>({
     resolver: yupResolver(schema),
@@ -86,27 +88,16 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
     },
   });
 
-  const url = useDebounce(watch('url'), 200);
-
-  const getUrlWithProtocol = (url?: string): string => {
-    if (!url) return '';
-    let protocol = 'https://';
-    if (url.startsWith('https://') || url.startsWith('http://')) {
-      protocol = '';
-    }
-    return `${protocol}${url}`;
-  };
+  const url = useDebounce(watch('url'), 800);
 
   useEffect(() => {
     if (!url) {
       return;
     }
     getPreviewLink(getUrlWithProtocol(url)).then((response) => {
-      setValue(
-        'title',
-        response?.title ||
-          response?.url.replace(/^https?:\/\//, '').replace(/\/$/, ''),
-      );
+      if (!getValues('title') && response?.title) {
+        setValue('title', response.title);
+      }
     });
   }, [url, setValue]);
 

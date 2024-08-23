@@ -17,7 +17,9 @@ import Header from 'components/ModalHeader';
 import { createCatergory, uploadImage } from 'queries/learn';
 import useProduct from 'hooks/useProduct';
 import { useTranslation } from 'react-i18next';
-import { isValidUrl } from 'utils/misc';
+import { getUrlWithProtocol, isValidUrl } from 'utils/misc';
+import { useDebounce } from 'hooks/useDebounce';
+import { getPreviewLink } from 'queries/post';
 
 export enum APP_MODE {
   Create = 'CREATE',
@@ -114,18 +116,19 @@ const AddApp: FC<AddAppProps> = ({
   const [activeFlow, setActiveFlow] = useState(ADD_APP_FLOW.AddApp);
   const [audience, setAudience] = useState<any>(data?.audience || []);
 
+  const url = useDebounce(watch('url'), 800);
+
   useEffect(() => {
-    const subscription = watch((value, { name }) => {
-      if (name === 'url' && value.url) {
-        const titleMatch = value.url.match(
-          /^(?:https?:\/\/)?(?:www\.)?([^.]+)\./,
-        );
-        const title = titleMatch ? titleMatch[1] : '';
-        setValue('label', title);
+    if (!url) {
+      return;
+    }
+
+    getPreviewLink(getUrlWithProtocol(url)).then((response) => {
+      if (!getValues('label') && response?.title) {
+        setValue('label', response.title);
       }
     });
-    return () => subscription.unsubscribe();
-  }, [watch, setValue]); // auto fill the label on the basis of url same as Channel links
+  }, [url, setValue]);
 
   const queryClient = useQueryClient();
 
