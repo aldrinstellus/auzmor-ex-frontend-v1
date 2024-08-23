@@ -20,6 +20,7 @@ import {
 } from 'utils/misc';
 import { learnLogout } from 'queries/learn';
 import useProduct from 'hooks/useProduct';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   open: boolean;
@@ -34,6 +35,9 @@ const ContactSales: React.FC<AppProps> = ({
   title = '',
   variant = 'default',
 }) => {
+  const { t } = useTranslation('components', {
+    keyPrefix: 'contactSales',
+  });
   const { user, reset } = useAuth();
   const { isLxp } = useProduct();
   const schema = yup.object({
@@ -84,7 +88,7 @@ const ContactSales: React.FC<AppProps> = ({
   const onSubmit = () => {
     const { subject, body } = getValues();
     const payload = {
-      subject: subject || 'No Subject Provided',
+      subject: subject || t('noSubject'),
       body,
       ...(isLxp && { from: user?.email }),
     };
@@ -94,8 +98,8 @@ const ContactSales: React.FC<AppProps> = ({
   const fields = [
     {
       name: 'subject',
-      label: 'Subject',
-      placeholder: 'Subject (Optional)',
+      label: t('subjectLabel'),
+      placeholder: t('subjectPlaceholder'),
       type: FieldType.TextArea,
       control,
       className: '',
@@ -108,9 +112,8 @@ const ContactSales: React.FC<AppProps> = ({
     },
     {
       name: 'body',
-      label: 'Message',
-      placeholder:
-        'Please feel free to send a message to our sales team for any assistance or inquiries',
+      label: t('messageLabel'),
+      placeholder: t('messagePlaceholder'),
       type: FieldType.TextArea,
       control,
       className: '',
@@ -136,7 +139,7 @@ const ContactSales: React.FC<AppProps> = ({
               onClick={() => closeModal?.()}
             />
           )}
-          <span>Contact Sales</span>
+          <span>{t('title')}</span>
         </div>
         {defaultVariant && (
           <Icon name="close" onClick={() => closeModal?.()} size={18} />
@@ -147,30 +150,30 @@ const ContactSales: React.FC<AppProps> = ({
           <div className="text-sm text-neutral-900 mb-6">{title}</div>
           <Layout fields={fields} className="space-y-6" />
           <div className="text-neutral-900 flex justify-between mt-6 px-10">
-            <div className="font-bold">Contact us at:</div>
+            <div className="font-bold">{t('contactUsAt')}</div>
             <div className="flex items-center space-x-4">
               <Icon name="email" size={18} />
-              <a className="text-sm" href="mailto:support@auzmor.com">
-                support@auzmor.com
+              <a className="text-sm" href={`mailto:${t('salesSupportEmail')}`}>
+                {t('salesSupportEmail')}
               </a>
               <Icon
                 name="copy"
                 size={16}
                 onClick={() => {
-                  navigator.clipboard.writeText('support@auzmor.com');
+                  navigator.clipboard.writeText(t('salesSupportEmail'));
                 }}
               />
             </div>
             <div className="flex items-center space-x-4">
               <Icon name="call" size={18} />
-              <a className="text-sm" href="tel:515-974-6704">
-                515-974-6704
+              <a className="text-sm" href={`tel:${t('salesSupportNumber')}`}>
+                {t('salesSupportNumber')}
               </a>
               <Icon
                 name="copy"
                 size={16}
                 onClick={() => {
-                  navigator.clipboard.writeText('515-974-6704');
+                  navigator.clipboard.writeText(t('salesSupportNumber'));
                 }}
               />
             </div>
@@ -184,13 +187,13 @@ const ContactSales: React.FC<AppProps> = ({
                 onClick={() => logoutMutation.mutate()}
               >
                 <Icon name="logoutOutline" size={20} color="text-red-500" />
-                <div className="text-red-500 font-bold">Logout</div>
+                <div className="text-red-500 font-bold">{t('logout')}</div>
               </div>
             )}
           </div>
           <div className="flex items-center space-x-3">
             <Button
-              label="Cancel"
+              label={t('cancel')}
               variant={Variant.Secondary}
               size={Size.Small}
               disabled={postMutation.isLoading}
@@ -200,7 +203,7 @@ const ContactSales: React.FC<AppProps> = ({
               }}
             />
             <Button
-              label="Submit"
+              label={t('submit')}
               size={Size.Small}
               onClick={() => onSubmit()}
               disabled={!_body}

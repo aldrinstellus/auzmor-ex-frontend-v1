@@ -52,7 +52,7 @@ const UserCard: FC<IUserCardProp> = ({
           <div className="mr-4">
             <Avatar
               size={80}
-              name={getFullName(user) || 'U'}
+              name={getFullName(user) || t('nameNotSpecified')}
               image={getProfileImage(user)}
               bgColor={getAvatarColor(user)}
               dataTestId="usercard-profilepic"

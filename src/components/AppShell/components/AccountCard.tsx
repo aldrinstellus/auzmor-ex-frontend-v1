@@ -56,7 +56,7 @@ const AccountCard = () => {
         <div className="flex gap-1 items-center">
           <Avatar
             dataTestId="my-profile-avatar"
-            name={user?.name || t('nameNotSpecified')}
+            name={user?.name || tp('nameNotSpecified')}
             size={32}
             image={user?.profileImage}
             ariaLabel="profile image"

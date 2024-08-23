@@ -7,6 +7,7 @@ import {
   UseFormSetValue,
   useController,
 } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { HEX_REGEX } from 'utils/constants';
 import { isDark } from 'utils/misc';
 
@@ -84,7 +85,9 @@ const ColorPicker: FC<ColorPickerProps> = ({
     name,
     control,
   });
-
+  const { t } = useTranslation('components', {
+    keyPrefix: 'colorPicker',
+  });
   const inputStyles = useMemo(
     () =>
       clsx(
@@ -240,7 +243,7 @@ const ColorPicker: FC<ColorPickerProps> = ({
                       htmlFor="colorpicker-hex-input"
                       className="flex font-bold text-sm"
                     >
-                      <span className="">Title</span>
+                      <span className="">{t('title')}</span>
                     </label>
                     <input
                       className="border border-neutral-200 rounded-7xl px-3 py-2 w-[156px] focus:outline-none"

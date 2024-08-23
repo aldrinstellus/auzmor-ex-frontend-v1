@@ -65,5 +65,22 @@
     "channels": "Channels",
     "channelsSubtitle": "Select a channel you are part of",
     "selected": "{{count}} selected"
+  },
+  "contactSales": {
+    "noSubject": "No Subject Provided",
+    "subjectLabel": "Subject",
+    "subjectPlaceholder": "Subject (Optional)",
+    "salesSupportEmail": "support@auzmor.com",
+    "messageLabel": "Message",
+    "messagePlaceholder": "Please feel free to send a message to our sales team for any assistance or inquiries",
+    "salesSupportNumber": "515-974-6704",
+    "title": "Contact Sales",
+    "contactUsAt": "Contact us at:",
+    "logout": "Logout",
+    "cancel": "Cancel",
+    "submit": "Submit"
+  },
+  "colorPicker": {
+    "title": "Title"
   }
 }
