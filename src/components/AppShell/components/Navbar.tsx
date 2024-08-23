@@ -101,7 +101,7 @@ const Navbar = () => {
       iconSize: 24,
     },
     {
-      label: 'Channels',
+      label: t('channels'),
       icon: 'exploreOutline',
       hoverIcon: 'exploreFilled',
       linkTo: '/channels',

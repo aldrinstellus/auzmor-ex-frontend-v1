@@ -8,6 +8,7 @@ import { useOrganization } from 'queries/organization';
 import { FC, useEffect } from 'react';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 import { IS_PROD } from 'utils/constants';
+import { useTranslation } from 'react-i18next';
 
 interface IAudienceSelectorProps {
   audienceFlow: AudienceFlow;
@@ -24,8 +25,9 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
   isEveryoneSelected,
   setIsEveryoneSelected,
   dataTestId,
-  infoText = 'Your post will appear in Feed, on your profile and in search results. You can change the audience of this specific post.',
+  infoText,
 }) => {
+  const { t } = useTranslation('components', { keyPrefix: 'AudienceSelector' });
   const { isAdmin } = useRole();
   const { data, isLoading } = useOrganization();
   const { form } = useEntitySearchFormStore();
@@ -45,8 +47,8 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
     {
       key: 'everyone',
       icon: 'people',
-      title: 'Everyone',
-      subTitle: 'Anyone who is a part of this organisation can see this post.',
+      title: t('everyone'),
+      subTitle: t('everyoneSubtitle'),
       onClick: () => setIsEveryoneSelected(true),
       isHidden:
         data?.adminSettings?.postingControls?.limitGlobalPosting && !isAdmin,
@@ -57,8 +59,8 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
     {
       key: 'teams',
       icon: 'profileUser',
-      title: 'Teams',
-      subTitle: 'Select a team you are part of',
+      title: t('teams'),
+      subTitle: t('teamsSubtitle'),
       onClick: () => setAudienceFlow(AudienceFlow.TeamSelect),
       isHidden: false,
       isSelected:
@@ -74,8 +76,8 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
     {
       key: 'channels',
       icon: 'noteFavouriteOutline',
-      title: 'Channels',
-      subTitle: 'Select a channel you are part of',
+      title: t('channels'),
+      subTitle: t('channelsSubtitle'),
       onClick: () => setAudienceFlow(AudienceFlow.ChannelSelect),
       isHidden: IS_PROD,
       isSelected:
@@ -99,7 +101,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
               <Icon name="infoCircleOutline" hover={false} />
             </div>
             <div className="ml-2.5 text-neutral-500 font-medium text-sm">
-              {infoText}
+              {infoText || t('defaultInfoText')}
             </div>
           </div>
           {isLoading ? (
@@ -148,7 +150,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
                       />
                     </div>
                     <div className="text-xxs text-primary-500">
-                      {entity.selectedCount} selected
+                      {t('selected', { count: entity.selectedCount })}
                     </div>
                   </div>
                 ) : (

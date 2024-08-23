@@ -20,6 +20,7 @@ import {
 } from 'react';
 import { xor } from 'lodash';
 import { clsx } from 'clsx';
+import { useTranslation } from 'react-i18next';
 
 export enum FeedFilterContentType {
   Filter = 'FILTER',
@@ -66,6 +67,8 @@ const FeedFilter: FC<FeedFilterProps> = ({
   appliedFeedFilters = {},
   onApplyFilters,
 }): ReactElement => {
+  const { t } = useTranslation('components', { keyPrefix: 'FeedFilter' });
+
   const [showFeedFilter, setShowFeedFilter] = useState<boolean>(false);
   const [feedFilters, setFeedFilters] =
     useState<IPostFilters>(appliedFeedFilters);
@@ -142,14 +145,14 @@ const FeedFilter: FC<FeedFilterProps> = ({
   const isChannelPage = location.pathname.includes('/channels/');
   const feedFilterOptions: FeedFilterOption[] = [
     {
-      label: 'Content (type)',
+      label: t('contentTypeSection'),
       value: 'content-type',
       type: FeedFilterContentType.Section,
       dataTestId: 'filterby-content-type-section',
       hidden: false,
     },
     {
-      label: 'Update',
+      label: t('update'),
       value: PostType.Update,
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
@@ -157,7 +160,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: false,
     },
     {
-      label: 'Training',
+      label: t('training'),
       value: PostType.Training,
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
@@ -165,7 +168,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: !(isLxp && !isChannelPage), // hide for channel page but not for feed in lxp
     },
     {
-      label: 'Event',
+      label: t('event'),
       value: PostType.Event,
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
@@ -173,7 +176,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: !(isLxp && !isChannelPage),
     },
     {
-      label: 'Forum',
+      label: t('forum'),
       value: PostType.Forum,
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
@@ -181,7 +184,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: !(isLxp && !isChannelPage),
     },
     {
-      label: 'Document',
+      label: t('document'),
       value: PostType.Document,
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
@@ -190,7 +193,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: true,
     },
     {
-      label: 'Shoutout',
+      label: t('shoutout'),
       value: PostType.Shoutout,
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
@@ -198,7 +201,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: false,
     },
     {
-      label: 'Birthday',
+      label: t('birthday'),
       value: PostType.Birthday,
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
@@ -206,7 +209,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: isLxp,
     },
     {
-      label: 'Work anniversary',
+      label: t('workAnniversary'),
       value: PostType.WorkAniversary,
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
@@ -214,7 +217,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: isLxp,
     },
     {
-      label: 'Welcome new hire',
+      label: t('welcomeNewHire'),
       value: PostType.WelcomNewHire,
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
@@ -223,7 +226,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: true,
     },
     {
-      label: 'Poll',
+      label: t('poll'),
       value: PostType.Poll,
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
@@ -231,14 +234,14 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: false,
     },
     {
-      label: 'Preference',
+      label: t('preferenceSection'),
       value: 'preference',
       type: FeedFilterContentType.Section,
       dataTestId: 'filterby-preference-section',
       hidden: false,
     },
     {
-      label: 'My posts',
+      label: t('myPosts'),
       value: PostFilterPreference.MyPosts,
       filterKey: PostFilterKeys.PostPreference,
       type: FeedFilterContentType.Filter,
@@ -246,7 +249,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: false,
     },
     {
-      label: 'Mentions',
+      label: t('mentions'),
       value: PostFilterPreference.MentionedInPost,
       filterKey: PostFilterKeys.PostPreference,
       type: FeedFilterContentType.Filter,
@@ -254,7 +257,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: false,
     },
     {
-      label: 'Bookmarked by me',
+      label: t('bookmarkedByMe'),
       value: PostFilterPreference.BookmarkedByMe,
       type: FeedFilterContentType.Filter,
       filterKey: PostFilterKeys.PostPreference,
@@ -304,7 +307,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
 
   return (
     <Popover className="z-40">
-      <Tooltip tooltipContent="Filters" tooltipPosition="top">
+      <Tooltip tooltipContent={t('filtersTooltip')} tooltipPosition="top">
         <Popover.Button
           className="box-border font-bold flex flex-row justify-center items-center border-none relative outline-none"
           onClick={handleFilterButtonClick}
@@ -336,7 +339,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
               onClick={handleFilterByClick}
               onKeyUp={(e) => (e.code === 'Enter' ? handleFilterByClick() : '')}
             >
-              <p className="text-base font-bold">Filter by</p>
+              <p className="text-base font-bold">{t('filterBy')}</p>
               <Icon
                 name="close"
                 size={16}
@@ -378,10 +381,10 @@ const FeedFilter: FC<FeedFilterProps> = ({
                 disabled={isFeelFiltersEmpty()}
                 data-testid="filters-clearfiltercta"
               >
-                Clear filters
+                {t('clearFilters')}{' '}
               </button>
               <Button
-                label="Apply"
+                label={t('apply')}
                 variant={Variant.Primary}
                 size={Size.Small}
                 disabled={!haveFiltersBeenModified}

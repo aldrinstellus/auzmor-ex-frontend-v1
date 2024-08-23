@@ -5,12 +5,16 @@ import useAuth from 'hooks/useAuth';
 import useModal from 'hooks/useModal';
 import useProduct from 'hooks/useProduct';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   closeBanner: () => any;
 };
 
 const SubscriptionBanner: React.FC<AppProps> = ({ closeBanner }) => {
+  const { t } = useTranslation('components', {
+    keyPrefix: 'SubscriptionBanner',
+  });
   const { user } = useAuth();
   const { isLxp } = useProduct();
   const daysRemaining = user?.subscription?.daysRemaining || 0;
@@ -21,7 +25,7 @@ const SubscriptionBanner: React.FC<AppProps> = ({ closeBanner }) => {
     return null;
   }
 
-  const productName = isLxp ? 'Auzmor LXP' : 'Auzmor Office';
+  const productName = isLxp ? t('productNameLxp') : t('productNameOffice');
 
   return (
     <div className="h-9 bg-neutral-900 flex justify-center items-center text-sm text-white relative">
@@ -29,11 +33,11 @@ const SubscriptionBanner: React.FC<AppProps> = ({ closeBanner }) => {
         if (daysRemaining > 6) {
           return (
             <span>
-              Experience &nbsp;
+              {t('experience')} &nbsp;
               <span className="text-primary-500">
-                {user?.subscription?.daysRemaining} days trial
+                {user?.subscription?.daysRemaining} {t('daysTrail')}
               </span>
-              &nbsp; of {productName}
+              &nbsp; {t('of')} {productName}
             </span>
           );
         }
@@ -42,25 +46,22 @@ const SubscriptionBanner: React.FC<AppProps> = ({ closeBanner }) => {
             <div className="flex items-center justify-center space-x-1">
               <Icon name="warningCircle" className="text-white" />
               <span className="text-primary-500">
-                {user?.subscription?.daysRemaining} days left
+                {user?.subscription?.daysRemaining} {t('daysLeft')}
               </span>
-              &nbsp; for your free {productName} trial
+              &nbsp; {t('forYourFree')} {productName} {t('trial')}
             </div>
           );
         }
         return (
           <div className="flex items-center justify-center space-x-1">
             <Icon name="warningCircle" className="text-white" />
-            <span>
-              Your subscription has expired. Please contact sales to continue
-              using {productName}
-            </span>
+            <span>{t('subscriptionExpired', { productName })}</span>
           </div>
         );
       })()}
       <div className="pl-6">
         <Button
-          label="Contact Sales"
+          label={t('contactSales')}
           size={Size.ExtraSmall}
           onClick={showSales}
         />
@@ -77,7 +78,7 @@ const SubscriptionBanner: React.FC<AppProps> = ({ closeBanner }) => {
         <ContactSales
           open={sales}
           closeModal={closeSales}
-          title="Your free trial is active. Contact our sales team for questions or to upgrade to full subscription"
+          title={t('contactSalesTitle')}
         />
       )}
     </div>

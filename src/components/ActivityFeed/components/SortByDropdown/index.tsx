@@ -1,16 +1,21 @@
 import Dropdown from 'components/Dropdown';
 import Button, { Variant, Size } from 'components/Button';
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
-const SortByDropdown: FC = ({}) => {
+const SortByDropdown: FC = () => {
+  const { t } = useTranslation('components', { keyPrefix: 'SortByDropdown' });
+
   return (
     <div className="flex items-center ml-6">
-      <div className="whitespace-nowrap text-sm font-bold mr-4">Sort by</div>
+      <div className="whitespace-nowrap text-sm font-bold mr-4">
+        {t('sortBy')}
+      </div>
       <div className="relative">
         <Dropdown
           options={[
             {
-              label: 'Latest',
+              label: t('latest'),
               value: 'latest',
               id: 'latest',
             },

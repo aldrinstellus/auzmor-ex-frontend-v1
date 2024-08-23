@@ -29,6 +29,7 @@ const resources = {
     post: require('locales/en-US/post.json'),
     notifications: require('locales/en-US/notifications.json'),
     pageTitle: require('locales/en-US/pageTitle.json'),
+    components: require('locales/en-US/components.json'),
   },
 };
 

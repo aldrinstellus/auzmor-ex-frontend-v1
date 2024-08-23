@@ -30,6 +30,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
   openModal,
   className = '',
 }) => {
+  const { t: tp } = useTranslation('profile');
   const { t } = useTranslation('announcement');
   const shouldRender = useShouldRender(ID);
   if (!shouldRender) {
@@ -114,7 +115,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
                         name={
                           postData?.createdBy
                             ? getFullName(postData?.createdBy)
-                            : 'U'
+                            : tp('nameNotSpecified')
                         }
                         image={getProfileImage(postData?.createdBy)}
                         size={32}

@@ -1,0 +1,69 @@
+{
+  "AccountDeactivated": {
+    "title": "Account Deactivated",
+    "message": "Your auzmor account is disabled. Please contact the admin for further info."
+  },
+  "FeedFilter": {
+    "filtersTooltip": "Filters",
+    "filterBy": "Filter by",
+    "clearFilters": "Clear filters",
+    "apply": "Apply",
+    "contentTypeSection": "Content (type)",
+    "update": "Update",
+    "training": "Training",
+    "event": "Event",
+    "forum": "Forum",
+    "document": "Document",
+    "shoutout": "Shoutout",
+    "birthday": "Birthday",
+    "workAnniversary": "Work anniversary",
+    "welcomeNewHire": "Welcome new hire",
+    "poll": "Poll",
+    "preferenceSection": "Preference",
+    "myPosts": "My posts",
+    "mentions": "Mentions",
+    "bookmarkedByMe": "Bookmarked by me"
+  },
+  "SortByDropdown": {
+    "sortBy": "Sort by",
+    "latest": "Latest"
+  },
+  "Actor": {
+    "celebratingBirthday": "is celebrating their birthday",
+    "celebratingWorkAnniversary": "is celebrating their work anniversary",
+    "newJoinee": "is a new joinee",
+    "sharedPoll": "shared a poll",
+    "sharedPost": "shared a post",
+    "fieldNotSpecified": "Not specified",
+    "audience": "Audience"
+  },
+  "GlobalSearch": {
+    "searchAriaLabel": "search",
+    "searchPlaceholder": "Search name, channel, team, document etc.,",
+    "noResultsHint": "We're a little lost. Can you give us a hint?",
+    "connectStorageHint": "Please connect storage documents to search within first."
+  },
+  "SubscriptionBanner": {
+    "productNameLxp": "Auzmor LXP",
+    "productNameOffice": "Auzmor Office",
+    "experience": "Experience",
+    "daysTrail": "days trail",
+    "daysLeft": "days Left",
+    "of": "of",
+    "forYourFree": "for your free",
+    "trial": "trial",
+    "subscriptionExpired": "Your subscription has expired. Please contact sales to continue using {{productName}}",
+    "contactSales": "Contact Sales",
+    "contactSalesTitle": "Your free trial is active. Contact our sales team for questions or to upgrade to full subscription"
+  },
+  "AudienceSelector": {
+    "defaultInfoText": "Your post will appear in Feed, on your profile and in search results. You can change the audience of this specific post.",
+    "everyone": "Everyone",
+    "everyoneSubtitle": "Anyone who is a part of this organisation can see this post.",
+    "teams": "Teams",
+    "teamsSubtitle": "Select a team you are part of",
+    "channels": "Channels",
+    "channelsSubtitle": "Select a channel you are part of",
+    "selected": "{{count}} selected"
+  }
+}

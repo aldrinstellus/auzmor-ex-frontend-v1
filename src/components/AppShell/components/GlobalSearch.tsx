@@ -10,6 +10,7 @@ import { useForm } from 'react-hook-form';
 import { DocType } from 'queries/files';
 import { useNavigate } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
+import { useTranslation } from 'react-i18next';
 
 export interface IGlobalSearchProps {}
 
@@ -29,6 +30,7 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
     mode: 'onChange',
     defaultValues: { search: '' },
   });
+  const { t } = useTranslation('components', { keyPrefix: 'GlobalSearch' });
 
   const { user } = useAuth();
 
@@ -79,7 +81,7 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
       name: 'globalSearch',
       dataTestId: 'global-search',
       className: 'px-5 py-3',
-      placeholder: 'Search name, channel, team, document etc.,',
+      placeholder: t('searchPlaceholder'),
       selectClassName: 'global-select',
       suffixIcon: <></>,
       clearIcon: (
@@ -125,9 +127,9 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
           illustration="noDocumentFound"
           labelHeader={
             isSynced ? (
-              <p>We&apos;re a little lost. Can you give us a hint? </p>
+              <p>{t('noResultsHint')}</p>
             ) : (
-              <p>Please connect storage documents to search within first.</p>
+              <p>{t('connectStorageHint')}</p>
             )
           }
           hideClearBtn

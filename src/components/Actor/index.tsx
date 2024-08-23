@@ -63,7 +63,9 @@ const Actor: FC<ActorProps> = ({
   audience,
   title,
 }) => {
-  const { t } = useTranslation('profile');
+  const { t: tp } = useTranslation('profile');
+  const { t } = useTranslation('components', { keyPrefix: 'Actor' });
+
   const { user } = useAuth();
   const { isLxp } = useProduct();
   const navigate = useNavigate();
@@ -71,22 +73,22 @@ const Actor: FC<ActorProps> = ({
     useModal(false);
   const actionLabel = useMemo(() => {
     if (postType === 'BIRTHDAY') {
-      return 'is celebrating their birthday';
+      return t('celebratingBirthday');
     }
     if (postType === 'WORK_ANNIVERSARY') {
-      return 'is celebrating their work anniversary';
+      return t('celebratingWorkAnniversary');
     }
     if (postType === 'NEW_JOINEE') {
-      return 'is a new joinee';
+      return t('newJoinee');
     }
     if (postType === 'POLL') {
-      return 'shared a poll';
+      return t('sharedPoll');
     }
     if (contentMode === VIEW_POST) {
-      return 'shared a post';
+      return t('sharedPost');
     }
     return '';
-  }, [postType]);
+  }, [postType, t]);
 
   const profileUrl = isLxp
     ? ''
@@ -165,7 +167,7 @@ const Actor: FC<ActorProps> = ({
                   <UserCard
                     user={getUserCardTooltipProps(
                       createdBy,
-                      t('fieldNotSpecified'),
+                      tp('fieldNotSpecified'),
                     )}
                   />
                 }

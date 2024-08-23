@@ -5,10 +5,12 @@
   "admin": "Admin",
   "teams": "Teams",
   "learningHub": "Learning Hub",
-  "discover": {
-    "title": "Discover",
-    "channels": "Channels"
-  },
+  "channels": "Channels",
+  "userSetting": "User Settings",
+  "adminSetting": "Admin Settings",
+  "switchToAdminsView": "Switch to Admin's View",
+  "myBookmarks": "My Bookmarks",
+  "signout": "Sign Out",
   "account": {
     "goToProfile": "Go to My Profile"
   }
