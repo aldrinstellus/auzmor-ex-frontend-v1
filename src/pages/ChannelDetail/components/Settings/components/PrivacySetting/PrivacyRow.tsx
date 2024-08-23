@@ -103,7 +103,7 @@ const PrivacyRow: FC<AppProps> = ({ data, canEdit }) => {
       isEditMode={true}
       value={data?.settings?.visibility}
       dataTestId=""
-      border={true}
+      border={false}
       editNode={
         <div>
           <form>
@@ -111,6 +111,7 @@ const PrivacyRow: FC<AppProps> = ({ data, canEdit }) => {
           </form>
         </div>
       }
+      className="!py-4"
     />
   );
 };

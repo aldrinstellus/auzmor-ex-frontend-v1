@@ -27,7 +27,6 @@ export type TextAreaProps = {
 };
 
 const TextArea: FC<TextAreaProps> = ({
-  defaultValue = '',
   label = '',
   disabled = false,
   error,
@@ -107,8 +106,7 @@ const TextArea: FC<TextAreaProps> = ({
 
   const counterNode = (
     <div className="flex mt-1 w-full justify-end text-xs text-neutral-500">
-      {textAreaRef.current?.value.length || defaultValue.length || 0}/
-      {maxLength}
+      {textAreaRef.current?.value.length || 0}/{maxLength}
     </div>
   );
 
@@ -132,7 +130,7 @@ const TextArea: FC<TextAreaProps> = ({
         required={required}
         className={textAreaStyle}
         data-testid={dataTestId}
-        defaultValue={defaultValue}
+        value={field.value}
         autoComplete={autocomplete}
         autoFocus={autoFocus}
       />

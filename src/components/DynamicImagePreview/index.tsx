@@ -83,7 +83,7 @@ const DynamicImagePreview: FC<IDynamicImagePreview> = ({
 
   return (
     <div>
-      <div className={`bg-blue-50 min-h-[209px] mb-6`}>
+      <div className={`bg-blue-50 min-h-[209px] mb-4`}>
         {(imageFile || selectedTemplateImage) && (
           <ImagePreview
             templateImageRef={templateImageRef}

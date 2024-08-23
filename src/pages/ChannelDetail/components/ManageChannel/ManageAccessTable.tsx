@@ -116,13 +116,13 @@ const ManageAccessTable: FC<AppProps> = ({
                       triggerNode={
                         <>
                           {user?.userId === currentUser?.id ? (
-                            <div className=" pl-4 !text-sm !font-medium capitalize">
+                            <div className=" pl-4 !text-sm !font-medium capitalize w-28 text-center">
                               {user?.role?.toLowerCase()}
                             </div>
                           ) : (
                             <Button
                               variant={Variant.Tertiary}
-                              className="!text-sm !font-medium capitalize"
+                              className="!text-sm !font-medium capitalize !bg-primary-50 w-32"
                               label={user?.role?.toLowerCase() || 'Admin'}
                               rightIcon={'arrowDown'}
                               disabled={

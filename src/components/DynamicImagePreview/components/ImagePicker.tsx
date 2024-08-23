@@ -23,7 +23,7 @@ const ImagePicker: FC<IImagePickerProps> = ({ selectedTemplate, onSelect }) => {
   const templateImages = isOffice ? officeTemplateImages : lxpTemplateImages;
 
   return (
-    <div className="flex justify-center mb-2">
+    <div className="flex justify-center mb-4">
       <div className="inline-grid grid-cols-2 gap-4">
         {templateImages.map((item) => (
           <div

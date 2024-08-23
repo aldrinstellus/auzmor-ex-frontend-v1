@@ -510,7 +510,8 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                     setIsCoverImage(false);
                     openChannelImageModal();
                   }}
-                  className="absolute !bg-white rounded-full p-[5px] cursor-pointer -top-2 -right-1 hover:!bg-white"
+                  size={Size.Small}
+                  className="absolute !bg-white rounded-full p-[5px] cursor-pointer -top-1 -right-0.5 hover:!bg-white"
                   dataTestId="edit-profilepic"
                 />
               )}

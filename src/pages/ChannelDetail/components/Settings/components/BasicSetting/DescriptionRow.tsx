@@ -101,6 +101,7 @@ const DescriptionRow: FC<AppProps> = ({ channelData, canEdit }) => {
       }
       onCancel={reset}
       onSave={handleSubmit(onSubmit)}
+      editButtonsClassName="pt-4"
     />
   );
 };

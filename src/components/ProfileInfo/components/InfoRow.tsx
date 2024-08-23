@@ -30,6 +30,8 @@ type AppProps = {
   onSave?: (...args: any) => any;
   isEditButton?: boolean;
   isEditMode?: boolean;
+  className?: string;
+  editButtonsClassName?: string;
 };
 
 const InfoRow = forwardRef(
@@ -46,6 +48,8 @@ const InfoRow = forwardRef(
       onSave = () => null,
       isEditButton = true,
       isEditMode = false,
+      className = '',
+      editButtonsClassName = '',
     }: AppProps,
     ref: ForwardedRef<any>,
   ) => {
@@ -62,7 +66,11 @@ const InfoRow = forwardRef(
       <div
         {...eventHandlers}
         data-testid={dataTestId}
-        className={clsx({ 'relative py-6': true }, { 'border-b': border })}
+        className={clsx({
+          'relative py-6': true,
+          'border-b': border,
+          [className]: true,
+        })}
       >
         <div className="flex items-center">
           <div className="flex items-center w-[200px]">
@@ -81,7 +89,7 @@ const InfoRow = forwardRef(
             <div className="flex items-center space-x-2 w-full">
               <div className="w-full">{editNode}</div>
               {isEditButton && (
-                <div className="flex items-center">
+                <div className={`flex items-center ${editButtonsClassName}`}>
                   <IconWrapper
                     type={Type.Circle}
                     className="mr-2 w-8 h-8 rounded-full"

@@ -101,6 +101,7 @@ const NameRow: FC<AppProps> = ({ data, canEdit }) => {
       }
       onCancel={reset}
       onSave={handleSubmit(onSubmit)}
+      editButtonsClassName="pt-4"
     />
   );
 };

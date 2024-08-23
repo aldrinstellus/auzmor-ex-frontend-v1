@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import Layout, { FieldType } from 'components/Form';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
@@ -106,6 +106,8 @@ const ChannelModal: FC<IChannelModalProps> = ({
     formState: { errors, isValid },
     getValues,
     clearErrors,
+    watch,
+    setValue,
   } = useForm<any>({
     defaultValues: {
       channelName: channelData?.name || '',
@@ -128,6 +130,23 @@ const ChannelModal: FC<IChannelModalProps> = ({
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
+
+  const [channelName, channelPrivacy, channelDescription] = watch([
+    'channelName',
+    'channelPrivacy',
+    'channelDescription',
+  ]);
+
+  useEffect(() => {
+    if (channelFlow === ChannelFlow.CreateChannel && isValid) {
+      if (channelName && !channelDescription) {
+        setValue(
+          'channelDescription',
+          `This is a ${channelPrivacy.value.toLowerCase()} channel for ${channelName}`,
+        );
+      }
+    }
+  }, [isValid, channelPrivacy, channelName]);
 
   const formatCategory = (data: any) => {
     const categoriesData = data?.pages.flatMap((page: any) => {
@@ -360,7 +379,6 @@ const ChannelModal: FC<IChannelModalProps> = ({
                 name: 'channelDescription',
                 label: t('channelModal.channelDescriptionLabel'),
                 placeholder: t('channelModal.channelDescriptionPlaceholder'),
-                defaultValue: getValues()?.channelDescription || '',
                 dataTestId: `${dataTestId}-description`,
                 rows: 5,
                 maxLength: 200,
@@ -392,7 +410,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
           variant={Variant.Primary}
           onClick={handleSubmit(onSubmit)}
           dataTestId={`${dataTestId}-cta`}
-          disabled={!(isValid && !!!errors.time)}
+          disabled={!isValid}
         />
       </div>
     </Modal>

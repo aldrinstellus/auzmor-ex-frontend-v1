@@ -17,17 +17,15 @@ export interface IBasicSettingProps {
 }
 
 const BasicSetting: FC<IBasicSettingProps> = ({ channelData, canEdit }) => {
-  const onHoverStyles = clsx({ 'mb-8': true });
+  const styles = clsx({ 'p-4 mb-8': true });
   const { t } = useTranslation('channelDetail', { keyPrefix: 'setting' });
   return (
     <div>
       <Header title={t('basicSetting')} dataTestId="channel-setting-details" />
-      <Card className={onHoverStyles} shadowOnHover={canEdit}>
-        <div className="px-4">
-          <NameRow canEdit={canEdit} data={channelData} />
-          <DescriptionRow canEdit={canEdit} channelData={channelData} />
-          <CategoryRow canEdit={canEdit} channelData={channelData} />
-        </div>
+      <Card className={styles} shadowOnHover={canEdit}>
+        <NameRow canEdit={canEdit} data={channelData} />
+        <DescriptionRow canEdit={canEdit} channelData={channelData} />
+        <CategoryRow canEdit={canEdit} channelData={channelData} />
       </Card>
     </div>
   );

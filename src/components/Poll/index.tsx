@@ -200,7 +200,7 @@ const Poll: FC<IPoll & PollProps> = ({
     <div className="bg-neutral-100 py-4 px-8 rounded-9xl w-full border border-neutral-200">
       {/* Header */}
       <div className="flex items-start gap-4">
-        <p className="text-neutral-900 font-bold flex-auto pb-4 break-normal [overflow-wrap:anywhere]">
+        <p className="text-neutral-900 font-bold flex-auto mb-2 break-normal [overflow-wrap:anywhere]">
           {question}
         </p>
         {mode === PollMode.EDIT && (
@@ -266,7 +266,7 @@ const Poll: FC<IPoll & PollProps> = ({
           </div>
         </div>
       ) : (
-        <div className="pb-6 flex flex-col gap-2">
+        <div className="mb-2 flex flex-col gap-2">
           {options.map((option, index) => {
             const votedThisOption =
               voted && myVote?.some((vote) => vote.optionId === option._id);

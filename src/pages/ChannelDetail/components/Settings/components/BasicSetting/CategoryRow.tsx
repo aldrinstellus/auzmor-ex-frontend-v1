@@ -137,6 +137,7 @@ const CategoryRow: FC<AppProps> = ({ channelData, canEdit }) => {
       }
       onCancel={reset}
       onSave={handleSubmit(onSubmit)}
+      border={false}
     />
   );
 };
