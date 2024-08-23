@@ -1,5 +1,5 @@
 {
-  "othersInteracted": "and {{count}} others",
+  "othersInteracted": "and {{count}} others ",
   "announcementHeadline": "Announcement",
   "receivedShoutout": {
     "header": "You received a shoutout",
