@@ -4,10 +4,6 @@ export const EMAIL_REGEX =
 
 export const TOAST_AUTOCLOSE_TIME = 5000;
 
-// Found this regex here - https://stackoverflow.com/a/68780191
-export const URL_REGEX =
-  /^(https?|ftp):\/\/(www\.)?([a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+)((\/[^\s]*)?)$/;
-
 // Found this regex here - https://stackoverflow.com/questions/16369642/javascript-how-to-use-a-regular-expression-to-remove-blank-lines-from-a-string
 export const EMPTY_REGEX = /^\s*$(?:\r\n?|\n){3,}/gm;
 
