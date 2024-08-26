@@ -47,7 +47,7 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
   const [searchParams, _] = useSearchParams();
   const token = searchParams.get('token');
   const orgId = searchParams.get('orgId');
-  const { setUser, showOnboard, setShowOnboard } = useAuth();
+  const { setUser, setShowOnboard } = useAuth();
   const navigate = useNavigate();
   const navigateWithToken = useNavigateWithToken();
 
@@ -66,7 +66,6 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
         setUser,
         navigate,
         setShowOnboard,
-        showOnboard,
       ),
     onError: () => {},
   });
