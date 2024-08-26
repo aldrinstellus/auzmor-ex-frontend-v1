@@ -152,7 +152,6 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
   // If a redirectUrl is present in the response of the verify invite link API,
   // we must redirect the user to that page because the user needs to get Auth'd by either SSO or LDAP
   if (data?.result?.data?.redirectUrl) {
-    console.log('redirect check');
     return window.location.replace(data.result.data.redirectUrl) as any;
   }
 
