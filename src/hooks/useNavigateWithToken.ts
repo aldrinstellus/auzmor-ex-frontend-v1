@@ -33,6 +33,12 @@ export const useNavigateWithToken = () => {
       if (
         `${window.location.protocol}//${window.location.host}` === redirectUrl
       ) {
+        if (setShowOnboard && token && redirectUrl) {
+          url = `${url}?accessToken=${token}`;
+          url += '&showOnboard=true';
+          window.location.replace(`${redirectUrl}${url}`);
+          return;
+        }
         const userData = await fetchMe();
         const user = userData?.result?.data;
         setUser({
