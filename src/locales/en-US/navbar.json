@@ -10,7 +10,7 @@
   "adminSetting": "Admin Settings",
   "switchToAdminsView": "Switch to Admin's View",
   "myBookmarks": "My Bookmarks",
-  "signout": "Sign Out",
+  "signOut": "Sign Out",
   "account": {
     "goToProfile": "Go to My Profile"
   }
