@@ -341,7 +341,12 @@ export const transformedList = (ops: any) => {
           listItem.push(ops[j]);
         } else {
           if (ops[j].insert.includes('\n') && !ops[j]?.attributes?.list) {
-            transformedData.ops = [...transformedData.ops, listOp, ops[j]];
+            transformedData.ops = [
+              ...transformedData.ops,
+              listOp,
+              ...listItem,
+              ops[j],
+            ];
             listItem = [];
             i = j;
             update = false;
