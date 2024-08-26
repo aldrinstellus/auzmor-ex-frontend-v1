@@ -47,7 +47,7 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
   const [searchParams, _] = useSearchParams();
   const token = searchParams.get('token');
   const orgId = searchParams.get('orgId');
-  const { setUser, showOnboard, setShowOnboard } = useAuth();
+  const { setUser, setShowOnboard } = useAuth();
   const navigate = useNavigate();
   const navigateWithToken = useNavigateWithToken();
 
@@ -66,7 +66,6 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
         setUser,
         navigate,
         setShowOnboard,
-        showOnboard,
       ),
     onError: () => {},
   });
@@ -153,6 +152,7 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
   // If a redirectUrl is present in the response of the verify invite link API,
   // we must redirect the user to that page because the user needs to get Auth'd by either SSO or LDAP
   if (data?.result?.data?.redirectUrl) {
+    console.log('redirect check');
     return window.location.replace(data.result.data.redirectUrl) as any;
   }
 
