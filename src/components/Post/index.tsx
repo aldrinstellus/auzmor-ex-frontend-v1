@@ -412,7 +412,7 @@ const Post: FC<PostProps> = ({
           )}
           <RenderQuillContent readOnly={readOnly} data={post} />
           {post?.cardContext && <CustomCard />}
-          {post?.linkAttachments && (
+          {post?.linkAttachments && !!post?.linkAttachments.length && (
             <LinkAttachments attachments={post?.linkAttachments} />
           )}
           {/* Reaction Count */}

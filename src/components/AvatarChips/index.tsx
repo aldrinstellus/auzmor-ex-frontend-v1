@@ -25,7 +25,7 @@ const AvatarChips: FC<IAvatarChipsProps> = ({
   return (
     <>
       <div
-        className={`flex items-center overflow-hidden hover:overflow-x-scroll gap-2 ${className}`}
+        className={`flex h-11 overflow-hidden hover:overflow-x-scroll gap-2 ${className}`}
       >
         {users.length > 0 &&
           users
@@ -43,7 +43,7 @@ const AvatarChips: FC<IAvatarChipsProps> = ({
         {users.length > showCount && (
           <div
             className={`flex items-center w-fit gap-1 rounded-[24px] border-1 border-neutral-200 bg-neutral-100
-      px-3 py-2 text-primary-500 text-semibold text-sm 
+      px-3 py-2 text-primary-500 text-semibold text-sm h-[38px]
       hover:border-primary-500 transition cursor-pointer ${avatarClassName}`}
             onClick={openModal}
             data-testid={`${dataTestId}morecta`}
