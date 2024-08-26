@@ -384,6 +384,7 @@ export const transformedList = (ops: any) => {
       }
     }
   }
+  transformedData.ops = [...transformedData.ops, ...listItem];
   return transformedData;
 };
 
