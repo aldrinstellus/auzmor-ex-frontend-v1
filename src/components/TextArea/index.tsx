@@ -106,7 +106,7 @@ const TextArea: FC<TextAreaProps> = ({
 
   const counterNode = (
     <div className="flex mt-1 w-full justify-end text-xs text-neutral-500">
-      {textAreaRef.current?.value.length || 0}/{maxLength}
+      {field?.value?.length || 0}/{maxLength}
     </div>
   );
 

@@ -138,15 +138,20 @@ const ChannelModal: FC<IChannelModalProps> = ({
   ]);
 
   useEffect(() => {
-    if (channelFlow === ChannelFlow.CreateChannel && isValid) {
-      if (channelName && !channelDescription) {
+    if (channelFlow === ChannelFlow.CreateChannel) {
+      if (
+        channelName &&
+        (!channelDescription || isMatchingString(channelDescription))
+      ) {
         setValue(
           'channelDescription',
-          `This is a ${channelPrivacy.value.toLowerCase()} channel for ${channelName}`,
+          `This is a ${channelPrivacy.value.toLowerCase()} channel for ${channelName}.`,
         );
+      } else if (!channelName && isMatchingString(channelDescription)) {
+        setValue('channelDescription', ``);
       }
     }
-  }, [isValid, channelPrivacy, channelName]);
+  }, [channelPrivacy, channelName]);
 
   const formatCategory = (data: any) => {
     const categoriesData = data?.pages.flatMap((page: any) => {
@@ -243,6 +248,11 @@ const ChannelModal: FC<IChannelModalProps> = ({
     channelFlow === ChannelFlow.CreateChannel
       ? 'create-channel'
       : 'edit-channel';
+
+  const isMatchingString = (text: string): boolean => {
+    const pattern = /^This is a \w+ channel for .+\.$/;
+    return pattern.test(text);
+  };
 
   return (
     <Modal open={isOpen} dataTestId={`${dataTestId}-modal`}>
