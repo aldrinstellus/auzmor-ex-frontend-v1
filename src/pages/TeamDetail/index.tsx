@@ -37,7 +37,8 @@ export interface ITeamMemberProps {}
 
 const TeamDetail: FC<ITeamMemberProps> = () => {
   const { t } = useTranslation('team');
-  usePageTitle(t('title'));
+  usePageTitle('teamProfile');
+
   const params = useParams();
   const [searchParams] = useSearchParams();
   const { state } = useLocation();

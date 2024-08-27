@@ -201,14 +201,14 @@ const Actor: FC<ActorProps> = ({
                 {createdTime}
               </div>
               <div className="bg-neutral-500 rounded-full w-1 h-1" />
-              <div title="Audience">
+              <div title={t('audience')}>
                 <Icon
                   name={
                     audience && audience.length ? 'noteFavourite' : 'global'
                   }
                   size={16}
                   tabIndex={0}
-                  title={'Audience'}
+                  title={t('audience')}
                   onClick={
                     audience && audience.length ? openAudienceModal : () => {}
                   }

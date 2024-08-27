@@ -35,7 +35,7 @@ const SubscriptionBanner: React.FC<AppProps> = ({ closeBanner }) => {
             <span>
               {t('experience')} &nbsp;
               <span className="text-primary-500">
-                {user?.subscription?.daysRemaining} {t('daysTrail')}
+                {user?.subscription?.daysRemaining} {t('daysTrial')}
               </span>
               &nbsp; {t('of')} {productName}
             </span>

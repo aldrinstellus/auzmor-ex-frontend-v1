@@ -13,7 +13,7 @@ type AppProps = {
 
 const Report: React.FC<AppProps> = ({ importId, status }) => {
   const { t } = useTranslation('components', {
-    keyPrefix: 'JobProgress.Report',
+    keyPrefix: 'jobProgress.Report',
   });
 
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =

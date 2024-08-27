@@ -192,7 +192,7 @@ const Poll: FC<IPoll & PollProps> = ({
           )}
         </div>
         <Button
-          label={voted || !timeLeft ? 'View Results' : 'Vote Now'}
+          label={voted || !timeLeft ? t('viewResults') : t('voteNow')}
           size={ButtonSize.Small}
           className="py-[6px]"
         />
@@ -352,7 +352,7 @@ const Poll: FC<IPoll & PollProps> = ({
             <p
               className="text-neutral-500 font-normal"
               data-testid="feed-post-poll-votes"
-            >{`${total} votes`}</p>
+            >{`${total} ${t('votes')} `}</p>
           </Fragment>
         )}
         {showViewResults && (

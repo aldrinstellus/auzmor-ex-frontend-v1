@@ -46,7 +46,7 @@
     "productNameLxp": "Auzmor LXP",
     "productNameOffice": "Auzmor Office",
     "experience": "Experience",
-    "daysTrail": "days trail",
+    "daysTrial": "days trial",
     "daysLeft": "days Left",
     "of": "of",
     "forYourFree": "for your free",
@@ -168,7 +168,7 @@
     "pollClosed": "Poll closed",
     "votes": "votes",
     "viewResults": "View results",
-    "voteNow": "Vote now",
+    "voteNow": "Vote Now",
     "chooseOneOption": "Choose one option",
     "undo": "Undo"
   },
@@ -210,7 +210,6 @@
       "back": "Back",
       "close": "Close"
     },
-
     "Report": {
       "columns": {
         "name": "Name",
