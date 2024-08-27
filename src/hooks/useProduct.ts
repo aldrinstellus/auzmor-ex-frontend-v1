@@ -1,6 +1,7 @@
 import { ProductContext } from 'contexts/ProductProvider';
 import { useContext, useEffect, useState } from 'react';
 import { ProductEnum } from 'utils/apiService';
+import { getItem } from 'utils/persist';
 
 const useProduct = () => {
   const { product, setProduct } = useContext(ProductContext);
@@ -16,8 +17,9 @@ const useProduct = () => {
   }, [product]);
 
   useEffect(() => {
+    const favicon = getItem('favicon', '');
     // Set lxp branding favicon
-    if (product === ProductEnum.Lxp) {
+    if (!!!favicon && product === ProductEnum.Lxp) {
       document
         .querySelector('link[rel="icon"]')
         ?.setAttribute('href', '/lxp-favicon.svg');
