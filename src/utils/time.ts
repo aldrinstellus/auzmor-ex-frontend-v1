@@ -103,7 +103,7 @@ export const convertTimezone = (
 ) => {
   try {
     const sourceDatetime = momentTimezone.tz(
-      moment(sourceDate).format('YYYY-MM-DD') + ' ' + sourceTime,
+      moment(sourceDate.toISOString()).format('YYYY-MM-DD') + ' ' + sourceTime,
       'YYYY-MM-DD hh:mm a',
       sourceTimezone,
     );
