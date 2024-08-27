@@ -62,6 +62,9 @@ export const useNavigateWithToken = () => {
           },
         });
         setBranding(user.branding);
+        if (setShowOnboard) {
+          setShowOnboard(true);
+        }
         navigate(url);
       } else {
         if (token) {
