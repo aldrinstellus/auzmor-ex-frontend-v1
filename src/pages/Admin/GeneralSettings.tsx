@@ -9,8 +9,11 @@ import {
 import queryClient from 'utils/queryClient';
 import Divider from 'components/Divider';
 import { useTranslation } from 'react-i18next';
+import { usePageTitle } from 'hooks/usePageTitle';
 
 const GeneralSettings: FC = () => {
+  usePageTitle('admin');
+
   const { t } = useTranslation('adminSetting');
   const updateLimitPostingControlsMutation =
     useUpdateLimitGlobalPostingMutation();
