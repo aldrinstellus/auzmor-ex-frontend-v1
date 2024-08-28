@@ -109,6 +109,7 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
           setFilters({ channelType: ChannelTypeEnum.DiscoverNewChannels });
         }
       },
+      refetchOnMount: 'always',
     },
   );
 
