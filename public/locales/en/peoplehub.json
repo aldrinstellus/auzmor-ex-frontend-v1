@@ -5,8 +5,7 @@
     "viewOrgChart": "View Organization Chart",
     "addMembers": "Add Members",
     "quickAdd": "Quick Add",
-    "import": "Import",
-    "importFromDeel": "Import from Deel"
+    "import": "Import"
   },
   "teams": {
     "title": "Teams"

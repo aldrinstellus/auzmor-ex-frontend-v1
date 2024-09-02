@@ -11,64 +11,9 @@ import { Role } from 'utils/enum';
 import Team from './components/Teams';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PopupMenu from 'components/PopupMenu';
+import { useTranslation } from 'react-i18next';
 import useProduct from 'hooks/useProduct';
 import { usePageTitle } from 'hooks/usePageTitle';
-import { useVault } from '@apideck/vault-react';
-// import axios from 'axios';
-// import { getItem } from 'utils/persist';
-import { post } from 'pages/Admin/SSOSettings/components/apiserviceDeel';
-// import { put } from 'pages/Admin/SSOSettings/components/apiserviceDeel';
-
-interface User {
-  email: string;
-  organization: {
-    domain: string;
-    id: string;
-    name: string;
-  };
-  id: string;
-}
-
-interface CreateSessionProps {
-  user: User | null;
-  setToken: (token: string) => void;
-  open: (args: {
-    token: string;
-    unifiedApi: string;
-    serviceId: string;
-    onConnectionChange: () => Promise<void>;
-    onClose?: () => void;
-  }) => void;
-  onConnectionChange: () => Promise<void>;
-}
-export const createSession = async ({
-  user,
-  setToken,
-  open,
-}: CreateSessionProps): Promise<void> => {
-  if (!user) return;
-  try {
-    const response = await post(`/hris/configure`, {
-      email: `${user.email}-1`,
-      domain: user.organization.domain,
-    });
-    const sessionToken = response?.data?.session?.session_token;
-
-    if (sessionToken) {
-      open({
-        token: sessionToken,
-        unifiedApi: 'hris',
-        serviceId: 'deel',
-        onClose: () => {},
-        onConnectionChange: async () => {},
-      });
-
-      setToken(sessionToken);
-    }
-  } catch (error) {
-    console.error('Error creating session:', error);
-  }
-};
 
 interface IUsersProps {}
 
@@ -77,6 +22,7 @@ const Users: FC<IUsersProps> = () => {
   const navigate = useNavigate();
   const currentPathname = location.pathname;
   const isUserTab = currentPathname.includes('users');
+  const { t } = useTranslation('peoplehub');
 
   if (isUserTab) {
     usePageTitle('users');
@@ -95,22 +41,9 @@ const Users: FC<IUsersProps> = () => {
   const [showTeamModal, openTeamModal, closeTeamModal] = useModal(
     undefined,
     false,
-  );
-  const [token, setToken] = useState<string | undefined>();
+  ); // to context
+
   const { user } = useAuth();
-
-  const onConnectionChange = async () => {
-    console.log('Connection changed');
-  };
-
-  const { open } = useVault();
-  const openVault = () => {
-    if (token) {
-      open({ token });
-    } else {
-      createSession({ user, setToken, open, onConnectionChange });
-    }
-  };
 
   const tabStyles = (active: boolean, disabled = false) =>
     clsx(
@@ -133,7 +66,7 @@ const Users: FC<IUsersProps> = () => {
     {
       id: 1,
       tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>People</div>
+        <div className={tabStyles(isActive)}>{t('people.title')}</div>
       ),
       dataTestId: 'people-tab',
       tabContent: (
@@ -151,7 +84,7 @@ const Users: FC<IUsersProps> = () => {
         <div className="flex space-x-2 relative">
           <Button
             className="flex space-x-[6px] group px-6 py-[10px] rounded-[24px]"
-            label="View Organization Chart"
+            label={t('people.viewOrgChart')}
             variant={Variant.Secondary}
             leftIcon="groupOutline"
             leftIconSize={16}
@@ -164,7 +97,7 @@ const Users: FC<IUsersProps> = () => {
               triggerNode={
                 <Button
                   className="flex space-x-1 px-6 py-[10px] rounded-[24px]"
-                  label="Add Members"
+                  label={t('people.addMembers')}
                   leftIcon="add"
                   leftIconClassName="!text-white"
                   leftIconSize={20}
@@ -175,21 +108,15 @@ const Users: FC<IUsersProps> = () => {
               menuItems={[
                 {
                   icon: 'addCircle',
-                  label: 'Quick Add',
+                  label: t('people.quickAdd'),
                   onClick: openAddUserModal,
                   dataTestId: 'people-quick-add',
                 },
                 {
                   icon: 'import',
-                  label: 'Import',
+                  label: t('people.import'),
                   onClick: openImportUserModal,
                   dataTestId: 'people-bulk-import',
-                },
-                {
-                  icon: 'import',
-                  label: 'Import from Deel',
-                  onClick: openVault,
-                  dataTestId: 'people-bulk-import-deel',
                 },
               ]}
             />
@@ -200,7 +127,7 @@ const Users: FC<IUsersProps> = () => {
     {
       id: 2,
       tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>Teams</div>
+        <div className={tabStyles(isActive)}>{t('teams.title')}</div>
       ),
       dataTestId: 'teams-tab',
       tabContent: (
@@ -236,13 +163,13 @@ const Users: FC<IUsersProps> = () => {
       <Tabs
         tabs={tabs}
         title={isLxp ? 'My Teams' : 'People Hub'}
-        className={`w-fit ${
+        className={`w-fit   ${
           isLxp ? 'hidden' : 'flex'
         } justify-start bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200`}
         tabSwitcherClassName="!p-1"
+        activeTabIndex={!isUserTab ? 1 : 0}
         showUnderline={false}
         itemSpacing={1}
-        activeTabIndex={!isUserTab ? 1 : 0}
         tabContentClassName="mt-4"
         onTabChange={() => {
           navigate(isUserTab ? '/teams' : '/users');

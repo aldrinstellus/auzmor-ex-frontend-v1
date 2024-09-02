@@ -6,6 +6,7 @@ import useAuth from 'hooks/useAuth';
 import { useVault } from '@apideck/vault-react';
 import Icon from 'components/Icon';
 import { createConfiguration } from 'queries/intergration';
+import { putConfiguration } from 'queries/intergration';
 
 export const customOnClick = (
   show: boolean,
@@ -59,6 +60,7 @@ const IntegrationSetting: FC = () => {
     } catch (error) {
       console.error('Error creating session:', error);
     }
+    async()=> await putConfiguration();
   };
 
   const handleDropdownClick = () => {

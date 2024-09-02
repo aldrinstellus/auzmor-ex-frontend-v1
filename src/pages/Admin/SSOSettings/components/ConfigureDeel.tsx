@@ -1,7 +1,8 @@
 import Modal from 'components/Modal';
 import Icon from 'components/Icon';
 import React, { FC, useState } from 'react';
-import { post } from 'pages/Admin/SSOSettings/components/apiserviceDeel';
+import { syncUser } from 'queries/intergration';
+
 
 interface ConfigureDeelProps {
   show: boolean;
@@ -14,7 +15,7 @@ const ConfigureDeel: FC<ConfigureDeelProps> = ({ show, closeModal }) => {
   const handleSyncNow =  async () => {
     setIsLoading(true);
     try {
-      const response = await post(`/hris/sync`,{});
+      const response = await syncUser();
     const currentTime = new Date().toLocaleString();
     setLastSyncTime(currentTime);
     console.log('Sync successful:', response.data);
