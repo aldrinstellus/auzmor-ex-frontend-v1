@@ -17,7 +17,7 @@ import { useVault } from '@apideck/vault-react';
 // import axios from 'axios';
 // import { getItem } from 'utils/persist';
 import { post } from 'pages/Admin/SSOSettings/components/apiserviceDeel';
-import { put } from 'pages/Admin/SSOSettings/components/apiserviceDeel';
+// import { put } from 'pages/Admin/SSOSettings/components/apiserviceDeel';
 
 interface User {
   email: string;
@@ -45,7 +45,6 @@ export const createSession = async ({
   user,
   setToken,
   open,
-  onConnectionChange
 }: CreateSessionProps): Promise<void> => {
   if (!user) return;
   try {
@@ -54,71 +53,14 @@ export const createSession = async ({
       domain: user.organization.domain,
     });
     const sessionToken = response?.data?.session?.session_token;
-    
 
     if (sessionToken) {
       open({
         token: sessionToken,
         unifiedApi: 'hris',
         serviceId: 'deel',
-        onClose: () => {
-          
-        },
-        onConnectionChange: async () => {
-          await put(`/hris/configure`, 
-            // {
-          //   clientId: user.organization.id,
-          //   clientName: user.organization.name,
-          //   products: {
-          //     DeelHR: {
-          //       config: {
-          //         domain: user.organization.domain,
-          //         consumerId: response?.data?.consumerId,
-          //       },
-          //     },
-          //     AuzmorEX: {
-          //       config: {
-          //         domain: user.organization.domain,
-          //         baseUrl: 'http://localhost:4000',
-          //         userId: user.id,
-          //       },
-          //     },
-          //   },
-          //   configuration: {
-          //     DeelHR: {
-          //       name: 'DeelHR',
-          //       description: 'DeelHR',
-          //       actions: [
-          //         {
-          //           name: 'SyncUsers',
-          //           source: {
-          //             name: 'DeelHR',
-          //             action: 'GetUsers',
-          //           },
-          //           target: {
-          //             name: 'AuzmorEX',
-          //             action: 'CreateUsers',
-          //           },
-          //           dataMapping: {
-          //             id: 'employeeId',
-          //             '$.emails[?(@.type == "primary")].email': 'email',
-          //             display_name: 'fullName',
-          //             '$.phone_numbers[?(@.type == "primary")].number':
-          //               'workPhone',
-          //             title: 'designation',
-          //             employment_start_date: 'joinDate',
-          //           },
-          //         },
-          //       ],
-          //     },
-          //   },
-          // }
-          {
-            "name":"DEEL"
-          });
-          
-          onConnectionChange();
-        },
+        onClose: () => {},
+        onConnectionChange: async () => {},
       });
 
       setToken(sessionToken);
@@ -166,10 +108,9 @@ const Users: FC<IUsersProps> = () => {
     if (token) {
       open({ token });
     } else {
-      createSession({ user, setToken, open,onConnectionChange });
+      createSession({ user, setToken, open, onConnectionChange });
     }
   };
-  
 
   const tabStyles = (active: boolean, disabled = false) =>
     clsx(

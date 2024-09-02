@@ -1,10 +1,11 @@
 import { FC, useState } from 'react';
 import Card from 'components/Card';
 import ConfigureDeel from './SSOSettings/components/ConfigureDeel';
-import { createSession } from 'pages/Users';
+// import { createSession } from 'pagess/Users';
 import useAuth from 'hooks/useAuth';
 import { useVault } from '@apideck/vault-react';
 import Icon from 'components/Icon';
+import { createConfiguration } from 'queries/intergration';
 
 export const customOnClick = (
   show: boolean,
@@ -12,27 +13,51 @@ export const customOnClick = (
 ) => {
   setShow(!show);
 };
-
 const IntegrationSetting: FC = () => {
   const [ShowConfiguration, SetShowConfiguration] = useState(false);
   const [token, setToken] = useState<string | undefined>();
   const { user } = useAuth();
-  const { open } = useVault();
+  // const { open } = useVault();
   const [showDropdown, setShowDropdown] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
-
-  const handleConfigureClick = () => {
-    if (user) {
-      createSession({
-        user,
-        setToken,
-        open,
-        onConnectionChange: async () => {
-          setIsConnected(true);
-        },
-      });
+  const { open } = useVault();
+  const openVault = () => {
+    if (token) {
+      open({ token });
     } else {
-      console.error('User information is not available.');
+      createSession();
+    }
+  };
+  const createSession = async (): Promise<void> => {
+    if (!user) return;
+    try {
+      if (user) {
+        const data = await createConfiguration('Deel');
+        setIsConnected(true);
+        if (data.token) {
+          open({
+            token: data.token,
+            unifiedApi: 'hris',
+            serviceId: 'deel',
+            onClose: () => {
+              console.log('closed!!!');
+            },
+            onReady: () => {
+              console.log('ready!!!!');
+            },
+            onConnectionChange: () => {
+              console.log('Changedddd!!!');
+            },
+          });
+        }
+        setToken(data.token);
+        // second step will be open vault. - how do we call valt with payload.
+        // third step is once authenticated by the valult fire the udpate API
+      } else {
+        console.error('User information is not available.');
+      }
+    } catch (error) {
+      console.error('Error creating session:', error);
     }
   };
 
@@ -75,7 +100,7 @@ const IntegrationSetting: FC = () => {
         <div className="flex items-center">
           <button
             className="bg-green-500 text-white text-sm px-4 py-2 rounded-full hover:bg-green-600 font-extrabold"
-            onClick={handleConfigureClick}
+            onClick={openVault}
           >
             Configure
           </button>
