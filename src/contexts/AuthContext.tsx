@@ -207,6 +207,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
                 0,
               ),
             },
+            // set integration here !
             preferences: data?.preferences,
           });
           setBranding(data.branding);

@@ -1,11 +1,11 @@
-import { FC, useState,useEffect } from 'react';
+import { FC, useState, useEffect } from 'react';
 import Card from 'components/Card';
 import ConfigureDeel from './SSOSettings/components/ConfigureDeel';
 import useAuth from 'hooks/useAuth';
 import { useVault } from '@apideck/vault-react';
 import Icon from 'components/Icon';
-import { createConfiguration } from 'queries/intergration';
-import { putConfiguration } from 'queries/intergration';
+import { createConfiguration, putConfiguration } from 'queries/intergration';
+// import { putConfiguration } from 'queries/intergration';
 import { meApi } from 'queries/intergration';
 
 export const customOnClick = (
@@ -22,18 +22,18 @@ const IntegrationSetting: FC = () => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const { open } = useVault();
-  let  isEnabled=false;
+  let isEnabled = false;
   useEffect(() => {
     const fetchData = async () => {
       try {
-         isEnabled=await meApi();
+        isEnabled = await meApi();
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-  
+
     fetchData();
-  }, []); 
+  }, []);
   const openVault = () => {
     if (token) {
       open({ token });
@@ -45,7 +45,7 @@ const IntegrationSetting: FC = () => {
     if (!user) return;
     try {
       if (user) {
-        const data = await createConfiguration('Deel');
+        const data = await createConfiguration('Deel'); // use constant from configration do not use string.
         setIsConnected(true);
         if (data.token) {
           open({
@@ -53,13 +53,14 @@ const IntegrationSetting: FC = () => {
             unifiedApi: 'hris',
             serviceId: 'deel',
             onClose: () => {
-              async()=> await putConfiguration('Deel',true,data.consumerId);
+              console.log('closedd');
             },
             onReady: () => {
               console.log('ready!!!!');
             },
-            onConnectionChange: () => {
-              console.log('Changedddd!!!');
+            onConnectionChange: (_connection) => {
+              console.log('done', _connection);
+              putConfiguration('DeelHR', true, data.consumerId);
             },
           });
         }
