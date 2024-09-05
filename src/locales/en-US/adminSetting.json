@@ -69,6 +69,24 @@
     "color-label": "Primary/Action Color",
     "text-label": "Add Text"
   },
+
+  "integration": {
+    "deelLogoAlt": "Deel Logo",
+    "deelTitle": "Deel",
+    "deelDescription": "Deel is a global HR platform that helps companies manage their international workforce.",
+    "reconfigure": "Re-Configure",
+    "configure": "Configure",
+    "resyncData": "Re-sync data",
+    "removeIntegration": "Remove integration",
+    "dataSync": "Data sync",
+    "dataSyncDescription": "Data from your Deel HR account will be synced to Auzmor office.",
+    "lastSync": "Last sync: {{date}}",
+    "dataSyncNote": "Note: Data syncs automatically after every 24 hours.",
+    "syncNow": "Sync now",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+
   "sso": {
     "title": "Single Sign-On",
     "active-dir-des": "LDAP (Lightweight Directory Access Protocol) is an internet protocol used to look up user data from a server.",

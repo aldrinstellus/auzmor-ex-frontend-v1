@@ -4,6 +4,7 @@ import Header from 'components/ModalHeader';
 import Button, { Variant } from 'components/Button';
 import Icon from 'components/Icon';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 
 interface ConfigureDeelProps {
   open: boolean;
@@ -24,7 +25,9 @@ const ConfigurationModal: FC<ConfigureDeelProps> = ({
   handleResync,
   resyncLoading,
 }) => {
+  const { t } = useTranslation('adminSetting', { keyPrefix: 'integration' });
   const formatedDate = moment(lastSync).format('DD MMM YYYY [at] hh:mm A');
+
   return (
     <Modal open={open} className="max-w-[600px] max-h-[600px]">
       <Header
@@ -37,22 +40,18 @@ const ConfigurationModal: FC<ConfigureDeelProps> = ({
         onClose={closeModal}
       />
       <div className="px-6 pt-4 pb-10">
-        <div className="flex  flex-col  gap-5">
-          <div className="text-lg font-medium">Data sync</div>
-          <div className="text-sm font-medium">
-            Data from your Deel HR account will be synced to Auzmor office.
-          </div>
+        <div className="flex flex-col gap-5">
+          <div className="text-lg font-medium">{t('dataSync')}</div>
+          <div className="text-sm font-medium">{t('dataSyncDescription')}</div>
           <div className="flex items-center justify-between w-full">
             <div className="flex flex-col gap-1">
               <div className="text-base font-semibold">
-                Last sync: {formatedDate}
+                {t('lastSync', { date: formatedDate })}
               </div>
-              <div className="text-sm font-medium">
-                Note: Data syncs automatically after every 24 hours.
-              </div>
+              <div className="text-sm font-medium">{t('dataSyncNote')}</div>
             </div>
             <Button
-              label={'sync now'}
+              label={t('syncNow')}
               loading={resyncLoading}
               onClick={handleResync}
             />
@@ -62,7 +61,7 @@ const ConfigurationModal: FC<ConfigureDeelProps> = ({
       <div className="flex items-center justify-between h-16 p-6 bg-blue-50 rounded-b-9xl">
         <Button
           leftIcon="minus"
-          label={'remove integration'}
+          label={t('removeIntegration')}
           variant={Variant.Tertiary}
           onClick={handleRemoveIntegration}
           className="border-0 !bg-transparent !px-0 !py-1"
@@ -72,13 +71,13 @@ const ConfigurationModal: FC<ConfigureDeelProps> = ({
         />
         <div className="flex items-center">
           <Button
-            label={'cancel'}
+            label={t('cancel')}
             variant={Variant.Secondary}
             onClick={closeModal}
             className="mr-4"
           />
           <Button
-            label={'save'}
+            label={t('save')}
             variant={Variant.Primary}
             onClick={closeModal}
           />

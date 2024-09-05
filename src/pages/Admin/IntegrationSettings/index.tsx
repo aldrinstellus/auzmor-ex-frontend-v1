@@ -15,14 +15,11 @@ import useModal from 'hooks/useModal';
 import PopupMenu from 'components/PopupMenu';
 import queryClient from 'utils/queryClient';
 import ConfigurationModal from './components/ConfigurationModal';
+import { useTranslation } from 'react-i18next';
 
-export const customOnClick = (
-  show: boolean,
-  setShow: React.Dispatch<React.SetStateAction<boolean>>,
-) => {
-  setShow(!show);
-};
 const IntegrationSetting: FC = () => {
+  const { t } = useTranslation('adminSetting', { keyPrefix: 'integration' });
+
   const [ShowConfiguration, openConfiguationrModal, closeConfiguationModal] =
     useModal(false);
   const { user } = useAuth();
@@ -71,14 +68,14 @@ const IntegrationSetting: FC = () => {
   const configuationMenuOption = [
     {
       icon: 'tickCircle',
-      label: 'Re-sync data',
+      label: t('resyncData'),
       onClick: () => {
         resyncMutation('DeelHR');
       },
     },
     {
       icon: 'tickCircle',
-      label: 'Remove integration',
+      label: t('removeIntegration'),
       onClick: () => {
         handleRemoveIntegration();
       },
@@ -95,21 +92,18 @@ const IntegrationSetting: FC = () => {
           <div>
             <img
               src={require('images/DeelLogo.png')}
-              alt="Deel Logo"
+              alt={t('deelLogoAlt')}
               className="h-[40px]"
             />
           </div>
           <div className="ms-3 text-sm font-medium p-3">
-            <h5 className="text-lg font-semibold mb-0">Deel</h5>
-            <p className="text-sm text-gray-600">
-              Deel is a global HR platform that helps companies manage their
-              international workforce.
-            </p>
+            <h5 className="text-lg font-semibold mb-0">{t('deelTitle')}</h5>
+            <p className="text-sm text-gray-600">{t('deelDescription')}</p>
           </div>
         </div>
         <div className="flex  items-center">
           <Button
-            label={isEnabled ? 'Re-Configure' : 'Configure '}
+            label={isEnabled ? t('reconfigure') : t('configure')}
             onClick={() => {
               if (isEnabled) {
                 openConfiguationrModal();
@@ -135,7 +129,7 @@ const IntegrationSetting: FC = () => {
       </Card>
       {ShowConfiguration && (
         <ConfigurationModal
-          title={'Deel'}
+          title={t('deelTitle')}
           open={ShowConfiguration}
           lastSync={lastSync}
           handleResync={handleReSync('DeelHR')}
