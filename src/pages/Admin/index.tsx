@@ -9,7 +9,7 @@ import useURLParams from 'hooks/useURLParams';
 import useRole from 'hooks/useRole';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from 'hooks/usePageTitle';
-import IntegrationSetting from './IntegrationSetting';
+import IntegrationSetting from './IntegrationSettings';
 
 const Admin: FC = () => {
   usePageTitle('admin');
@@ -67,7 +67,7 @@ const Admin: FC = () => {
       label: 'Integration',
       icon: 'integration',
       key: 'integration-setting',
-      component:<IntegrationSetting/>,
+      component: <IntegrationSetting />,
       disabled: false,
       hidden: false,
       hideDefaultLabelCard: false,

@@ -1,14 +1,13 @@
 import apiService from 'utils/apiService';
 
-// const createConfiguration = async ({
-//   name,
-// }): () => {
-//     return await apiService.get('/categories', queryKey[1]);
-// };
-
+export enum HrisIntegrationValue {
+  Deel = 'DeelHR',
+  BambooHr = 'BambooHR',
+}
 export const createConfiguration = async (name: string) => {
-  const { result } = await apiService.post('/hris/configure', { name });
-  console.log(result);
+  const { result } = await apiService.post('/hris/configure', {
+    name: name,
+  });
 
   return result.data;
 };
@@ -18,7 +17,6 @@ export const putConfiguration = async (
   enabled: boolean,
   consumerId: string,
 ) => {
-  console.log('out', name);
   const { result } = await apiService.put('/hris/configure', {
     name,
     enabled,
@@ -27,7 +25,7 @@ export const putConfiguration = async (
   return result.data;
 };
 
-export const syncUser = async (configName = 'DeelHR') => {
+export const syncUser = async (configName: string) => {
   const { result } = await apiService.post(`/hris/sync?type=${configName}`);
   return result.data;
 };
