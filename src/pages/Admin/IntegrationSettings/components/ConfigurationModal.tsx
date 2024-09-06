@@ -34,7 +34,7 @@ const ConfigurationModal: FC<ConfigurationModalProps> = ({
   const { currentTimezone } = useCurrentTimezone();
   const userTimezone = user?.timezone || currentTimezone || 'Asia/Kolkata';
   const formatedDate = lastSync
-    ? momentTz().tz(userTimezone).format('DD MMM YYYY [at] hh:mm A')
+    ? momentTz(lastSync).tz(userTimezone).format('DD MMM YYYY [at] hh:mm A')
     : t('notSyncedYet');
 
   return (
