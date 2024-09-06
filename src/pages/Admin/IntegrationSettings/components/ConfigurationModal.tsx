@@ -42,7 +42,7 @@ const ConfigurationModal: FC<ConfigurationModalProps> = ({
       <Header
         title={
           <div className="flex items-center gap-1">
-            <Icon name={integration?.iconName || ''} className="w-8 h-8" />
+            <Icon name={integration?.iconName} className="w-8 h-8" />
             {integration.title}
           </div>
         }
@@ -73,13 +73,14 @@ const ConfigurationModal: FC<ConfigurationModalProps> = ({
       </div>
       <div className="flex items-center justify-between h-16 p-6 bg-blue-50 rounded-b-9xl">
         <Button
-          leftIcon="minus"
+          leftIcon="minusCircle"
           label={t('removeIntegration')}
-          variant={Variant.Tertiary}
+          variant={Variant.Secondary}
           onClick={handleRemoveIntegration}
           className="border-0 !bg-transparent !px-0 !py-1"
-          labelClassName="text-neutral-500 hover:text-primary-500 group-hover:text-primary-500"
-          iconColor="text-neutral-500"
+          labelClassName="text-base font-bold "
+          iconColor="!text-black"
+          leftIconClassName="hover:text-primary-500 !text-primary-500 !group-hover:text-primary-500"
           leftIconSize={20}
         />
         <div className="flex items-center">

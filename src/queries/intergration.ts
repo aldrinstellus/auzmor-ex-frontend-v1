@@ -1,7 +1,7 @@
 import apiService from 'utils/apiService';
 
 export enum HrisIntegrationValue {
-  Deel = 'DeelHR',
+  Deel = 'Deel',
   BambooHr = 'BambooHR',
 }
 export const createConfiguration = async (name: string) => {

@@ -23,7 +23,7 @@ export interface IntegrationConfig {
   dataSync: string;
   configDescription: string;
   configNote: string;
-  iconName?: string;
+  iconName: string;
 }
 
 const IntegrationSetting: FC = () => {
@@ -72,8 +72,8 @@ const IntegrationSetting: FC = () => {
           console.log('onClose');
           queryClient.invalidateQueries(['current-user-me']);
         },
-        onConnectionDelete: async (connection) => {
-          console.log('connection :', connection);
+        onConnectionDelete: async () => {
+          console.log('connection delete :');
         },
         onConnectionChange: async () => {
           await putConfiguration(variables, true, data.consumerId);
@@ -88,9 +88,7 @@ const IntegrationSetting: FC = () => {
             ...user,
             integrations: updatedIntegrations,
           });
-          console.log('user after', user);
-
-          queryClient.invalidateQueries(['current-user-me']);
+          await queryClient.invalidateQueries(['current-user-me']);
         },
       });
     },
@@ -111,7 +109,7 @@ const IntegrationSetting: FC = () => {
         integrations:
           user?.integrations?.filter((i) => i.name !== integrationName) || [],
       });
-      queryClient.invalidateQueries(['current-user-me']);
+      await queryClient.invalidateQueries(['current-user-me']);
     }
   };
   const handleResync = (configName: string) => {
@@ -120,13 +118,13 @@ const IntegrationSetting: FC = () => {
 
   const renderIntegrationCard = (integration: IntegrationConfig) => {
     const currentConfiguration = user?.integrations?.find(
-      (userIntegration) => userIntegration.name === integration.name,
+      (userIntegration) => userIntegration.name === integration.value,
     );
     const isEnabled = currentConfiguration?.enabled ?? false;
 
     return (
       <IntegrationCard
-        key={integration.name}
+        key={integration.value}
         integration={integration}
         isEnabled={isEnabled}
         onConfigure={() => {
@@ -134,10 +132,10 @@ const IntegrationSetting: FC = () => {
             setSelectedIntegration(integration);
             openConfigurationModal();
           } else {
-            configHrisMutation.mutate(integration.name);
+            configHrisMutation.mutate(integration.value);
           }
         }}
-        onRemove={() => handleRemoveIntegration(integration.name)}
+        onRemove={() => handleRemoveIntegration(integration.value)}
         onResync={() => handleResync(integration.value)}
       />
     );
@@ -153,13 +151,13 @@ const IntegrationSetting: FC = () => {
           integration={selectedIntegration}
           lastSync={
             user?.integrations?.find(
-              (integration) => integration.name === selectedIntegration.name,
+              (integration) => integration.name === selectedIntegration.value,
             )?.accountDetails?.lastSync
           }
           handleResync={() => handleResync(selectedIntegration.value)}
           resyncLoading={resyncLoading}
           handleRemoveIntegration={() =>
-            handleRemoveIntegration(selectedIntegration.name)
+            handleRemoveIntegration(selectedIntegration.value)
           }
           closeModal={closeConfigurationModal}
         />
