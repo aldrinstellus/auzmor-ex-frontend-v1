@@ -5,9 +5,6 @@ import Button, { Variant } from 'components/Button';
 import Icon from 'components/Icon';
 import { useTranslation } from 'react-i18next';
 import { IntegrationConfig } from '..';
-import { useCurrentTimezone } from './../../../../hooks/useCurrentTimezone';
-import useAuth from 'hooks/useAuth';
-import momentTz from 'moment-timezone';
 
 interface ConfigurationModalProps {
   open: boolean;
@@ -30,12 +27,6 @@ const ConfigurationModal: FC<ConfigurationModalProps> = ({
   integration,
 }) => {
   const { t } = useTranslation('adminSetting', { keyPrefix: 'integration' });
-  const { user } = useAuth();
-  const { currentTimezone } = useCurrentTimezone();
-  const userTimezone = user?.timezone || currentTimezone || 'Asia/Kolkata';
-  const formatedDate = lastSync
-    ? momentTz(lastSync).tz(userTimezone).format('DD MMM YYYY [at] hh:mm A')
-    : t('notSyncedYet');
 
   return (
     <Modal open={open} className="max-w-[600px] max-h-[600px]">
@@ -57,7 +48,9 @@ const ConfigurationModal: FC<ConfigurationModalProps> = ({
           <div className="flex items-center justify-between w-full">
             <div className="flex flex-col gap-1">
               <div className="text-base font-semibold">
-                {t('lastSync', { date: formatedDate })}
+                {lastSync
+                  ? t('lastSync', { date: lastSync })
+                  : t('notSyncedYet')}
               </div>
               <div className="text-sm font-medium">
                 {integration.configNote}
@@ -76,11 +69,13 @@ const ConfigurationModal: FC<ConfigurationModalProps> = ({
           leftIcon="minusCircle"
           label={t('removeIntegration')}
           variant={Variant.Secondary}
-          onClick={handleRemoveIntegration}
-          className="border-0 !bg-transparent !px-0 !py-1"
-          labelClassName="text-base font-bold "
-          iconColor="!text-black"
-          leftIconClassName="hover:text-primary-500 !text-primary-500 !group-hover:text-primary-500"
+          onClick={() => {
+            handleRemoveIntegration();
+            closeModal();
+          }}
+          className="border-0 !bg-transparent !px-0 !py-1 group"
+          labelClassName="text-base font-bold text-neutral-800 hover:text-primary-500 group-hover:text-primary-500 group-focus:text-primary-500"
+          leftIconHover={false}
           leftIconSize={20}
         />
         <div className="flex items-center">
