@@ -76,6 +76,7 @@
     "notSyncedYet": "Not synced yet.",
     "title": "Integration",
     "deelTitle": "Deel",
+    "resyncData": "Re-sync data",
     "deelDescription": "Deel is a global HR platform that helps companies manage their international workforce.",
     "deelConfigDescription": "Data from your Deel HR account will be synced to Auzmor office.",
     "deelConfigNote": "Note: Data syncs automatically after every 24 hours.",

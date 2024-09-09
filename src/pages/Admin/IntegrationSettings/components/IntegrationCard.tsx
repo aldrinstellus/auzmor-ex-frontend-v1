@@ -25,14 +25,15 @@ const IntegrationCard: FC<IntegrationCardProps> = ({
 
   const configurationMenuOptions = [
     {
-      icon: 'tickCircle',
+      icon: 'refresh',
       label: t('resyncData'),
       onClick: onResync,
     },
     {
-      icon: 'tickCircle',
-      label: t('removeIntegration'),
+      icon: 'minusCircle',
+      label: <div className="text-red-500"> {t('removeIntegration')}</div>,
       onClick: onRemove,
+      iconClassName: '!text-red-500',
     },
   ];
 
