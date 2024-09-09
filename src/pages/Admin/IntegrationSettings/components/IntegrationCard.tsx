@@ -55,7 +55,7 @@ const IntegrationCard: FC<IntegrationCardProps> = ({
       </div>
       <div className="flex items-center">
         <Button
-          label={isEnabled ? t('reconfigure') : t('configure')}
+          label={isEnabled ? t('settings') : t('configure')}
           onClick={onConfigure}
         />
         {isEnabled && (

@@ -7,6 +7,7 @@ export enum HrisIntegrationValue {
 export const createConfiguration = async (name: string) => {
   const { result } = await apiService.post('/hris/configure', {
     name: name,
+    settings: { allow_actions: [] },
   });
 
   return result.data;
