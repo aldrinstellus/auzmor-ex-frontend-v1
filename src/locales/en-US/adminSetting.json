@@ -81,7 +81,7 @@
     "deelConfigNote": "Note: Data syncs automatically after every 24 hours.",
     "reconfigure": "Re-Configure",
     "configure": "Configure",
-    "resyncData": "Re-sync data",
+    "settings": "Settings",
     "removeIntegration": "Remove integration",
     "dataSync": "Data sync",
     "dataSyncDescription": "Data from your Deel HR account will be synced to Auzmor office.",
