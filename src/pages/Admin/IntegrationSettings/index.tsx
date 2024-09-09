@@ -117,13 +117,12 @@ const IntegrationSetting: FC = () => {
               integrations: updatedIntegrations,
             });
             successToastConfig({});
-          } else {
-            console.log(
-              "Connection isn't authorized. Status:",
-              connection?.state,
-            );
+          } else if (
+            ['invalid', 'disconnected', 'failed'].includes(connection?.state)
+          ) {
+            console.log("Connection isn't authorized ", connection?.state);
             failureToastConfig({
-              content: "Connection isn't authorized ",
+              content: "Connection isn't authorized or is invalid",
             });
             await handleRemoveIntegration(variables);
           }
