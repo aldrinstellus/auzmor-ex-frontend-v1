@@ -16,6 +16,8 @@ import { useTranslation } from 'react-i18next';
 import momentTz from 'moment-timezone';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import { humatAtTimeFormat } from 'utils/time';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 
 export interface IntegrationConfig {
   name: string;
@@ -76,9 +78,12 @@ const IntegrationSetting: FC = () => {
     mutationKey: ['resync'],
     mutationFn: syncUser,
     onSuccess: async () => {
+      successToastConfig({});
       await queryClient.invalidateQueries(['current-user-me']);
     },
-    onError: () => {},
+    onError: () => {
+      failureToastConfig({});
+    },
   });
   const configHrisMutation = useMutation({
     mutationKey: ['configure-hris'],
@@ -111,11 +116,15 @@ const IntegrationSetting: FC = () => {
               ...user,
               integrations: updatedIntegrations,
             });
+            successToastConfig({});
           } else {
             console.log(
               "Connection isn't authorized. Status:",
               connection?.state,
             );
+            failureToastConfig({
+              content: "Connection isn't authorized ",
+            });
             await handleRemoveIntegration(variables);
           }
         },
@@ -123,6 +132,7 @@ const IntegrationSetting: FC = () => {
     },
     onError: (error) => {
       console.error('Error creating configuration:', error);
+      failureToastConfig({});
     },
   });
 
@@ -140,6 +150,9 @@ const IntegrationSetting: FC = () => {
       updateUser({
         integrations:
           user?.integrations?.filter((i) => i.name !== integrationName) || [],
+      });
+      successToastConfig({
+        content: 'Integration removed successfully',
       });
       await queryClient.invalidateQueries(['current-user-me']);
     }
