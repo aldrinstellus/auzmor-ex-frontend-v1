@@ -52,6 +52,7 @@ export interface IUser {
   outOfOffice?: Record<string, any>;
   notificationSettings?: INotificationSettings;
   preferences?: Record<string, any>;
+  learnRole?: Role;
 }
 
 export interface IBranding {
@@ -209,6 +210,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
               ),
             },
             preferences: data?.preferences,
+            learnRole: data?.learnRole,
           });
           setBranding(data.branding);
         } else {

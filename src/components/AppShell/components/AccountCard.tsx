@@ -17,6 +17,7 @@ import useRole from 'hooks/useRole';
 import { useTranslation } from 'react-i18next';
 import useProduct from 'hooks/useProduct';
 import { learnLogout } from 'queries/learn';
+import { Role } from 'utils/enum';
 
 const AccountCard = () => {
   const navigate = useNavigate();
@@ -152,7 +153,11 @@ const AccountCard = () => {
                     className="mr-2.5"
                     color="text-neutral-900"
                   />
-                  <div>{t('switchToAdminsView')}</div>
+                  <div>
+                    {user?.learnRole === Role.Manager
+                      ? t('switchToMangerView')
+                      : t('switchToAdminsView')}
+                  </div>
                 </div>
               </Link>
             )}
