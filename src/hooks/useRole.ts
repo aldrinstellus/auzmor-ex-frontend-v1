@@ -10,17 +10,11 @@ const useRole = (
   { exact, userId }: IRoleProps = { exact: false, userId: '' },
 ) => {
   const { user } = useAuth();
-  const adminRoles = [Role.Admin, Role.SuperAdmin, Role.Manager];
 
-  const isAdminOrSuperAdmin =
-    adminRoles.includes(
-      // @ts-ignore
-      user?.role,
-    ) ||
-    adminRoles.includes(
-      // @ts-ignore
-      user?.learnRole,
-    );
+  const isAdminOrSuperAdmin = [Role.Admin, Role.SuperAdmin].includes(
+    // @ts-ignore
+    user?.role,
+  );
 
   return {
     isOwner: user?.id === userId,
