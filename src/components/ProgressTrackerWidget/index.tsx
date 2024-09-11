@@ -34,7 +34,7 @@ const ProgressTrackerWidget: FC<IProgressTrackerWidgetProps> = ({
 
   const getSlug = () => {
     if (trackerData.length === 0) {
-      return '/user';
+      return '/user/trainings?type=elearning&tab=PUBLIC';
     }
     if (trackerData[0]?.my_enrollment?.status === 'IN_PROGRESS') {
       if (!!trackerData[0]?.my_enrollment?.overdue) {
