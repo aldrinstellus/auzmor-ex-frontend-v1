@@ -180,6 +180,7 @@ import LockOpenIcon from '../components/LockOpen';
 import GlobalEditIcon from '../components/GlobalEdit';
 import DeelIcon from '../components/Deel/DeelIcon';
 import MinusCircle from '../components/MinusCircle';
+import DeelIcon2 from '../components/DeelIcon2/DeelIcon2';
 
 export const icon = {
   add: Add,
@@ -366,4 +367,5 @@ export const icon = {
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
   deel: DeelIcon,
+  deel2: DeelIcon2,
 };
