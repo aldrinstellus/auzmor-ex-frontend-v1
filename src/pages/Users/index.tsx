@@ -14,6 +14,8 @@ import PopupMenu from 'components/PopupMenu';
 import { useTranslation } from 'react-i18next';
 import useProduct from 'hooks/useProduct';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { HrisIntegrationValue } from 'queries/intergration';
+import { useHandleResync } from 'pages/Admin/IntegrationSettings/utils/useHandleSync';
 
 interface IUsersProps {}
 
@@ -43,8 +45,20 @@ const Users: FC<IUsersProps> = () => {
     false,
   ); // to context
 
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
 
+  const currentConfiguration = user?.integrations?.find(
+    (userIntegration) => userIntegration.name === HrisIntegrationValue.Deel,
+  );
+  const isEnabled = currentConfiguration?.enabled ?? false;
+
+  const { handleResync } = useHandleResync();
+
+  const triggerResync = () => {
+    if (user) {
+      handleResync(HrisIntegrationValue.Deel, user, updateUser);
+    }
+  };
   const tabStyles = (active: boolean, disabled = false) =>
     clsx(
       {
@@ -104,7 +118,7 @@ const Users: FC<IUsersProps> = () => {
                   dataTestId="add-members-btn"
                 />
               }
-              className="absolute right-0 top-10 mt-2 w-44"
+              className="absolute right-0 top-10 mt-2 w-44  "
               menuItems={[
                 {
                   icon: 'addCircle',
@@ -117,6 +131,13 @@ const Users: FC<IUsersProps> = () => {
                   label: t('people.import'),
                   onClick: openImportUserModal,
                   dataTestId: 'people-bulk-import',
+                },
+                {
+                  icon: 'deelIcon2',
+                  label: t('people.syncFromDeel'),
+                  onClick: triggerResync,
+                  dataTestId: 'sync-from-deel',
+                  disabled: !isEnabled,
                 },
               ]}
             />

@@ -5,7 +5,6 @@ import {
   createConfiguration,
   HrisIntegrationValue,
   putConfiguration,
-  syncUser,
 } from 'queries/intergration';
 import { useMutation } from '@tanstack/react-query';
 import useModal from 'hooks/useModal';
@@ -18,6 +17,7 @@ import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import { humatAtTimeFormat } from 'utils/time';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import { useHandleResync } from './utils/useHandleSync';
 
 export interface IntegrationConfig {
   name: string;
@@ -32,6 +32,8 @@ export interface IntegrationConfig {
 
 const IntegrationSetting: FC = () => {
   const { t } = useTranslation('adminSetting', { keyPrefix: 'integration' });
+  const { handleResync, isResyncLoading } = useHandleResync();
+
   const integrations: IntegrationConfig[] = [
     {
       name: t('deelTitle'),
@@ -72,17 +74,6 @@ const IntegrationSetting: FC = () => {
 
   const { open } = useVault();
 
-  const { mutate: resyncMutation, isLoading: resyncLoading } = useMutation({
-    mutationKey: ['resync'],
-    mutationFn: syncUser,
-    onSuccess: async () => {
-      successToastConfig({});
-      await queryClient.invalidateQueries(['current-user-me']);
-    },
-    onError: () => {
-      failureToastConfig({});
-    },
-  });
   const configHrisMutation = useMutation({
     mutationKey: ['configure-hris'],
     mutationFn: createConfiguration,
@@ -133,6 +124,9 @@ const IntegrationSetting: FC = () => {
     },
   });
 
+  const handleLocalResync = (configName: string) => {
+    handleResync(configName, user, updateUser);
+  };
   const handleRemoveIntegration = async (integrationName: string) => {
     const integration = user?.integrations?.find(
       (integration: any) => integration.name === integrationName,
@@ -151,30 +145,8 @@ const IntegrationSetting: FC = () => {
       successToastConfig({
         content: 'Integration removed successfully',
       });
+      await queryClient.invalidateQueries({ queryKey: ['users'] });
       await queryClient.invalidateQueries(['current-user-me']);
-    }
-  };
-  const handleResync = (configName: string) => {
-    resyncMutation(configName);
-    const newSyncDate = momentTz().toISOString();
-    if (user && user.integrations) {
-      const updatedIntegrations = user.integrations.map((integ) => {
-        if (integ.name === selectedIntegration?.value) {
-          return {
-            ...integ,
-            accountDetails: {
-              ...integ.accountDetails,
-              lastSync: newSyncDate,
-            },
-          };
-        }
-        return integ;
-      });
-      // update user with new lastSync .
-      updateUser({
-        ...user,
-        integrations: updatedIntegrations,
-      });
     }
   };
 
@@ -198,7 +170,7 @@ const IntegrationSetting: FC = () => {
           }
         }}
         onRemove={() => handleRemoveIntegration(integration.value)}
-        onResync={() => handleResync(integration.value)}
+        onResync={() => handleLocalResync(integration.value)}
       />
     );
   };
@@ -211,8 +183,8 @@ const IntegrationSetting: FC = () => {
           open={showConfiguration}
           integration={selectedIntegration}
           lastSync={selectedIntegrationData?.formattedLastSync || ''}
-          handleResync={() => handleResync(selectedIntegration.value)}
-          resyncLoading={resyncLoading}
+          handleResync={() => handleLocalResync(selectedIntegration.value)}
+          resyncLoading={isResyncLoading}
           handleRemoveIntegration={() =>
             handleRemoveIntegration(selectedIntegration.value)
           }
