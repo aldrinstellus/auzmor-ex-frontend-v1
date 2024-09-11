@@ -27,7 +27,6 @@ export interface IntegrationConfig {
   logo: string;
   dataSync: string;
   configDescription: string;
-  configNote: string;
   iconName: string;
 }
 
@@ -42,7 +41,6 @@ const IntegrationSetting: FC = () => {
       description: t('deelDescription'),
       configDescription: t('deelConfigDescription'),
       logo: 'DeelLogo.png',
-      configNote: t('deelConfigNote'),
       iconName: 'deel',
     },
   ];
