@@ -75,19 +75,6 @@ const ConfigurationModal: FC<ConfigurationModalProps> = ({
           leftIconHover={false}
           leftIconSize={20}
         />
-        <div className="flex items-center">
-          <Button
-            label={t('cancel')}
-            variant={Variant.Secondary}
-            onClick={closeModal}
-            className="mr-4"
-          />
-          <Button
-            label={t('save')}
-            variant={Variant.Primary}
-            onClick={closeModal}
-          />
-        </div>
       </div>
     </Modal>
   );
