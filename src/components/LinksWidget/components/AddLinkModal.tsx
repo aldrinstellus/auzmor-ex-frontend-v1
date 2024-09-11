@@ -144,6 +144,7 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
       error: errors.title?.message,
       className: '',
       dataTestId: 'add-link-title',
+      required: true,
       maxLength: 20,
     },
   ];

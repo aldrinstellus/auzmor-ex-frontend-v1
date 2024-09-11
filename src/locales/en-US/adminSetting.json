@@ -5,6 +5,8 @@
   "general-setting": "General Settings",
   "posting-control": "Posting Controls",
   "limit-posting": "Limit Global Posting",
+  "marketplace": "Marketplace",
+  "notifcations": "Notifications",
   "description": "When Global Posting is ON, end users can't post to everyone, only to their Team(s) or permitted Channels.",
   "branding": {
     "secondary": "Secondary",
@@ -69,6 +71,28 @@
     "color-label": "Primary/Action Color",
     "text-label": "Add Text"
   },
+
+  "integration": {
+    "notSyncedYet": "Not synced yet.",
+    "title": "Integration",
+    "deelTitle": "Deel",
+    "resyncData": "Re-sync data",
+    "deelDescription": "Deel is a global HR platform that helps companies manage their international workforce.",
+    "deelConfigDescription": "Data from your Deel HR account will be synced to Auzmor office.",
+    "deelConfigNote": "Note: Data syncs automatically after every 24 hours.",
+    "reconfigure": "Re-Configure",
+    "configure": "Configure",
+    "settings": "Settings",
+    "removeIntegration": "Remove integration",
+    "dataSync": "Data sync",
+    "dataSyncDescription": "Data from your Deel HR account will be synced to Auzmor office.",
+    "lastSync": "Last sync: {{date}}",
+    "dataSyncNote": "Note: Data syncs automatically after every 24 hours.",
+    "syncNow": "Sync now",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+
   "sso": {
     "title": "Single Sign-On",
     "active-dir-des": "LDAP (Lightweight Directory Access Protocol) is an internet protocol used to look up user data from a server.",

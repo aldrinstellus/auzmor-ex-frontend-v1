@@ -178,6 +178,8 @@ import UserTagIcon from '../components/User-tag';
 import MessageTagIcon from '../components/message-tag';
 import LockOpenIcon from '../components/LockOpen';
 import GlobalEditIcon from '../components/GlobalEdit';
+import DeelIcon from '../components/Deel/DeelIcon';
+import MinusCircle from '../components/MinusCircle';
 
 export const icon = {
   add: Add,
@@ -300,6 +302,7 @@ export const icon = {
   messageQuestion: MessageQuestionIcon,
   mic: MicIcon,
   minus: Minus,
+  minusCircle: MinusCircle,
   more: MoreIcon,
   mute: MuteIcon,
   news: NewsIcon,
@@ -362,4 +365,5 @@ export const icon = {
   xlsx: XlsIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
+  deel: DeelIcon,
 };
