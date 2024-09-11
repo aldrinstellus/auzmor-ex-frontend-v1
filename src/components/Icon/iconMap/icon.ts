@@ -367,5 +367,5 @@ export const icon = {
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
   deel: DeelIcon,
-  deelIcon2: DeelIcon2,
+  deel2: DeelIcon2,
 };

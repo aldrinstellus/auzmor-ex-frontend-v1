@@ -17,7 +17,7 @@ import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import { humatAtTimeFormat } from 'utils/time';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
-import { useHandleResync } from './utils/useHandleSync';
+import { useHandleResync } from 'hooks/useHandleSync';
 
 export interface IntegrationConfig {
   name: string;
@@ -124,9 +124,6 @@ const IntegrationSetting: FC = () => {
     },
   });
 
-  const handleLocalResync = (configName: string) => {
-    handleResync(configName, user, updateUser);
-  };
   const handleRemoveIntegration = async (integrationName: string) => {
     const integration = user?.integrations?.find(
       (integration: any) => integration.name === integrationName,
@@ -170,7 +167,7 @@ const IntegrationSetting: FC = () => {
           }
         }}
         onRemove={() => handleRemoveIntegration(integration.value)}
-        onResync={() => handleLocalResync(integration.value)}
+        onResync={() => handleResync(integration.value)}
       />
     );
   };
@@ -183,7 +180,7 @@ const IntegrationSetting: FC = () => {
           open={showConfiguration}
           integration={selectedIntegration}
           lastSync={selectedIntegrationData?.formattedLastSync || ''}
-          handleResync={() => handleLocalResync(selectedIntegration.value)}
+          handleResync={() => handleResync(selectedIntegration.value)}
           resyncLoading={isResyncLoading}
           handleRemoveIntegration={() =>
             handleRemoveIntegration(selectedIntegration.value)

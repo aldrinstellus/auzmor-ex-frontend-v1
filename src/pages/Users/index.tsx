@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 import useProduct from 'hooks/useProduct';
 import { usePageTitle } from 'hooks/usePageTitle';
 import { HrisIntegrationValue } from 'queries/intergration';
-import { useHandleResync } from 'pages/Admin/IntegrationSettings/utils/useHandleSync';
+import { useHandleResync } from 'hooks/useHandleSync';
 
 interface IUsersProps {}
 
@@ -45,20 +45,15 @@ const Users: FC<IUsersProps> = () => {
     false,
   ); // to context
 
-  const { user, updateUser } = useAuth();
+  const { user } = useAuth();
 
-  const currentConfiguration = user?.integrations?.find(
+  const deelConfiguration = user?.integrations?.find(
     (userIntegration) => userIntegration.name === HrisIntegrationValue.Deel,
   );
-  const isEnabled = currentConfiguration?.enabled ?? false;
+  const isEnabled = deelConfiguration?.enabled ?? false;
 
   const { handleResync } = useHandleResync();
 
-  const triggerResync = () => {
-    if (user) {
-      handleResync(HrisIntegrationValue.Deel, user, updateUser);
-    }
-  };
   const tabStyles = (active: boolean, disabled = false) =>
     clsx(
       {
@@ -135,7 +130,7 @@ const Users: FC<IUsersProps> = () => {
                 {
                   icon: 'deelIcon2',
                   label: t('people.syncFromDeel'),
-                  onClick: triggerResync,
+                  onClick: () => handleResync(HrisIntegrationValue.Deel),
                   dataTestId: 'sync-from-deel',
                   disabled: !isEnabled,
                 },
