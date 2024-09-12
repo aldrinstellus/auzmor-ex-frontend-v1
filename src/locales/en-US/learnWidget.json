@@ -23,6 +23,7 @@
     "courses": "Courses",
     "selfEnrolled": "Self Enrolled",
     "assignedBy": "Assigned by",
-    "includesCertificate": "Includes Certificate"
+    "includesCertificate": "Includes Certificate",
+    "overdue": "Overdue"
   }
 }
