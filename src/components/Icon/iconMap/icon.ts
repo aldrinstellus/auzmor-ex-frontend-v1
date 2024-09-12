@@ -178,6 +178,7 @@ import UserTagIcon from '../components/User-tag';
 import MessageTagIcon from '../components/message-tag';
 import LockOpenIcon from '../components/LockOpen';
 import GlobalEditIcon from '../components/GlobalEdit';
+import RestInPeaceIcon from '../components/RestInPeace';
 
 export const icon = {
   add: Add,
@@ -362,4 +363,5 @@ export const icon = {
   xlsx: XlsIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
+  restInPeace: RestInPeaceIcon,
 };
