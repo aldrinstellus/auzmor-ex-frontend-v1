@@ -57,8 +57,6 @@ const LearnCard: FC<ILearnCardProps> = ({
     }
   }, [data]);
 
-  console.log(data);
-
   const Categories: FC = () => {
     if (!data?.categories?.length) {
       return <></>;
@@ -156,7 +154,8 @@ const LearnCard: FC<ILearnCardProps> = ({
           <p className="text-xs bg-white text-neutral-900 font-medium">
             {t('dueIn')}&nbsp;
             <span className="text-primary-500 font-semibold">
-              {data?.my_enrollment?.due_in_x_days} {t('days')}
+              {data?.my_enrollment?.due_in_x_days}
+              {data?.my_enrollment?.due_in_x_days > 1 ? t('days') : t('day')}
             </span>
           </p>
         </div>
