@@ -3,6 +3,7 @@ import useAuth from 'hooks/useAuth';
 import { useVault } from '@apideck/vault-react';
 import {
   createConfiguration,
+  deleteHrisIntegration,
   HrisIntegrationValue,
   putConfiguration,
 } from 'queries/intergration';
@@ -137,11 +138,7 @@ const IntegrationSetting: FC = () => {
       (integration: any) => integration.name === integrationName,
     );
     if (integration) {
-      await putConfiguration(
-        integrationName,
-        false,
-        integration.accountDetails?.consumerId,
-      );
+      await deleteHrisIntegration(integrationName);
       //@ts-ignore
       updateUser({
         integrations:
@@ -151,7 +148,6 @@ const IntegrationSetting: FC = () => {
         content: 'Integration removed successfully',
       });
       await queryClient.invalidateQueries({ queryKey: ['users'] });
-      await queryClient.invalidateQueries(['current-user-me']);
     }
   };
 
