@@ -52,6 +52,9 @@ const ConfigurationModal: FC<ConfigurationModalProps> = ({
                   ? t('lastSync', { date: lastSync })
                   : t('notSyncedYet')}
               </div>
+              <div className="text-sm font-medium">
+                {integration.configNote}
+              </div>
             </div>
             <Button
               label={t('syncNow')}
