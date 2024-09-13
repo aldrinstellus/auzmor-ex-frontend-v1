@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import Button from 'components/Button';
+import Button, { Variant } from 'components/Button';
 import LearnCard from 'components/LearnCard';
 import { useShouldRender } from 'hooks/useShouldRender';
 import { useProgressTracker } from 'queries/learn';
@@ -51,9 +51,12 @@ const ProgressTrackerWidget: FC<IProgressTrackerWidgetProps> = ({
     <div className={style}>
       <div className="flex justify-between items-center ">
         <div className="text-base font-bold">{t('progressTracker')}</div>
+
         <Button
+          variant={Variant.Secondary}
           label={t('viewAll')}
-          className="bg-transparent !text-primary-500 hover:!text-primary-600 hover:!bg-transparent focus:bg-transparent active:!bg-transparent active:!text-primary-700 outline outline-1 focus:outline-primary-500"
+          className="border-0 !bg-transparent !px-0 !py-1 group"
+          labelClassName=" text-primary-500 hover:text-primary-600  group-focus:text-primary-500"
           onClick={() => window.location.assign(`${getLearnUrl(getSlug())}`)}
         />
       </div>
