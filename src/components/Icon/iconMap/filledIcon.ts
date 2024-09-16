@@ -93,6 +93,7 @@ import SvgShoppingCartFilled from '../components/ShoppingCart/ShoppingCartFilled
 import SvgMessageQuestionFilled from '../components/MessageQuestion/MessageQuestionFilled';
 import SvgRadarFilled from '../components/Radar/RadarFilled';
 import SvgMedalStarFilled from '../components/MedalStar/MedalStarFilled';
+import SvgRestInPeaceFilled from '../components/RestInPeace/RestInPeaceFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -191,4 +192,5 @@ export const filledIcon = {
   shoppingCartFilled: SvgShoppingCartFilled,
   messageQuestionFilled: SvgMessageQuestionFilled,
   medalStarFilled: SvgMedalStarFilled,
+  restInPeaceFilled: SvgRestInPeaceFilled,
 };
