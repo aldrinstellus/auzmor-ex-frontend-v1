@@ -3,6 +3,7 @@ import useAuth from 'hooks/useAuth';
 import { useVault } from '@apideck/vault-react';
 import {
   createConfiguration,
+  deleteHrisIntegration,
   HrisIntegrationValue,
   putConfiguration,
 } from 'queries/intergration';
@@ -28,6 +29,7 @@ export interface IntegrationConfig {
   dataSync: string;
   configDescription: string;
   iconName: string;
+  configNote: string;
 }
 
 const IntegrationSetting: FC = () => {
@@ -43,6 +45,7 @@ const IntegrationSetting: FC = () => {
       description: t('deelDescription'),
       configDescription: t('deelConfigDescription'),
       logo: 'DeelLogo.png',
+      configNote: t('deelConfigNote'),
       iconName: 'deel',
     },
   ];
@@ -92,19 +95,25 @@ const IntegrationSetting: FC = () => {
         onConnectionChange: async (connection: any) => {
           if (connection && connection.state === 'callable') {
             console.log('Connection is authorized');
-
             await putConfiguration(variables, true, data.consumerId);
-            const newIntegration = {
-              name: variables,
-              enabled: true,
-              accountDetails: { consumerId: data.consumerId },
-            };
-            const updatedIntegrations = [newIntegration];
+            const updatedIntegrations = [
+              ...(user?.integrations?.filter((i) => i.name !== variables) ||
+                []),
+              {
+                name: variables,
+                enabled: true,
+                accountDetails: {
+                  consumerId: data.consumerId,
+                  lastSync: new Date().toISOString(),
+                },
+              },
+            ];
             //@ts-ignore
-            updateUser({
+            await updateUser({
               ...user,
               integrations: updatedIntegrations,
             });
+            await queryClient.invalidateQueries({ queryKey: ['users'] });
             successToastConfig({});
           } else if (
             ['invalid', 'disconnected', 'failed'].includes(connection?.state)
@@ -129,11 +138,7 @@ const IntegrationSetting: FC = () => {
       (integration: any) => integration.name === integrationName,
     );
     if (integration) {
-      await putConfiguration(
-        integrationName,
-        false,
-        integration.accountDetails?.consumerId,
-      );
+      await deleteHrisIntegration(integrationName);
       //@ts-ignore
       updateUser({
         integrations:
@@ -143,7 +148,6 @@ const IntegrationSetting: FC = () => {
         content: 'Integration removed successfully',
       });
       await queryClient.invalidateQueries({ queryKey: ['users'] });
-      await queryClient.invalidateQueries(['current-user-me']);
     }
   };
 
