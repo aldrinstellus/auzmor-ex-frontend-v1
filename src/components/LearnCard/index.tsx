@@ -173,7 +173,7 @@ const LearnCard: FC<ILearnCardProps> = ({
   };
 
   const chaptersCount = data?.dependent_entities?.chapters_count;
-  const coursesCount = data?.dependent_entities?.courses_count;
+  const coursesCount = data?.dependent_entities?.course_count;
 
   return (
     <Card className={style} onClick={handleCardClick}>
