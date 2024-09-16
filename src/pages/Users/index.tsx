@@ -14,8 +14,6 @@ import PopupMenu from 'components/PopupMenu';
 import { useTranslation } from 'react-i18next';
 import useProduct from 'hooks/useProduct';
 import { usePageTitle } from 'hooks/usePageTitle';
-import { HrisIntegrationValue } from 'queries/intergration';
-import { useHandleResync } from 'hooks/useHandleSync';
 
 interface IUsersProps {}
 
@@ -46,13 +44,6 @@ const Users: FC<IUsersProps> = () => {
   ); // to context
 
   const { user } = useAuth();
-
-  const deelConfiguration = user?.integrations?.find(
-    (userIntegration) => userIntegration.name === HrisIntegrationValue.Deel,
-  );
-  const isDeelEnabled = deelConfiguration?.enabled ?? false;
-
-  const { handleResync } = useHandleResync();
 
   const tabStyles = (active: boolean, disabled = false) =>
     clsx(
@@ -126,13 +117,6 @@ const Users: FC<IUsersProps> = () => {
                   label: t('people.import'),
                   onClick: openImportUserModal,
                   dataTestId: 'people-bulk-import',
-                },
-                {
-                  icon: 'deel2',
-                  label: t('people.syncFromDeel'),
-                  onClick: () => handleResync(HrisIntegrationValue.Deel),
-                  dataTestId: 'sync-from-deel',
-                  disabled: !isDeelEnabled,
                 },
               ]}
             />
