@@ -11,6 +11,7 @@ import useAuth from 'hooks/useAuth';
 import { clsx } from 'clsx';
 import Tooltip, { Variant } from 'components/Tooltip';
 import { useTranslation } from 'react-i18next';
+import { toLower } from 'lodash';
 
 export enum LearnCardEnum {
   Course = 'COURSE',
@@ -132,8 +133,47 @@ const LearnCard: FC<ILearnCardProps> = ({
     }
   };
 
+  const getStatus = () => {
+    const containerStyle =
+      'flex absolute top-4 right-4 bg-white items-center px-[7.5px] py-1 rounded gap-[5px]';
+    if (data?.my_enrollment?.overdue) {
+      return (
+        <div className={containerStyle}>
+          <Icon
+            name="restInPeace"
+            size={16}
+            color="text-neutral-900"
+            className="-mt-1"
+          />
+          <span className="text-xs">{t('overdue')}</span>
+        </div>
+      );
+    } else if (data?.my_enrollment?.due_in_x_days) {
+      return (
+        <div className={containerStyle}>
+          <Icon name="menuBoard" size={18} color="text-neutral-900" />
+          <p className="text-xs bg-white text-neutral-900 font-medium">
+            {t('dueIn')}&nbsp;
+            <span className="text-primary-500 font-semibold">
+              {data?.my_enrollment?.due_in_x_days}
+              {data?.my_enrollment?.due_in_x_days > 1 ? t('days') : t('day')}
+            </span>
+          </p>
+        </div>
+      );
+    } else {
+      return (
+        <div className={containerStyle}>
+          <span className="text-xs capitalize">
+            {toLower((data?.my_enrollment?.status).split('_').join(' '))}
+          </span>
+        </div>
+      );
+    }
+  };
+
   const chaptersCount = data?.dependent_entities?.chapters_count;
-  const coursesCount = data?.dependent_entities?.courses_count;
+  const coursesCount = data?.dependent_entities?.course_count;
 
   return (
     <Card className={style} onClick={handleCardClick}>
@@ -165,17 +205,6 @@ const LearnCard: FC<ILearnCardProps> = ({
         {type === LearnCardEnum.Event && titleCase(LearnCardEnum.Event)}
         {type === LearnCardEnum.Path && titleCase(LearnCardEnum.Path)}
       </div>
-      {showProgressInfo && data?.my_enrollment?.due_in_x_days && (
-        <div className="flex absolute top-4 right-4 px-2.5 py-1 bg-white rounded gap-1 items-center">
-          <Icon name="menuBoard" size={18} color="text-neutral-900" />
-          <p className="text-xs bg-white text-neutral-900 font-medium">
-            {t('dueIn')}&nbsp;
-            <span className="text-primary-500 font-semibold">
-              {data?.my_enrollment?.due_in_x_days} {t('days')}
-            </span>
-          </p>
-        </div>
-      )}
       <div className="absolute bottom-0 left-0 flex flex-col py-4 pl-4 z-10 gap-2 w-full">
         <Categories />
         {data?.average_rating && <Rating rating={data?.average_rating} />}
@@ -306,6 +335,7 @@ const LearnCard: FC<ILearnCardProps> = ({
           </Tooltip>
         </div>
       )}
+      {showProgressInfo && getStatus()}
     </Card>
   );
 };

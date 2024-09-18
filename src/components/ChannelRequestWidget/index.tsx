@@ -79,7 +79,7 @@ const ChannelRequestWidget: FC<ChannelRequestWidgetProps> = ({
     [className],
   );
 
-  if (requests?.length === 0) {
+  if (requests?.length === 0 || isLoading) {
     return <></>;
   }
   return (
