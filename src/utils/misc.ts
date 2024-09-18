@@ -614,13 +614,13 @@ export const insertAt = (str: string, index: number, insertStr: string) => {
   return `${str.slice(0, index)}${insertStr}${str.slice(index)}`;
 };
 
-export const getLearnUrl = () => {
+export const getLearnUrl = (slug = '') => {
   const subdomain = getSubDomain(window.location.host);
   return `${insertAt(
     process.env.REACT_APP_LEARN_BASE_URL || 'https://learn.auzmor.com',
     'https://'.length,
     subdomain ? `${subdomain}.` : '',
-  )}`;
+  )}${slug}`;
 };
 
 export const getCookieValue = (key: string) => {

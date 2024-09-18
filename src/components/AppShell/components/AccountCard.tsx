@@ -17,6 +17,7 @@ import useRole from 'hooks/useRole';
 import { useTranslation } from 'react-i18next';
 import useProduct from 'hooks/useProduct';
 import { learnLogout } from 'queries/learn';
+import { LearnRole } from 'utils/enum';
 
 const AccountCard = () => {
   const navigate = useNavigate();
@@ -139,7 +140,7 @@ const AccountCard = () => {
                 </div>
               </Link>
             )}
-            {isLxp && isAdmin && (
+            {isLxp && (isAdmin || user?.learnRole === LearnRole.Manager) && (
               <Link to={getLearnUrl()}>
                 <div
                   className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
@@ -152,7 +153,11 @@ const AccountCard = () => {
                     className="mr-2.5"
                     color="text-neutral-900"
                   />
-                  <div>{t('switchToAdminsView')}</div>
+                  <div>
+                    {user?.learnRole === LearnRole.Manager
+                      ? t('switchToMangerView')
+                      : t('switchToAdminsView')}
+                  </div>
                 </div>
               </Link>
             )}
