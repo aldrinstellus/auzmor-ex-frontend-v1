@@ -74,15 +74,18 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
     watch,
     control,
     handleSubmit,
+    setValue,
     formState: { errors, isValid },
   } = useForm<IForm>({
     resolver: yupResolver(schema),
     mode: 'onChange',
-    defaultValues: {
-      workEmail: data?.result?.data?.email,
-    },
   });
 
+  useEffect(() => {
+    if (data?.result?.data?.email) {
+      setValue('workEmail', data.result.data.email);
+    }
+  }, [data, setValue]);
   useEffect(() => {
     acceptInviteMutation.reset();
   }, [watch('password'), watch('confirmPassword'), watch('privacyPolicy')]);
