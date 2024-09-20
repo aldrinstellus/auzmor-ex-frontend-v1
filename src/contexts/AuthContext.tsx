@@ -31,6 +31,11 @@ interface ISubscription {
   type: string;
   daysRemaining: number;
 }
+interface IIntegration {
+  name: string;
+  enabled: boolean;
+  accountDetails: Record<string, any>;
+}
 
 export interface IUser {
   id: string;
@@ -52,6 +57,7 @@ export interface IUser {
   outOfOffice?: Record<string, any>;
   notificationSettings?: INotificationSettings;
   preferences?: Record<string, any>;
+  integrations?: IIntegration[];
   learnRole?: LearnRole;
 }
 
@@ -209,6 +215,8 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
                 0,
               ),
             },
+            // set integration here !
+            integrations: data?.org?.integrations ?? [],
             preferences: data?.preferences,
             learnRole: data?.learnRole,
           });

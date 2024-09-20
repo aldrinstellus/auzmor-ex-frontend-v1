@@ -104,7 +104,7 @@ const Users: FC<IUsersProps> = () => {
                   dataTestId="add-members-btn"
                 />
               }
-              className="absolute right-0 top-10 mt-2 w-44"
+              className="absolute right-0 top-10 mt-2 w-44  "
               menuItems={[
                 {
                   icon: 'addCircle',
