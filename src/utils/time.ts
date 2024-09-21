@@ -11,6 +11,8 @@ export const parseDate = (timestring: string, format = 'YYYY-MM-DD') => {
   return moment(timestring, format).toDate();
 };
 
+export const humatAtTimeFormat = 'DD MMM YYYY [at] hh:mm A';
+
 export const getTimeDifference = (
   startDateTimestamp: number,
   endDateTimestamp: number,

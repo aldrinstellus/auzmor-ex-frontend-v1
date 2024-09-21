@@ -9,6 +9,7 @@ import useURLParams from 'hooks/useURLParams';
 import useRole from 'hooks/useRole';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from 'hooks/usePageTitle';
+import IntegrationSetting from './IntegrationSettings';
 
 const Admin: FC = () => {
   usePageTitle('admin');
@@ -63,7 +64,18 @@ const Admin: FC = () => {
       allowOnlySuperAdmin: false,
     },
     {
-      label: 'Marketplace',
+      label: t('integration.title'),
+      icon: 'integration',
+      key: 'integration-setting',
+      component: <IntegrationSetting />,
+      disabled: false,
+      hidden: false,
+      hideDefaultLabelCard: false,
+      dataTestId: 'settings-integration',
+      allowOnlySuperAdmin: true,
+    },
+    {
+      label: t('marketplace'),
       icon: 'marketplace',
       key: 'marketplace-settings',
       component: <div>Marketplace Settings Page</div>,
@@ -74,7 +86,7 @@ const Admin: FC = () => {
       allowOnlySuperAdmin: false,
     },
     {
-      label: 'Notifications',
+      label: t('notifcations'),
       icon: 'notification',
       key: 'notifications-settings',
       component: <div>Notifications Settings Page</div>,
