@@ -80,7 +80,33 @@ const IntegrationSetting: FC = () => {
   const configHrisMutation = useMutation({
     mutationKey: ['configure-hris'],
     mutationFn: createConfiguration,
-    onSuccess: (data, variables) => {
+    onSuccess: async (data, variables) => {
+      if (data?.enabeld) {
+        //  if configuation is enabled
+        await putConfiguration(variables, true, data.consumerId);
+        const updatedIntegrations = [
+          ...(user?.integrations?.filter((i) => i.name !== variables) || []),
+          {
+            name: variables,
+            enabled: true,
+            accountDetails: {
+              consumerId: data.consumerId,
+            },
+          },
+        ];
+        await updateUser({
+          integrations: updatedIntegrations,
+        });
+        const selectedIntegration = integrations.find(
+          (integration) => integration.value === variables,
+        );
+        if (selectedIntegration) {
+          setSelectedIntegration(selectedIntegration);
+        }
+        openConfigurationModal();
+        return;
+      }
+
       open({
         token: data.token,
         unifiedApi: 'hris',
@@ -107,9 +133,7 @@ const IntegrationSetting: FC = () => {
                 },
               },
             ];
-            //@ts-ignore
             await updateUser({
-              ...user,
               integrations: updatedIntegrations,
             });
             await queryClient.invalidateQueries({ queryKey: ['users'] });
@@ -138,8 +162,7 @@ const IntegrationSetting: FC = () => {
     );
     if (integration) {
       await deleteHrisIntegration(integrationName);
-      //@ts-ignore
-      updateUser({
+      await updateUser({
         integrations:
           user?.integrations?.filter((i) => i.name !== integrationName) || [],
       });
@@ -158,6 +181,7 @@ const IntegrationSetting: FC = () => {
 
     return (
       <IntegrationCard
+        isLoading={configHrisMutation.isLoading}
         key={integration.value}
         integration={integration}
         isEnabled={isEnabled}

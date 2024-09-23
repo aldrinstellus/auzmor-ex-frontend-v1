@@ -12,6 +12,7 @@ interface IntegrationCardProps {
   onRemove: () => void;
   onResync: () => void;
   isEnabled: boolean;
+  isLoading: boolean;
 }
 
 const IntegrationCard: FC<IntegrationCardProps> = ({
@@ -20,6 +21,7 @@ const IntegrationCard: FC<IntegrationCardProps> = ({
   onRemove,
   onResync,
   isEnabled,
+  isLoading,
 }) => {
   const { t } = useTranslation('adminSetting', { keyPrefix: 'integration' });
 
@@ -57,6 +59,7 @@ const IntegrationCard: FC<IntegrationCardProps> = ({
       <div className="flex items-center">
         <Button
           label={isEnabled ? t('settings') : t('configure')}
+          loading={isLoading}
           onClick={onConfigure}
         />
         {isEnabled && (

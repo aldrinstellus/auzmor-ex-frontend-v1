@@ -84,7 +84,7 @@ interface IAuthContext {
   accountDeactivated: boolean;
   showOnboard: boolean;
   reset: () => void;
-  updateUser: (user: IUser) => void;
+  updateUser: (user: Partial<IUser>) => void;
   setUser: (user: IUser | null) => void;
   setShowOnboard: (flag: boolean) => void;
 }
@@ -340,7 +340,8 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
     }
   }, [user]);
 
-  const updateUser = (user: IUser) => setUser((u) => ({ ...u, ...user }));
+  const updateUser = (user: Partial<IUser>) =>
+    setUser((u) => ({ ...u!, ...user }));
 
   if (loading) {
     return (

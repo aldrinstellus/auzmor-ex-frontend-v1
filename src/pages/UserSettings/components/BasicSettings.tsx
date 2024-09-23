@@ -76,7 +76,6 @@ const BasicSettings = () => {
     mutationKey: ['update-user-settings'],
     mutationFn: (data: any) => updateUserById(user?.id || '', data),
     onSuccess: async (res: any) => {
-      // @ts-ignore
       updateUser({ outOfOffice: res?.result?.data?.outOfOffice });
       successToastConfig({ content: 'Settings updated successfully' });
       await queryClient.invalidateQueries(['current-user-me']);
