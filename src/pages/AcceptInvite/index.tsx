@@ -77,7 +77,6 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
     watch,
     control,
     handleSubmit,
-    setValue,
     formState: { errors, isValid },
   } = useForm<IForm>({
     resolver: yupResolver(schema),
