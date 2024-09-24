@@ -52,6 +52,7 @@ export const useNavigateWithToken = () => {
           department: user?.department,
           workLocation: user?.workLocation,
           outOfOffice: user?.outOfOffice,
+          integrations: user?.org?.integrations ?? [],
           notificationSettings: user?.notificationSettings,
           subscription: {
             type: user?.org?.subscription.type,

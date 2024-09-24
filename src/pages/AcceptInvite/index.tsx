@@ -47,6 +47,9 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
   const [searchParams, _] = useSearchParams();
   const token = searchParams.get('token');
   const orgId = searchParams.get('orgId');
+  const emailParams = searchParams.get('email');
+  const decodedUserEmail = decodeURIComponent(emailParams || ' ');
+
   const { setUser, setShowOnboard } = useAuth();
   const navigate = useNavigate();
   const navigateWithToken = useNavigateWithToken();
@@ -79,7 +82,7 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
     resolver: yupResolver(schema),
     mode: 'onChange',
     defaultValues: {
-      workEmail: data?.result?.data?.email,
+      workEmail: decodedUserEmail,
     },
   });
 
