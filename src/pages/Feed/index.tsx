@@ -61,6 +61,7 @@ const HomeFeed: FC<IHomeFeedProps> = () => {
         WidgetEnum.CelebrationAnniversary,
         WidgetEnum.Event,
         WidgetEnum.AnnouncementCard,
+        WidgetEnum.EvaluationRequestWidget,
       ]}
       widgetProps={{
         [WidgetEnum.MyTeam]: {

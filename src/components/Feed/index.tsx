@@ -67,6 +67,7 @@ import Welcome from 'pages/ChannelDetail/components/Home/Welcome';
 import FinishSetup from 'pages/ChannelDetail/components/Home/FinishSetup';
 import Congrats from 'pages/ChannelDetail/components/Home/Congrats';
 import { IS_PROD } from 'utils/constants';
+import EvaluationRequestWidget from 'components/EvaluationRequestWidget';
 
 const EmptyWidget = () => <></>;
 
@@ -84,6 +85,7 @@ export enum WidgetEnum {
   CelebrationAnniversary = 'CELEBRATION_ANNIVERSARY',
   Event = 'EVENT',
   AnnouncementCard = 'ANNOUNCEMENT_CARD',
+  EvaluationRequestWidget = 'EVALUATION_REQUEST_WIDGET',
 }
 
 export const widgetMapping = {
@@ -100,6 +102,7 @@ export const widgetMapping = {
   [WidgetEnum.CelebrationAnniversary]: CelebrationWidget,
   [WidgetEnum.Event]: EventWidget,
   [WidgetEnum.AnnouncementCard]: AnnouncementCard,
+  [WidgetEnum.EvaluationRequestWidget]: EvaluationRequestWidget,
 };
 
 interface IFeedProps {
@@ -124,6 +127,7 @@ interface IFeedProps {
     [WidgetEnum.CelebrationAnniversary]?: ICelebrationWidgetProps;
     [WidgetEnum.Event]?: IEventWidgetProps;
     [WidgetEnum.AnnouncementCard]?: IAnnouncementCardProps;
+    [WidgetEnum.EvaluationRequestWidget]?: null;
   };
   modeProps?: {
     [FeedModeEnum.Default]?: {

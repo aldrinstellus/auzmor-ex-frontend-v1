@@ -76,6 +76,18 @@ export const uploadImage = async (payload: any) => {
   const data = await learnApiService.post('photos', payload);
   return data;
 };
+export const getEvaluationRequest = async (q: Record<string, any>) => {
+  const { data } = await learnApiService.get('/submissions', q);
+  return data;
+};
+export const useGetEvaluation = (q: Record<string, any>) => {
+  const { isLxp } = useProduct();
+
+  return useQuery(['evaluation-request', q], () => getEvaluationRequest(q), {
+    staleTime: 60 * 60 * 1000,
+    enabled: !!isLxp,
+  });
+};
 
 export const getAllCategory = async ({
   pageParam = 1,

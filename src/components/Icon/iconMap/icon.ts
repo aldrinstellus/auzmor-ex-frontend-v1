@@ -178,6 +178,7 @@ import UserTagIcon from '../components/User-tag';
 import MessageTagIcon from '../components/message-tag';
 import LockOpenIcon from '../components/LockOpen';
 import GlobalEditIcon from '../components/GlobalEdit';
+import DocumentViewIcon from '../components/CarbonDocumentView';
 import DeelIcon from '../components/Deel/DeelIcon';
 import MinusCircle from '../components/MinusCircle';
 import DeelIcon2 from '../components/DeelIcon2/DeelIcon2';
@@ -367,6 +368,7 @@ export const icon = {
   xlsx: XlsIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
+  documentView: DocumentViewIcon,
   deel: DeelIcon,
   deel2: DeelIcon2,
   restInPeace: RestInPeaceIcon,
