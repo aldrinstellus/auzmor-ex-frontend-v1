@@ -32,7 +32,6 @@ const GeneralNotifications = () => {
         onSuccess: async () => {
           await queryClient.invalidateQueries(['current-user-me']);
           updateUser({
-            ...user!,
             notificationSettings: updatedNotificationSettings,
           });
         },
