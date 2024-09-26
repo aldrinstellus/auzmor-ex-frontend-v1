@@ -7,6 +7,8 @@ import clsx from 'clsx';
 import { useLocation } from 'react-router-dom';
 import JobProgress from 'components/JobProgress';
 import { useJobStore } from 'stores/jobStore';
+import useProduct from 'hooks/useProduct';
+import NavbarLxp from 'components/NavbarLxp';
 
 export interface IAppShellProps {
   children: ReactNode;
@@ -29,12 +31,15 @@ const AppShell: FC<IAppShellProps> = ({ children }) => {
 
   const showJobProgress = useJobStore((state) => state.showJobProgress);
 
+  const { isLxp } = useProduct();
+
   return (
     <div
       className="bg-neutral-100 h-screen overflow-y-auto"
       id="app-shell-container"
     >
-      {showNavbar && <Navbar />}
+      {showNavbar && isLxp && <Navbar />}
+      {!isLxp && <NavbarLxp />}
       <main id="main-content" aria-label="Main Content" role="main">
         <div className={wraperStyle}>
           <div className={containerStyle}>{children}</div>
