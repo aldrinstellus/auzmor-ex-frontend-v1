@@ -17,6 +17,7 @@ import useProduct from 'hooks/useProduct';
 import { getLearnUrl } from 'utils/misc';
 import GlobalSearch from './GlobalSearch';
 import IconButton, { Size } from 'components/IconButton';
+import LxpNotificationsOverview from 'components/LxpNotificationsOverview';
 
 const learnNavigations = [
   {
@@ -163,7 +164,11 @@ const Navbar = () => {
                   </li>
                 ))}
               <li>
-                <NotificationsOverview />
+                {isLxp ? (
+                  <LxpNotificationsOverview />
+                ) : (
+                  <NotificationsOverview />
+                )}
               </li>
               <li>
                 <AccountCard />
