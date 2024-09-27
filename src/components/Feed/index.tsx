@@ -67,7 +67,9 @@ import Welcome from 'pages/ChannelDetail/components/Home/Welcome';
 import FinishSetup from 'pages/ChannelDetail/components/Home/FinishSetup';
 import Congrats from 'pages/ChannelDetail/components/Home/Congrats';
 import { IS_PROD } from 'utils/constants';
-import EvaluationRequestWidget from 'components/EvaluationRequestWidget';
+import EvaluationRequestWidget, {
+  IEvaluationRequestWidgetProps,
+} from 'components/EvaluationRequestWidget';
 import { CreatePostFlow } from 'contexts/CreatePostContext';
 
 const EmptyWidget = () => <></>;
@@ -128,7 +130,7 @@ interface IFeedProps {
     [WidgetEnum.CelebrationAnniversary]?: ICelebrationWidgetProps;
     [WidgetEnum.Event]?: IEventWidgetProps;
     [WidgetEnum.AnnouncementCard]?: IAnnouncementCardProps;
-    [WidgetEnum.EvaluationRequestWidget]?: null;
+    [WidgetEnum.EvaluationRequestWidget]?: IEvaluationRequestWidgetProps;
   };
   modeProps?: {
     [FeedModeEnum.Default]?: {
@@ -181,7 +183,6 @@ const Feed: FC<IFeedProps> = ({
   const [customActiveFlow, setCustomActiveFlow] = useState<CreatePostFlow>(
     CreatePostFlow.CreatePost,
   );
-  const [isDirectPost, setIsDirectPost] = useState();
   const { getScrollTop, pauseRecordingScrollTop, resumeRecordingScrollTop } =
     useScrollTop('app-shell-container');
 
@@ -642,7 +643,6 @@ const Feed: FC<IFeedProps> = ({
               key={widgetenum}
               openModal={openModal}
               setCustomActiveFlow={setCustomActiveFlow}
-              setIsDirectPost={setIsDirectPost}
             />
           );
         }
@@ -813,7 +813,6 @@ const Feed: FC<IFeedProps> = ({
           openModal={openModal}
           closeModal={closeModal}
           customActiveFlow={customActiveFlow}
-          isDirectPost={isDirectPost}
         />
       )}
     </section>

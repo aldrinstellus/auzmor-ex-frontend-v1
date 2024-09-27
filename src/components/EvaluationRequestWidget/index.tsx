@@ -12,7 +12,11 @@ import Skeleton from 'react-loading-skeleton';
 
 const ID = 'EvaluationRequestWidget';
 
-const EvaluationRequestWidget = (className = '') => {
+export interface IEvaluationRequestWidgetProps {
+  className?: string;
+}
+
+const EvaluationRequestWidget = ({ className = '' }) => {
   const shouldRender = useShouldRender(ID);
 
   if (!shouldRender) {

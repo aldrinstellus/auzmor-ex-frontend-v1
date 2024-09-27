@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import useMediaQuery from 'hooks/useMediaQuery';
 import { CELEBRATION_TYPE } from 'components/CelebrationWidget';
 import { FeedModeEnum } from 'stores/feedStore';
+import useProduct from 'hooks/useProduct';
 
 interface IHomeFeedProps {}
 
@@ -33,7 +34,7 @@ const HomeFeed: FC<IHomeFeedProps> = () => {
   const { pathname } = useLocation();
   const bookmarks = pathname === '/bookmarks';
   const scheduled = pathname === '/scheduledPosts';
-
+  const { isOffice } = useProduct();
   // Set page title
   if (scheduled) {
     usePageTitle('scheduledPosts');
@@ -77,6 +78,9 @@ const HomeFeed: FC<IHomeFeedProps> = () => {
           className: 'sticky top-24',
         },
         [WidgetEnum.AnnouncementCard]: {
+          className: isOffice ? 'sticky top-24' : ' ',
+        },
+        [WidgetEnum.EvaluationRequestWidget]: {
           className: 'sticky top-24',
         },
       }}

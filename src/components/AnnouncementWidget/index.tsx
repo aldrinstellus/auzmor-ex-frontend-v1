@@ -26,7 +26,6 @@ export interface IAnnouncementCardProps {
   openModal?: () => void;
   className?: string;
   setCustomActiveFlow?: (e: CreatePostFlow) => void;
-  setIsDirectPost?: (e: any) => void;
 }
 
 const AnnouncementCard: FC<IAnnouncementCardProps> = ({
@@ -34,7 +33,6 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
   openModal,
   className = '',
   setCustomActiveFlow,
-  setIsDirectPost,
 }) => {
   const { t: tp } = useTranslation('profile');
   const { t } = useTranslation('announcement');
@@ -103,7 +101,6 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
             onClick={() => {
               openModal();
               setCustomActiveFlow?.(CreatePostFlow.CreateAnnouncement);
-              setIsDirectPost?.(false);
             }}
             className="border-0 !bg-transparent !px-0 !py-1 group"
             labelClassName=" text-primary-500 hover:text-primary-600  group-focus:text-primary-500"
@@ -213,7 +210,6 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
                 <EmptyState
                   openModal={openModal}
                   setCustomActiveFlow={setCustomActiveFlow}
-                  setIsDirectPost={setIsDirectPost}
                 />
               )}
             </div>

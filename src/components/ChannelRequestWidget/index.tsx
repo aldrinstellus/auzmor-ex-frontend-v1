@@ -14,16 +14,23 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 import { useChannelRole } from 'hooks/useChannelRole';
 import { useTranslation } from 'react-i18next';
+import { useShouldRender } from 'hooks/useShouldRender';
 
 export type ChannelRequestWidgetProps = {
   className?: string;
   mode?: ChannelRequestWidgetModeEnum;
 };
 
+const ID = 'ChannelRequestWidget';
+
 const ChannelRequestWidget: FC<ChannelRequestWidgetProps> = ({
   className = '',
   mode = ChannelRequestWidgetModeEnum.Feed,
 }) => {
+  const shouldRender = useShouldRender(ID);
+  if (!shouldRender) {
+    return <></>;
+  }
   const { t } = useTranslation('channelDetail', {
     keyPrefix: 'channelRequestWidget',
   });

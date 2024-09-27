@@ -68,7 +68,6 @@ interface ICreatePostModal {
   data?: IPost;
   mode: PostBuilderMode;
   customActiveFlow?: CreatePostFlow;
-  isDirectPost?: boolean;
 }
 
 const CreatePostModal: FC<ICreatePostModal> = ({
@@ -77,7 +76,6 @@ const CreatePostModal: FC<ICreatePostModal> = ({
   data,
   mode,
   customActiveFlow = CreatePostFlow.CreatePost,
-  isDirectPost = true,
 }) => {
   const {
     activeFlow,
@@ -729,7 +727,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
             }
             mode={
               customActiveFlow === CreatePostFlow.CreateAnnouncement &&
-              isDirectPost
+              mode === PostBuilderMode.Edit
                 ? CreateAnnouncementMode.DIRECT
                 : CreateAnnouncementMode.POST_BUILDER
             }

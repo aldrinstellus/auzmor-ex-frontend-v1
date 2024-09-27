@@ -8,13 +8,11 @@ import { CreatePostFlow } from 'contexts/CreatePostContext';
 interface EmptyStateProps {
   openModal?: () => void;
   setCustomActiveFlow?: (e: CreatePostFlow) => void;
-  setIsDirectPost?: (e: any) => void;
 }
 
 const EmptyState: FC<EmptyStateProps> = ({
   openModal,
   setCustomActiveFlow,
-  setIsDirectPost,
 }) => {
   const { isAdmin } = useRole();
   const showCreateAnnouncement = isAdmin && !!openModal;
@@ -38,7 +36,6 @@ const EmptyState: FC<EmptyStateProps> = ({
             onClick={() => {
               openModal();
               setCustomActiveFlow?.(CreatePostFlow.CreateAnnouncement);
-              setIsDirectPost?.(false);
             }}
           />
           <p className="text-xs text-neutral-500">{t('admin-header')}</p>
