@@ -1,6 +1,5 @@
 import { FC, Fragment, memo, useEffect, useRef } from 'react';
 import clsx from 'clsx';
-import { useNavigate } from 'react-router';
 import moment from 'moment';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
@@ -41,6 +40,7 @@ import remarkGfm from 'remark-gfm';
 import remarkDirective from 'remark-directive';
 import remarkDirectiveRehype from 'remark-directive-rehype';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
     {

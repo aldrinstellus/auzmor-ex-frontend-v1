@@ -13,6 +13,7 @@ const Home: FC<HomeProps> = ({ channelData }) => {
 
   return (
     <Feed
+      mode={FeedModeEnum.Channel}
       showCreatePostCard={isChannelJoined}
       showFeedFilterBar={isChannelJoined}
       emptyFeedComponent={
@@ -21,7 +22,6 @@ const Home: FC<HomeProps> = ({ channelData }) => {
         ) : null
       }
       isReadOnlyPost={!isChannelJoined}
-      mode={FeedModeEnum.Channel}
       leftWidgets={[WidgetEnum.Links]}
       rightWidgets={[
         WidgetEnum.ChannelRequest,

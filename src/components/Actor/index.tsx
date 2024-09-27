@@ -3,7 +3,7 @@ import Avatar from 'components/Avatar';
 import { VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
 import { IAudience, ICreatedBy } from 'queries/post';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   getAvatarColor,
   getFullName,
@@ -25,6 +25,7 @@ import LxpUserCard from 'components/UserCard/lxpUserCard';
 import { CustomLink, CustomStrong } from './utils';
 import remarkGfm from 'remark-gfm';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
 
 type ActorProps = {
   contentMode?: string;

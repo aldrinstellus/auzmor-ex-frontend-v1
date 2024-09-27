@@ -1,11 +1,12 @@
 import LogoutScreen from 'images/LogoutScreen.png';
 import Button from 'components/Button';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Logo } from 'components/Logo';
 import { useCheckLogin } from 'queries/account';
 import PageLoader from 'components/PageLoader';
 import { usePageTitle } from 'hooks/usePageTitle';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
 
 const Logout = () => {
   const { t } = useTranslation('auth', {

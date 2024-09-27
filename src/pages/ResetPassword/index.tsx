@@ -6,7 +6,7 @@ import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { resetPassword, useTokenValidation } from 'queries/account';
 import PasswordExpiry from 'pages/PasswordExpiry';
@@ -18,6 +18,7 @@ import { useBrandingStore } from 'stores/branding';
 import OfficeLogoSvg from 'components/Logo/images/OfficeLogo.svg';
 import { usePageTitle } from 'hooks/usePageTitle';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
 
 interface IForm {
   newPassword: string;

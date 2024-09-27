@@ -11,7 +11,7 @@ import { signup } from 'queries/account';
 import { useDebounce } from 'hooks/useDebounce';
 import { useDomainExists, useIsUserExistOpen } from 'queries/users';
 import 'utils/custom-yup-validators/email/validateEmail';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useGetSSOFromDomain } from 'queries/organization';
 import { useBrandingStore } from 'stores/branding';
 import OfficeLogoSvg from 'components/Logo/images/OfficeLogo.svg';
@@ -20,6 +20,7 @@ import useAuth from 'hooks/useAuth';
 import { useNavigateWithToken } from 'hooks/useNavigateWithToken';
 import { usePageTitle } from 'hooks/usePageTitle';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
 
 interface IForm {
   fullName: string;

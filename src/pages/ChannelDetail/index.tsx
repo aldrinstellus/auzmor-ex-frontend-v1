@@ -4,7 +4,7 @@ import Home from './components/Home';
 import ProfileSection from './components/ProfileSection';
 import Members from './components/Members';
 import { ChannelVisibilityEnum, IChannel } from 'stores/channelStore';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useChannelDetails } from 'queries/channel';
 import PageLoader from 'components/PageLoader';
 import clsx from 'clsx';
@@ -15,6 +15,7 @@ import { usePageTitle } from 'hooks/usePageTitle';
 import PrivateChannelBanner from 'components/PrivateChannel';
 import { useChannelRole } from 'hooks/useChannelRole';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
 
 export enum ChannelDetailTabsEnum {
   Home = 'HOME',

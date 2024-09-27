@@ -11,8 +11,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { TeamFlow } from '../Teams';
 import { FC } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
 
 export interface ITeamForm {
   name: string;

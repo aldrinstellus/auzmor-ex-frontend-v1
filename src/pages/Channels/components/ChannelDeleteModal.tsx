@@ -14,7 +14,7 @@ import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import Icon from 'components/Icon';
 
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 import { FC } from 'react';
 import { IChannel } from 'stores/channelStore';
 import { useTranslation } from 'react-i18next';

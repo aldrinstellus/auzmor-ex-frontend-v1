@@ -1,7 +1,8 @@
 import Icon from 'components/Icon';
+import useProduct from 'hooks/useProduct';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { FeedModeEnum } from 'stores/feedStore';
 
 interface IBookmarkFeedHeaderProps {
@@ -14,16 +15,32 @@ const BookmarkFeedHeader: FC<IBookmarkFeedHeaderProps> = ({
   const { t } = useTranslation('feed');
   const { channelId } = useParams();
   let backTo = '';
+  const { isLxp } = useProduct();
+  const { pathname } = useLocation();
 
-  switch (mode) {
-    case FeedModeEnum.Default:
-      backTo = '/feed';
-      break;
-    case FeedModeEnum.Channel:
-      backTo = `/channels/${channelId}`;
-      break;
-    default:
-      backTo = '/feed';
+  if (isLxp) {
+    const isLearner = pathname.split('/')[1] === 'user';
+    switch (mode) {
+      case FeedModeEnum.Default:
+        backTo = `${isLearner ? '/user' : ''}/feed`;
+        break;
+      case FeedModeEnum.Channel:
+        backTo = `${isLearner ? '/user' : ''}/channels/${channelId}`;
+        break;
+      default:
+        backTo = `${isLearner ? '/user' : ''}/feed`;
+    }
+  } else {
+    switch (mode) {
+      case FeedModeEnum.Default:
+        backTo = '/feed';
+        break;
+      case FeedModeEnum.Channel:
+        backTo = `/channels/${channelId}`;
+        break;
+      default:
+        backTo = '/feed';
+    }
   }
 
   return (

@@ -12,6 +12,7 @@ import ProductProvider from 'contexts/ProductProvider';
 import { ProductEnum, getProduct } from 'utils/apiService';
 import { getLearnUrl } from 'utils/misc';
 import UserOnboard from 'components/UserOnboard';
+import LxpRouter from 'components/LxpRouter';
 import './i18n/config';
 
 function App() {
@@ -31,7 +32,7 @@ function App() {
             </section>
           ) : null}
           <UserOnboard />
-          <Router />
+          {getProduct() === ProductEnum.Lxp ? <LxpRouter /> : <Router />}
           <Toast />
         </AuthProvider>
       </ProductProvider>

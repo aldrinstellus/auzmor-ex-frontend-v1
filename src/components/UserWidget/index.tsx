@@ -4,10 +4,10 @@ import Card from 'components/Card';
 import Icon from 'components/Icon';
 import Truncate from 'components/Truncate';
 import useAuth from 'hooks/useAuth';
+import useNavigate from 'hooks/useNavigation';
 import useProduct from 'hooks/useProduct';
 import { useCurrentUser } from 'queries/users';
 import { FC, memo, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getLearnUrl } from 'utils/misc';
 
 export interface IUserCardProps {

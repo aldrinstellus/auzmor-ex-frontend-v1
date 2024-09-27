@@ -12,7 +12,7 @@ import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 

@@ -19,7 +19,7 @@ import { IChannelPayload, createChannel, updateChannel } from 'queries/channel';
 
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 import { createCatergory, useInfiniteLearnCategory } from 'queries/learn';
 import useProduct from 'hooks/useProduct';
 import { TFunction } from 'i18next';

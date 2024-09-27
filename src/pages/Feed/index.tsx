@@ -31,8 +31,8 @@ export interface IMyReactions {
 
 const HomeFeed: FC<IHomeFeedProps> = () => {
   const { pathname } = useLocation();
-  const bookmarks = pathname === '/bookmarks';
-  const scheduled = pathname === '/scheduledPosts';
+  const bookmarks = pathname === '/bookmarks' || '/user/bookmarks';
+  const scheduled = pathname === '/scheduledPosts' || '/user/scheduledPosts';
 
   // Set page title
   if (scheduled) {

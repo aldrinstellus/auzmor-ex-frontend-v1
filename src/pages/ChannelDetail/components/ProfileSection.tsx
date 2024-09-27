@@ -23,7 +23,7 @@ import ChannelModal from 'pages/Channels/components/ChannelModal';
 import useModal from 'hooks/useModal';
 import ChannelArchiveModal from 'pages/Channels/components/ChannelArchiveModal';
 import Tabs, { ITab } from 'components/Tabs';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import {
   deleteJoinChannelRequest,
@@ -46,6 +46,7 @@ import { useChannelRole } from 'hooks/useChannelRole';
 import Truncate from 'components/Truncate';
 import useAuth from 'hooks/useAuth';
 import { ChannelDetailTabsEnum } from '..';
+import useNavigate from 'hooks/useNavigation';
 
 type ProfileSectionProps = {
   tabs?: ITab[];

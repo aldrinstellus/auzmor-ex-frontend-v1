@@ -11,7 +11,7 @@ import Button, {
   Size,
 } from 'components/Button';
 import { getSubDomain, readFirstAxiosError } from 'utils/misc';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useGetSSOFromDomain } from 'queries/organization';
 import { useLoginViaSSO } from 'queries/auth';
@@ -20,6 +20,7 @@ import { FC } from 'react';
 import useAuth from 'hooks/useAuth';
 import { useNavigateWithToken } from 'hooks/useNavigateWithToken';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
 
 export interface ILoginViaCredProps {
   setViaSSO: (flag: boolean) => void;

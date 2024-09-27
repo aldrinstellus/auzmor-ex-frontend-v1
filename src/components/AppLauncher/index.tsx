@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { memo } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
@@ -19,6 +19,7 @@ import { useAppStore } from 'stores/appStore';
 import { isFiltersEmpty } from 'utils/misc';
 import { useTranslation } from 'react-i18next';
 import { useShouldRender } from 'hooks/useShouldRender';
+import useNavigate from 'hooks/useNavigation';
 
 const ID = 'AppLauncher';
 

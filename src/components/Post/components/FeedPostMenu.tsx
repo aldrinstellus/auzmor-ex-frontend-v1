@@ -24,8 +24,9 @@ import ClosePollModal from './ClosePollModal';
 import PollVotesModal from './PollVotesModal';
 import ChangeToRegularPostModal from './ChangeToRegularPostModal';
 import AnnouncementAnalytics from './AnnouncementAnalytics';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
 
 export interface IFeedPostMenuProps {
   data: IPost;

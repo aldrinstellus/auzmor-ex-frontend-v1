@@ -14,7 +14,7 @@ import {
   IChannel,
   useChannelStore,
 } from 'stores/channelStore';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 import { Variant } from 'components/IconButton';
 import { useMutation } from '@tanstack/react-query';
 import { deleteJoinChannelRequest, joinChannelRequest } from 'queries/channel';

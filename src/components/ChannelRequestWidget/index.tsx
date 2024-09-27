@@ -10,10 +10,11 @@ import ChannelWidgetUserRow, {
 } from './components/ChannelWidgetUser';
 import { useInfiniteChannelsRequest } from 'queries/channel';
 import { CHANNEL_MEMBER_STATUS, IChannelRequest } from 'stores/channelStore';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 import { useChannelRole } from 'hooks/useChannelRole';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
 
 export type ChannelRequestWidgetProps = {
   className?: string;

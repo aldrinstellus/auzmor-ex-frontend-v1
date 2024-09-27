@@ -9,11 +9,12 @@ import OrgChart from 'components/OrgChart';
 import People from './components/People';
 import { Role } from 'utils/enum';
 import Team from './components/Teams';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import PopupMenu from 'components/PopupMenu';
 import { useTranslation } from 'react-i18next';
 import useProduct from 'hooks/useProduct';
 import { usePageTitle } from 'hooks/usePageTitle';
+import useNavigate from 'hooks/useNavigation';
 
 interface IUsersProps {}
 

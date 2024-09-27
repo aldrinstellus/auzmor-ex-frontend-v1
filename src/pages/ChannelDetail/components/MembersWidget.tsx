@@ -6,10 +6,11 @@ import useModal from 'hooks/useModal';
 import { useInfiniteChannelMembers } from 'queries/channel';
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import AddChannelMembersModal from './AddChannelMembersModal';
 import { IChannel } from 'stores/channelStore';
 import { useChannelRole } from 'hooks/useChannelRole';
+import useNavigate from 'hooks/useNavigation';
 
 export type MembersWidgetProps = {
   channelData: IChannel;

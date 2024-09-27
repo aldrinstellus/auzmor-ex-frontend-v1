@@ -6,7 +6,7 @@ import { isFiltersEmpty } from 'utils/misc';
 import useAuth from 'hooks/useAuth';
 import TeamCard from './components/TeamCard';
 import Button, { Size, Variant } from 'components/Button';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 import SkeletonLoader from './components/SkeletonLoader';
 import TeamNotFound from 'images/TeamNotFound.svg';
 import { memo, FC, useMemo } from 'react';

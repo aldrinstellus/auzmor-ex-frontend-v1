@@ -3,7 +3,7 @@ import Card from 'components/Card';
 import Icon from 'components/Icon';
 import Button, { Size, Variant } from 'components/Button';
 import useModal from 'hooks/useModal';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 import ChannelRow from './components/ChannelRow';
 import { useTranslation } from 'react-i18next';
 import { useInfiniteChannels } from 'queries/channel';

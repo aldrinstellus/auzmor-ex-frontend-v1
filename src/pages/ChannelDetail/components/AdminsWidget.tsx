@@ -2,10 +2,11 @@ import Avatar from 'components/Avatar';
 import Button, { Size, Variant } from 'components/Button';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
+import useNavigate from 'hooks/useNavigation';
 import { useInfiniteChannelMembers } from 'queries/channel';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Role } from 'utils/enum';
 
 const AdminsWidget = () => {

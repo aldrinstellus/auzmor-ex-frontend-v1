@@ -15,7 +15,7 @@ import {
 } from 'queries/users';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   getFullName,
   getProfileImage,
@@ -24,6 +24,7 @@ import {
 import Tooltip, { Variant as TooltipVariant } from 'components/Tooltip';
 import UserCard from 'components/UserCard';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
 
 type AppProps = {
   data: Record<string, any>;

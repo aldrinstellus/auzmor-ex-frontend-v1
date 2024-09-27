@@ -4,7 +4,7 @@ import useHover from 'hooks/useHover';
 import Icon from 'components/Icon';
 import TeamWork from 'images/teamwork.svg';
 import { TeamFlow } from '.';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { FC } from 'react';
 import { isNewEntity } from 'utils/misc';
 import TeamOptions from 'components/TeamOptions';
@@ -12,6 +12,7 @@ import useRole from 'hooks/useRole';
 import useProduct from 'hooks/useProduct';
 import Truncate from 'components/Truncate';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
 
 export interface ITeamsCardProps {
   id: string;

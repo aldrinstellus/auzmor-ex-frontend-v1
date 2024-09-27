@@ -6,7 +6,7 @@ import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 import { useMutation } from '@tanstack/react-query';
 import { forgotPassword } from 'queries/account';
 import 'utils/custom-yup-validators/email/validateEmail';

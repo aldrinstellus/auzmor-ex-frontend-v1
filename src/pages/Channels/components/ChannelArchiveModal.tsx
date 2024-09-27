@@ -17,7 +17,7 @@ import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 import { FC } from 'react';
 import { CHANNEL_STATUS } from 'stores/channelStore';
 import { useTranslation } from 'react-i18next';

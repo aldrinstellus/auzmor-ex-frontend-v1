@@ -19,7 +19,6 @@ import People from 'pages/Users/components/People';
 import {
   Navigate,
   useLocation,
-  useNavigate,
   useParams,
   useSearchParams,
 } from 'react-router-dom';
@@ -32,6 +31,7 @@ import TeamOptions from 'components/TeamOptions';
 import useProduct from 'hooks/useProduct';
 import { usePageTitle } from 'hooks/usePageTitle';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
 
 export interface ITeamMemberProps {}
 

@@ -5,7 +5,7 @@ import Button, { Size, Variant } from 'components/Button';
 import clsx from 'clsx';
 import { useMutation } from '@tanstack/react-query';
 import { logout } from 'queries/account';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Icon from 'components/Icon';
 import {
   deleteCookie,
@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import useProduct from 'hooks/useProduct';
 import { learnLogout } from 'queries/learn';
 import { LearnRole } from 'utils/enum';
+import useNavigate from 'hooks/useNavigation';
 
 const AccountCard = () => {
   const navigate = useNavigate();

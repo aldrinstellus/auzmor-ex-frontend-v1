@@ -2,7 +2,7 @@ import Avatar from 'components/Avatar';
 import Card from 'components/Card';
 import useHover from 'hooks/useHover';
 import useRole from 'hooks/useRole';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 import useAuth from 'hooks/useAuth';
 import Icon from 'components/Icon';
 import {

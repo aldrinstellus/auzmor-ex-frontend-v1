@@ -5,8 +5,8 @@ import useProduct from 'hooks/useProduct';
 import { IAudience } from 'queries/audience';
 import { AudienceEntityType } from 'queries/post';
 import React, { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
 import TeamWork from 'images/teamwork.svg';
+import useNavigate from 'hooks/useNavigation';
 
 interface IAudienceRowProps {
   audience: IAudience;

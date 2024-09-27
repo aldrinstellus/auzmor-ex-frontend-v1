@@ -8,7 +8,7 @@ import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { DocType } from 'queries/files';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 import useAuth from 'hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 
