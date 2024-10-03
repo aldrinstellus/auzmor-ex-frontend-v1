@@ -394,24 +394,18 @@ export const deletePost = async (id: string) => {
   return data;
 };
 
-export const fetchAnnouncement = async (
-  postType: string,
-  limit: number,
-  excludeMyAnnouncements = true,
-) => {
-  const data = await apiService.get(
-    `/posts?feed=${postType}&excludeMyAnnouncements=${excludeMyAnnouncements}&limit=${limit}`,
-  );
+export const fetchAnnouncement = async (q: Record<string, any>) => {
+  const { data } = await apiService.get(`/posts/announcements`, q);
   return data;
 };
 
 export const useAnnouncementsWidget = (
-  limit = 1,
+  q: Record<string, any>,
   queryKey = 'feed-announcements-widget',
 ) =>
   useQuery({
-    queryKey: [queryKey],
-    queryFn: () => fetchAnnouncement('ANNOUNCEMENT', limit),
+    queryKey: [queryKey, q],
+    queryFn: () => fetchAnnouncement(q),
     staleTime: 15 * 60 * 1000,
   });
 
@@ -789,24 +783,17 @@ export const fetchAnnouncements = async (
   let response: any = null;
   const comments: IComment[] = [];
   const feed = getFeed();
-  const postType = 'ANNOUNCEMENT'; // need change
-  const excludeMyAnnouncements = true;
+
   // Fetching data
-  let resp;
   if (!!!context.pageParam) {
-    resp = await apiService.get(
-      `/posts?feed=${postType}&excludeMyAnnouncements=${excludeMyAnnouncements}`,
-      context.queryKey[1],
-    );
     response = await apiService.get(
-      `/posts?feed=${postType}&excludeMyAnnouncements=${excludeMyAnnouncements}`,
+      `/posts/announcements`,
       context.queryKey[1],
     );
   } else {
-    resp = response = await apiService.get(context.pageParam);
+    response = await apiService.get(context.pageParam);
   }
 
-  console.log('resp :', resp);
   // Collecting all comments
   collectComments(response, comments);
 

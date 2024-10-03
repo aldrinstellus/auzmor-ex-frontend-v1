@@ -74,7 +74,10 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
   });
   const showCreateAnnouncement = isAdmin && !!openModal;
 
-  const { data, isLoading } = useAnnouncementsWidget(limit, queryKey);
+  const { data, isLoading } = useAnnouncementsWidget(
+    { limit: limit },
+    queryKey,
+  );
 
   const result = data?.data?.result?.data;
 

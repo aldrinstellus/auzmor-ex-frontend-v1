@@ -44,14 +44,17 @@ const EvaluationRequestWidget = ({ className = '' }) => {
   );
   const totalCount = data?.result?.total_records;
 
+  const widgetTitle = (
+    <p className="flex">
+      {t('pendingEvaluation')} &#40;&nbsp;
+      {isLoading ? <Skeleton count={1} className="!w-8 h-5" /> : totalCount}
+      &nbsp;&#41;
+    </p>
+  );
   return (
     <div className={style}>
       <div className="flex justify-between items-center ">
-        <div className="text-base font-bold">
-          {t('pendingEvaluation')} &#40;&nbsp;
-          {isLoading ? <Skeleton count={1} className="!w-8 h-5" /> : totalCount}
-          &nbsp;&#41;
-        </div>
+        <div className="text-base font-bold leading-6">{widgetTitle}</div>
         <Button
           variant={Variant.Secondary}
           label={t('viewAll')}
