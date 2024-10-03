@@ -21,6 +21,7 @@ import {
 import { xor } from 'lodash';
 import { clsx } from 'clsx';
 import { useTranslation } from 'react-i18next';
+import useRole from 'hooks/useRole';
 
 export enum FeedFilterContentType {
   Filter = 'FILTER',
@@ -75,6 +76,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
   const [haveFiltersBeenModified, setHaveFiltersBeenModified] =
     useState<boolean>(false);
   const { isLxp } = useProduct();
+  const { isLearner } = useRole();
 
   useEffect(() => {
     if (!showFeedFilter) {
@@ -165,7 +167,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
       dataTestId: 'filterby-training',
-      hidden: !(isLxp && !isChannelPage), // hide for channel page but not for feed in lxp
+      hidden: !(isLxp && !isChannelPage && isLearner), // if lxp and feed and learner view then show else dont
     },
     {
       label: t('event'),
@@ -173,7 +175,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
       dataTestId: 'filterby-event',
-      hidden: !(isLxp && !isChannelPage),
+      hidden: !(isLxp && !isChannelPage && isLearner),
     },
     {
       label: t('forum'),
@@ -181,7 +183,7 @@ const FeedFilter: FC<FeedFilterProps> = ({
       filterKey: PostFilterKeys.PostType,
       type: FeedFilterContentType.Filter,
       dataTestId: 'filterby-forum',
-      hidden: !(isLxp && !isChannelPage),
+      hidden: !(isLxp && !isChannelPage && isLearner),
     },
     {
       label: t('document'),
