@@ -34,6 +34,7 @@ import ChannelRequestStatus from './ChannelRequestStatus';
 import { titleCase } from 'utils/misc';
 import Channels from './Channels';
 import { IS_PROD } from 'utils/constants';
+import useRole from 'hooks/useRole';
 
 export interface IFilterForm {
   visibilityRadio: ChannelVisibilityEnum;
@@ -156,6 +157,7 @@ const FilterModal: FC<IFilterModalProps> = ({
   variant = FilterModalVariant.People,
 }) => {
   const { t } = useTranslation('filterModal');
+  const { isLearner } = useRole();
 
   const defaultChannelRequestStatus = !!(
     appliedFilters?.channelRequestStatus || []
@@ -324,7 +326,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       : [FilterModalVariant.People, FilterModalVariant.LxpApp],
     'team-filters': [
       FilterModalVariant.App,
-      FilterModalVariant.LxpApp,
+      ...(isLearner ? [] : [FilterModalVariant.LxpApp]),
       ...(IS_PROD
         ? []
         : [

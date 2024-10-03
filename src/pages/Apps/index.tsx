@@ -72,6 +72,7 @@ const defaultAppFilters: IAppFilters = {
 const Apps: FC<IAppsProps> = () => {
   usePageTitle('apps');
   const { t } = useTranslation('appLauncher');
+  const { isLearner } = useRole();
   const {
     searchParams,
     updateParam,
@@ -303,7 +304,7 @@ const Apps: FC<IAppsProps> = () => {
         </div>
         <div className="flex justify-between py-4">
           <div className="flex items-center gap-x-4">
-            {isAdmin && (
+            {!(isLxp && !isLearner) && (
               <Button
                 variant={ButtonVariant.Secondary}
                 label={t('my-apps')}
@@ -316,17 +317,19 @@ const Apps: FC<IAppsProps> = () => {
                 onClick={() => handleTabChange(AppGroup.MY_APPS)}
               />
             )}
-            <Button
-              variant={ButtonVariant.Secondary}
-              label={t('all-apps')}
-              className={
-                selectedTab === AppGroup.ALL_APPS
-                  ? selectedButtonClassName
-                  : regularButtonClassName
-              }
-              dataTestId="all-apps"
-              onClick={() => handleTabChange(AppGroup.ALL_APPS)}
-            />
+            {!(isLxp && isLearner) && (
+              <Button
+                variant={ButtonVariant.Secondary}
+                label={t('all-apps')}
+                className={
+                  selectedTab === AppGroup.ALL_APPS
+                    ? selectedButtonClassName
+                    : regularButtonClassName
+                }
+                dataTestId="all-apps"
+                onClick={() => handleTabChange(AppGroup.ALL_APPS)}
+              />
+            )}
             <Button
               variant={ButtonVariant.Secondary}
               label={t('featured')}
