@@ -5,7 +5,7 @@ import Header from 'components/ModalHeader';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Variant as InputVariant } from 'components/Input';
-import { ICategoryDetail, useInfiniteCategories } from 'queries/category';
+import { ICategoryDetail, CategoryType, IChannelPayload } from 'interfaces';
 import {
   ChannelVisibilityEnum,
   IChannel,
@@ -15,14 +15,14 @@ import Button, { Variant } from 'components/Button';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Icon from 'components/Icon';
-import { IChannelPayload, createChannel, updateChannel } from 'queries/channel';
 
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import useNavigate from 'hooks/useNavigation';
-import { createCatergory, useInfiniteLearnCategory } from 'queries/learn';
 import useProduct from 'hooks/useProduct';
 import { TFunction } from 'i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface IChannelModalProps {
   isOpen: boolean;
@@ -73,6 +73,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
   const { t } = useTranslation('channels');
   const { t: tc } = useTranslation('common');
   const { isLxp } = useProduct();
+  const { getApi } = usePermissions();
   const schema = yup.object({
     channelName: yup
       .string()
@@ -179,9 +180,10 @@ const ChannelModal: FC<IChannelModalProps> = ({
   };
   const queryClient = useQueryClient();
 
+  const createChannel = getApi(ApiEnum.CreateChannel);
   const addChannelMutation = useMutation({
     mutationKey: ['add-channel-mutation'],
-    mutationFn: createChannel,
+    mutationFn: (payload: IChannelPayload) => createChannel(payload),
     onSuccess: async (response: any) => {
       setChannels({
         [response?.result?.data?.id]: response?.result?.data,
@@ -196,6 +198,8 @@ const ChannelModal: FC<IChannelModalProps> = ({
       failureToastConfig({ content: t('channelModal.createChannelError') });
     },
   });
+
+  const updateChannel = getApi(ApiEnum.UpdateChannel);
   const updateChannelMutation = useMutation({
     mutationKey: ['update-channel-mutation'],
     mutationFn: ({ id, payload }: { id: string; payload: IChannelPayload }) =>
@@ -223,7 +227,8 @@ const ChannelModal: FC<IChannelModalProps> = ({
       formData?.channelCategory &&
       isLxp
     ) {
-      lxpCategoryId = await createCatergory({
+      const createCategory = getApi(ApiEnum.CreateCategory);
+      lxpCategoryId = await createCategory({
         title: formData?.channelCategory?.label,
       });
       lxpCategoryId = lxpCategoryId?.result?.data?.id;
@@ -253,6 +258,8 @@ const ChannelModal: FC<IChannelModalProps> = ({
     const pattern = /^This is a \w+ channel for .+\.$/;
     return pattern.test(text);
   };
+
+  const useInfiniteCategories = getApi(ApiEnum.GetCategories);
 
   return (
     <Modal open={isOpen} dataTestId={`${dataTestId}-modal`}>
@@ -300,9 +307,8 @@ const ChannelModal: FC<IChannelModalProps> = ({
                   required: true,
                   control,
                   maxLength: 60,
-                  fetchQuery: isLxp
-                    ? useInfiniteLearnCategory
-                    : useInfiniteCategories,
+                  fetchQuery: useInfiniteCategories,
+                  queryParams: { type: CategoryType.CHANNEL },
                   getFormattedData: formatCategory,
                   dataTestId: `${dataTestId}-category-dropdown`,
                   getPopupContainer: document.body,

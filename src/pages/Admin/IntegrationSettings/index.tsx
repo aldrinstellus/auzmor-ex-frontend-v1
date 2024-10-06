@@ -1,12 +1,6 @@
 import { FC, useMemo, useState } from 'react';
 import useAuth from 'hooks/useAuth';
 import { useVault } from '@apideck/vault-react';
-import {
-  createConfiguration,
-  deleteHrisIntegration,
-  HrisIntegrationValue,
-  putConfiguration,
-} from 'queries/intergration';
 import { useMutation } from '@tanstack/react-query';
 import useModal from 'hooks/useModal';
 import queryClient from 'utils/queryClient';
@@ -19,7 +13,13 @@ import { humatAtTimeFormat } from 'utils/time';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { useHandleResync } from 'hooks/useHandleSync';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
+export enum HrisIntegrationValue {
+  Deel = 'Deel',
+  BambooHr = 'BambooHR',
+}
 export interface IntegrationConfig {
   name: string;
   title: string;
@@ -35,6 +35,7 @@ export interface IntegrationConfig {
 const IntegrationSetting: FC = () => {
   const { t } = useTranslation('adminSetting', { keyPrefix: 'integration' });
   const { handleResync, isResyncLoading } = useHandleResync();
+  const { getApi } = usePermissions();
 
   const integrations: IntegrationConfig[] = [
     {
@@ -77,10 +78,13 @@ const IntegrationSetting: FC = () => {
 
   const { open } = useVault();
 
+  const createHrisConfiguration = getApi(ApiEnum.CreateHrisConfiguration);
+  const updateHrisConfiguration = getApi(ApiEnum.UpdateHrisConfiguration);
+  const deleteHrisConfiguration = getApi(ApiEnum.DeleteHrisConfiguration);
   const configHrisMutation = useMutation({
     mutationKey: ['configure-hris'],
-    mutationFn: createConfiguration,
-    onSuccess: async (data, variables) => {
+    mutationFn: (configName: string) => createHrisConfiguration(configName),
+    onSuccess: async (data: any, variables) => {
       if (data?.enabled) {
         //  if configuation is enabled
         const updatedIntegrations = [
@@ -120,7 +124,8 @@ const IntegrationSetting: FC = () => {
         onConnectionChange: async (connection: any) => {
           if (connection && connection.state === 'callable') {
             console.log('Connection is authorized');
-            await putConfiguration(variables, true, data.consumerId);
+
+            await updateHrisConfiguration(variables, true, data.consumerId);
             const updatedIntegrations = [
               ...(user?.integrations?.filter((i) => i.name !== variables) ||
                 []),
@@ -160,7 +165,7 @@ const IntegrationSetting: FC = () => {
       (integration: any) => integration.name === integrationName,
     );
     if (integration) {
-      await deleteHrisIntegration(integrationName);
+      await deleteHrisConfiguration(integrationName);
       await updateUser({
         integrations:
           user?.integrations?.filter((i) => i.name !== integrationName) || [],

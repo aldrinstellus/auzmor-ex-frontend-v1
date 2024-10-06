@@ -1,45 +1,23 @@
 import qs from 'qs';
-import axios, {
-  AxiosInstance,
-  GenericAbortSignal,
-  // InternalAxiosRequestConfig
-} from 'axios';
+import axios, { AxiosInstance, GenericAbortSignal } from 'axios';
 
 import { getItem } from './persist';
 
 export enum ProductEnum {
   Lxp = 'lxp',
   Office = 'office',
-  Learn = 'learn',
 }
 
 const productBaseUrlMap: { [key in ProductEnum]: string } = {
   [ProductEnum.Lxp]: process.env.REACT_APP_LXP_BACKEND_BASE_URL || '',
   [ProductEnum.Office]: process.env.REACT_APP_OFFICE_BACKEND_BASE_URL || '',
-  [ProductEnum.Learn]: process.env.REACT_APP_LEARN_BACKEND_BASE_URL || '',
 };
 
 export const getProduct: () => ProductEnum = () => {
-  if (process.env.NODE_ENV === 'development') {
-    return ProductEnum.Lxp;
-  }
-  const host = window.location.host;
-  if (
-    host.includes(
-      process.env.REACT_APP_OFFICE_BASE_URL?.replace('https://', '') ||
-        'office.auzmor.com',
-    )
-  ) {
+  if (process.env.REACT_APP_PRODUCT === ProductEnum.Office) {
     return ProductEnum.Office;
-  } else if (
-    host.includes(
-      process.env.REACT_APP_LXP_BASE_URL?.replace('https://', '') ||
-        'lxp.auzmor.com',
-    )
-  ) {
-    return ProductEnum.Lxp;
   }
-  return ProductEnum.Office;
+  return ProductEnum.Lxp;
 };
 
 export class ApiService {

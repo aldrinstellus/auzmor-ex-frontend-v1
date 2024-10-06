@@ -3,7 +3,6 @@ import InfoRow from '../InfoRow';
 import 'moment-timezone';
 import useRole from 'hooks/useRole';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateCurrentUser, updateUserById } from 'queries/users';
 
 import { convertUpperCaseToPascalCase } from 'utils/misc';
 
@@ -12,6 +11,8 @@ import Layout, { FieldType } from 'components/Form';
 import { useParams } from 'react-router-dom';
 import useAuth from 'hooks/useAuth';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type AppProps = {
   data: any;
@@ -19,15 +20,18 @@ type AppProps = {
 
 const MarriedRow: FC<AppProps> = ({ data }) => {
   const { userId = '' } = useParams();
+  const { getApi } = usePermissions();
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);
   const { user } = useAuth();
   const { isOwnerOrAdmin } = useRole({ userId: userId || user?.id });
 
+  const updateCurrentUser = getApi(ApiEnum.UpdateMe);
+  const updateUserById = getApi(ApiEnum.UpdateUser);
   const updateUserMarriedMutation = useMutation({
     mutationFn: userId
       ? (data: any) => updateUserById(userId, data)
-      : updateCurrentUser,
+      : (data: Record<string, any>) => updateCurrentUser(data),
     mutationKey: ['update-user-married-mutation'],
     onError: (_error: any) => {},
     onSuccess: async (_response: any) => {

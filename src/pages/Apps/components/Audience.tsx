@@ -3,7 +3,7 @@ import { FC, useEffect, useState } from 'react';
 import AudienceSelector from 'components/AudienceSelector';
 import { useForm } from 'react-hook-form';
 import { IAudienceForm } from 'components/EntitySearchModal';
-import { AudienceEntityType, IAudience } from 'queries/apps';
+import { AudienceEntityType, IAudience } from 'interfaces';
 import Footer from './Footer';
 import { ADD_APP_FLOW } from './AddApp';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';

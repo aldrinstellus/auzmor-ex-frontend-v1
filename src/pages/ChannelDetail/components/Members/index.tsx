@@ -9,11 +9,6 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { isFiltersEmpty, isNewEntity } from 'utils/misc';
 import { ReactNode, useEffect, useState } from 'react';
-import {
-  bulkChannelRequestUpdate,
-  useInfiniteChannelMembers,
-  useInfiniteChannelsRequest,
-} from 'queries/channel';
 
 import useURLParams from 'hooks/useURLParams';
 import PopupMenu from 'components/PopupMenu';
@@ -36,12 +31,15 @@ import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { useInView } from 'react-intersection-observer';
 import PageLoader from 'components/PageLoader';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type AppProps = {
   channelData: IChannel;
 };
 
 const Members: React.FC<AppProps> = ({ channelData }) => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('channelDetail', { keyPrefix: 'memberTab' });
   const { isChannelAdmin } = useChannelRole(channelData.id);
   const { filters, clearFilters, updateFilter } = useAppliedFiltersStore();
@@ -72,6 +70,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
 
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
+  const useInfiniteChannelMembers = getApi(ApiEnum.GetChannelMembers);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteChannelMembers({
       channelId: channelData?.id,
@@ -93,7 +92,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
           : undefined,
       }),
     });
-  const users = data?.pages.flatMap((page) => {
+  const users = data?.pages.flatMap((page: any) => {
     return page?.data?.result?.data.map((user: any) => {
       try {
         return {
@@ -109,6 +108,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
   });
 
   // Fetch channel requests
+  const useInfiniteChannelsRequest = getApi(ApiEnum.GetJoinChannelRequests);
   const {
     data: channelRequestData,
     isLoading: isChannelRequestLoading,
@@ -133,17 +133,14 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
   );
 
   const channelRequests =
-    channelRequestData?.pages?.flatMap((page) => {
-      return page?.data?.result?.data.map((request: IChannelRequest) => {
-        try {
-          return request;
-        } catch (e) {
-          console.log('Error', { request });
-        }
-      });
+    channelRequestData?.pages?.flatMap((page: any) => {
+      return page?.data?.result?.data.map(
+        (request: IChannelRequest) => request,
+      );
     }) || [];
 
   // Bulk accept channel request
+  const bulkChannelRequestUpdate = getApi(ApiEnum.UpdateChannelJoinRequests);
   const bulkRequestAcceptMutation = useMutation({
     mutationKey: ['bulk-channel-request-accept'],
     mutationFn: (payload: { approve?: string[] }) =>
@@ -320,7 +317,7 @@ const Members: React.FC<AppProps> = ({ channelData }) => {
                 ))
               : null}
 
-            {users?.map((user) => (
+            {users?.map((user: any) => (
               <PeopleCard
                 isChannelAdmin={isChannelAdmin}
                 isChannelPeople

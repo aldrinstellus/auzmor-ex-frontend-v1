@@ -25,20 +25,12 @@ import ChannelArchiveModal from 'pages/Channels/components/ChannelArchiveModal';
 import Tabs, { ITab } from 'components/Tabs';
 import { useParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import {
-  deleteJoinChannelRequest,
-  inviteYourSelf,
-  joinChannelRequest,
-  leaveChannel,
-  updateBookmarkChannel,
-  updateChannel,
-} from 'queries/channel';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import queryClient from 'utils/queryClient';
 import { IUpdateProfileImage } from 'pages/UserDetail';
 import EditImageModal from 'components/EditImageModal';
-import { EntityType } from 'queries/files';
+import { EntityType } from 'interfaces';
 import Avatar from 'components/Avatar';
 import ChannelImageModal from './ChannelImageModal';
 import AddChannelMembersModal from './AddChannelMembersModal';
@@ -47,6 +39,8 @@ import Truncate from 'components/Truncate';
 import useAuth from 'hooks/useAuth';
 import { ChannelDetailTabsEnum } from '..';
 import useNavigate from 'hooks/useNavigation';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type ProfileSectionProps = {
   tabs?: ITab[];
@@ -62,6 +56,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   tabs = [],
   activeTab,
 }) => {
+  const { getApi } = usePermissions();
   const { channelId = '' } = useParams();
   const { user } = useAuth();
   const { t } = useTranslation('channelDetail');
@@ -112,6 +107,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
 
   const showInviteYourSelf = isChannelPrivate && !isChannelJoined && isAdmin;
 
+  const inviteYourSelf = getApi(ApiEnum.AddChannelMembers);
   const inviteYourselfMutation = useMutation({
     mutationKey: ['add-channel-members', channelData.id],
     mutationFn: () =>
@@ -131,9 +127,19 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     },
   });
 
+  const updateChannelMember = getApi(ApiEnum.UpdateChannelMember);
   const updateBookmarkMutation = useMutation({
     mutationKey: ['update-channel-bookmark'],
-    mutationFn: updateBookmarkChannel,
+    mutationFn: (data: {
+      channelId: string;
+      memberId: string;
+      bookmark: boolean;
+    }) =>
+      updateChannelMember({
+        channelId: data.channelId,
+        memberId: data.memberId,
+        data: { bookmark: data.bookmark },
+      }),
     onMutate: ({ bookmark }) => {
       updateChannelStore(channelId, {
         ...channelData,
@@ -155,6 +161,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     },
   });
 
+  const updateChannel = getApi(ApiEnum.UpdateChannel);
   const deleteCoverImageMutation = useMutation({
     mutationKey: ['update-users-cover-image'],
     mutationFn: (data: any) => updateChannel(channelId, data),
@@ -166,6 +173,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     },
   });
 
+  const leaveChannel = getApi(ApiEnum.LeaveChannel);
   const leaveChannelMutation = useMutation({
     mutationKey: ['leave-channel-member'],
     mutationFn: (channelId: string) => leaveChannel(channelId),
@@ -179,6 +187,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   });
 
   // Join public/private channel request mutation
+  const joinChannelRequest = getApi(ApiEnum.CreateJoinChannelRequest);
   const joinChannelMutation = useMutation({
     mutationKey: ['join-public-channel-request'],
     mutationFn: (channelId: string) => joinChannelRequest(channelId),
@@ -203,6 +212,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   });
 
   // Withdraw join request
+  const deleteJoinChannelRequest = getApi(ApiEnum.DeleteJoinChannelRequest);
   const withdrawJoinChannelRequest = useMutation({
     mutationKey: ['withdraw-join-request'],
     mutationFn: (joinId: string) =>

@@ -1,21 +1,23 @@
 import { ReactNode, createContext, useState, useEffect, FC } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { getItem, removeAllItems, setItem } from 'utils/persist';
-import { fetchMe } from 'queries/account';
-import { LearnRole, Role } from 'utils/enum';
 import PageLoader from 'components/PageLoader';
 import { getLearnUrl, getSubDomain, userChannel } from 'utils/misc';
-import { ILocation } from 'queries/location';
-import { IDepartment } from 'queries/department';
+import {
+  ILocation,
+  IDepartment,
+  INotificationSettings,
+  UserRole,
+} from 'interfaces';
 import Smartlook from 'smartlook-client';
 import { getRemainingTime } from 'utils/time';
 import SubscriptionExpired from 'components/SubscriptionExpired';
 import AccountDeactivated from 'components/AccountDeactivated';
 import { useBrandingStore } from 'stores/branding';
-import { INotificationSettings } from 'queries/users';
 import useProduct from 'hooks/useProduct';
 import apiService, { ProductEnum, getProduct } from 'utils/apiService';
-import learnApiService from 'utils/learnApiService';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -42,7 +44,7 @@ export interface IUser {
   userId?: string;
   name: string;
   email: string;
-  role: Role;
+  role: UserRole;
   organization: IOrganization;
   subscription?: ISubscription;
   workLocation?: ILocation;
@@ -58,7 +60,6 @@ export interface IUser {
   notificationSettings?: INotificationSettings;
   preferences?: Record<string, any>;
   integrations?: IIntegration[];
-  learnRole?: LearnRole;
 }
 
 export interface IBranding {
@@ -110,6 +111,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   const [sessionExpired, setSessionExpired] = useState(false);
   const [accountDeactivated, setAccountDeactivated] = useState(false);
   const { isLxp } = useProduct();
+  const { getApi } = usePermissions();
 
   const setBranding = useBrandingStore((state) => state.setBranding);
 
@@ -120,27 +122,11 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
 
     const regionUrl = query.get('regionUrl');
     if (regionUrl) {
-      setItem(`${ProductEnum.Learn}RegionUrl`, regionUrl);
-      const learnSubDomain = getSubDomain(regionUrl);
-      const lxpSubDomain = learnSubDomain.replace(
-        ProductEnum.Learn,
-        ProductEnum.Office,
-      ); //Replace with office instead of lxp because currently lxp backend is on office
-      const currentSubDomain = getSubDomain(
-        process.env.REACT_APP_LXP_BACKEND_BASE_URL || '',
-      );
-      setItem(
-        `${ProductEnum.Lxp}RegionUrl`,
-        process.env.REACT_APP_LXP_BACKEND_BASE_URL?.replace(
-          currentSubDomain,
-          lxpSubDomain,
-        ) || '',
-      );
+      setItem(`${ProductEnum.Lxp}RegionUrl`, regionUrl);
       query.delete('regionUrl');
     }
 
     const lxpBaseUrl = getItem(`${ProductEnum.Lxp}RegionUrl`);
-    const learnBaseUrl = getItem(`${ProductEnum.Learn}RegionUrl`);
 
     if (
       (process.env.REACT_APP_ENV === 'PRODUCTION' ||
@@ -148,7 +134,6 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
       isLxp
     ) {
       if (lxpBaseUrl) apiService.updateBaseUrl(lxpBaseUrl);
-      if (learnBaseUrl) learnApiService.updateBaseUrl(learnBaseUrl);
     }
 
     const visitToken = query.get('visitToken');
@@ -181,6 +166,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
     token = getItem(process.env.SESSION_KEY || 'uat');
     if (token) {
       try {
+        const fetchMe = getApi(ApiEnum.GetMeApi);
         const userData = await fetchMe();
         const data = userData?.result?.data;
         if (
@@ -218,7 +204,6 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
             // set integration here !
             integrations: data?.org?.integrations ?? [],
             preferences: data?.preferences,
-            learnRole: data?.learnRole,
           });
           setBranding(data.branding);
         } else {

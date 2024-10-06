@@ -1,11 +1,12 @@
 import { FC, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createReaction, deleteReaction } from 'queries/reaction';
 import clsx from 'clsx';
 import { useFeedStore } from 'stores/feedStore';
 import { produce } from 'immer';
 import { useCommentStore } from 'stores/commentStore';
 import Icon from 'components/Icon';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface LikesProps {
   reaction: string;
@@ -58,6 +59,7 @@ const Likes: FC<LikesProps> = ({
   queryKey,
   dataTestIdPrefix,
 }) => {
+  const { getApi } = usePermissions();
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
   const { comment, updateComment } = useCommentStore();
@@ -96,9 +98,14 @@ const Likes: FC<LikesProps> = ({
   const queryClient = useQueryClient();
 
   const name = reactionNameMap[reaction];
+  const createReaction = getApi(ApiEnum.CreateReaction);
   const createReactionMutation = useMutation({
     mutationKey: ['create-reaction-mutation'],
-    mutationFn: createReaction,
+    mutationFn: (payload: {
+      entityId: string;
+      entityType: string;
+      reaction: string;
+    }) => createReaction(payload),
     onMutate: (variables) => {
       if (variables.entityType === 'post') {
         const previousPost = getPost(variables.entityId);
@@ -184,7 +191,7 @@ const Likes: FC<LikesProps> = ({
         return { previousComment };
       }
     },
-    onSuccess: (data, variables) => {
+    onSuccess: (data: any, variables) => {
       if (variables.entityType === 'post') {
         updateFeed(
           variables.entityId,
@@ -218,9 +225,14 @@ const Likes: FC<LikesProps> = ({
     },
   });
 
+  const deleteReaction = getApi(ApiEnum.DeleteReaction);
   const deleteReactionMutation = useMutation({
     mutationKey: ['delete-reaction-mutation'],
-    mutationFn: deleteReaction,
+    mutationFn: (payload: {
+      entityId: string;
+      entityType: string;
+      id: string;
+    }) => deleteReaction(payload),
     onMutate: (variables) => {
       if (variables.id === '') {
         queryClient.cancelQueries({

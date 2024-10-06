@@ -7,11 +7,13 @@ import Button, {
   Type as ButtonType,
 } from 'components/Button';
 import Modal from 'components/Modal';
-import { UserStatus, updateStatus } from 'queries/users';
+import { UserStatus } from 'interfaces';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 export interface IReactivatePeopleProps {
   open: boolean;
@@ -26,11 +28,14 @@ const ReactivatePeople: FC<IReactivatePeopleProps> = ({
   closeModal,
   userId,
 }) => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('profile', { keyPrefix: 'reactivateModal' });
   const queryClient = useQueryClient();
 
+  const updateUser = getApi(ApiEnum.UpdateUser);
   const updateUserStatusMutation = useMutation({
-    mutationFn: updateStatus,
+    mutationFn: (payload: { id: string; status: UserStatus }) =>
+      updateUser(payload.id, { status: payload.status }),
     mutationKey: ['update-user-status'],
     onSuccess: () => {
       queryClient.invalidateQueries(['user', userId]);

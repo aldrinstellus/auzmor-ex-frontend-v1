@@ -7,9 +7,10 @@ import React, { useState } from 'react';
 import Report from './Report';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { downloadReport } from 'queries/importUsers';
 import Spinner from 'components/Spinner';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type AppProps = {
   open: boolean;
@@ -19,6 +20,7 @@ type AppProps = {
 };
 
 const Details: React.FC<AppProps> = ({ open, closeModal, data, importId }) => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('components', {
     keyPrefix: 'jobProgress.details',
   });
@@ -36,6 +38,7 @@ const Details: React.FC<AppProps> = ({ open, closeModal, data, importId }) => {
 
   const info = data?.result?.data?.info || {};
 
+  const downloadReport = getApi(ApiEnum.DownloadImportReport);
   const exportMutation = useMutation(() => downloadReport(importId, status), {
     onError: () => {},
     onSuccess: (res: any) => {

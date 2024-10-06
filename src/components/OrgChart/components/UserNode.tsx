@@ -3,7 +3,7 @@ import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
 import clsx from 'clsx';
 import { FC } from 'react';
-import { UserStatus } from 'queries/users';
+import { UserStatus } from 'interfaces';
 import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
 import UserCard, { UsercardVariant } from 'components/UserCard';
 import { useTranslation } from 'react-i18next';

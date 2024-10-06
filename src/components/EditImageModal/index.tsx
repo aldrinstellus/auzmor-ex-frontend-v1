@@ -12,18 +12,18 @@ import { IUpdateProfileImage } from 'pages/UserDetail';
 import Header from 'components/ModalHeader';
 import { BlobToFile } from 'utils/misc';
 import Modal from 'components/Modal';
-import { EntityType } from 'queries/files';
+import { EntityType } from 'interfaces';
 import { UploadStatus, useUpload } from 'hooks/useUpload';
 import queryClient from 'utils/queryClient';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useAuth from 'hooks/useAuth';
-import { updateCurrentUser, updateUserById } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
 import Footer from './Footer';
 import ImageCropper from 'components/ImageCropper';
 import PageLoader from 'components/PageLoader';
 import useProduct from 'hooks/useProduct';
-import { updateChannel } from 'queries/channel';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export interface AppProps {
   title: string;
@@ -67,6 +67,7 @@ const EditImageModal: FC<AppProps> = ({
 }) => {
   const { isLxp } = useProduct();
   const { updateUser } = useAuth();
+  const { getApi } = usePermissions();
 
   const { uploadMedia, uploadStatus } = useUpload();
 
@@ -92,6 +93,7 @@ const EditImageModal: FC<AppProps> = ({
     img.src = image;
   }, []);
 
+  const updateChannel = getApi(ApiEnum.UpdateChannel);
   const updateChannelMutation = useMutation({
     mutationFn: (data: any) => updateChannel(channelId, data),
     mutationKey: ['update-channel-name-mutation'],
@@ -116,10 +118,12 @@ const EditImageModal: FC<AppProps> = ({
     },
   });
 
+  const updateCurrentUser = getApi(ApiEnum.UpdateMe);
+  const updateUserById = getApi(ApiEnum.UpdateUser);
   const updateUsersPictureMutation = useMutation({
     mutationFn: userId
       ? (data: any) => updateUserById(userId, data)
-      : updateCurrentUser,
+      : (data: Record<string, any>) => updateCurrentUser(data),
     mutationKey: ['update-users-mutation'],
     onError: (error: any) => {
       console.log('API call resulted in error: ', error);

@@ -1,7 +1,7 @@
 import { FC, ReactNode } from 'react';
 import useAuth from 'hooks/useAuth';
 import PopupMenu from 'components/PopupMenu';
-import { UserRole, UserStatus } from 'queries/users';
+import { UserRole, UserStatus } from 'interfaces';
 import useRole from 'hooks/useRole';
 import Button, { Variant, Size } from 'components/Button';
 import useProduct from 'hooks/useProduct';

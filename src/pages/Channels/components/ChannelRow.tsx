@@ -10,7 +10,6 @@ import IconWrapper, {
   Type as IconWrapperType,
 } from 'components/Icon/components/IconWrapper';
 import Button, { Variant, Size } from 'components/Button';
-import { updateChannel } from 'queries/channel';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
@@ -23,6 +22,8 @@ import moment from 'moment';
 import { getChannelLogoImage, getFullName } from '../../../utils/misc';
 import Truncate from 'components/Truncate';
 import Avatar from 'components/Avatar';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export const formatDate = (date: string, timezone: string) => {
   const momentDate = moment.tz(date, timezone);
@@ -39,6 +40,8 @@ const ChannelRow: FC<IChannelRowProps> = ({ channel }) => {
   const { t } = useTranslation('channels');
   const { currentTimezone } = useCurrentTimezone();
   const [isDeleteModalOpen, openDeleteModal, closeDeleteModal] = useModal();
+  const { getApi } = usePermissions();
+  const updateChannel = getApi(ApiEnum.UpdateChannel);
   const unarchiveChannelMutation = useMutation({
     mutationKey: ['unarchive-channel', channel.id],
     mutationFn: (id: string) =>

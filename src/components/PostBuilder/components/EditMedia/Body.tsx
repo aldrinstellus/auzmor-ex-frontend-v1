@@ -1,6 +1,6 @@
 import Carousel from 'components/CarouselNew';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
-import { PostType } from 'queries/post';
+import { PostType } from 'interfaces';
 import { FC, useContext } from 'react';
 export interface IBodyProps {
   currentIndex: number;

@@ -2,7 +2,7 @@ import { FC, MouseEvent, MouseEventHandler, useMemo, useState } from 'react';
 import Carousel from 'components/Carousel';
 import MediaRender, { PreferredSize } from './components/MediaRender';
 import Button, { Variant as ButtonVariant, Size } from 'components/Button';
-import { ICoverImageMap, IMedia } from 'contexts/CreatePostContext';
+import { ICoverImageMap } from 'contexts/CreatePostContext';
 import useModal from 'hooks/useModal';
 import './index.css';
 import Modal from 'components/Modal';
@@ -11,6 +11,7 @@ import IconButton, {
   Size as IconButtonSize,
 } from 'components/IconButton';
 import { useTranslation } from 'react-i18next';
+import { IMedia } from 'interfaces';
 
 export enum Mode {
   View = 'VIEW',

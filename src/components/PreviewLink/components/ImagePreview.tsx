@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { Metadata } from '../types';
+import { Metadata } from 'interfaces';
 
 type ImagePreviewProps = {
   metaData: Metadata;

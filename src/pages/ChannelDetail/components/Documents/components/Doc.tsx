@@ -4,7 +4,7 @@ import Icon from 'components/Icon';
 import Truncate from 'components/Truncate';
 import React, { FC, useMemo, useState } from 'react';
 import useModal from 'hooks/useModal';
-import { DocType } from 'queries/files';
+import { DocType } from 'interfaces';
 import FilePreviewModal from './FilePreviewModal';
 
 interface IDocProps {

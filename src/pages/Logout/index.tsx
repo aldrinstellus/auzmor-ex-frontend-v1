@@ -2,17 +2,20 @@ import LogoutScreen from 'images/LogoutScreen.png';
 import Button from 'components/Button';
 import { Link } from 'react-router-dom';
 import { Logo } from 'components/Logo';
-import { useCheckLogin } from 'queries/account';
 import PageLoader from 'components/PageLoader';
 import { usePageTitle } from 'hooks/usePageTitle';
 import { useTranslation } from 'react-i18next';
 import useNavigate from 'hooks/useNavigation';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 const Logout = () => {
   const { t } = useTranslation('auth', {
     keyPrefix: 'logout',
   });
   usePageTitle('logout');
+  const { getApi } = usePermissions();
+  const useCheckLogin = getApi(ApiEnum.GetLogin);
   const { data, isLoading, isError } = useCheckLogin();
   const navigate = useNavigate();
 

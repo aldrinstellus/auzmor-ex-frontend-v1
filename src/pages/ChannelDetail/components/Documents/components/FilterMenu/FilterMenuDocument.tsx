@@ -11,10 +11,11 @@ import { UseFormReturn } from 'react-hook-form';
 import useURLParams from 'hooks/useURLParams';
 import Icon from 'components/Icon';
 import { useDebounce } from 'hooks/useDebounce';
-import { useDocument } from 'queries/storage';
 import NoDataFound from 'components/NoDataFound';
 import DocSearchRow from 'pages/ChannelDetail/components/Documents/components/DocSearchRow';
 import { useAppliedFiltersForDoc } from 'stores/appliedFiltersForDoc';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export enum FilterKey {
   departments = 'departments',
@@ -43,12 +44,14 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
   // dataTestIdSort,
   dataTestIdFilter,
 }) => {
+  const { getApi } = usePermissions();
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const { filters, setFilters } = useAppliedFiltersForDoc();
   const { control } = filterForm;
   const [documentSearch, setDocument] = useState('');
   const debouncedDocumentSearch = useDebounce(documentSearch || '', 300);
-  const { data: documentData, isFetching } = useDocument({
+  const searchStorage = getApi(ApiEnum.SearchStorage);
+  const { data: documentData, isFetching } = searchStorage({
     q: debouncedDocumentSearch,
     mimeType: '',
     ownerEmail: '',

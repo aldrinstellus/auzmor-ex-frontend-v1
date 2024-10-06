@@ -8,29 +8,37 @@ import Button, {
 } from 'components/Button';
 import { Variant as InputVariant } from 'components/Input';
 import Modal from 'components/Modal';
-import { ISkillDetail, useInfiniteSkills } from 'queries/skills';
 
 import { ISkillsOption } from '../PersonalDetails';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateCurrentUser, updateUserById } from 'queries/users';
 import { FC, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 export interface ISkillsModalProps {
   open: boolean;
   closeModal: () => void;
   skills: ISkillsOption[];
 }
 
+export interface ISkillDetail {
+  name: string;
+  id: string;
+}
+
 const SkillsModal: FC<ISkillsModalProps> = ({ open, closeModal, skills }) => {
   const queryClient = useQueryClient();
   const { userId = '' } = useParams();
+  const { getApi } = usePermissions();
 
+  const updateCurrentUser = getApi(ApiEnum.UpdateMe);
+  const updateUserById = getApi(ApiEnum.UpdateUser);
   const updateUserSkillsMutation = useMutation({
     mutationFn: userId
       ? (data: any) => updateUserById(userId, data)
-      : updateCurrentUser,
+      : (data: Record<string, any>) => updateCurrentUser(data),
     mutationKey: ['update-user-skills-mutation'],
     onError: (_error: any) => {},
     onSuccess: async () => {
@@ -88,6 +96,7 @@ const SkillsModal: FC<ISkillsModalProps> = ({ open, closeModal, skills }) => {
     return transformedOption;
   };
 
+  const useInfiniteSkills = getApi(ApiEnum.GetSkills);
   const skillField = [
     {
       type: FieldType.CreatableSearch,

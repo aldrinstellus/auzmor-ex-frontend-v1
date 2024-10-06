@@ -1,7 +1,7 @@
 import PopupMenu from 'components/PopupMenu';
 import Badge from 'components/Badge';
 import Card from 'components/Card';
-import { App, editApp } from 'queries/apps';
+import { IApp } from 'interfaces';
 import Icon from 'components/Icon';
 import useModal from 'hooks/useModal';
 import AppDetailModal from './AppCardDetail';
@@ -18,9 +18,11 @@ import { isEmpty } from 'lodash';
 import clsx from 'clsx';
 import Truncate from 'components/Truncate';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type AppCardProps = {
-  app: App;
+  app: IApp;
 };
 
 const AppCard: FC<AppCardProps> = ({ app }) => {
@@ -28,12 +30,14 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
   const { t } = useTranslation('appLauncher', {
     keyPrefix: 'appCard',
   });
+  const { getApi } = usePermissions();
   const [appDetailModal, openAppDetailModal, closeAppDetailModal] = useModal();
   const [editAppModal, openEditAppModal, closeEditAppModal] = useModal();
   const [deleteAppModal, openDeleteAppModal, closeDeleteAppModal] = useModal();
 
   const queryClient = useQueryClient();
 
+  const editApp = getApi(ApiEnum.EditApp);
   const featuredAppMutation = useMutation({
     mutationKey: ['edit-app-mutation'],
     mutationFn: (payload: any) => editApp(app?.id || '', payload as any),

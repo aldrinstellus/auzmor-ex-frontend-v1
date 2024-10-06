@@ -7,19 +7,18 @@ import Button, { Variant as ButtonVariant, Type } from 'components/Button';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { UploadStatus, useUpload } from 'hooks/useUpload';
-import { EntityType } from 'queries/files';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { App, AppIcon, IAudience, createApp, editApp } from 'queries/apps';
+import { IApp, IAppIcon, IAudience, EntityType } from 'interfaces';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import Audience from './Audience';
 import Header from 'components/ModalHeader';
-import { createCatergory, uploadImage } from 'queries/learn';
 import useProduct from 'hooks/useProduct';
 import { useTranslation } from 'react-i18next';
 import { getUrlWithProtocol, isValidUrl } from 'utils/misc';
 import { useDebounce } from 'hooks/useDebounce';
-import { getPreviewLink } from 'queries/post';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 export enum APP_MODE {
   Create = 'CREATE',
@@ -34,7 +33,7 @@ export enum ADD_APP_FLOW {
 type AddAppProps = {
   open: boolean;
   closeModal: () => void | null;
-  data?: App;
+  data?: IApp;
   mode?: APP_MODE;
 };
 export interface IAddAppForm {
@@ -43,7 +42,7 @@ export interface IAddAppForm {
   description?: string;
   category?: any;
   audience?: IAudience[];
-  icon?: AppIcon & { file: File };
+  icon?: IAppIcon & { file: File };
   acsUrl?: string;
   entityId?: string;
   relayState?: string;
@@ -113,17 +112,19 @@ const AddApp: FC<AddAppProps> = ({
     },
   });
   const { isLxp } = useProduct();
+  const { getApi } = usePermissions();
   const [activeFlow, setActiveFlow] = useState(ADD_APP_FLOW.AddApp);
   const [audience, setAudience] = useState<any>(data?.audience || []);
 
   const url = useDebounce(watch('url'), 800);
+  const getPreviewLink = getApi(ApiEnum.GetLinkPreviewApi);
 
   useEffect(() => {
     if (!url) {
       return;
     }
 
-    getPreviewLink(getUrlWithProtocol(url)).then((response) => {
+    getPreviewLink(getUrlWithProtocol(url)).then((response: any) => {
       if (!getValues('label') && response?.title) {
         setValue('label', response.title);
       }
@@ -132,6 +133,7 @@ const AddApp: FC<AddAppProps> = ({
 
   const queryClient = useQueryClient();
 
+  const createApp = getApi(ApiEnum.CreateApp);
   const addAppMutation = useMutation({
     mutationKey: ['add-app-mutation'],
     mutationFn: createApp,
@@ -151,6 +153,7 @@ const AddApp: FC<AddAppProps> = ({
       }),
   });
 
+  const editApp = getApi(ApiEnum.EditApp);
   const updateAppMutation = useMutation({
     mutationKey: ['edit-app-mutation'],
     mutationFn: (payload) => editApp(data?.id || '', payload as any),
@@ -175,7 +178,7 @@ const AddApp: FC<AddAppProps> = ({
       }),
   });
   const { mutateAsync: uploadImageMutation, isLoading: isUploading } =
-    useMutation(uploadImage, {
+    useMutation(getApi(ApiEnum.UploadImage), {
       onSuccess: () => {},
       onError: (error) => {
         console.error('Error uploading image:', error);
@@ -194,7 +197,7 @@ const AddApp: FC<AddAppProps> = ({
         const formPayload: any = new FormData();
         if (formData.icon?.file) {
           formPayload.append('url', formData?.icon?.file);
-          const res = await uploadImageMutation(formPayload);
+          const res: any = await uploadImageMutation(formPayload);
           uploadedFile = res.result?.data?.url;
         } else if (mode == APP_MODE.Edit && !formData.icon?.original) {
           uploadedFile = '';
@@ -202,7 +205,8 @@ const AddApp: FC<AddAppProps> = ({
         // upload category to learn
         if (formData?.category && formData?.category?.isNew) {
           // already have category on learn db don't call this
-          lxpCategoryId = await createCatergory({
+          const createCategory = getApi(ApiEnum.CreateCategory);
+          lxpCategoryId = await createCategory({
             title: formData?.category?.label,
           });
           lxpCategoryId = lxpCategoryId?.result?.data?.id;

@@ -1,5 +1,4 @@
 import Card from 'components/Card';
-import { useChannelLinksWidget } from 'queries/channel';
 import Button, { Size, Variant } from 'components/Button';
 import Icon from 'components/Icon';
 import SkeletonLoader from './components/SkeletonLoader';
@@ -14,12 +13,15 @@ import AddLinkModal from './components/AddLinkModal';
 import { useParams } from 'react-router-dom';
 import { useChannelRole } from 'hooks/useChannelRole';
 import { IChannel, IChannelLink } from 'stores/channelStore';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export type LinksWidgetProps = {
   channelData: IChannel;
 };
 const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
   const { channelId = '' } = useParams();
+  const { getApi } = usePermissions();
   const { isChannelAdmin } = useChannelRole(channelData.id);
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const [openEditLinks, openEditLinksModal, closeEditLinksModal] = useModal(
@@ -34,6 +36,7 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
 
   const { t } = useTranslation('channelLinksWidget');
 
+  const useChannelLinksWidget = getApi(ApiEnum.GetChannelLinks);
   const { data: links, isLoading } = useChannelLinksWidget(channelId);
 
   const toggleModal = () => {
@@ -96,32 +99,34 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
           <div className="w-full">
             {links && links.length ? (
               <div className="flex flex-col items-start gap-y-2">
-                {links.slice(0, maxListSize).map((link, index) => (
-                  <div
-                    key={index}
-                    className="w-full flex justify-start items-center gap-x-2 px-1 py-2 cursor-pointer group"
-                    onClick={() => handleLinkClick(link)}
-                    onKeyUp={(e) =>
-                      e.code === 'Enter' ? handleLinkClick(link) : ''
-                    }
-                    role="link"
-                    tabIndex={0}
-                  >
-                    {link.url || link.favicon ? (
-                      <img
-                        src={`https://www.google.com/s2/favicons?domain=${link.url}`}
-                        height={16}
-                        width={16}
-                        alt={`${link.title} Image`}
-                      />
-                    ) : (
-                      <Icon name="link" size={16} />
-                    )}
-                    <span className="text-sm hover:text-blue-500 group-hover:text-blue-500 hover:underline group-hover:underline">
-                      {link.title}
-                    </span>
-                  </div>
-                ))}
+                {links
+                  .slice(0, maxListSize)
+                  .map((link: IChannelLink, index: number) => (
+                    <div
+                      key={index}
+                      className="w-full flex justify-start items-center gap-x-2 px-1 py-2 cursor-pointer group"
+                      onClick={() => handleLinkClick(link)}
+                      onKeyUp={(e) =>
+                        e.code === 'Enter' ? handleLinkClick(link) : ''
+                      }
+                      role="link"
+                      tabIndex={0}
+                    >
+                      {link.url || link.favicon ? (
+                        <img
+                          src={`https://www.google.com/s2/favicons?domain=${link.url}`}
+                          height={16}
+                          width={16}
+                          alt={`${link.title} Image`}
+                        />
+                      ) : (
+                        <Icon name="link" size={16} />
+                      )}
+                      <span className="text-sm hover:text-blue-500 group-hover:text-blue-500 hover:underline group-hover:underline">
+                        {link.title}
+                      </span>
+                    </div>
+                  ))}
                 {links.length > maxListSize && (
                   <div className="w-full flex justify-center">
                     <Button

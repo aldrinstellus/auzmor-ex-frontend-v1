@@ -3,7 +3,7 @@ import { CREATE_POST } from 'components/Actor/constant';
 import PreviewLink from 'components/PreviewLink';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import useAuth from 'hooks/useAuth';
-import { IPost } from 'queries/post';
+import { IPost } from 'interfaces';
 import { ForwardedRef, RefObject, forwardRef, useContext } from 'react';
 import ReactQuill from 'react-quill';
 import RichTextEditor from '../RichTextEditor';

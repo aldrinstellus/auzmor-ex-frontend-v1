@@ -8,7 +8,7 @@ import {
   UseFieldArrayRemove,
 } from 'react-hook-form';
 import Button, { Size, Variant } from 'components/Button';
-import { IPoll } from 'contexts/CreatePostContext';
+import { IPoll } from 'interfaces';
 import { FC } from 'react';
 
 type PollBodyProps = {

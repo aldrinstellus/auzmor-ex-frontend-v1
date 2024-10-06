@@ -5,12 +5,7 @@ import useRole from 'hooks/useRole';
 import useNavigate from 'hooks/useNavigation';
 import useAuth from 'hooks/useAuth';
 import Icon from 'components/Icon';
-import {
-  IGetUser,
-  UserStatus,
-  updateRoleToAdmin,
-  useResendInvitation,
-} from 'queries/users';
+import { IGetUser, UserRole, UserStatus } from 'interfaces';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import {
   getEditSection,
@@ -30,10 +25,11 @@ import RemoveTeamMember from '../DeleteModals/TeamMember';
 import { FC } from 'react';
 import useProduct from 'hooks/useProduct';
 import Truncate from 'components/Truncate';
-import { updateMemberRole } from 'queries/channel';
 import { CHANNEL_ROLE, IChannel } from 'stores/channelStore';
 import RemoveChannelMember from '../DeleteModals/ChannelMember';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 export interface IPeopleCardProps {
   userData: IGetUser;
@@ -76,6 +72,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
   isReadOnly = true,
   showNewJoineeBadge = true,
 }) => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('profile', { keyPrefix: 'peopleCard' });
   const {
     id,
@@ -113,18 +110,32 @@ const PeopleCard: FC<IPeopleCardProps> = ({
   const [openDeactivate, openDeactivateModal, closeDeactivateModal] =
     useModal();
 
+  const useResendInvitation = getApi(ApiEnum.ResendInvitation);
   const resendInviteMutation = useResendInvitation();
 
+  const updateUser = getApi(ApiEnum.UpdateUser);
   const updateUserRoleMutation = useMutation({
-    mutationFn: updateRoleToAdmin,
+    mutationFn: (payload: { id: string; role: UserRole }) =>
+      updateUser(payload.id, { role: payload.role }),
     mutationKey: ['update-user-role'],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
       successToastConfig({ content: t('roleUpdated') });
     },
   });
+
+  const updateChannelMember = getApi(ApiEnum.UpdateChannelMember);
   const updateMemberRoleMutation = useMutation({
-    mutationFn: updateMemberRole,
+    mutationFn: (data: {
+      channelId: string;
+      memberId: string;
+      role: CHANNEL_ROLE;
+    }) =>
+      updateChannelMember({
+        channelId: data.channelId,
+        memberId: data.memberId,
+        data: { role: data.role },
+      }),
     mutationKey: ['update-channel-member-role'],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['channel-members'] });
@@ -241,11 +252,11 @@ const PeopleCard: FC<IPeopleCardProps> = ({
             onPromoteClick={() => {
               isChannelPeople
                 ? updateMemberRoleMutation.mutate({
-                    id: id,
-                    channelId: channelId,
+                    memberId: id,
+                    channelId: channelId!,
                     role: CHANNEL_ROLE.Admin,
                   })
-                : updateUserRoleMutation.mutate({ id });
+                : updateUserRoleMutation.mutate({ id, role: UserRole.Admin });
             }}
             onDeactivateClick={openDeactivateModal}
             onResendInviteClick={() => {

@@ -8,7 +8,7 @@ import { renderToString } from 'react-dom/server';
 import ReactionSkeleton from 'components/Post/components/ReactionModal/ReactionSkeleton';
 import { extractFirstWord } from 'utils/misc';
 import Skeleton from 'react-loading-skeleton';
-import { UserStatus } from 'queries/users';
+import { UserStatus } from 'interfaces';
 
 // interface IOrg {
 //   id: string;

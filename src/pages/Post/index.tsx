@@ -4,22 +4,25 @@ import Post from 'components/Post';
 import UserCard from 'components/UserWidget';
 import useMediaQuery from 'hooks/useMediaQuery';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { usePermissions } from 'hooks/usePermissions';
 import PageNotFound from 'pages/PageNotFound';
-import { useGetPost } from 'queries/post';
 import { FC } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useFeedStore } from 'stores/feedStore';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 const PostPage: FC = () => {
   usePageTitle('postDetails');
   const isLargeScreen = useMediaQuery('(min-width: 1300px)');
   const { id } = useParams();
+  const { getApi } = usePermissions();
   const [searchParams] = useSearchParams();
   const commentId = searchParams.get('commentId') || undefined;
   if (!id) {
     return <div>Error</div>;
   }
 
+  const useGetPost = getApi(ApiEnum.GetPost);
   const { isLoading, isError, isFetching } = useGetPost(id, commentId);
   const { getPost } = useFeedStore();
 

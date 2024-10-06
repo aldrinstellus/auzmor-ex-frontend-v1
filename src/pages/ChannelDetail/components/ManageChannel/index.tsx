@@ -2,14 +2,13 @@ import ManageAccessTable from './ManageAccessTable';
 import Card from 'components/Card';
 import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
 import { useTranslation } from 'react-i18next';
-import { useInfiniteChannelMembers } from 'queries/channel';
 import { isFiltersEmpty } from 'utils/misc';
 import { useForm } from 'react-hook-form';
 import useModal from 'hooks/useModal';
 import Button from 'components/Button';
 import FilterMenu from 'components/FilterMenu';
 import Spinner from 'components/Spinner';
-import { UserRole } from 'queries/users';
+import { UserRole } from 'interfaces';
 import Layout, { FieldType } from 'components/Form';
 import { Size as InputSize } from 'components/Input';
 import { FilterModalVariant } from 'components/FilterModal';
@@ -19,6 +18,8 @@ import AddChannelMembersModal from '../AddChannelMembersModal';
 import { IChannel } from 'stores/channelStore';
 import useURLParams from 'hooks/useURLParams';
 import NoDataFound from 'components/NoDataFound';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type AppProps = {
   channelData: IChannel;
@@ -29,6 +30,7 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
   const { updateParam, deleteParam, serializeFilter, parseParams } =
     useURLParams();
   const parsedRole = parseParams('roles');
+  const { getApi } = usePermissions();
 
   const { filters, clearFilters } = useAppliedFiltersStore();
   const filterForm = useForm<{
@@ -58,6 +60,7 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
     useModal(false);
 
   const searchValue = watch('search');
+  const useInfiniteChannelMembers = getApi(ApiEnum.GetChannelMembers);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteChannelMembers({
       channelId: channelData?.id,
@@ -76,7 +79,7 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
           : undefined,
       }),
     });
-  const channelMembers = data?.pages.flatMap((page) => {
+  const channelMembers = data?.pages.flatMap((page: any) => {
     return page?.data?.result?.data
       .map((user: any) => {
         try {

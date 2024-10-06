@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import React, { useEffect } from 'react';
@@ -6,15 +5,13 @@ import { useForm } from 'react-hook-form';
 import { StepEnum } from '../utils';
 import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
-import Button, { Size, Variant } from 'components/Button';
 import { useMutation } from '@tanstack/react-query';
-import { updateParseImport, validateImport } from 'queries/importUsers';
-import { truncate } from 'lodash';
-import Spinner from 'components/Spinner';
 import ValidateHeaders from '../ValidateHeaders';
 import { useJobStore } from 'stores/jobStore';
 import { useTranslation } from 'react-i18next';
 import Truncate from 'components/Truncate';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type AppProps = {
   open: boolean;
@@ -35,14 +32,16 @@ const SelectSheetStep: React.FC<AppProps> = ({
   meta,
   setMeta,
 }) => {
+  const { getApi } = usePermissions();
   const { setStep } = useJobStore();
+  const updateParseImport = getApi(ApiEnum.UpdateParseImport);
   const parseMutation = useMutation((formData: any) =>
     updateParseImport(importId, formData),
   );
   const { t } = useTranslation('profile', {
     keyPrefix: 'importUser.selectSheetStep',
   });
-  const { control, getValues, setValue, watch } = useForm<IForm>({
+  const { control, setValue, watch } = useForm<IForm>({
     mode: 'onSubmit',
   });
 

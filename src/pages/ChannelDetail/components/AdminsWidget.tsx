@@ -3,26 +3,29 @@ import Button, { Size, Variant } from 'components/Button';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
 import useNavigate from 'hooks/useNavigation';
-import { useInfiniteChannelMembers } from 'queries/channel';
+import { usePermissions } from 'hooks/usePermissions';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { Role } from 'utils/enum';
+import { CHANNEL_ROLE } from 'stores/channelStore';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 const AdminsWidget = () => {
   const navigate = useNavigate();
   const { channelId } = useParams();
   const [show, setShow] = useState(true);
   const { t } = useTranslation('channelDetail');
+  const { getApi } = usePermissions();
+  const useInfiniteChannelMembers = getApi(ApiEnum.GetChannelMembers);
   const { data } = useInfiniteChannelMembers({
     channelId: channelId,
     q: {
       limit: 3,
-      userRole: Role.Admin,
+      userRole: CHANNEL_ROLE.Admin,
     },
   });
   const admins =
-    data?.pages.flatMap((page) => {
+    data?.pages.flatMap((page: any) => {
       return page?.data?.result?.data.map((admin: any) => {
         try {
           return { id: admin.id, role: admin.role, ...admin.user };
@@ -59,7 +62,7 @@ const AdminsWidget = () => {
             show ? 'max-h-[1000px]' : 'max-h-[0]'
           }`}
         >
-          {admins?.slice(0, 3).map((admin) => (
+          {admins?.slice(0, 3).map((admin: any) => (
             <div key={admin.id} className="flex items-center gap-2 py-2">
               <Avatar name={admin.fullName} size={32} image={admin.image} />
               <div>

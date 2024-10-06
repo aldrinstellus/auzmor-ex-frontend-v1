@@ -8,13 +8,14 @@ import Button, { Size, Variant } from 'components/Button';
 import ChannelWidgetUserRow, {
   ChannelRequestWidgetModeEnum,
 } from './components/ChannelWidgetUser';
-import { useInfiniteChannelsRequest } from 'queries/channel';
 import { CHANNEL_MEMBER_STATUS, IChannelRequest } from 'stores/channelStore';
 import { useParams } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 import { useChannelRole } from 'hooks/useChannelRole';
 import { useTranslation } from 'react-i18next';
 import useNavigate from 'hooks/useNavigation';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export type ChannelRequestWidgetProps = {
   className?: string;
@@ -28,6 +29,7 @@ const ChannelRequestWidget: FC<ChannelRequestWidgetProps> = ({
   const { t } = useTranslation('channelDetail', {
     keyPrefix: 'channelRequestWidget',
   });
+  const { getApi } = usePermissions();
   const navigate = useNavigate();
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const [openAllRequest, openAllRequestModal, closeAllRequestModal] =
@@ -38,6 +40,7 @@ const ChannelRequestWidget: FC<ChannelRequestWidgetProps> = ({
 
   if (channelId && !isChannelAdmin) return <></>;
 
+  const useInfiniteChannelsRequest = getApi(ApiEnum.GetJoinChannelRequests);
   const { data, isLoading } = useInfiniteChannelsRequest(
     channelId,
     {

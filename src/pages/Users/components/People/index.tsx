@@ -8,19 +8,16 @@ import IconButton, {
   Size as IconSize,
 } from 'components/IconButton';
 import MemberNotFound from 'images/MemberNotFound.svg';
-// import Icon from 'components/Icon';
 import PageLoader from 'components/PageLoader';
 import { Size as InputSize } from 'components/Input';
 import Layout, { FieldType } from 'components/Form';
 import Button, { Size, Variant } from 'components/Button';
 import { Variant as InputVariant } from 'components/Input';
 import UsersSkeleton from '../Skeletons/UsersSkeleton';
-import { UserRole, useInfiniteUsers } from 'queries/users';
 import { isFiltersEmpty, titleCase } from 'utils/misc';
 
 import PeopleCard from './PeopleCard';
 import InviteUserModal from '../InviteUserModal';
-import { useInfiniteTeamMembers } from 'queries/teams';
 import { EntitySearchModalType } from 'components/EntitySearchModal';
 import Sort from 'components/Sort';
 import FilterModal, { IAppliedFilters, IStatus } from 'components/FilterModal';
@@ -28,12 +25,13 @@ import useURLParams from 'hooks/useURLParams';
 import NoDataFound from 'components/NoDataFound';
 import useRole from 'hooks/useRole';
 import Icon from 'components/Icon';
-import { IDepartmentAPI } from 'queries/department';
-import { ILocationAPI } from 'queries/location';
+import { IDepartmentAPI, ILocationAPI, UserRole } from 'interfaces';
 import ImportUsers from '../ImportUsers';
 import { FilterKey } from 'components/FilterMenu';
 import useProduct from 'hooks/useProduct';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 export interface IPeopleProps {
   showModal: boolean;
@@ -87,6 +85,7 @@ const People: FC<IPeopleProps> = ({
   const { ref, inView } = useInView();
   const { isAdmin } = useRole();
   const { isLxp } = useProduct();
+  const { getApi } = usePermissions();
 
   const parsedRole = parseParams('role');
 
@@ -116,6 +115,7 @@ const People: FC<IPeopleProps> = ({
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
 
   // get the conditional data
+  const useInfiniteUsers = getApi(ApiEnum.GetUsers);
   const getPeoplesData = () => {
     return useInfiniteUsers({
       startFetching,
@@ -140,6 +140,7 @@ const People: FC<IPeopleProps> = ({
     });
   };
 
+  const useInfiniteTeamMembers = getApi(ApiEnum.GetTeamMembers);
   const getTeamMembersData = () => {
     return useInfiniteTeamMembers({
       startFetching,
@@ -206,14 +207,8 @@ const People: FC<IPeopleProps> = ({
     },
   ];
 
-  const usersData = data?.pages.flatMap((page) => {
-    return page?.data?.result?.data.map((user: any) => {
-      try {
-        return user;
-      } catch (e) {
-        console.log('Error', { user });
-      }
-    });
+  const usersData = data?.pages.flatMap((page: any) => {
+    return page?.data?.result?.data.map((user: any) => user);
   });
 
   const clearFilters = () => {

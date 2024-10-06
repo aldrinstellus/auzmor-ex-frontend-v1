@@ -24,17 +24,10 @@ import {
   getProfileImage,
   twConfig,
 } from 'utils/misc';
-import { EntityType } from 'queries/files';
+import { EntityType, UserRole, UserStatus } from 'interfaces';
 import PopupMenu from 'components/PopupMenu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  EditUserSection,
-  UserStatus,
-  updateCurrentUser,
-  updateRoleToAdmin,
-  updateUserById,
-  useResendInvitation,
-} from 'queries/users';
+import { EditUserSection } from 'interfaces';
 import UserProfileDropdown from 'components/UserProfileDropdown';
 import useHover from 'hooks/useHover';
 import useRole from 'hooks/useRole';
@@ -51,6 +44,8 @@ import { isOutOfOffice } from 'utils/time';
 import Chip from 'components/Chip';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export interface IProfileCoverProps {
   userDetails: Record<string, any>;
@@ -61,6 +56,7 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
   userDetails,
   editSection,
 }) => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('profile', { keyPrefix: 'profileCoverSection' });
   const [file, setFile] = useState<IUpdateProfileImage | Record<string, any>>(
     {},
@@ -95,10 +91,12 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
     ? getBlobUrl(file?.profileImage)
     : file?.coverImage && getBlobUrl(file?.coverImage);
 
+  const updateUserById = getApi(ApiEnum.UpdateUser);
+  const updateCurrentUser = getApi(ApiEnum.UpdateMe);
   const deleteCoverImageMutation = useMutation({
     mutationFn: userId
       ? (data: any) => updateUserById(userId, data)
-      : updateCurrentUser,
+      : (data: Record<string, any>) => updateCurrentUser(data),
     mutationKey: ['update-users-mutation'],
     onError: (error: any) => {
       console.log('API call resulted in error: ', error);
@@ -166,10 +164,12 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
   const [openDeactivate, openDeactivateModal, closeDeactivateModal] =
     useModal();
 
+  const useResendInvitation = getApi(ApiEnum.ResendInvitation);
   const resendInviteMutation = useResendInvitation();
 
   const updateUserRoleMutation = useMutation({
-    mutationFn: updateRoleToAdmin,
+    mutationFn: (payload: { id: string }) =>
+      updateUserById(payload.id, { role: UserRole.Admin }),
     mutationKey: ['update-user-role'],
     onSuccess: () => {
       queryClient.invalidateQueries(['user', userDetails?.id]);

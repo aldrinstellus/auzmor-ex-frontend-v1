@@ -6,8 +6,10 @@ import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import useHover from 'hooks/useHover';
 import useModal from 'hooks/useModal';
-import { IdentityProvider, deleteSSO } from 'queries/organization';
+import { usePermissions } from 'hooks/usePermissions';
+import { IdentityProvider } from 'interfaces';
 import { FC, ReactElement } from 'react';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import queryClient from 'utils/queryClient';
 
 type SSOCardMenuProps = {
@@ -21,9 +23,11 @@ const SSOCardMenu: FC<SSOCardMenuProps> = ({
   name,
   onClick,
 }): ReactElement => {
+  const { getApi } = usePermissions();
+  const deleteSSO = getApi(ApiEnum.DeleteOrganizationSSO);
   const deleteSSOMutation = useMutation({
     mutationKey: ['delete-sso-mutation'],
-    mutationFn: deleteSSO,
+    mutationFn: (idp: IdentityProvider) => deleteSSO(idp),
     onSuccess: async () => {
       console.log('Delete SSO operation successful');
       await queryClient.invalidateQueries(['get-sso']);

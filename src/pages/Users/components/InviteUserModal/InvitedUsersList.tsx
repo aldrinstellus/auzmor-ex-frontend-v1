@@ -1,4 +1,4 @@
-import { IPostUsersResponse } from 'queries/users';
+import { IPostUsersResponse } from 'interfaces';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 

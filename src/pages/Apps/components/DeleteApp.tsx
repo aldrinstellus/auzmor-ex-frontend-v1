@@ -11,9 +11,10 @@ import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
-import { deleteApp } from 'queries/apps';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 export interface IDeleteAppProps {
   open: boolean;
@@ -25,10 +26,12 @@ const DeleteApp: FC<IDeleteAppProps> = ({ open, closeModal, appId }) => {
   const { t } = useTranslation('appLauncher', {
     keyPrefix: 'deleteAppModal',
   });
+  const { getApi } = usePermissions();
 
+  const deleteApp = getApi(ApiEnum.DeleteApp);
   const deleteAppMutation = useMutation({
     mutationKey: ['delete-app', appId],
-    mutationFn: deleteApp,
+    mutationFn: (id: string) => deleteApp(id),
     onError: (_error) => {
       closeModal(true);
       failureToastConfig({

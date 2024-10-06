@@ -5,7 +5,6 @@ import ProfileSection from './components/ProfileSection';
 import Members from './components/Members';
 import { ChannelVisibilityEnum, IChannel } from 'stores/channelStore';
 import { useParams } from 'react-router-dom';
-import { useChannelDetails } from 'queries/channel';
 import PageLoader from 'components/PageLoader';
 import clsx from 'clsx';
 import DocumentPathProvider from 'contexts/DocumentPathContext';
@@ -16,6 +15,8 @@ import PrivateChannelBanner from 'components/PrivateChannel';
 import { useChannelRole } from 'hooks/useChannelRole';
 import { useTranslation } from 'react-i18next';
 import useNavigate from 'hooks/useNavigation';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 export enum ChannelDetailTabsEnum {
   Home = 'HOME',
@@ -34,6 +35,7 @@ const ChannelDetail: FC<AppProps> = ({
 }) => {
   usePageTitle('channelDetails');
   const { channelId } = useParams();
+  const { getApi } = usePermissions();
   const navigate = useNavigate();
   const { t } = useTranslation('channelDetail', { keyPrefix: 'tabs' });
   // Navigate to 404 if channel id is missing
@@ -42,6 +44,7 @@ const ChannelDetail: FC<AppProps> = ({
   }
 
   // fetch channel data
+  const useChannelDetails = getApi(ApiEnum.GetChannel);
   const { data, isLoading } = useChannelDetails(channelId!);
   const channelData: IChannel = data?.data?.result?.data || null;
   const { isChannelJoined, isChannelAdmin } = useChannelRole(channelId!);

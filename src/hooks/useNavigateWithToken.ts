@@ -1,12 +1,14 @@
 import { IUser } from 'contexts/AuthContext';
-import { fetchMe } from 'queries/account';
 import { NavigateFunction } from 'react-router-dom';
 import { useBrandingStore } from 'stores/branding';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { getItem, removeItem, setItem } from 'utils/persist';
 import { getRemainingTime } from 'utils/time';
+import { usePermissions } from './usePermissions';
 
 export const useNavigateWithToken = () => {
   const setBranding = useBrandingStore((state) => state.setBranding);
+  const { getApi } = usePermissions();
   const navigateWithToken = async (
     token: string,
     redirectUrl: string,
@@ -33,6 +35,7 @@ export const useNavigateWithToken = () => {
       if (
         `${window.location.protocol}//${window.location.host}` === redirectUrl
       ) {
+        const fetchMe = getApi(ApiEnum.GetMeApi);
         const userData = await fetchMe();
         const user = userData?.result?.data;
         setUser({

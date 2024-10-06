@@ -1,0 +1,14 @@
+export enum LxpRoleEnum {
+  PrimaryAdmin = 'PRIMARYADMIN',
+  Admin = 'ADMIN',
+  Manager = 'MANAGER',
+  Learner = 'LEARNER',
+  Default = 'DEFAULT',
+}
+
+export enum OfficeRoleEnum {
+  SuperAdmin = 'SUPERADMIN',
+  Admin = 'ADMIN',
+  Member = 'MEMBER',
+  Default = 'DEFAULT',
+}

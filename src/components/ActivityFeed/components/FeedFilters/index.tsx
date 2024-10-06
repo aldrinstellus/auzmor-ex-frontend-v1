@@ -9,7 +9,7 @@ import {
   PostFilterKeys,
   PostFilterPreference,
   PostType,
-} from 'queries/post';
+} from 'interfaces';
 import {
   FC,
   ReactElement,

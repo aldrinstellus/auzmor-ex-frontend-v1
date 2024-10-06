@@ -7,12 +7,9 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Button, { Size, Type as ButtonType } from 'components/Button';
 import { useMutation } from '@tanstack/react-query';
 import { getSubDomain, isDark } from 'utils/misc';
-import { signup } from 'queries/account';
 import { useDebounce } from 'hooks/useDebounce';
-import { useDomainExists, useIsUserExistOpen } from 'queries/users';
 import 'utils/custom-yup-validators/email/validateEmail';
 import { Navigate } from 'react-router-dom';
-import { useGetSSOFromDomain } from 'queries/organization';
 import { useBrandingStore } from 'stores/branding';
 import OfficeLogoSvg from 'components/Logo/images/OfficeLogo.svg';
 import clsx from 'clsx';
@@ -21,6 +18,8 @@ import { useNavigateWithToken } from 'hooks/useNavigateWithToken';
 import { usePageTitle } from 'hooks/usePageTitle';
 import { useTranslation } from 'react-i18next';
 import useNavigate from 'hooks/useNavigation';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface IForm {
   fullName: string;
@@ -42,6 +41,7 @@ export interface IValidationErrors {
 
 const Signup: FC<ISignupProps> = () => {
   usePageTitle('signup');
+  const { getApi } = usePermissions();
   const { t } = useTranslation('auth', { keyPrefix: 'signUp' });
   const { setUser, setShowOnboard } = useAuth();
   const navigate = useNavigate();
@@ -78,11 +78,12 @@ const Signup: FC<ISignupProps> = () => {
       .required(t('privacyPolicyError'))
       .oneOf([true]),
   });
+  const signup = getApi(ApiEnum.OrganizationSignup);
   const signupMutation = useMutation(
     (formData: IForm) =>
       signup({ ...formData, domain: formData.domain.toLowerCase() }),
     {
-      onSuccess: (data) =>
+      onSuccess: (data: any) =>
         navigateWithToken(
           data.result.data.uat,
           data.result.data.redirectUrl,
@@ -127,6 +128,8 @@ const Signup: FC<ISignupProps> = () => {
   ]);
 
   const domain = getSubDomain(window.location.host);
+
+  const useGetSSOFromDomain = getApi(ApiEnum.GetOrganizationDomain);
   const { isFetching: isDomainInfoLoading } = useGetSSOFromDomain(
     domain,
     domain !== '' ? true : false,
@@ -252,10 +255,12 @@ const Signup: FC<ISignupProps> = () => {
   };
 
   const debouncedEmailValue = useDebounce(getValues().workEmail, 500);
+  const useIsUserExistOpen = getApi(ApiEnum.GetUserEmailExistsOpen);
   const { isLoading: isEmailLoading, data: isEmailData } =
     useIsUserExistOpen(debouncedEmailValue);
 
   const debouncedDomainValue = useDebounce(getValues().domain, 500);
+  const useDomainExists = getApi(ApiEnum.GetOrganizationDomainExists);
   const { isLoading: isDomainLoading, data: isDomainData } =
     useDomainExists(debouncedDomainValue);
 
