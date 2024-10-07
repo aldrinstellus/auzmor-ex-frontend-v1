@@ -11,18 +11,16 @@ import { useTranslation } from 'react-i18next';
 import AddLinkModal from './components/AddLinkModal';
 
 import { useParams } from 'react-router-dom';
-import { useChannelRole } from 'hooks/useChannelRole';
-import { IChannel, IChannelLink } from 'stores/channelStore';
+import { IChannelLink } from 'stores/channelStore';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export type LinksWidgetProps = {
-  channelData: IChannel;
+  canEdit: boolean;
 };
-const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
+const LinksWidget: FC<LinksWidgetProps> = ({ canEdit }) => {
   const { channelId = '' } = useParams();
   const { getApi } = usePermissions();
-  const { isChannelAdmin } = useChannelRole(channelData.id);
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const [openEditLinks, openEditLinksModal, closeEditLinksModal] = useModal(
     false,
@@ -67,7 +65,7 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
       >
         <div className="font-bold flex-auto">{t('title')}</div>
         <div className="flex items-center gap-1">
-          {isChannelAdmin && links && links.length > 0 && (
+          {canEdit && links && links.length > 0 && (
             <Icon
               name={'edit'}
               size={20}
@@ -141,7 +139,7 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
                     />
                   </div>
                 )}
-                {links.length <= maxListSize && isChannelAdmin && (
+                {links.length <= maxListSize && canEdit && (
                   <div className="w-full flex justify-center">
                     <Button
                       label={t('addLinksCTA')}
@@ -157,10 +155,7 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
                 )}
               </div>
             ) : (
-              <EmptyState
-                openModal={openAddLinkModal}
-                isAdmin={isChannelAdmin}
-              />
+              <EmptyState openModal={openAddLinkModal} canEdit={canEdit} />
             )}
           </div>
         )}
@@ -174,7 +169,7 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
           links={links}
         />
       )}
-      {isChannelAdmin && openAddLink && (
+      {canEdit && openAddLink && (
         <AddLinkModal
           open={openAddLink}
           closeModal={closeAddLinkModal}

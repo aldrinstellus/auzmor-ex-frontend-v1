@@ -335,17 +335,6 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
               )}
               <UserProfileDropdown
                 showDirectOption
-                triggerNode={
-                  <div
-                    className="rounded-[24px] font-bold border py-[7.5px] px-[16px] text-sm border-[#e5e5e5] cursor-pointer"
-                    data-testid="profile-more-cta"
-                  >
-                    {t('more')}
-                  </div>
-                }
-                id={userDetails.id}
-                role={userDetails.role}
-                status={userDetails.status}
                 isHovered={isHovered}
                 showOnHover={false}
                 className="mt-[3.5%] right-8 border border-[#e5e5e5]"
@@ -364,6 +353,15 @@ const ProfileCoverSection: FC<IProfileCoverProps> = ({
                   });
                   resendInviteMutation.mutate(userDetails?.id);
                 }}
+                permissions={[]}
+                triggerNode={
+                  <div
+                    className="rounded-[24px] font-bold border py-[7.5px] px-[16px] text-sm border-[#e5e5e5] cursor-pointer"
+                    data-testid="profile-more-cta"
+                  >
+                    {t('more')}
+                  </div>
+                }
               />
             </div>
           </div>

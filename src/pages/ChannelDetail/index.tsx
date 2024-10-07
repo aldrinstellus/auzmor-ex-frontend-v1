@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import Documents from './components/Documents';
-import Home from './components/Home';
+import ChannelHome from './components/Home';
 import ProfileSection from './components/ProfileSection';
 import Members from './components/Members';
 import { ChannelVisibilityEnum, IChannel } from 'stores/channelStore';
@@ -12,11 +12,17 @@ import Setting from './components/Settings';
 import ManageAccess from './components/ManageChannel';
 import { usePageTitle } from 'hooks/usePageTitle';
 import PrivateChannelBanner from 'components/PrivateChannel';
-import { useChannelRole } from 'hooks/useChannelRole';
 import { useTranslation } from 'react-i18next';
 import useNavigate from 'hooks/useNavigation';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
+import {
+  ChannelPermissionEnum,
+  getChannelPermissions,
+} from './components/utils/channelPermission';
+import { useChannelRole } from 'hooks/useChannelRole';
+import useRole from 'hooks/useRole';
+import useProduct from 'hooks/useProduct';
 
 export enum ChannelDetailTabsEnum {
   Home = 'HOME',
@@ -38,7 +44,10 @@ const ChannelDetail: FC<AppProps> = ({
   const { getApi } = usePermissions();
   const navigate = useNavigate();
   const { t } = useTranslation('channelDetail', { keyPrefix: 'tabs' });
-  // Navigate to 404 if channel id is missing
+  const { isChannelJoined } = useChannelRole(channelId);
+  const { isAdmin, isLearner } = useRole();
+  const { isLxp } = useProduct();
+
   if (!channelId) {
     navigate('/404');
   }
@@ -47,14 +56,20 @@ const ChannelDetail: FC<AppProps> = ({
   const useChannelDetails = getApi(ApiEnum.GetChannel);
   const { data, isLoading } = useChannelDetails(channelId!);
   const channelData: IChannel = data?.data?.result?.data || null;
-  const { isChannelJoined, isChannelAdmin } = useChannelRole(channelId!);
   const isChannelPrivate =
     channelData?.settings?.visibility === ChannelVisibilityEnum.Private;
 
-  const showRequestBtn =
-    isChannelPrivate && !!!channelData?.member && !!!channelData?.joinRequest;
   const showWithdrawBtn =
     isChannelPrivate && !!!channelData?.member && !!channelData?.joinRequest;
+
+  const permissions = getChannelPermissions(
+    isLxp,
+    isLearner,
+    channelData?.settings?.visibility || ChannelVisibilityEnum.Private,
+    isChannelJoined,
+    channelData?.member?.role,
+    isAdmin,
+  );
 
   if (isLoading && !channelData) {
     return <PageLoader />;
@@ -77,11 +92,63 @@ const ChannelDetail: FC<AppProps> = ({
       },
     );
 
-  const showBanner = () => {
-    if (showRequestBtn) {
-      return <PrivateChannelBanner channel={channelData} />;
-    } else if (showWithdrawBtn) {
-      return <PrivateChannelBanner channel={channelData} isRequested />;
+  const showBanner = (tab: ChannelDetailTabsEnum) => {
+    switch (tab) {
+      case ChannelDetailTabsEnum.Home:
+        if (permissions.includes(ChannelPermissionEnum.CanAccessHomeTab)) {
+          return false;
+        } else {
+          return (
+            <PrivateChannelBanner
+              channel={channelData}
+              isRequested={showWithdrawBtn}
+            />
+          );
+        }
+      case ChannelDetailTabsEnum.Documents:
+        if (permissions.includes(ChannelPermissionEnum.CanAccessDocumentsTab)) {
+          return false;
+        } else {
+          return (
+            <PrivateChannelBanner
+              channel={channelData}
+              isRequested={showWithdrawBtn}
+            />
+          );
+        }
+      case ChannelDetailTabsEnum.Members:
+        if (permissions.includes(ChannelPermissionEnum.CanAccessMembersTab)) {
+          return false;
+        } else {
+          return (
+            <PrivateChannelBanner
+              channel={channelData}
+              isRequested={showWithdrawBtn}
+            />
+          );
+        }
+      case ChannelDetailTabsEnum.Setting:
+        if (permissions.includes(ChannelPermissionEnum.CanAccessSettingsTab)) {
+          return false;
+        } else {
+          return (
+            <PrivateChannelBanner
+              channel={channelData}
+              isRequested={showWithdrawBtn}
+            />
+          );
+        }
+      case ChannelDetailTabsEnum.ManageAccess:
+        if (permissions.includes(ChannelPermissionEnum.CanAccessManageTab)) {
+          return false;
+        } else {
+          return (
+            <PrivateChannelBanner
+              channel={channelData}
+              isRequested={showWithdrawBtn}
+            />
+          );
+        }
     }
     return false;
   };
@@ -94,16 +161,20 @@ const ChannelDetail: FC<AppProps> = ({
       ),
       hidden: false,
       dataTestId: 'channel-home-tab',
-      tabContent: showBanner() || <Home channelData={channelData} />,
+      tabContent: showBanner(ChannelDetailTabsEnum.Home) || (
+        <ChannelHome channelData={channelData} permissions={permissions} />
+      ),
     },
     {
       id: ChannelDetailTabsEnum.Documents,
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>{t('documents')}</div>
       ),
-      hidden: !isChannelJoined,
+      hidden: !permissions.includes(
+        ChannelPermissionEnum.CanAccessDocumentsTab,
+      ),
       dataTestId: 'channel-document-tab',
-      tabContent: showBanner() || (
+      tabContent: showBanner(ChannelDetailTabsEnum.Documents) || (
         <DocumentPathProvider>
           <Documents />
         </DocumentPathProvider>
@@ -114,19 +185,25 @@ const ChannelDetail: FC<AppProps> = ({
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>{t('members')}</div>
       ),
-      hidden: !isChannelJoined && isChannelPrivate,
+      hidden: !permissions.includes(ChannelPermissionEnum.CanAccessMembersTab),
       dataTestId: 'channel-member-tab',
-      tabContent: showBanner() || <Members channelData={channelData} />,
+      tabContent: showBanner(ChannelDetailTabsEnum.Members) || (
+        <Members channelData={channelData} permissions={permissions} />
+      ),
     },
     {
       id: ChannelDetailTabsEnum.Setting,
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}> {t('settings')}</div>
       ),
-      hidden: !isChannelAdmin,
+      hidden: !permissions.includes(ChannelPermissionEnum.CanAccessSettingsTab),
       dataTestId: 'channel-setting-tab',
-      tabContent: showBanner() || (
-        <Setting isLoading={isLoading} channelData={channelData} />
+      tabContent: showBanner(ChannelDetailTabsEnum.Setting) || (
+        <Setting
+          isLoading={isLoading}
+          channelData={channelData}
+          permissions={permissions}
+        />
       ),
     },
     {
@@ -134,15 +211,21 @@ const ChannelDetail: FC<AppProps> = ({
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}> {t('manageAccess')}</div>
       ),
-      hidden: !isChannelAdmin,
+      hidden: !permissions.includes(ChannelPermissionEnum.CanAccessManageTab),
       dataTestId: 'channel-access-tab',
-      tabContent: showBanner() || <ManageAccess channelData={channelData} />,
+      tabContent: showBanner(ChannelDetailTabsEnum.ManageAccess) || (
+        <ManageAccess channelData={channelData} />
+      ),
     },
   ].filter((item) => !item.hidden);
 
   return (
     <div className="flex flex-col  w-full ">
-      <ProfileSection activeTab={activeTab} tabs={tabs} />
+      <ProfileSection
+        permissions={permissions}
+        activeTab={activeTab}
+        tabs={tabs}
+      />
     </div>
   );
 };
