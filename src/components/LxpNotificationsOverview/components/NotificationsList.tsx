@@ -72,6 +72,9 @@ export type NotificationProps = {
 const NotificationsList = forwardRef(
   ({ mentions, className }: NotificationsList, ref: any) => {
     const { data, isLoading, isError } = useGetNotifications(mentions);
+    const filterData = data?.data?.result?.data?.filter(
+      (item: any) => item.action.type != 'REACTION',
+    );
 
     return isLoading ? (
       <NotificationsOverviewSkeleton />
@@ -79,7 +82,7 @@ const NotificationsList = forwardRef(
       <div>
         {!isError && data.data?.result?.data?.length ? (
           <div className={`flex flex-col overflow-y-auto ${className}`}>
-            {data.data?.result?.data?.map(
+            {filterData?.map(
               (notification: NotificationProps, index: number) => (
                 <div key={index} onClick={() => ref?.current?.click()}>
                   <Notification

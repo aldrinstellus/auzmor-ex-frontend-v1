@@ -22,7 +22,7 @@ export const getNotificationElementContent = (
   target: Target[],
   actor: Actor,
 ): NotificationElementProps => {
-  const { t } = useTranslation('notifications');
+  const { t } = useTranslation('lxpNotifications');
   const cardContent: NotificationCardProps = {
     BottomCardContent: undefined,
     TopCardContent: undefined,
@@ -77,7 +77,9 @@ export const getNotificationElementContent = (
       actor?.fullName
         ? ` ${t(
             'receivedShoutout.content.from',
-          )} <span class="font-bold text-primary-500">${actor.fullName}</span>`
+          )} <span class="font-bold text-primary-500">${
+            actor.fullName
+          }asdsadasd</span>`
         : ''
     }. ${t('receivedShoutout.content.body')}`;
     cardContent.type = NOTIFICATION_CARD_TYPE.Content;
@@ -191,7 +193,8 @@ export const getNotificationMessage = (
   targetType: string,
   interactionCount?: number,
 ) => {
-  const { t } = useTranslation('notifications');
+  let iconName = '';
+  const { t } = useTranslation('lxpNotifications');
 
   let message =
     interactionCount && interactionCount > 1
@@ -200,20 +203,27 @@ export const getNotificationMessage = (
 
   if (targetType === TargetType[TargetType.POST]) {
     if (actionType === ActionType[ActionType.COMMENT]) {
+      iconName = 'CommentNotificationSVG';
       message += t('commentedOnPost.header');
     } else if (actionType === ActionType[ActionType.MENTION]) {
+      iconName = 'MentionInPost';
       message += t('mentionedInPost.header');
     } else if (actionType === ActionType[ActionType.REACTION]) {
       message += t('reactedToPost.header');
     } else if (actionType === ActionType.SHOUTOUT) {
+      iconName = 'starShoutOut';
       message = t('receivedShoutout.header');
     } else if (actionType === ActionType.ACKNOWLEDGEMENT_REMINDER) {
+      iconName = 'AcknowledgeAnnouncementNotificationSVG';
       message = t('sharedAnnouncement.header');
     } else if (actionType === ActionType.SCHEDULE_POST) {
+      iconName = 'SchedulePostNotificationSVG';
       message = t('postScheduled.header');
     } else if (actionType === ActionType.SCHEDULE_POST_PUBLISH) {
+      iconName = 'SchedulePostNotificationSVG';
       message = t('scheduledPostLive.header');
     } else if (actionType === ActionType.POST_PRE_PUBLISH) {
+      iconName = 'PostLiveNotificationSVG';
       message = t('postGoingLive.header');
     }
   } else if (targetType === TargetType[TargetType.TEAM]) {
@@ -222,12 +232,15 @@ export const getNotificationMessage = (
     }
   } else if (targetType === TargetType[TargetType.COMMENT]) {
     if (actionType === ActionType[ActionType.COMMENT]) {
+      iconName = 'CommentNotificationSVG';
       message += t('repliedToComment.header');
     } else if (actionType === ActionType[ActionType.MENTION]) {
+      iconName = 'MentionInComment';
       message += t('mentionedInComment.header');
     } else if (actionType === ActionType[ActionType.REACTION]) {
       message += t('reactedToComment.header');
     }
   }
-  return message;
+
+  return { message, iconName };
 };

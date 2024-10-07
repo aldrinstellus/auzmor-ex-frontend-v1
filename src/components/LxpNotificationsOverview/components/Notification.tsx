@@ -1,6 +1,6 @@
 import Avatar from 'components/Avatar';
 import { FC, ReactElement } from 'react';
-import NotificationCard from './NotificationCard';
+// import NotificationCard from './NotificationCard';
 import {
   getNotificationMessage,
   getNotificationElementContent,
@@ -15,6 +15,7 @@ import { getProfileImage } from 'utils/misc';
 import useProduct from 'hooks/useProduct';
 import LxpLogoPng from 'components/Logo/images/lxpLogo.png';
 import OfficeLogoSvg from 'components/Logo/images/OfficeLogo.svg';
+import Icon from 'components/Icon';
 
 type NotificationCardProps = NotificationProps;
 
@@ -28,18 +29,20 @@ const Notification: FC<NotificationCardProps> = ({
 }): ReactElement => {
   const { isLxp } = useProduct();
   // By Default, target is the last element in the array
+
+  // target is not needed in case of lxp
   let targetType = target[target.length - 1].type;
   // For comment notifications, target is the last but 1 element because the newly created comment is also part of the array
   if (action.type === ActionType.COMMENT && target.length > 1)
     targetType = target[target.length - 2].type;
 
-  const notificationMessage = getNotificationMessage(
+  const { message: notificationMessage, iconName } = getNotificationMessage(
     action.type,
     targetType,
     interactionCount,
   );
 
-  const { cardContent, redirect, showActor } = getNotificationElementContent(
+  const { redirect, showActor } = getNotificationElementContent(
     action,
     target,
     actor,
@@ -66,33 +69,19 @@ const Notification: FC<NotificationCardProps> = ({
   });
 
   const getNotificationHeaderMessage = () => {
-    if (action.type === ActionType.SHOUTOUT) {
-      return (
-        <>
-          <span className="font-bold">
-            {`${notificationMessage}${actor.fullName ? ' from' : ''}`}&nbsp;
-          </span>
-          {actor?.fullName ? (
-            <span className="font-bold text-primary-500">
-              {actor.fullName} {actor.status === 'INACTIVE' && '(deactivated)'}
-            </span>
-          ) : null}
-          <span className="font-bold">! 🎉🥳</span>
-        </>
-      );
-    } else if (action.type === ActionType.NEW_MEMBERS_TO_TEAM) {
-      return <span className="font-bold">{notificationMessage}</span>;
-    } else {
-      return (
-        <>
+    return (
+      <>
+        {action.type === ActionType.ACKNOWLEDGEMENT_REMINDER ? (
+          <></>
+        ) : (
           <span className="font-bold">
             {actor.fullName} {actor.status === 'INACTIVE' && '(deactivated)'}
             &nbsp;
           </span>
-          {notificationMessage}
-        </>
-      );
-    }
+        )}
+        <span dangerouslySetInnerHTML={{ __html: notificationMessage }} />
+      </>
+    );
   };
 
   const handleOnClick = () => {
@@ -103,27 +92,37 @@ const Notification: FC<NotificationCardProps> = ({
   };
 
   const showAvatar = actor?.fullName || actor?.profileImage;
-
   return (
     <Link to={redirect} onClick={handleOnClick}>
       <div
-        className={`${!isRead ? 'bg-blue-50' : 'bg-white'} p-4 cursor-pointer`}
+        className={`${
+          !isRead ? 'bg-blue-50' : 'bg-white'
+        } px-4 py-2 cursor-pointer`}
         data-testid={`notification-all-row`}
       >
         <div className="flex flex-col gap-y-2">
-          <div className="flex gap-x-2">
+          <div className="flex items-center gap-x-4">
             {/* Avatar of the actor */}
-            {showActor && showAvatar && (
-              <div className="w-fit">
-                <Avatar
-                  name={actor.fullName}
-                  image={getProfileImage(actor)}
-                  size={32}
-                />
-              </div>
+            {action.type !== ActionType.ACKNOWLEDGEMENT_REMINDER &&
+              showActor &&
+              showAvatar && (
+                <div className="relative ">
+                  <Avatar
+                    name={actor.fullName}
+                    image={getProfileImage(actor)}
+                    size={50}
+                  />
+                  <Icon
+                    name={iconName}
+                    className="absolute z-50 rounded-full  cursor-pointer bottom-0 right-0 -mr-2 -mb-2 "
+                  />
+                </div>
+              )}
+            {action.type == ActionType.ACKNOWLEDGEMENT_REMINDER && (
+              <Icon name={iconName} className="w-[50px] h-[50px]" />
             )}
             {showActor && !showAvatar && (
-              <div className="relative flex justify-center items-center rounded-full w-8 h-8 bg-primary-100">
+              <div className="relative flex justify-center items-center rounded-full w-8 h-8 bg-primary-100 flex-shrink-0">
                 <img
                   src={isLxp ? LxpLogoPng : OfficeLogoSvg}
                   alt="Office Logo"
@@ -131,29 +130,22 @@ const Notification: FC<NotificationCardProps> = ({
                 />
               </div>
             )}
-            <div className="flex flex-col">
-              <p className="text-neutral-900 text-sm">
+
+            {/* Message and Time */}
+            <div className="flex flex-col flex-grow">
+              <p className="text-neutral-900 text-sm flex-grow">
                 {getNotificationHeaderMessage()}
               </p>
               <p className="text-xs text-neutral-500 font-normal">
                 {humanizeTime(action.actedAt)}
               </p>
             </div>
-          </div>
-          {/* Content */}
-          <div className="flex items-center justify-between w-full mr-4">
-            {/* Unread indicator (blue dot) */}
-            <div className="w-2 h-2 mr-8">
-              {!isRead && <div className="bg-blue-500 w-2 h-2 rounded-full" />}
-            </div>
-            <div className="flex flex-col gap-y-2 w-full">
-              <NotificationCard
-                TopCardContent={cardContent?.TopCardContent}
-                BottomCardContent={cardContent?.BottomCardContent}
-                image={cardContent?.image}
-                type={cardContent?.type}
-              />
-            </div>
+            {/* Red dot */}
+            {!isRead && (
+              <div className="flex-shrink-0">
+                <div className="bg-primary-500 w-3 h-3 rounded-full" />
+              </div>
+            )}
           </div>
         </div>
       </div>

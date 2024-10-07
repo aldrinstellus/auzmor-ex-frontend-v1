@@ -13,6 +13,44 @@ export const learnLogout = async () => {
   await learnApiService.delete(url);
 };
 
+// get all notification
+const getLearnNotifications = async (limit = 20) => {
+  const data = await learnApiService.get(`/notifications?limit=${limit}`);
+
+  return data;
+};
+
+export const useGetLearnNotifications = (limit?: number) => {
+  return useQuery({
+    queryKey: ['get-learn-notifications'],
+    queryFn: () => getLearnNotifications(limit),
+    staleTime: 0,
+  });
+};
+
+// mark as read all notification
+export const markAllLearnNotificationsAsRead = async () => {
+  const data = await learnApiService.post(
+    `/learner/notifications/mark_all_as_read`,
+    { role: 'LEARNER' },
+  );
+  return data;
+};
+
+//get unread notification count
+const getLearnUnreadNotificationsCount = async () => {
+  const data = await learnApiService.get('/notifications/counts');
+  return data;
+};
+
+export const useGetLearnUnreadNotificationsCount = () => {
+  return useQuery({
+    queryKey: ['unread-learn-notifications-count'],
+    queryFn: () => getLearnUnreadNotificationsCount(),
+    refetchInterval: 60 * 1000,
+  });
+};
+
 export const getAllEvents = async ({
   pageParam = null,
   queryKey,
