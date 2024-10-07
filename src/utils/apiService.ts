@@ -8,11 +8,6 @@ export enum ProductEnum {
   Office = 'office',
 }
 
-const productBaseUrlMap: { [key in ProductEnum]: string } = {
-  [ProductEnum.Lxp]: process.env.REACT_APP_LXP_BACKEND_BASE_URL || '',
-  [ProductEnum.Office]: process.env.REACT_APP_OFFICE_BACKEND_BASE_URL || '',
-};
-
 export const getProduct: () => ProductEnum = () => {
   if (process.env.REACT_APP_PRODUCT === ProductEnum.Office) {
     return ProductEnum.Office;
@@ -23,10 +18,9 @@ export const getProduct: () => ProductEnum = () => {
 export class ApiService {
   instance: AxiosInstance;
 
-  constructor(product?: ProductEnum) {
-    const currentProduct = product || getProduct();
+  constructor() {
     this.instance = axios.create({
-      baseURL: productBaseUrlMap[currentProduct],
+      baseURL: process.env.REACT_APP_BACKEND_BASE_URL,
       withCredentials: true,
     });
 

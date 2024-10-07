@@ -20,7 +20,7 @@ export const useNavigateWithToken = () => {
     if (url === '/') url = '/feed';
     removeItem('redirect_post_login_to');
 
-    setItem(process.env.SESSION_KEY || 'uat', token);
+    setItem(process.env.REACT_APP_SESSION_KEY || 'uat', token);
 
     if (process.env.NODE_ENV === 'development') {
       if (token) {

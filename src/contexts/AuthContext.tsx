@@ -149,7 +149,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
     }
 
     if (token) {
-      setItem(process.env.SESSION_KEY || 'uat', token);
+      setItem(process.env.REACT_APP_SESSION_KEY || 'uat', token);
       query.delete('accessToken');
 
       const queryParams = query.toString();
@@ -163,7 +163,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
     }
 
     // if token in LS, make /me api call and update setUser
-    token = getItem(process.env.SESSION_KEY || 'uat');
+    token = getItem(process.env.REACT_APP_SESSION_KEY || 'uat');
     if (token) {
       try {
         const fetchMe = getApi(ApiEnum.GetMeApi);
