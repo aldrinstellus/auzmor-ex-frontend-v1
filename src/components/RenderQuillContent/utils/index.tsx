@@ -1,4 +1,4 @@
-import { ICreatedBy, IMention } from 'queries/post';
+import { ICreatedBy, IMention } from 'interfaces';
 import { getUserCardTooltipProps } from 'utils/misc';
 
 export const formatText = (text: string) => {

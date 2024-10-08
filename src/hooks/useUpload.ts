@@ -3,8 +3,7 @@ import apiService from 'utils/apiService';
 import axios from 'axios';
 import { useState } from 'react';
 import { getType } from 'utils/misc';
-import { IMedia } from 'contexts/CreatePostContext';
-import { EntityType } from 'queries/files';
+import { IMedia, EntityType } from 'interfaces';
 
 export enum UploadStatus {
   YetToStart = 'YET_TO_START',

@@ -5,10 +5,8 @@ import EntitySearchModal, {
   EntitySearchModalType,
 } from 'components/EntitySearchModal';
 import Tooltip from 'components/Tooltip';
-import { IGetUser } from 'queries/users';
+import { IGetUser } from 'interfaces';
 import Avatar from 'components/Avatar';
-import { addTeamMember, useSingleTeam } from 'queries/teams';
-import { useInfiniteMembers } from 'queries/users';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { useMutation } from '@tanstack/react-query';
 import { getFullName, getProfileImage } from 'utils/misc';
@@ -32,6 +30,8 @@ import useProduct from 'hooks/useProduct';
 import { usePageTitle } from 'hooks/usePageTitle';
 import { useTranslation } from 'react-i18next';
 import useNavigate from 'hooks/useNavigation';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 export interface ITeamMemberProps {}
 
@@ -47,6 +47,7 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
   const { teamId: id } = params;
   const { isAdmin } = useRole();
   const { isLxp } = useProduct();
+  const { getApi } = usePermissions();
 
   const [showTeamModal, openTeamModal, closeTeamModal] = useModal(
     undefined,
@@ -55,10 +56,14 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(searchParams.get('addMembers') === 'true', false);
 
+  const useInfiniteMembers = getApi(ApiEnum.GetMembers);
+
+  const useSingleTeam = getApi(ApiEnum.GetTeam);
   const teamDetail = useSingleTeam(id || '');
 
   const data = teamDetail?.data?.data?.result.data;
 
+  const addTeamMember = getApi(ApiEnum.AddTeamMembers);
   const addTeamMemberMutation = useMutation({
     mutationKey: ['add-team-member', id],
     mutationFn: (payload: any) => {

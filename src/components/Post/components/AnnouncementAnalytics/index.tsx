@@ -5,11 +5,12 @@ import Tabs from 'components/Tabs';
 import Acknowledged from './Acknowledged';
 import Pending from './Pending';
 import { useMutation } from '@tanstack/react-query';
-import { downloadAcknowledgementReport } from 'queries/post';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import Spinner from 'components/Spinner';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type AppProps = {
   open: boolean;
@@ -19,7 +20,7 @@ type AppProps = {
 
 const AnnouncementAnalytics: FC<AppProps> = ({ post, open, closeModal }) => {
   const { t } = useTranslation('post', { keyPrefix: 'announcementAnalytics' });
-
+  const { getApi } = usePermissions();
   const tabLabel = (label: string, isActive: boolean) => {
     return (
       <span
@@ -34,6 +35,9 @@ const AnnouncementAnalytics: FC<AppProps> = ({ post, open, closeModal }) => {
     );
   };
 
+  const downloadAcknowledgementReport = getApi(
+    ApiEnum.DownloadPostAcknowledgements,
+  );
   const exportMutation = useMutation(
     () => downloadAcknowledgementReport(post.id),
     {

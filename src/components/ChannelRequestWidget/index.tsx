@@ -8,36 +8,50 @@ import Button, { Size, Variant } from 'components/Button';
 import ChannelWidgetUserRow, {
   ChannelRequestWidgetModeEnum,
 } from './components/ChannelWidgetUser';
-import { useInfiniteChannelsRequest } from 'queries/channel';
 import { CHANNEL_MEMBER_STATUS, IChannelRequest } from 'stores/channelStore';
 import { useParams } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
-import { useChannelRole } from 'hooks/useChannelRole';
 import { useTranslation } from 'react-i18next';
+import { useShouldRender } from 'hooks/useShouldRender';
 import useNavigate from 'hooks/useNavigation';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { ChannelPermissionEnum } from 'pages/ChannelDetail/components/utils/channelPermission';
 
 export type ChannelRequestWidgetProps = {
   className?: string;
   mode?: ChannelRequestWidgetModeEnum;
+  permissions: ChannelPermissionEnum[];
 };
+
+const ID = 'ChannelRequestWidget';
 
 const ChannelRequestWidget: FC<ChannelRequestWidgetProps> = ({
   className = '',
   mode = ChannelRequestWidgetModeEnum.Feed,
+  permissions,
 }) => {
+  const shouldRender = useShouldRender(ID);
+  if (!shouldRender) {
+    return <></>;
+  }
   const { t } = useTranslation('channelDetail', {
     keyPrefix: 'channelRequestWidget',
   });
+  const { getApi } = usePermissions();
   const navigate = useNavigate();
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const [openAllRequest, openAllRequestModal, closeAllRequestModal] =
     useModal();
   const { channelId } = useParams();
 
-  const { isChannelAdmin } = useChannelRole(channelId!);
+  if (
+    channelId &&
+    !permissions.includes(ChannelPermissionEnum.CanManageChannelRequests)
+  )
+    return <></>;
 
-  if (channelId && !isChannelAdmin) return <></>;
-
+  const useInfiniteChannelsRequest = getApi(ApiEnum.GetJoinChannelRequests);
   const { data, isLoading } = useInfiniteChannelsRequest(
     channelId,
     {

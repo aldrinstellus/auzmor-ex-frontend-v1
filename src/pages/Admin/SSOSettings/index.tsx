@@ -7,11 +7,13 @@ import GSuite from 'images/Gsuite.png';
 import SAML from 'images/saml.png';
 import useModal from 'hooks/useModal';
 import ConfigureGenericSSO from './components/ConfigureGenericSSO';
-import { IdentityProvider, useGetSSO } from 'queries/organization';
+import { IdentityProvider } from 'interfaces';
 import ConfigureLDAP from './components/ConfigureLDAP';
 import Banner, { Variant } from 'components/Banner';
 import SkeletonLoader from './components/SkeletonLoader';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 enum ConfigureScreen {
   GENERIC = 'GENERIC',
@@ -46,6 +48,8 @@ const SSOSettings: FC = (): ReactElement => {
   // 4. If the user successfully integrates SSO, refetch list of SSOs
   // 5. If the user successfully deletes SSO, refetch list of SSOs.
   const { t } = useTranslation('adminSetting', { keyPrefix: 'sso' });
+  const { getApi } = usePermissions();
+  const useGetSSO = getApi(ApiEnum.GetOrganizationSSO);
   const { data, isLoading, isError } = useGetSSO();
   const [open, openModal, closeModal] = useModal(undefined, false);
   const [ssoSetting, setSsoSetting] = useState<ISSOSetting>();

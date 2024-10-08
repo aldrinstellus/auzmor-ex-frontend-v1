@@ -1,7 +1,7 @@
-import { Role } from 'utils/enum';
 import useAuth from './useAuth';
 import { useLocation } from 'react-router-dom';
 import useProduct from './useProduct';
+import { UserRole } from 'interfaces';
 
 interface IRoleProps {
   exact?: boolean;
@@ -15,14 +15,17 @@ const useRole = (
   const { pathname } = useLocation();
   const { isLxp } = useProduct();
 
-  let isAdminOrSuperAdmin = [Role.Admin, Role.SuperAdmin].includes(
-    user?.role || Role.Member,
-  );
+  let isAdminOrSuperAdmin = [
+    UserRole.Admin,
+    UserRole.PrimaryAdmin,
+    UserRole.Superadmin,
+  ].includes(user?.role || UserRole.Member);
+
   const isOwner = user?.id === userId;
   let isOwnerOrAdmin = isAdminOrSuperAdmin || user?.id === userId;
-  let isMember = user?.role === Role.Member;
-  let isAdmin = exact ? user?.role === Role.Admin : isAdminOrSuperAdmin;
-  let isSuperAdmin = user?.role === Role.SuperAdmin;
+  let isMember = user?.role === UserRole.Member;
+  let isAdmin = exact ? user?.role === UserRole.Admin : isAdminOrSuperAdmin;
+  let isSuperAdmin = user?.role === UserRole.Superadmin;
 
   // Used for lxp only
   const isLearner = pathname.split('/')[1] === 'user';

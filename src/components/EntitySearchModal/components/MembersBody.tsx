@@ -2,19 +2,23 @@ import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
-import { IDepartmentAPI, useInfiniteDepartments } from 'queries/department';
-import { ILocationAPI, useInfiniteLocations } from 'queries/location';
-import { IGetUser, useInfiniteUsers } from 'queries/users';
+import {
+  IDepartmentAPI,
+  IDesignationAPI,
+  ILocationAPI,
+  IGetUser,
+} from 'interfaces';
 import { ChangeEvent, FC, ReactNode, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import UserRow from './UserRow';
 import InfiniteSearch from 'components/InfiniteSearch';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 import useAuth from 'hooks/useAuth';
-import { IDesignationAPI, useInfiniteDesignations } from 'queries/designation';
 import NoDataFound from 'components/NoDataFound';
 import useProduct from 'hooks/useProduct';
 import { isFiltersEmpty } from 'utils/misc';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type ApiCallFunction = (queryParams: any) => any;
 interface IMembersBodyProps {
@@ -37,11 +41,12 @@ const MembersBody: FC<IMembersBodyProps> = ({
   hideCurrentUser,
   showJobTitleFilter,
   disableKey,
-  fetchUsers = useInfiniteUsers,
+  fetchUsers,
   usersQueryParams = {},
 }) => {
   const { isOffice } = useProduct();
   const { user: currentUser } = useAuth();
+  const { getApi } = usePermissions();
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedDesignations, setSelectedDesignations] = useState<string[]>(
@@ -73,25 +78,27 @@ const MembersBody: FC<IMembersBodyProps> = ({
 
   // fetch users from search input
   const debouncedSearchValue = useDebounce(memberSearch || '', 500);
+  const useInfiniteUsers = getApi(ApiEnum.GetUsers);
+  const getUsersQueryParams = {
+    q: isFiltersEmpty({
+      q: debouncedSearchValue,
+      departments:
+        selectedDepartments.length > 0
+          ? selectedDepartments.join(',')
+          : undefined,
+      locations:
+        selectedLocations.length > 0 ? selectedLocations.join(',') : undefined,
+      designations:
+        selectedDesignations.length > 0
+          ? selectedDesignations.join(',')
+          : undefined,
+      ...usersQueryParams,
+    }),
+  };
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    fetchUsers({
-      q: isFiltersEmpty({
-        q: debouncedSearchValue,
-        departments:
-          selectedDepartments.length > 0
-            ? selectedDepartments.join(',')
-            : undefined,
-        locations:
-          selectedLocations.length > 0
-            ? selectedLocations.join(',')
-            : undefined,
-        designations:
-          selectedDesignations.length > 0
-            ? selectedDesignations.join(',')
-            : undefined,
-        ...usersQueryParams,
-      }),
-    });
+    fetchUsers
+      ? fetchUsers(getUsersQueryParams)
+      : useInfiniteUsers(getUsersQueryParams);
 
   let usersData = data?.pages
     .flatMap((page: any) => {
@@ -118,6 +125,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
     departmentSearch || '',
     500,
   );
+  const useInfiniteDepartments = getApi(ApiEnum.GetDepartments);
   const {
     data: fetchedDepartments,
     isLoading: departmentLoading,
@@ -127,7 +135,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
   } = useInfiniteDepartments({
     q: debouncedDepartmentSearchValue,
   });
-  const departmentData = fetchedDepartments?.pages.flatMap((page) => {
+  const departmentData = fetchedDepartments?.pages.flatMap((page: any) => {
     return page?.data?.result?.data.map((department: IDepartmentAPI) => {
       try {
         return department;
@@ -139,6 +147,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
 
   // fetch location from search input
   const debouncedLocationSearchValue = useDebounce(locationSearch || '', 500);
+  const useInfiniteLocations = getApi(ApiEnum.GetLocations);
   const {
     data: fetchedLocations,
     isLoading: locationLoading,
@@ -148,7 +157,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
   } = useInfiniteLocations({
     q: debouncedLocationSearchValue,
   });
-  const locationData = fetchedLocations?.pages.flatMap((page) => {
+  const locationData = fetchedLocations?.pages.flatMap((page: any) => {
     return page.data.result.data.map((location: ILocationAPI) => {
       try {
         return location;
@@ -163,6 +172,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
     designationSearch || '',
     500,
   );
+  const useInfiniteDesignations = getApi(ApiEnum.GetDesignations);
   const {
     data: fetchedDesignations,
     isLoading: designationLoading,
@@ -175,7 +185,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
     },
     startFetching: !!showJobTitleFilter,
   });
-  const designationData = fetchedDesignations?.pages.flatMap((page) => {
+  const designationData = fetchedDesignations?.pages.flatMap((page: any) => {
     return page.data.result.data.map((designation: IDesignationAPI) => {
       try {
         return designation;

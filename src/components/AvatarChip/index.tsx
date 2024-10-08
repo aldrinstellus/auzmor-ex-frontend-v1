@@ -9,8 +9,7 @@ import { Link } from 'react-router-dom';
 import Tooltip, { Variant } from 'components/Tooltip';
 import { FC } from 'react';
 import UserCard from 'components/UserCard';
-import { ILocation } from 'queries/location';
-import { IProfileImage } from 'queries/post';
+import { ILocation, IProfileImage } from 'interfaces';
 import useProduct from 'hooks/useProduct';
 import { useTranslation } from 'react-i18next';
 

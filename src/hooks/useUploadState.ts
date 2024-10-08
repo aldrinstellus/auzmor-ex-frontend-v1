@@ -1,11 +1,13 @@
-import { IMedia, IMediaValidationError } from "contexts/CreatePostContext";
-import { useRef, useState } from "react";
-import { getMediaObj } from "utils/misc";
-
+import { IMediaValidationError } from 'contexts/CreatePostContext';
+import { IMedia } from 'interfaces';
+import { useRef, useState } from 'react';
+import { getMediaObj } from 'utils/misc';
 
 export const useUploadState = () => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [mediaValidationErrors, setMediaValidationErrors] = useState<IMediaValidationError[]>([]);
+  const [mediaValidationErrors, setMediaValidationErrors] = useState<
+    IMediaValidationError[]
+  >([]);
   const [media, setMedia] = useState<IMedia[]>([]);
   const [files, setFiles] = useState<File[]>([]);
 
@@ -14,5 +16,14 @@ export const useUploadState = () => {
     setFiles([...uploads]);
   };
 
-  return {inputRef, mediaValidationErrors, setMediaValidationErrors, media, setMedia, files, setFiles, setUploads}
-}
+  return {
+    inputRef,
+    mediaValidationErrors,
+    setMediaValidationErrors,
+    media,
+    setMedia,
+    files,
+    setFiles,
+    setUploads,
+  };
+};

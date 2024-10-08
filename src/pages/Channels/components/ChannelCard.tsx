@@ -17,13 +17,14 @@ import {
 import useNavigate from 'hooks/useNavigation';
 import { Variant } from 'components/IconButton';
 import { useMutation } from '@tanstack/react-query';
-import { deleteJoinChannelRequest, joinChannelRequest } from 'queries/channel';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useTranslation } from 'react-i18next';
 import queryClient from 'utils/queryClient';
 import ChannelBanner from './ChannelBanner';
 import ChannelLogo from './ChannelLogo';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface IChannelCardProps {
   channel: IChannel;
@@ -33,6 +34,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
   const { t } = useTranslation('channels');
   const updateChannel = useChannelStore((state) => state.updateChannel);
   const navigate = useNavigate();
+  const { getApi } = usePermissions();
 
   const showRequestBtn =
     channel.settings?.visibility === ChannelVisibilityEnum.Private &&
@@ -51,6 +53,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
     channelName: channel?.name,
   });
   // Join public/private channel request mutation
+  const joinChannelRequest = getApi(ApiEnum.CreateJoinChannelRequest);
   const joinChannelMutation = useMutation({
     mutationKey: ['join-public-channel-request'],
     mutationFn: (channelId: string) => joinChannelRequest(channelId),
@@ -58,7 +61,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
       failureToastConfig({
         content: t('joinRequestError'),
       }),
-    onSuccess: async (data) => {
+    onSuccess: async (data: any) => {
       successToastConfig({
         content:
           channel.settings?.visibility === ChannelVisibilityEnum.Private
@@ -74,6 +77,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
   });
 
   // Withdraw join request
+  const deleteJoinChannelRequest = getApi(ApiEnum.DeleteJoinChannelRequest);
   const withdrawJoinChannelRequest = useMutation({
     mutationKey: ['withdraw-join-request'],
     mutationFn: (joinId: string) =>

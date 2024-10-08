@@ -6,7 +6,6 @@ import { StepEnum } from '../utils';
 import 'react-data-grid/lib/styles.css';
 import DataGrid from 'react-data-grid';
 import SwitchToggle from 'components/SwitchToggle';
-import { useInfiniteImportData } from 'queries/importUsers';
 import Spinner from 'components/Spinner';
 import apiService from 'utils/apiService';
 import useModal from 'hooks/useModal';
@@ -18,6 +17,8 @@ import WaitForParse from './WaitForParse';
 import WaitForValidate from './WaitForValidate';
 import { useJobStore } from 'stores/jobStore';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type AppProps = {
   open: boolean;
@@ -33,6 +34,7 @@ enum LoaderStep {
 }
 
 const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('profile', {
     keyPrefix: 'importUser.reviewStep',
   });
@@ -45,6 +47,7 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
   const [backConfirm, showBackConfirm, closeBackConfirm] = useModal();
   const { setStep } = useJobStore();
 
+  const useInfiniteImportData = getApi(ApiEnum.GetImportData);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteImportData({
       importId,
@@ -55,10 +58,10 @@ const ReviewStep: React.FC<AppProps> = ({ open, importId, closeModal }) => {
   const _sheet = data?.pages?.[0]?.data?.result?.data?.sheets || {};
 
   const flatData: any[] = (
-    data?.pages.flatMap((page) => {
+    data?.pages.flatMap((page: any) => {
       return page?.data?.result?.data?.info.map((user: any) => user);
     }) || []
-  ).map((f, idx) => ({ idx: idx + 1, ...f }));
+  ).map((f: any, idx: number) => ({ idx: idx + 1, ...f }));
 
   const columns = [
     { key: 'idx', name: '', width: 40 },

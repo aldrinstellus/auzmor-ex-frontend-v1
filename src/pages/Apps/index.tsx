@@ -11,11 +11,6 @@ import { Variant as InputVariant, Size as InputSize } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import useModal from 'hooks/useModal';
 import AddApp from './components/AddApp';
-import {
-  useInfiniteApps,
-  useInfiniteCategories,
-  useInfiniteFeaturedApps,
-} from 'queries/apps';
 import { useAppStore } from 'stores/appStore';
 import { useDebounce } from 'hooks/useDebounce';
 import { isFiltersEmpty } from 'utils/misc';
@@ -30,13 +25,13 @@ import FilterModal, {
   FilterModalVariant,
   IChannelFilter,
 } from 'components/FilterModal';
-import { ICategory } from 'queries/category';
-import { ITeam } from 'queries/teams';
+import { ICategory, ITeam } from 'interfaces';
 import useProduct from 'hooks/useProduct';
-import { useInfiniteLearnCategory } from 'queries/learn';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from 'hooks/usePageTitle';
 import { isTrim } from 'pages/ChannelDetail/components/utils';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -94,6 +89,7 @@ const Apps: FC<IAppsProps> = () => {
     },
   });
   const { isLxp } = useProduct();
+  const { getApi } = usePermissions();
   const { apps, featuredApps } = useAppStore();
   const { isAdmin } = useRole();
   const [selectedQuickCategory, setSelectedQuickCategory] =
@@ -120,27 +116,18 @@ const Apps: FC<IAppsProps> = () => {
   const searchValue = watch('search');
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
 
-  const { data: categories } = isLxp
-    ? useInfiniteLearnCategory(
-        isFiltersEmpty({
-          limit: 3,
-        }),
-      )
-    : useInfiniteCategories(
-        isFiltersEmpty({
-          limit: 3,
-        }),
-      );
+  const useInfiniteCategories = getApi(ApiEnum.GetCategories);
+  const { data: categories } = useInfiniteCategories(
+    isFiltersEmpty({
+      limit: 3,
+    }),
+  );
 
-  const flattenCategories = categories?.pages.flatMap((page: any) => {
-    return page?.data?.result?.data.map((category: any) => {
-      try {
-        return category;
-      } catch (e) {
-        console.log('Error', { category });
-      }
-    });
-  });
+  const flattenCategories: ICategory[] = categories?.pages.flatMap(
+    (page: any) => {
+      return page?.data?.result?.data.map((category: ICategory) => category);
+    },
+  );
 
   const handleRemoveFilters = (key: AppFilterKey, id: string) => {
     const updatedFilter = {
@@ -282,6 +269,9 @@ const Apps: FC<IAppsProps> = () => {
   const categoryFilterPills = appFilters.categories.filter(
     (category) => category.id !== selectedTab,
   );
+
+  const useInfiniteApps = getApi(ApiEnum.GetApps);
+  const useInfiniteFeaturedApps = getApi(ApiEnum.GetFeaturedApps);
 
   return (
     <div>

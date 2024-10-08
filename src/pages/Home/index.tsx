@@ -3,7 +3,6 @@
 // import { useLoaderData } from 'react-router-dom';
 // import { removeAllItems } from 'utils/persist';
 // import useNavigate from 'hooks/useNavigation';
-// import { logout } from 'queries/account';
 // import Button from 'components/Button';
 
 interface IHomeProps {}

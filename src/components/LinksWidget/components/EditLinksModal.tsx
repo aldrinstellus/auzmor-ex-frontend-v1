@@ -8,11 +8,12 @@ import Button, { Size, Variant } from 'components/Button';
 import useModal from 'hooks/useModal';
 import AddLinkModal from './AddLinkModal';
 import { IChannelLink } from 'stores/channelStore';
-import { deleteChannelLinks, updateChannelLinksIndex } from 'queries/channel';
 import { useTranslation } from 'react-i18next';
 import { Reorder, useDragControls } from 'framer-motion';
 import { isTrim } from 'pages/ChannelDetail/components/utils';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface IEditLinksModalProps {
   open: boolean;
@@ -41,7 +42,7 @@ const EditLinksModal: FC<IEditLinksModalProps> = ({
   );
   const controls = useDragControls();
   const [draftLinks, setDraftLinks] = useState<IChannelLink[]>(links);
-
+  const { getApi } = usePermissions();
   useEffect(() => {
     setDraftLinks(links);
   }, [links]);
@@ -50,6 +51,8 @@ const EditLinksModal: FC<IEditLinksModalProps> = ({
   const { t } = useTranslation('channelLinksWidget', {
     keyPrefix: 'editLinksModal',
   });
+
+  const updateChannelLinksIndex = getApi(ApiEnum.UpdateChannelLinks);
   const updateLinksMutation = useMutation({
     mutationKey: ['update-channel-links-index'],
     mutationFn: (payload: IChannelLink[]) => {
@@ -62,9 +65,12 @@ const EditLinksModal: FC<IEditLinksModalProps> = ({
       closeModal();
     },
   });
+
+  const deleteChannelLink = getApi(ApiEnum.DeleteChannelLink);
   const deleteChannelMutation = useMutation({
     mutationKey: ['delete-channel-link'],
-    mutationFn: deleteChannelLinks,
+    mutationFn: (payload: { id: string; linkId: string }) =>
+      deleteChannelLink(payload),
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onError: () => {},
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

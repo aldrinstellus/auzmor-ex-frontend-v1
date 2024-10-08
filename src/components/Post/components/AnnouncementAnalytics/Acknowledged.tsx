@@ -8,10 +8,12 @@ import AvatarRowSkeleton from './AvatarRowSkeleton';
 import AvatarRow from './AvatarRow';
 import PageLoader from 'components/PageLoader';
 import Button, { Variant } from 'components/Button';
-import { IPost, useInfiniteAcknowledgements } from 'queries/post';
+import { IPost } from 'interfaces';
 import { twConfig } from 'utils/misc';
 import { useTranslation } from 'react-i18next';
 import { useFeedStore } from 'stores/feedStore';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type AppProps = {
   postId: string;
@@ -20,11 +22,13 @@ type AppProps = {
 
 const Acknowledged: FC<AppProps> = ({ postId, closeModal }) => {
   const { ref, inView } = useInView();
+  const { getApi } = usePermissions();
   const updatePost = useFeedStore((state) => state.updateFeed);
   const post = useFeedStore((state) => state.getPost)(postId);
 
+  const useInfiniteAcknowledgements = getApi(ApiEnum.GetPostAcknowledgements);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteAcknowledgements(post.id, { acknowledged: true }, (data) =>
+    useInfiniteAcknowledgements(post.id, { acknowledged: true }, (data: any) =>
       updatePost(post.id, {
         ...(post as IPost),
         acknowledgementStats: {
@@ -34,7 +38,7 @@ const Acknowledged: FC<AppProps> = ({ postId, closeModal }) => {
       }),
     );
 
-  const usersData = data?.pages.flatMap((page) =>
+  const usersData = data?.pages.flatMap((page: any) =>
     page?.data?.result?.data.map((user: any) => user),
   );
   const { t } = useTranslation('post', { keyPrefix: 'announcementAnalytics' });
@@ -89,7 +93,7 @@ const Acknowledged: FC<AppProps> = ({ postId, closeModal }) => {
             <AvatarRowSkeleton />
           ) : (
             <div>
-              {usersData?.map((user) => (
+              {usersData?.map((user: any) => (
                 <AvatarRow key={user.id} {...user} />
               ))}
             </div>

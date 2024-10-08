@@ -11,12 +11,14 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Layout, { FieldType } from 'components/Form';
-import { updateSso } from 'queries/organization';
 import { useMutation } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import queryClient from 'utils/queryClient';
 import useAuth from 'hooks/useAuth';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { IdentityProvider } from 'interfaces';
 
 type ConfigureGenericSSOProps = {
   open: boolean;
@@ -41,6 +43,7 @@ const ConfigureGenericSSO: FC<ConfigureGenericSSOProps> = ({
   ssoSetting,
 }): ReactElement => {
   const { user } = useAuth();
+  const { getApi } = usePermissions();
   const [xmlFile, setXmlFile] = useState<File[]>();
   const inputRef = useRef<HTMLInputElement>(null);
   const { control, handleSubmit, getValues, watch } = useForm<IForm>({
@@ -100,9 +103,11 @@ const ConfigureGenericSSO: FC<ConfigureGenericSSOProps> = ({
     clearInput();
   };
 
+  const updateSso = getApi(ApiEnum.UpdateOrganizationSSO);
   const updateSsoMutation = useMutation({
     mutationKey: ['update-sso-mutation'],
-    mutationFn: updateSso,
+    mutationFn: (payload: { idp: IdentityProvider; formData: FormData }) =>
+      updateSso(payload),
     onError: (error: any) => {
       console.log('Error while updating SSO: ', error);
     },

@@ -5,7 +5,7 @@ import Mention from './Mentions';
 import { getMentionProps } from '../utils';
 import Hashtag from './Hashtag';
 import Emoji from './Emoji';
-import { ICreatedBy, IMention } from 'queries/post';
+import { ICreatedBy, IMention } from 'interfaces';
 import { useTranslation } from 'react-i18next';
 
 interface IListProps {

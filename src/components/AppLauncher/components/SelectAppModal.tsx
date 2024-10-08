@@ -10,14 +10,16 @@ import PageLoader from 'components/PageLoader';
 import AppCard from './AppCard';
 import TeamNotFound from 'images/TeamNotFound.svg';
 
-import { App, useInfiniteApps } from 'queries/apps';
+import { IApp } from 'interfaces';
 import { useAppStore } from 'stores/appStore';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface ISelectAppModalProps {
   open: boolean;
   closeModal: () => void;
-  widgetApps?: App[];
+  widgetApps?: IApp[];
 }
 
 const SelectAppModal: FC<ISelectAppModalProps> = ({
@@ -29,10 +31,12 @@ const SelectAppModal: FC<ISelectAppModalProps> = ({
     keyPrefix: 'select-app-modal',
   });
   const { ref, inView } = useInView();
+  const { getApi } = usePermissions();
   const { apps } = useAppStore();
+  const useInfiniteApps = getApi(ApiEnum.GetApps);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteApps({});
-  const [selectedApps, setSelectedApps] = useState<App[]>(widgetApps || []);
+  const [selectedApps, setSelectedApps] = useState<IApp[]>(widgetApps || []);
 
   const appIds = data?.pages.flatMap((page: any) => {
     return page.data?.result?.data.map((apps: any) => {
@@ -44,7 +48,7 @@ const SelectAppModal: FC<ISelectAppModalProps> = ({
     });
   }) as { id: string }[];
 
-  const onSelect = (isSelected: boolean, app: App) => {
+  const onSelect = (isSelected: boolean, app: IApp) => {
     if (isSelected) {
       setSelectedApps((prevApps) =>
         prevApps.filter((_app) => _app.id !== app.id),

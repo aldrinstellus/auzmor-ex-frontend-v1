@@ -4,22 +4,19 @@ import PrivateChannelImage from 'images/png/PrivateChannelBanner.png';
 import Button, { Variant } from 'components/Button';
 import AvatarChips from 'components/AvatarChips';
 import { useTranslation } from 'react-i18next';
-import {
-  deleteJoinChannelRequest,
-  joinChannelRequest,
-  useInfiniteChannelMembers,
-} from 'queries/channel';
-import { Role } from 'utils/enum';
 import { IAvatarUser } from 'components/AvatarChip';
 import { useMutation } from '@tanstack/react-query';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import {
+  CHANNEL_ROLE,
   ChannelVisibilityEnum,
   IChannel,
   useChannelStore,
 } from 'stores/channelStore';
 import queryClient from 'utils/queryClient';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 const CHIPS_COUNT = 7;
 
@@ -34,14 +31,16 @@ const PrivateChannelBanner: FC<IChannelBannerProps> = ({
 }) => {
   const updateChannel = useChannelStore((action) => action.updateChannel);
   const { t } = useTranslation('channels');
+  const { getApi } = usePermissions();
+  const useInfiniteChannelMembers = getApi(ApiEnum.GetChannelMembers);
   const { data } = useInfiniteChannelMembers({
     channelId: channel.id,
     q: {
       limit: CHIPS_COUNT,
-      userRole: Role.Admin,
+      userRole: CHANNEL_ROLE.Admin,
     },
   });
-  const admins = (data?.pages.flatMap((page) => {
+  const admins = (data?.pages.flatMap((page: any) => {
     return page?.data?.result?.data.map((admin: any) => {
       try {
         return { id: admin.id, role: admin.role, ...admin.user };
@@ -52,6 +51,7 @@ const PrivateChannelBanner: FC<IChannelBannerProps> = ({
   }) || []) as IAvatarUser[];
 
   // Join public/private channel request mutation
+  const joinChannelRequest = getApi(ApiEnum.CreateJoinChannelRequest);
   const joinChannelMutation = useMutation({
     mutationKey: ['join-public-channel-request'],
     mutationFn: (channelId: string) => joinChannelRequest(channelId),
@@ -59,7 +59,7 @@ const PrivateChannelBanner: FC<IChannelBannerProps> = ({
       failureToastConfig({
         content: t('joinRequestError'),
       }),
-    onSuccess: async (data) => {
+    onSuccess: async (data: any) => {
       successToastConfig({
         content:
           channel.settings?.visibility === ChannelVisibilityEnum.Private
@@ -75,6 +75,7 @@ const PrivateChannelBanner: FC<IChannelBannerProps> = ({
   });
 
   // Withdraw join request
+  const deleteJoinChannelRequest = getApi(ApiEnum.DeleteJoinChannelRequest);
   const withdrawJoinChannelRequest = useMutation({
     mutationKey: ['withdraw-join-request'],
     mutationFn: (joinId: string) =>

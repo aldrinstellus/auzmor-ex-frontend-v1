@@ -1,5 +1,4 @@
 import Card from 'components/Card';
-import { useChannelLinksWidget } from 'queries/channel';
 import Button, { Size, Variant } from 'components/Button';
 import Icon from 'components/Icon';
 import SkeletonLoader from './components/SkeletonLoader';
@@ -12,15 +11,16 @@ import { useTranslation } from 'react-i18next';
 import AddLinkModal from './components/AddLinkModal';
 
 import { useParams } from 'react-router-dom';
-import { useChannelRole } from 'hooks/useChannelRole';
-import { IChannel, IChannelLink } from 'stores/channelStore';
+import { IChannelLink } from 'stores/channelStore';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export type LinksWidgetProps = {
-  channelData: IChannel;
+  canEdit: boolean;
 };
-const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
+const LinksWidget: FC<LinksWidgetProps> = ({ canEdit }) => {
   const { channelId = '' } = useParams();
-  const { isChannelAdmin } = useChannelRole(channelData.id);
+  const { getApi } = usePermissions();
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const [openEditLinks, openEditLinksModal, closeEditLinksModal] = useModal(
     false,
@@ -34,6 +34,7 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
 
   const { t } = useTranslation('channelLinksWidget');
 
+  const useChannelLinksWidget = getApi(ApiEnum.GetChannelLinks);
   const { data: links, isLoading } = useChannelLinksWidget(channelId);
 
   const toggleModal = () => {
@@ -64,7 +65,7 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
       >
         <div className="font-bold flex-auto">{t('title')}</div>
         <div className="flex items-center gap-1">
-          {isChannelAdmin && links && links.length > 0 && (
+          {canEdit && links && links.length > 0 && (
             <Icon
               name={'edit'}
               size={20}
@@ -96,32 +97,34 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
           <div className="w-full">
             {links && links.length ? (
               <div className="flex flex-col items-start gap-y-2">
-                {links.slice(0, maxListSize).map((link, index) => (
-                  <div
-                    key={index}
-                    className="w-full flex justify-start items-center gap-x-2 px-1 py-2 cursor-pointer group"
-                    onClick={() => handleLinkClick(link)}
-                    onKeyUp={(e) =>
-                      e.code === 'Enter' ? handleLinkClick(link) : ''
-                    }
-                    role="link"
-                    tabIndex={0}
-                  >
-                    {link.url || link.favicon ? (
-                      <img
-                        src={`https://www.google.com/s2/favicons?domain=${link.url}`}
-                        height={16}
-                        width={16}
-                        alt={`${link.title} Image`}
-                      />
-                    ) : (
-                      <Icon name="link" size={16} />
-                    )}
-                    <span className="text-sm hover:text-blue-500 group-hover:text-blue-500 hover:underline group-hover:underline">
-                      {link.title}
-                    </span>
-                  </div>
-                ))}
+                {links
+                  .slice(0, maxListSize)
+                  .map((link: IChannelLink, index: number) => (
+                    <div
+                      key={index}
+                      className="w-full flex justify-start items-center gap-x-2 px-1 py-2 cursor-pointer group"
+                      onClick={() => handleLinkClick(link)}
+                      onKeyUp={(e) =>
+                        e.code === 'Enter' ? handleLinkClick(link) : ''
+                      }
+                      role="link"
+                      tabIndex={0}
+                    >
+                      {link.url || link.favicon ? (
+                        <img
+                          src={`https://www.google.com/s2/favicons?domain=${link.url}`}
+                          height={16}
+                          width={16}
+                          alt={`${link.title} Image`}
+                        />
+                      ) : (
+                        <Icon name="link" size={16} />
+                      )}
+                      <span className="text-sm hover:text-blue-500 group-hover:text-blue-500 hover:underline group-hover:underline">
+                        {link.title}
+                      </span>
+                    </div>
+                  ))}
                 {links.length > maxListSize && (
                   <div className="w-full flex justify-center">
                     <Button
@@ -136,7 +139,7 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
                     />
                   </div>
                 )}
-                {links.length <= maxListSize && isChannelAdmin && (
+                {links.length <= maxListSize && canEdit && (
                   <div className="w-full flex justify-center">
                     <Button
                       label={t('addLinksCTA')}
@@ -152,10 +155,7 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
                 )}
               </div>
             ) : (
-              <EmptyState
-                openModal={openAddLinkModal}
-                isAdmin={isChannelAdmin}
-              />
+              <EmptyState openModal={openAddLinkModal} canEdit={canEdit} />
             )}
           </div>
         )}
@@ -169,7 +169,7 @@ const LinksWidget: FC<LinksWidgetProps> = ({ channelData }) => {
           links={links}
         />
       )}
-      {isChannelAdmin && openAddLink && (
+      {canEdit && openAddLink && (
         <AddLinkModal
           open={openAddLink}
           closeModal={closeAddLinkModal}

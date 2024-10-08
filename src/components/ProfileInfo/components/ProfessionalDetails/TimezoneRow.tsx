@@ -5,7 +5,6 @@ import SelectTimeZone from 'components/UserOnboard/components/SelectTimeZone';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { getTimezoneNameFromIANA } from 'utils/time';
-import { updateCurrentUser, updateUserById } from 'queries/users';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { getDefaultTimezoneOption } from 'components/UserOnboard/utils';
@@ -14,6 +13,8 @@ import { useParams } from 'react-router-dom';
 import useRole from 'hooks/useRole';
 import useAuth from 'hooks/useAuth';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type AppProps = {
   data: any;
@@ -21,6 +22,7 @@ type AppProps = {
 
 const TimezoneRow: FC<AppProps> = ({ data }) => {
   const { userId = '' } = useParams();
+  const { getApi } = usePermissions();
   const queryClient = useQueryClient();
   const defaultTimezone = getDefaultTimezoneOption();
   const ref = useRef<any>(null);
@@ -31,10 +33,12 @@ const TimezoneRow: FC<AppProps> = ({ data }) => {
     timeZone: yup.object(),
   });
 
+  const updateCurrentUser = getApi(ApiEnum.UpdateMe);
+  const updateUserById = getApi(ApiEnum.UpdateUser);
   const updateUserTimezoneMutation = useMutation({
     mutationFn: userId
       ? (data: any) => updateUserById(userId, data)
-      : updateCurrentUser,
+      : (data: Record<string, any>) => updateCurrentUser(data),
     mutationKey: ['update-user-timeZone-mutation'],
     onError: (_error: any) => {},
     onSuccess: async (_response: any) => {

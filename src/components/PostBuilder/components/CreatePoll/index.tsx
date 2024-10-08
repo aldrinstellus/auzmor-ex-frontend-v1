@@ -1,10 +1,6 @@
 import Header from 'components/ModalHeader';
 import { FC, useContext, useEffect } from 'react';
-import {
-  CreatePostContext,
-  CreatePostFlow,
-  IPoll,
-} from 'contexts/CreatePostContext';
+import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import Body from './Body';
 import * as yup from 'yup';
 import { FieldType } from 'components/Form';
@@ -18,7 +14,7 @@ import {
   Type,
 } from 'components/Button';
 import Button from 'components/Button';
-import { PostType } from 'queries/post';
+import { PostType, IPoll } from 'interfaces';
 import { useTranslation } from 'react-i18next';
 
 type CreatePollProps = {

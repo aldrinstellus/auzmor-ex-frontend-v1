@@ -1,10 +1,11 @@
 import React from 'react';
 import 'react-data-grid/lib/styles.css';
 import DataGrid from 'react-data-grid';
-import { useInfiniteImportResultData } from 'queries/importUsers';
 import Spinner from 'components/Spinner';
 import { titleCase } from 'utils/misc';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type AppProps = {
   importId: string;
@@ -12,10 +13,12 @@ type AppProps = {
 };
 
 const Report: React.FC<AppProps> = ({ importId, status }) => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('components', {
     keyPrefix: 'jobProgress.Report',
   });
 
+  const useInfiniteImportResultData = getApi(ApiEnum.GetImportReport);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteImportResultData({
       importId,
@@ -24,10 +27,10 @@ const Report: React.FC<AppProps> = ({ importId, status }) => {
     });
 
   const flatData: any[] = (
-    data?.pages.flatMap((page) => {
+    data?.pages.flatMap((page: any) => {
       return page?.data?.result?.data?.map((user: any) => user);
     }) || []
-  ).map((f, idx) => ({ idx: idx + 1, ...f }));
+  ).map((f: any, idx: number) => ({ idx: idx + 1, ...f }));
 
   const columns: any[] = [
     { key: 'idx', name: '', width: 40 },

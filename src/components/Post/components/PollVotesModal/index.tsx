@@ -3,7 +3,7 @@ import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import Tabs from 'components/Tabs';
 import PollVoteTab from './PollVoteTab';
-import { IPost } from 'queries/post';
+import { IPost } from 'interfaces';
 import { FC } from 'react';
 
 export interface IPollVotesModalProps {

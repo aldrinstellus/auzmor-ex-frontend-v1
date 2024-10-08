@@ -1,8 +1,10 @@
-import { IGetPollVote, useInfinitePollVotes } from 'queries/pollVotes';
 import { FC, memo, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { IGetPollVote } from 'interfaces';
 import PollVoteRow from './PollVoteRow';
 import PollVoteSkeleton from './PollVoteSkeleton';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 interface IPollVoteTabProps {
   postId: string;
   optionId?: string;
@@ -11,11 +13,13 @@ interface IPollVoteTabProps {
 
 const PollVoteTab: FC<IPollVoteTabProps> = ({ postId, optionId, limit }) => {
   const rootId = `pollvote-${postId}-${optionId}`;
+  const { getApi } = usePermissions();
   const { ref, inView } = useInView({
     root: document.getElementById(rootId),
     rootMargin: '20%',
   });
 
+  const useInfinitePollVotes = getApi(ApiEnum.GetPostPollVotes);
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useInfinitePollVotes({ postId, optionId, limit });
 

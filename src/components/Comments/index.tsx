@@ -1,17 +1,17 @@
 /* Comment RTE - Post Level Comment Editor */
 import { FC, useState } from 'react';
 import { Comment } from './components/Comment';
-import { useInfiniteComments } from 'queries/comments';
 import { DeltaStatic } from 'quill';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import { IMyReactions } from 'pages/Feed';
 import {
   ICreatedBy,
+  IMedia,
   IMention,
   IReactionsCount,
   IShoutoutRecipient,
-} from 'queries/post';
+} from 'interfaces';
 import Spinner from 'components/Spinner';
 import LoadMore from './components/LoadMore';
 import CommentSkeleton from './components/CommentSkeleton';
@@ -19,13 +19,14 @@ import { CommentsRTE } from './components/CommentsRTE';
 import Divider from 'components/Divider';
 import {
   IMG_FILE_SIZE_LIMIT,
-  IMedia,
   IMediaValidationError,
   MediaValidationError,
 } from 'contexts/CreatePostContext';
 import { useUploadState } from 'hooks/useUploadState';
 import { useFeedStore } from 'stores/feedStore';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 export const validImageTypesForComments = [
   'image/png',
@@ -75,6 +76,7 @@ const Comments: FC<CommentsProps> = ({ entityId }) => {
     t('birthday.wishes'),
   ];
   const { user } = useAuth();
+  const { getApi } = usePermissions();
   const {
     inputRef,
     media,
@@ -85,6 +87,7 @@ const Comments: FC<CommentsProps> = ({ entityId }) => {
     setMediaValidationErrors,
     setUploads,
   } = useUploadState();
+  const useInfiniteComments = getApi(ApiEnum.GetComments);
   const {
     data,
     isLoading,
@@ -101,14 +104,8 @@ const Comments: FC<CommentsProps> = ({ entityId }) => {
   const [suggestions, setSuggestions] = useState<string>('');
   const getPost = useFeedStore((state) => state.getPost);
 
-  const commentIds = data?.pages.flatMap((page) => {
-    return page.data?.result?.data.map((comment: { id: string }) => {
-      try {
-        return comment;
-      } catch (e) {
-        console.log('Error', { comment });
-      }
-    });
+  const commentIds = data?.pages.flatMap((page: any) => {
+    return page.data?.result?.data.map((comment: { id: string }) => comment);
   }) as { id: string }[];
 
   return (

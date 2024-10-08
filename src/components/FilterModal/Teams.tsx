@@ -7,10 +7,12 @@ import { FC, useEffect } from 'react';
 import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
 import { IFilterForm } from '.';
-import { ITeam, useInfiniteTeams } from 'queries/teams';
+import { ITeam } from 'interfaces';
 import AvatarList from 'components/AvatarList';
 import ItemSkeleton from './ItemSkeleton';
 import Truncate from 'components/Truncate';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface ITeamsProps {
   control: Control<IFilterForm, any>;
@@ -20,6 +22,7 @@ interface ITeamsProps {
 
 const Teams: FC<ITeamsProps> = ({ control, watch, setValue }) => {
   const { ref, inView } = useInView();
+  const { getApi } = usePermissions();
   useEffect(() => {
     if (inView) {
       fetchNextPage();
@@ -41,6 +44,7 @@ const Teams: FC<ITeamsProps> = ({ control, watch, setValue }) => {
 
   // fetch team from search input
   const debouncedTeamSearchValue = useDebounce(teamSearch || '', 300);
+  const useInfiniteTeams = getApi(ApiEnum.GetTeams);
   const {
     data: fetchedTeams,
     isLoading,
@@ -52,7 +56,7 @@ const Teams: FC<ITeamsProps> = ({ control, watch, setValue }) => {
       q: debouncedTeamSearchValue,
     },
   });
-  const teamData = fetchedTeams?.pages.flatMap((page) => {
+  const teamData = fetchedTeams?.pages.flatMap((page: any) => {
     return page.data.result.data.map((team: ITeam) => team);
   });
 

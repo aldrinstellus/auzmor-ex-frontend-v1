@@ -5,16 +5,14 @@ import Button, { Variant, Size } from 'components/Button';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import Truncate from 'components/Truncate';
-import {
-  approveChannelJoinRequest,
-  rejectChannelJoinRequest,
-} from 'queries/channel';
 import { FC, memo, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { IChannelRequest, useChannelStore } from 'stores/channelStore';
 import { getProfileImage } from 'utils/misc';
 import queryClient from 'utils/queryClient';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export enum ChannelRequestWidgetModeEnum {
   'Feed' = 'FEED',
@@ -33,6 +31,8 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
   mode = ChannelRequestWidgetModeEnum.Channel,
 }) => {
   const { channelId } = useParams();
+  const { getApi } = usePermissions();
+
   const { id, createdBy } = request;
   const { t } = useTranslation('channelDetail', {
     keyPrefix: 'channelRequestWidget',
@@ -43,6 +43,7 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
     action.getChannel,
   ]);
 
+  const approveChannelJoinRequest = getApi(ApiEnum.ApproveJoinChannelRequest);
   const approveMutation = useMutation({
     mutationKey: ['approve-channel-join-request'],
     mutationFn: () =>
@@ -66,6 +67,8 @@ const ChannelWidgetUserRow: FC<IUserRowProps> = ({
       queryClient.invalidateQueries(['channel-members'], { exact: false });
     },
   });
+
+  const rejectChannelJoinRequest = getApi(ApiEnum.RejectJoinChannelRequest);
   const rejectMutation = useMutation({
     mutationKey: ['reject-channel-join-request'],
     mutationFn: () =>

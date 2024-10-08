@@ -2,11 +2,12 @@ import React, { useEffect } from 'react';
 import Header from 'components/ModalHeader';
 import Icon from 'components/Icon';
 import { useMutation } from '@tanstack/react-query';
-import { updateParseImport } from 'queries/importUsers';
 import usePoller from '../usePoller';
 import ValidateHeaders from '../ValidateHeaders';
 import { StepEnum } from '../utils';
 import { useJobStore } from 'stores/jobStore';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type AppProps = {
   open: boolean;
@@ -22,6 +23,7 @@ const ImportingFileStep: React.FC<AppProps> = ({
   meta,
   setMeta,
 }) => {
+  const { getApi } = usePermissions();
   const { setStep } = useJobStore();
   const { ready, data, loading } = usePoller({
     importId,
@@ -29,6 +31,7 @@ const ImportingFileStep: React.FC<AppProps> = ({
     statusCheck: 'PROCESSING',
   });
 
+  const updateParseImport = getApi(ApiEnum.UpdateParseImport);
   const updateParseMutation = useMutation(() =>
     updateParseImport(importId, {}),
   );

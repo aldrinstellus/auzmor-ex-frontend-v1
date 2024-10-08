@@ -1,7 +1,5 @@
 import resolveConfig from 'tailwindcss/resolveConfig';
 import tailwindConfig from 'components/../../tailwind.config.js';
-import { IMedia } from 'contexts/CreatePostContext';
-import { validDocumentFileTypes, validImageTypes } from 'queries/files';
 import { getItem, removeItem } from './persist';
 import { DeltaStatic } from 'quill';
 import {
@@ -12,14 +10,24 @@ import DeactivatedCoverImage from 'images/deactivatedCoverPhoto.png';
 import DefaultCoverImage from 'images/png/CoverImage.png';
 import capitalize from 'lodash/capitalize';
 import DeactivatedUser from 'images/DeactivatedUser.png';
-import { EditUserSection, UserStatus } from 'queries/users';
 import { MouseEvent, MouseEventHandler } from 'react';
-import { ILocation } from 'queries/location';
-import { IDepartment } from 'queries/department';
-import { IDesignation } from 'queries/designation';
-import { IPost } from 'queries/post';
+import {
+  IMedia,
+  IPost,
+  ILocation,
+  IDepartment,
+  IDesignation,
+  UserStatus,
+  EditUserSection,
+} from 'interfaces';
 import moment from 'moment';
-import { EMPTY_REGEX, HEX_REGEX, SESSION_ID } from './constants';
+import {
+  EMPTY_REGEX,
+  HEX_REGEX,
+  SESSION_ID,
+  validDocumentFileTypes,
+  validImageTypes,
+} from './constants';
 
 export const twConfig: any = resolveConfig(tailwindConfig);
 

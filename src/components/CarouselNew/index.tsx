@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import Banner, { Variant } from 'components/Banner';
 import Icon from 'components/Icon';
-import { IMedia } from 'contexts/CreatePostContext';
+import { IMedia } from 'interfaces';
 import { FC, MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { mapRanges } from 'utils/misc';
 

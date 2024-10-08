@@ -4,7 +4,6 @@ import OnboardTimezone from 'images/onboard-timezone.png';
 import Layout, { FieldType } from 'components/Form';
 import { useForm } from 'react-hook-form';
 import Button, { Type } from 'components/Button';
-import { updateCurrentUser } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -12,6 +11,8 @@ import { getDefaultTimezoneOption } from '../utils/';
 import Banner, { Variant } from 'components/Banner';
 import { getTimezoneNameFromIANA } from 'utils/time';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type SelectTimezoneScreenProps = {
   next: () => void;
@@ -34,6 +35,7 @@ const SelectTimezoneScreen: FC<SelectTimezoneScreenProps> = ({
   dataTestId,
 }): ReactElement => {
   const defaultTimezone = getDefaultTimezoneOption();
+  const { getApi } = usePermissions();
 
   const { t } = useTranslation('components', {
     keyPrefix: 'userOnboard.SelectTimezoneScreen',
@@ -47,8 +49,9 @@ const SelectTimezoneScreen: FC<SelectTimezoneScreenProps> = ({
     resolver: yupResolver(schema),
   });
 
+  const updateCurrentUser = getApi(ApiEnum.UpdateMe);
   const updateUserTimezoneMutation = useMutation({
-    mutationFn: updateCurrentUser,
+    mutationFn: (data: Record<string, any>) => updateCurrentUser(data),
     mutationKey: ['update-user-timeZone-mutation'],
     onError: (error: any) => {
       console.log('Error while updating timezone: ', error);

@@ -2,21 +2,24 @@ import { FC } from 'react';
 import Collapse from 'components/Collapse';
 import Spinner from 'components/Spinner';
 import SwitchToggle from 'components/SwitchToggle';
-import {
-  useOrganization,
-  useUpdateLimitGlobalPostingMutation,
-} from 'queries/organization';
 import queryClient from 'utils/queryClient';
 import Divider from 'components/Divider';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 const GeneralSettings: FC = () => {
   usePageTitle('admin');
 
   const { t } = useTranslation('adminSetting');
+  const { getApi } = usePermissions();
+  const useUpdateLimitGlobalPostingMutation = getApi(
+    ApiEnum.UpdateOrganization,
+  );
   const updateLimitPostingControlsMutation =
     useUpdateLimitGlobalPostingMutation();
+  const useOrganization = getApi(ApiEnum.GetOrganization);
   const { data, isLoading } = useOrganization();
   return (
     <Collapse

@@ -4,14 +4,14 @@ import clsx from 'clsx';
 import BlurImg from 'components/Image/components/BlurImg';
 import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 
-import { App } from 'queries/apps';
+import { IApp } from 'interfaces';
 import Icon from 'components/Icon';
 import { useTranslation } from 'react-i18next';
 
 interface IAppCardProps {
-  data: App;
+  data: IApp;
   isSelected: boolean;
-  onSelect: (isSelected: boolean, app: App) => void;
+  onSelect: (isSelected: boolean, app: IApp) => void;
   disabled: boolean;
 }
 

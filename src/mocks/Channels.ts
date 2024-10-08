@@ -1,4 +1,4 @@
-import { IGetUser, UserStatus } from 'queries/users';
+import { IGetUser, UserRole, UserStatus } from 'interfaces';
 import {
   CHANNEL_MEMBER_STATUS,
   CHANNEL_ROLE,
@@ -7,7 +7,6 @@ import {
   IChannelLink,
   IChannelRequest,
 } from 'stores/channelStore';
-import { Role } from 'utils/enum';
 
 export const admins = [
   {
@@ -42,7 +41,7 @@ export const dummyChannels: IChannel[] = [
       id: '6465d142c62ae5de85d33b83',
       name: 'Dhruvin Modi',
       email: 'dhruvinmodi2015@gmail.com',
-      role: Role.SuperAdmin,
+      role: UserRole.Superadmin,
       organization: {
         domain: 'incendia',
         id: '6465d142c62ae5de85d33b81',
@@ -73,7 +72,7 @@ export const dummyChannels: IChannel[] = [
       id: '6465d142c62ae5de85d33b83',
       name: 'Dhruvin Modi',
       email: 'dhruvinmodi2015@gmail.com',
-      role: Role.SuperAdmin,
+      role: UserRole.Superadmin,
       organization: {
         domain: 'incendia',
         id: '6465d142c62ae5de85d33b81',
@@ -104,7 +103,7 @@ export const dummyChannels: IChannel[] = [
       id: '6465d142c62ae5de85d33b83',
       name: 'Dhruvin Modi',
       email: 'dhruvinmodi2015@gmail.com',
-      role: Role.SuperAdmin,
+      role: UserRole.Superadmin,
       organization: {
         domain: 'incendia',
         id: '6465d142c62ae5de85d33b81',
@@ -136,7 +135,7 @@ export const dummyChannels: IChannel[] = [
       id: '6465d142c62ae5de85d33b83',
       name: 'Dhruvin Modi',
       email: 'dhruvinmodi2015@gmail.com',
-      role: Role.SuperAdmin,
+      role: UserRole.Superadmin,
       organization: {
         domain: 'incendia',
         id: '6465d142c62ae5de85d33b81',
@@ -174,7 +173,7 @@ export const dummyChannels: IChannel[] = [
       id: '6465d142c62ae5de85d33b83',
       name: 'Dhruvin Modi',
       email: 'dhruvinmodi2015@gmail.com',
-      role: Role.SuperAdmin,
+      role: UserRole.Superadmin,
       organization: {
         domain: 'incendia',
         id: '6465d142c62ae5de85d33b81',
@@ -205,7 +204,7 @@ export const dummyChannels: IChannel[] = [
       id: '6465d142c62ae5de85d33b83',
       name: 'Dhruvin Modi',
       email: 'dhruvinmodi2015@gmail.com',
-      role: Role.SuperAdmin,
+      role: UserRole.Superadmin,
       organization: {
         domain: 'incendia',
         id: '6465d142c62ae5de85d33b81',
@@ -244,7 +243,7 @@ export const dummyChannels: IChannel[] = [
       id: '6465d142c62ae5de85d33b83',
       name: 'Dhruvin Modi',
       email: 'dhruvinmodi2015@gmail.com',
-      role: Role.SuperAdmin,
+      role: UserRole.Superadmin,
       organization: {
         domain: 'incendia',
         id: '6465d142c62ae5de85d33b81',
@@ -283,7 +282,7 @@ export const dummyChannels: IChannel[] = [
       id: '6465d142c62ae5de85d33b83',
       name: 'Dhruvin Modi',
       email: 'dhruvinmodi2015@gmail.com',
-      role: Role.SuperAdmin,
+      role: UserRole.Superadmin,
       organization: {
         domain: 'incendia',
         id: '6465d142c62ae5de85d33b81',

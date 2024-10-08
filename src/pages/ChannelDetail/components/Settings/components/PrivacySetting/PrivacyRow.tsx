@@ -6,9 +6,10 @@ import InfoRow from 'components/ProfileInfo/components/InfoRow';
 import Layout, { FieldType } from 'components/Form';
 import { IRadioListOption } from 'components/RadioGroup';
 import { ChannelVisibilityEnum, IChannel } from 'stores/channelStore';
-import { updateChannel } from 'queries/channel';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type AppProps = {
   data: IChannel;
@@ -22,6 +23,8 @@ const PrivacyRow: FC<AppProps> = ({ data, canEdit }) => {
   });
   const queryClient = useQueryClient();
 
+  const { getApi } = usePermissions();
+  const updateChannel = getApi(ApiEnum.UpdateChannel);
   const updateChannelMutation = useMutation({
     mutationKey: ['update-channel-mutation'],
     mutationFn: (data: any) => updateChannel(channelId, data),

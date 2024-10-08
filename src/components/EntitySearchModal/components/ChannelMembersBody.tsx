@@ -2,13 +2,12 @@ import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
-import { IGetUser, useInfiniteUsers, UserStatus } from 'queries/users';
 import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import InfiniteSearch from 'components/InfiniteSearch';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 import NoDataFound from 'components/NoDataFound';
-import { ITeam, useInfiniteTeams } from 'queries/teams';
+import { ITeam, IGetUser, UserStatus } from 'interfaces';
 import {
   enumToTitleCase,
   getFullName,
@@ -25,6 +24,8 @@ import { CHANNEL_ROLE } from 'stores/channelStore';
 import { TeamRowVariant } from './TeamRow';
 import { IBypeople, IStatus } from 'components/FilterModal';
 import { ByPeopleEnum } from 'components/FilterModal/ByPeople';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 interface IMembersBodyProps {
   dataTestId?: string;
   fetchUsers?: (queryParams: any) => any;
@@ -33,9 +34,10 @@ interface IMembersBodyProps {
 
 const ChannelMembersBody: FC<IMembersBodyProps> = ({
   dataTestId,
-  fetchUsers = useInfiniteUsers,
+  fetchUsers,
   usersQueryParams = {},
 }) => {
+  const { getApi } = usePermissions();
   const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
   const [selectedUserStatus, setUserSelectedStatus] = useState<string[]>([]);
   const [selectedByPeople, setSelectedByPeople] = useState<string[]>([]);
@@ -90,13 +92,8 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
   );
   // fetch users from search input
   const debouncedSearchValue = useDebounce(memberSearch || '', 500);
-  const {
-    data: fetchedUsers,
-    isLoading: userLoading,
-    isFetchingNextPage: isFetchingNextUserPage,
-    fetchNextPage: fetchNextUserPage,
-    hasNextPage: hasNextUserPage,
-  } = fetchUsers({
+  const useInfiniteUsers = getApi(ApiEnum.GetUsers);
+  const getUsersQueryParams = {
     q: {
       q: debouncedSearchValue,
       userTeam: selectedTeams.length > 0 ? selectedTeams.join(',') : undefined,
@@ -109,7 +106,16 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
           : undefined,
       ...usersQueryParams,
     },
-  });
+  };
+  const {
+    data: fetchedUsers,
+    isLoading: userLoading,
+    isFetchingNextPage: isFetchingNextUserPage,
+    fetchNextPage: fetchNextUserPage,
+    hasNextPage: hasNextUserPage,
+  } = fetchUsers
+    ? fetchUsers(getUsersQueryParams)
+    : useInfiniteUsers(getUsersQueryParams);
 
   let usersData: IGetUser[] =
     fetchedUsers?.pages
@@ -132,7 +138,7 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
 
   // fetch teams data
   const debouncedTeamSearchValue = useDebounce(teamSearch || '', 500);
-
+  const useInfiniteTeams = getApi(ApiEnum.GetTeams);
   const {
     data: fetchedTeams,
     isLoading: teamLoading,
@@ -147,17 +153,11 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
 
   let teamsData: ITeam[] =
     fetchedTeams?.pages
-      .flatMap((page) => {
-        return page?.data?.result?.data.map((team: ITeam) => {
-          try {
-            return team;
-          } catch (e) {
-            console.log('Error', { team });
-          }
-        });
+      .flatMap((page: any) => {
+        return page?.data?.result?.data.map((team: ITeam) => team);
       })
       .filter(Boolean)
-      .filter((team) => {
+      .filter((team: ITeam) => {
         if (showSelectedMembers) {
           return !!channelMembers?.teams[team.id];
         }
@@ -176,14 +176,8 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
   });
 
   const _teamsData: ITeam[] =
-    _fetchedTeams?.pages.flatMap((page) => {
-      return page?.data?.result?.data.map((team: ITeam) => {
-        try {
-          return team;
-        } catch (e) {
-          console.log('Error', { team });
-        }
-      });
+    _fetchedTeams?.pages.flatMap((page: any) => {
+      return page?.data?.result?.data.map((team: ITeam) => team);
     }) || [];
 
   const { ref, inView } = useInView({

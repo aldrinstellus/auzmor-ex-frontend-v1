@@ -1,7 +1,7 @@
 import TeamWork from 'images/teamwork.svg';
 import AvatarList from 'components/AvatarList';
 import Icon from 'components/Icon';
-import { ITeam } from 'queries/teams';
+import { ITeam } from 'interfaces';
 import { FC } from 'react';
 import truncate from 'lodash/truncate';
 

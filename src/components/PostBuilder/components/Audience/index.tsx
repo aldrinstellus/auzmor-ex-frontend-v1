@@ -5,10 +5,8 @@ import Footer from './Footer';
 import AudienceSelector from 'components/AudienceSelector';
 import { useForm } from 'react-hook-form';
 import { IAudienceForm } from 'components/EntitySearchModal';
-import { AudienceEntityType, IAudience } from 'queries/post';
+import { AudienceEntityType, IAudience, IGetUser } from 'interfaces';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
-import { IGetUser } from 'queries/users';
-
 interface IAudienceProps {
   closeModal: () => void;
   dataTestId?: string;

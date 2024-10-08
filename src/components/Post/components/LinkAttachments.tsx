@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { LinkAttachment } from 'queries/post';
+import { LinkAttachment } from 'interfaces';
 import { ProductEnum } from 'utils/apiService';
 import { getItem } from 'utils/persist';
 import Icon from 'components/Icon';
@@ -9,16 +9,16 @@ interface ILinkAttachmentsProps {
   attachments: LinkAttachment[];
 }
 
-const learnBaseUrl =
-  getItem(`${ProductEnum.Learn}RegionUrl`) ||
-  process.env.REACT_APP_LEARN_BACKEND_BASE_URL;
+const lxpBaseUrl =
+  getItem(`${ProductEnum.Lxp}RegionUrl`) ||
+  process.env.REACT_APP_LXP_BACKEND_BASE_URL;
 
 export const downloadAttachment = (
   attachmentId: string,
   name = 'excel',
   onlyTargetBlank = false,
 ) => {
-  const downloadUrl = `${learnBaseUrl}/attachments/${attachmentId}/download?auth_token=${getItem(
+  const downloadUrl = `${lxpBaseUrl}/attachments/${attachmentId}/download?auth_token=${getItem(
     'uat',
   )}`;
   //@ts-ignore
@@ -33,8 +33,8 @@ export const downloadAttachment = (
   }
 };
 
-const getAuthLearnUrl = (attachmentId: string) =>
-  `${learnBaseUrl}/attachments/${attachmentId}/preview?auth_token=${getItem(
+const getAuthLxpUrl = (attachmentId: string) =>
+  `${lxpBaseUrl}/attachments/${attachmentId}/preview?auth_token=${getItem(
     'uat',
   )}&t=${moment()}`;
 
@@ -70,7 +70,7 @@ const getIconName = (title: string): string => {
 const LinkAttachments: FC<ILinkAttachmentsProps> = ({ attachments }) => {
   const handleAttachmentClick = (each: LinkAttachment) => {
     const attachmentId = each.url.split('/attachments/')[1].split('/')[0];
-    const previewUrl = getAuthLearnUrl(attachmentId);
+    const previewUrl = getAuthLxpUrl(attachmentId);
 
     if (isExcelRegex.test(each.title)) {
       downloadAttachment(

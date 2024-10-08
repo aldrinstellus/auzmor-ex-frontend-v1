@@ -4,16 +4,22 @@ import { useShouldRender } from 'hooks/useShouldRender';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getLearnUrl } from 'utils/misc';
-import { useGetEvaluation } from 'queries/learn';
 import EvaluationRequestRow from './Component/EvaluationRequestRow';
 import Card from 'components/Card';
 import EmptyState from './Component/EmptyState';
 import Skeleton from 'react-loading-skeleton';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 const ID = 'EvaluationRequestWidget';
 
-const EvaluationRequestWidget = (className = '') => {
+export interface IEvaluationRequestWidgetProps {
+  className?: string;
+}
+
+const EvaluationRequestWidget = ({ className = '' }) => {
   const shouldRender = useShouldRender(ID);
+  const { getApi } = usePermissions();
 
   if (!shouldRender) {
     return <></>;
@@ -25,7 +31,8 @@ const EvaluationRequestWidget = (className = '') => {
 
   const modules = ['Course', 'Event'];
 
-  const { data, isLoading } = useGetEvaluation({
+  const useGetEvaluations = getApi(ApiEnum.GetEvaluations);
+  const { data, isLoading } = useGetEvaluations({
     q: '',
     status: 'PENDING',
     modules: modules?.map((each) => each).join(','),
@@ -40,14 +47,17 @@ const EvaluationRequestWidget = (className = '') => {
   );
   const totalCount = data?.result?.total_records;
 
+  const widgetTitle = (
+    <p className="flex">
+      {t('pendingEvaluation')} &#40;&nbsp;
+      {isLoading ? <Skeleton count={1} className="!w-8 h-5" /> : totalCount}
+      &nbsp;&#41;
+    </p>
+  );
   return (
     <div className={style}>
       <div className="flex justify-between items-center ">
-        <div className="text-base font-bold">
-          {t('pendingEvaluation')} &#40;&nbsp;
-          {isLoading ? <Skeleton count={1} className="!w-8 h-5" /> : totalCount}
-          &nbsp;&#41;
-        </div>
+        <div className="text-base font-bold leading-6">{widgetTitle}</div>
         <Button
           variant={Variant.Secondary}
           label={t('viewAll')}

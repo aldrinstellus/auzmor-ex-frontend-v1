@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 import useMediaQuery from 'hooks/useMediaQuery';
 import { CELEBRATION_TYPE } from 'components/CelebrationWidget';
 import { FeedModeEnum } from 'stores/feedStore';
+import useProduct from 'hooks/useProduct';
 
 interface IHomeFeedProps {}
 
@@ -31,15 +32,22 @@ export interface IMyReactions {
 
 const HomeFeed: FC<IHomeFeedProps> = () => {
   const { pathname } = useLocation();
-  const bookmarks = pathname === '/bookmarks' || pathname === '/user/bookmarks';
+
+  const bookmarks = pathname === '/bookmarks' || pathname == '/user/bookmarks';
   const scheduled =
-    pathname === '/scheduledPosts' || pathname === '/user/scheduledPosts';
+    pathname === '/scheduledPosts' || pathname == '/user/scheduledPosts';
+  const announcements =
+    pathname === '/announcements' || pathname == '/user/announcements';
+
+  const { isOffice } = useProduct();
 
   // Set page title
   if (scheduled) {
     usePageTitle('scheduledPosts');
   } else if (bookmarks) {
     usePageTitle('bookmarks');
+  } else if (announcements) {
+    usePageTitle('announcements');
   } else {
     usePageTitle('feed');
   }
@@ -57,11 +65,11 @@ const HomeFeed: FC<IHomeFeedProps> = () => {
       ]}
       rightWidgets={[
         WidgetEnum.ProgressTracker,
-        WidgetEnum.ChannelRequest,
         WidgetEnum.CelebrationBirthday,
         WidgetEnum.CelebrationAnniversary,
         WidgetEnum.Event,
         WidgetEnum.AnnouncementCard,
+        WidgetEnum.ChannelRequest,
         WidgetEnum.EvaluationRequestWidget,
       ]}
       widgetProps={{
@@ -78,6 +86,9 @@ const HomeFeed: FC<IHomeFeedProps> = () => {
           className: 'sticky top-24',
         },
         [WidgetEnum.AnnouncementCard]: {
+          className: isOffice ? 'sticky top-24' : ' ',
+        },
+        [WidgetEnum.EvaluationRequestWidget]: {
           className: 'sticky top-24',
         },
       }}

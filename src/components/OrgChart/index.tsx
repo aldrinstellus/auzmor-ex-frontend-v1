@@ -3,10 +3,12 @@ import Toolbar from './components/Toolbar';
 import Chart, { INode } from './components/Chart';
 import { OrgChart } from 'd3-org-chart';
 import { useForm } from 'react-hook-form';
-import { IGetUser, useOrgChart } from 'queries/users';
+import { IGetUser } from 'interfaces';
 import { IAppliedFilters } from 'components/FilterModal';
 import { isFiltersEmpty } from 'utils/misc';
 import { useOrgChartStore } from 'stores/orgChartStore';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export const MIN_ZOOM = 0.2;
 export const MAX_ZOOM = 2;
@@ -34,6 +36,7 @@ export interface IZoom {
 }
 
 const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
+  const { getApi } = usePermissions();
   const [activeMode, setActiveMode] = useState<OrgChartMode>(
     OrgChartMode.Overall,
   );
@@ -49,6 +52,7 @@ const OrganizationChart: FC<IOrgChart> = ({ setShowOrgChart }) => {
   });
   const [parentId, setParentId] = useState<string | null>(null);
   const [showLoader, setShowLoader] = useState(false);
+  const useOrgChart = getApi(ApiEnum.GetOrganizationChart);
   const {
     data,
     isLoading: isDataLoading,

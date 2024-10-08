@@ -3,7 +3,7 @@ import EntitySearchModalBody from 'components/EntitySearchModal/components/Entit
 import { EntitySearchModalType } from 'components/EntitySearchModal';
 import Icon from 'components/Icon';
 import Avatar from 'components/Avatar';
-import { IGetUser, UserStatus } from 'queries/users';
+import { IGetUser, UserStatus } from 'interfaces';
 import DynamicImagePreview from 'components/DynamicImagePreview';
 import { SHOUTOUT_STEPS } from '.';
 import { getProfileImage, isFiltersEmpty } from 'utils/misc';

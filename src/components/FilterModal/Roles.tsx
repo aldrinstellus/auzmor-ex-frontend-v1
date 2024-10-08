@@ -6,8 +6,8 @@ import { FC } from 'react';
 import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { IFilterForm, IRole } from '.';
 import { titleCase } from 'utils/misc';
-import { Role } from 'utils/enum';
 import Truncate from 'components/Truncate';
+import { UserRole } from 'interfaces';
 
 interface IStatusProps {
   control: Control<IFilterForm, any>;
@@ -32,8 +32,8 @@ const Roles: FC<IStatusProps> = ({ control, watch, setValue }) => {
 
   const debouncedRoleSearchValue = useDebounce(roleSearch || '', 300);
   const roleData: IRole[] = [
-    { id: Role.Member, name: titleCase(Role.Member) },
-    { id: Role.Admin, name: titleCase(Role.Admin) },
+    { id: UserRole.Member, name: titleCase(UserRole.Member) },
+    { id: UserRole.Admin, name: titleCase(UserRole.Admin) },
   ].filter((value) =>
     value.name.toLowerCase().includes(debouncedRoleSearchValue.toLowerCase()),
   );

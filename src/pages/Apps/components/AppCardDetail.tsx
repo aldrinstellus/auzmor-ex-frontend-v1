@@ -5,7 +5,7 @@ import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import useRole from 'hooks/useRole';
-import { App } from 'queries/apps';
+import { IApp } from 'interfaces';
 import AppDetailSVG from './../../../images/appDetails.svg';
 import { FC } from 'react';
 import DefaultAppIcon from 'images/DefaultAppIcon.svg';
@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import Truncate from 'components/Truncate';
 
 type AppDetailModalProps = {
-  app: App;
+  app: IApp;
   open: boolean;
   closeModal: () => void;
   openEditAppModal: () => void;

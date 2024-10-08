@@ -12,7 +12,7 @@ import Image from 'components/Image';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
 import useCarousel from 'hooks/useCarousel';
-import { IMedia } from 'contexts/CreatePostContext';
+import { IMedia } from 'interfaces';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import Banner, { Variant } from 'components/Banner';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';

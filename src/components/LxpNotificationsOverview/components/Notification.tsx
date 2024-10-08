@@ -7,7 +7,6 @@ import {
 } from '../utils';
 import { ActionType, NotificationProps } from './NotificationsList';
 import { useMutation } from '@tanstack/react-query';
-import { markNotificationAsReadById } from 'queries/notifications';
 import queryClient from 'utils/queryClient';
 import { Link } from 'react-router-dom';
 import { humanizeTime } from 'utils/time';
@@ -15,6 +14,8 @@ import { getProfileImage } from 'utils/misc';
 import useProduct from 'hooks/useProduct';
 import LxpLogoPng from 'components/Logo/images/lxpLogo.png';
 import OfficeLogoSvg from 'components/Logo/images/OfficeLogo.svg';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type NotificationCardProps = NotificationProps;
 
@@ -27,6 +28,7 @@ const Notification: FC<NotificationCardProps> = ({
   interactionCount,
 }): ReactElement => {
   const { isLxp } = useProduct();
+  const { getApi } = usePermissions();
   // By Default, target is the last element in the array
   let targetType = target[target.length - 1].type;
   // For comment notifications, target is the last but 1 element because the newly created comment is also part of the array
@@ -45,9 +47,10 @@ const Notification: FC<NotificationCardProps> = ({
     actor,
   );
 
+  const markNotificationAsReadById = getApi(ApiEnum.MarkNotificationAsRead);
   const markNotificationAsReadMutation = useMutation({
     mutationKey: ['mark-notification-as-read'],
-    mutationFn: markNotificationAsReadById,
+    mutationFn: (id: string) => markNotificationAsReadById(id),
     onSuccess: (response) => {
       console.log(
         'Notification successfully marked as read: ',

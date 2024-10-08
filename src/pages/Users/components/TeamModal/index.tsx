@@ -4,7 +4,6 @@ import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import AddTeams from './AddTeams';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createTeams, updateTeam } from 'queries/teams';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -14,6 +13,8 @@ import { FC } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import useNavigate from 'hooks/useNavigation';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export interface ITeamForm {
   name: string;
@@ -37,6 +38,7 @@ const TeamModal: FC<IAddTeamModalProps> = ({
   team,
 }) => {
   const { t } = useTranslation('profile', { keyPrefix: 'teamModal' });
+  const { getApi } = usePermissions();
 
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
@@ -68,9 +70,14 @@ const TeamModal: FC<IAddTeamModalProps> = ({
     },
   });
 
+  const createTeam = getApi(ApiEnum.CreateTeam);
   const createTeamMutation = useMutation({
     mutationKey: ['create-teams'],
-    mutationFn: createTeams,
+    mutationFn: (payload: {
+      name: string;
+      category: string;
+      description: string;
+    }) => createTeam(payload),
     onError: (error: any) => {
       if (error?.response?.data?.errors?.length) {
         setError('name', {
@@ -94,6 +101,7 @@ const TeamModal: FC<IAddTeamModalProps> = ({
     },
   });
 
+  const updateTeam = getApi(ApiEnum.UpdateTeam);
   const updateTeamMutation = useMutation({
     mutationKey: ['update-team', team?.id],
     mutationFn: (payload: any) => {

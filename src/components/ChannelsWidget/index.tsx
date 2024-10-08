@@ -6,9 +6,10 @@ import useModal from 'hooks/useModal';
 import useNavigate from 'hooks/useNavigation';
 import ChannelRow from './components/ChannelRow';
 import { useTranslation } from 'react-i18next';
-import { useInfiniteChannels } from 'queries/channel';
 import { isFiltersEmpty } from 'utils/misc';
 import ChannelSkeleton from './components/skeletons/ChannelsWidgetSkeleton';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface IChannelsProps {
   channelData?: any;
@@ -18,11 +19,13 @@ const ChannelsWidget: FC<IChannelsProps> = ({}) => {
   const { t } = useTranslation('channels');
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const navigate = useNavigate();
+  const { getApi } = usePermissions();
 
   const toggleModal = () => {
     if (open) closeCollapse();
     else openCollpase();
   };
+  const useInfiniteChannels = getApi(ApiEnum.GetChannels);
   const { data, channels, isLoading } = useInfiniteChannels(
     isFiltersEmpty({
       limit: 2,
@@ -31,7 +34,7 @@ const ChannelsWidget: FC<IChannelsProps> = ({}) => {
 
   const channelIds =
     (data?.pages.flatMap(
-      (page) =>
+      (page: any) =>
         page?.data?.result?.data.map((channel: { id: string }) => channel) ||
         [],
     ) as { id: string }[]) || [];

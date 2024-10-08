@@ -43,7 +43,7 @@ import Poll, { PollMode } from 'components/Poll';
 import { PostBuilderMode } from 'components/PostBuilder';
 import useModal from 'hooks/useModal';
 import ConfirmationBox from 'components/ConfirmationBox';
-import { PostType } from 'queries/post';
+import { PostType } from 'interfaces';
 
 export interface IEditorContentChanged {
   text: string;

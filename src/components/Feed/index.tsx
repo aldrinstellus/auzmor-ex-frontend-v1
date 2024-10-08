@@ -18,8 +18,7 @@ import {
   PostFilterPreference,
   PostType,
   PostTypeMapping,
-  useInfiniteFeed,
-} from 'queries/post';
+} from 'interfaces';
 import { useTranslation } from 'react-i18next';
 import { useInView } from 'react-intersection-observer';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
@@ -49,7 +48,6 @@ import MembersWidget, {
 } from 'pages/ChannelDetail/components/MembersWidget';
 import AdminsWidget from 'pages/ChannelDetail/components/AdminsWidget';
 import { IChannel } from 'stores/channelStore';
-import { useGetRecommendation } from 'queries/learn';
 import useAuth from 'hooks/useAuth';
 import Recommendation from 'components/Recommendation';
 import ChannelsWidget from 'components/ChannelsWidget';
@@ -67,8 +65,14 @@ import Welcome from 'pages/ChannelDetail/components/Home/Welcome';
 import FinishSetup from 'pages/ChannelDetail/components/Home/FinishSetup';
 import Congrats from 'pages/ChannelDetail/components/Home/Congrats';
 import { IS_PROD } from 'utils/constants';
-import EvaluationRequestWidget from 'components/EvaluationRequestWidget';
+import EvaluationRequestWidget, {
+  IEvaluationRequestWidgetProps,
+} from 'components/EvaluationRequestWidget';
+import { CreatePostFlow } from 'contexts/CreatePostContext';
 import useProduct from 'hooks/useProduct';
+import AnnouncementFeedHeader from './components/AnnouncementFeedHeader';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 const EmptyWidget = () => <></>;
 
@@ -128,7 +132,7 @@ interface IFeedProps {
     [WidgetEnum.CelebrationAnniversary]?: ICelebrationWidgetProps;
     [WidgetEnum.Event]?: IEventWidgetProps;
     [WidgetEnum.AnnouncementCard]?: IAnnouncementCardProps;
-    [WidgetEnum.EvaluationRequestWidget]?: null;
+    [WidgetEnum.EvaluationRequestWidget]?: IEvaluationRequestWidgetProps;
   };
   modeProps?: {
     [FeedModeEnum.Default]?: {
@@ -175,16 +179,21 @@ const Feed: FC<IFeedProps> = ({
   const [searchParams] = useSearchParams();
   const currentDate = new Date().toISOString();
   const { isLxp } = useProduct();
+  const { getApi } = usePermissions();
   const [appliedFeedFilters, setAppliedFeedFilters] = useState<IPostFilters>({
     [PostFilterKeys.PostType]: [],
     [PostFilterKeys.PostPreference]: [],
   });
+  const [customActiveFlow, setCustomActiveFlow] = useState<CreatePostFlow>(
+    CreatePostFlow.CreatePost,
+  );
   const { getScrollTop, pauseRecordingScrollTop, resumeRecordingScrollTop } =
     useScrollTop('app-shell-container');
 
   const hashtag = searchParams.get('hashtag') || '';
   let bookmarks = false;
   let scheduled = false;
+  let announcements = false;
   let apiEndpoint = '/feed';
 
   if (isLxp) {
@@ -193,6 +202,8 @@ const Feed: FC<IFeedProps> = ({
         bookmarks = pathname === '/bookmarks' || pathname === '/user/bookmarks';
         scheduled =
           pathname === '/scheduledPosts' || pathname === '/user/scheduledPosts';
+        announcements =
+          pathname === '/announcements' || pathname === '/user/announcements';
         break;
       case FeedModeEnum.Channel:
         bookmarks =
@@ -220,6 +231,7 @@ const Feed: FC<IFeedProps> = ({
       case FeedModeEnum.Default:
         bookmarks = pathname === '/bookmarks';
         scheduled = pathname === '/scheduledPosts';
+        announcements = pathname === '/announcements';
         break;
       case FeedModeEnum.Channel:
         bookmarks =
@@ -239,8 +251,10 @@ const Feed: FC<IFeedProps> = ({
   if (bookmarks) {
     apiEndpoint = '/bookmarks';
   }
+  if (announcements) {
+    apiEndpoint = `/announcements`;
+  }
   if (scheduled) apiEndpoint = '/scheduledPosts';
-
   //handle scroll
   useEffect(() => {
     if (hashtag) {
@@ -286,13 +300,18 @@ const Feed: FC<IFeedProps> = ({
   }, [hashtag]);
 
   // Learn data
+  const useGetRecommendations = getApi(ApiEnum.GetRecommendations);
   const { data: recommendationData, isLoading: recommendationLoading } =
-    useGetRecommendation(mode === FeedModeEnum.Default);
+    isLxp &&
+    useGetRecommendations({
+      enabled: isLxp && mode === FeedModeEnum.Default,
+    });
   const trendingCards =
     recommendationData?.data?.result?.data?.trending?.trainings || [];
   const recentlyPublishedCards =
     recommendationData?.data?.result?.data?.recently_published?.trainings || [];
 
+  const useInfiniteFeed = getApi(ApiEnum.GetFeedPosts);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteFeed(
       apiEndpoint,
@@ -313,15 +332,17 @@ const Feed: FC<IFeedProps> = ({
         ...((modeProps as any)[mode as any]?.params || {}),
       }),
     );
-
+  data;
   const feedIds = (
-    (data?.pages.flatMap((page) =>
+    (data?.pages.flatMap((page: any) =>
       page.data?.result?.data
         .filter((post: { id: string }) => {
           if (bookmarks) {
             return !!feed[post.id]?.bookmarked;
           } else if (scheduled) {
             return !!feed[post.id]?.schedule;
+          } else if (announcements) {
+            return !isRegularPost(feed[post.id], currentDate, isAdmin);
           }
           return true;
         })
@@ -341,14 +362,15 @@ const Feed: FC<IFeedProps> = ({
           !isRegularPost(feed[post.id], currentDate, isAdmin),
       )
     : [];
-
   const regularFeedIds = feedIds
     ? feedIds.filter((post: { id: string }) =>
         isRegularPost(feed[post.id], currentDate, isAdmin),
       )
     : [];
-
-  useEffect(() => setActiveFeedPostCount(feedIds.length), [feedIds]);
+  console.log('regularFeedIds :', regularFeedIds);
+  useEffect(() => {
+    setActiveFeedPostCount(feedIds.length);
+  }, [feedIds]);
 
   const clearAppliedFilters = () => {
     setAppliedFeedFilters({
@@ -434,6 +456,27 @@ const Feed: FC<IFeedProps> = ({
             </div>
             <div className="font-bold text-base text-neutral-900 text-center">
               {t('scheduledPosts.emptyMessage2')}
+            </div>
+          </div>
+        </div>
+      );
+    }
+    if (announcements) {
+      return (
+        <div className="bg-white p-6 flex flex-col rounded-9xl">
+          <div className="h-220 bg-blue-50 flex justify-center rounded-9xl">
+            <img
+              src={NoPosts}
+              data-testid="mybookmark-tab-nopost"
+              alt="No Posts"
+            />
+          </div>
+          <div data-testid="scheduledpost-tab-nodata">
+            <div className="font-bold text-base text-neutral-900 text-center mt-6">
+              {t('announcementPosts.emptyMessage')}
+            </div>
+            <div className="font-bold text-base text-neutral-900 text-center">
+              {t('announcementPosts.emptyMessage2')}
             </div>
           </div>
         </div>
@@ -559,6 +602,7 @@ const Feed: FC<IFeedProps> = ({
           return '/bookmarks';
       }
     };
+
     if (hashtag) {
       return (
         <HashtagFeedHeader
@@ -571,6 +615,8 @@ const Feed: FC<IFeedProps> = ({
       return <BookmarkFeedHeader mode={mode} />;
     } else if (scheduled) {
       return <ScheduledFeedHeader mode={mode} />;
+    } else if (announcements) {
+      return <AnnouncementFeedHeader mode={mode} />;
     } else {
       return (
         <div
@@ -578,7 +624,16 @@ const Feed: FC<IFeedProps> = ({
             showCreatePostCard || showCreatePostCard ? '' : 'hidden'
           }`}
         >
-          {showCreatePostCard && <CreatePostCard openModal={openModal} />}
+          {showCreatePostCard && (
+            <div>
+              <CreatePostCard
+                openModal={() => {
+                  openModal();
+                  setCustomActiveFlow(CreatePostFlow.CreatePost);
+                }}
+              />
+            </div>
+          )}
           {showFeedFilterBar && (
             <div className=" flex flex-col gap-6">
               <div className="flex flex-row items-center gap-6">
@@ -697,6 +752,7 @@ const Feed: FC<IFeedProps> = ({
               {...widgetProps[widgetenum]}
               key={widgetenum}
               openModal={openModal}
+              setCustomActiveFlow={setCustomActiveFlow}
             />
           );
         }
@@ -866,6 +922,7 @@ const Feed: FC<IFeedProps> = ({
           open={open}
           openModal={openModal}
           closeModal={closeModal}
+          customActiveFlow={customActiveFlow}
         />
       )}
     </section>

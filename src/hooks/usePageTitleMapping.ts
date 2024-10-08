@@ -13,6 +13,10 @@ export const usePageTitleMappings = (): Record<string, PageMapping> => {
       title: t('login.title'),
       description: t('login.description'),
     },
+    announcements: {
+      title: t('announcements.title'),
+      description: t('announcements.description'),
+    },
     signup: {
       title: t('signup.title'),
       description: t('signup.description'),

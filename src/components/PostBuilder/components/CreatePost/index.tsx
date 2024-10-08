@@ -8,11 +8,11 @@ import {
   VIDEO_FILE_SIZE_LIMIT,
 } from 'contexts/CreatePostContext';
 import ReactQuill from 'react-quill';
-import { IPost, PostType } from 'queries/post';
+import { IPost, PostType } from 'interfaces';
 import Header from 'components/ModalHeader';
 import Body from './Body';
 import Footer from './Footer';
-import { validImageTypes, validVideoTypes } from 'queries/files';
+import { validImageTypes, validVideoTypes } from 'utils/constants';
 import { hideEmojiPalette } from 'utils/misc';
 import { PostBuilderMode } from 'components/PostBuilder';
 import { useTranslation } from 'react-i18next';

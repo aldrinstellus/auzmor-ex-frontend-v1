@@ -3,10 +3,10 @@ import { FC, ReactElement, useEffect, useState } from 'react';
 import EditIcon from './components/EditIcon';
 import useAuth from 'hooks/useAuth';
 import { UploadStatus, useUpload } from 'hooks/useUpload';
-import { EntityType } from 'queries/files';
+import { EntityType, IMedia } from 'interfaces';
 import { useMutation } from '@tanstack/react-query';
-import { updateCurrentUser } from 'queries/users';
-import { IMedia } from 'contexts/CreatePostContext';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type UpdateProfileImageProps = {
   setLoading?: (loading: boolean) => void;
@@ -19,12 +19,14 @@ const UpdateProfileImage: FC<UpdateProfileImageProps> = ({
   setError,
   dataTestId,
 }): ReactElement => {
+  const { getApi } = usePermissions();
   const [profilePicture, setProfilePicture] = useState<File[]>();
   const { user, updateUser } = useAuth();
   const { uploadMedia, uploadStatus } = useUpload();
 
+  const updateCurrentUser = getApi(ApiEnum.UpdateMe);
   const updateProfileImageMutation = useMutation({
-    mutationFn: updateCurrentUser,
+    mutationFn: (data: Record<string, any>) => updateCurrentUser(data),
     mutationKey: ['update-user-profile-image-mutation'],
     onError: (error: any) => {
       console.log('API call resulted in error: ', error);

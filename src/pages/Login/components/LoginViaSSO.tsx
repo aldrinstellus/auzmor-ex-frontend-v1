@@ -1,6 +1,5 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import Layout, { FieldType } from 'components/Form';
-import { useLoginViaSSO } from 'queries/auth';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { Variant as InputVariant } from 'components/Input';
@@ -8,6 +7,8 @@ import Button, { Type as ButtonType, Size } from 'components/Button';
 import 'utils/custom-yup-validators/email/validateEmail';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export interface ILoginViaSSOProps {
   setViaSSO: (flag: boolean) => void;
@@ -34,6 +35,8 @@ const LoginViaSSO: FC<ILoginViaSSOProps> = ({ setViaSSO }) => {
   });
   const email = watch('email');
   const { t } = useTranslation('auth', { keyPrefix: 'loginSso' });
+  const { getApi } = usePermissions();
+  const useLoginViaSSO = getApi(ApiEnum.LoginSSO);
   const { refetch, isFetching, error } = useLoginViaSSO(
     { email },
     {

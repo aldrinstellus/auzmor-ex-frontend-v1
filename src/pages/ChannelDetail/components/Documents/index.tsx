@@ -6,13 +6,7 @@ import Layout, { FieldType } from 'components/Form';
 import { useTranslation } from 'react-i18next';
 import FolderNavigator from './components/FolderNavigator';
 import Divider from 'components/Divider';
-import {
-  IntegrationOptionsEnum,
-  createFolder,
-  getLinkToken,
-  patchConfig,
-  useConnectedStatus,
-} from 'queries/storage';
+import { IntegrationOptionsEnum } from 'interfaces';
 import Spinner from 'components/Spinner';
 import FilterMenuDocument from './components/FilterMenu/FilterMenuDocument';
 import Icon from 'components/Icon';
@@ -28,6 +22,8 @@ import DocumentSearch from './DocumentSearch';
 import { useAppliedFiltersForDoc } from 'stores/appliedFiltersForDoc';
 import { useVault } from '@apideck/vault-react';
 import useAuth from 'hooks/useAuth';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export enum FilePickerObjectType {
   FILE = 'FILE',
@@ -38,6 +34,7 @@ export enum FilePickerObjectType {
 interface IDocumentProps {}
 
 const Document: FC<IDocumentProps> = ({}) => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('common');
   const [isOpen, openModal, closeModal] = useModal(false, true);
   const { getCurrentFolder } = useDocumentPath();
@@ -59,10 +56,12 @@ const Document: FC<IDocumentProps> = ({}) => {
   //   mutationKey: ['resync'],
   //   mutationFn: resync,
   // });
+  const connectStorage = getApi(ApiEnum.ConnectStorage);
+  const updateStorage = getApi(ApiEnum.UpdateStorage);
   const configStorageMutation = useMutation({
     mutationKey: ['configure-storage'],
-    mutationFn: getLinkToken,
-    onSuccess: (data, variables) => {
+    mutationFn: (configName: string) => connectStorage(configName),
+    onSuccess: (data: any, variables) => {
       open({
         token: data.result.data.linkToken,
         unifiedApi: 'file-storage',
@@ -70,17 +69,24 @@ const Document: FC<IDocumentProps> = ({}) => {
         onReady: () => console.log('ready'),
         onClose: () => console.log('onClose'),
         onConnectionChange: () => {
-          patchConfig({ isAuthorized: true, id: data.result.data.id }, refetch);
+          updateStorage(
+            { isAuthorized: true, id: data.result.data.id },
+            refetch,
+          );
         },
       });
     },
   });
+
+  const createFolder = getApi(ApiEnum.CreateStorageFolder);
   const createFolderMutation = useMutation({
     mutationKey: ['create-folder'],
-    mutationFn: createFolder,
+    mutationFn: (payload: { folderId: string; name: string }) =>
+      createFolder(payload),
   });
 
   //Queries
+  const useConnectedStatus = getApi(ApiEnum.GetStorageConnectionStatus);
   const {
     data: syncStatus,
     isLoading,
