@@ -17,13 +17,8 @@ import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
 import { UseFormReturn } from 'react-hook-form';
 import useURLParams from 'hooks/useURLParams';
 import Icon from 'components/Icon';
-import { IDepartmentAPI } from 'queries/department';
-import { ILocationAPI } from 'queries/location';
+import { ICategory, ITeam, IDepartmentAPI, ILocationAPI } from 'interfaces';
 import { useTranslation } from 'react-i18next';
-// import { ChannelVisibilityEnum } from 'stores/channelStore';
-// import { ChannelTypeEnum } from 'components/FilterModal/ChannelType';
-import { ICategory } from 'queries/category';
-import { ITeam } from 'queries/teams';
 import { channelRequestStatusData } from 'components/FilterModal/ChannelRequestStatus';
 
 export enum FilterKey {

@@ -2,7 +2,7 @@ import { FC, Fragment, useMemo } from 'react';
 import Avatar from 'components/Avatar';
 import { VIEW_POST } from './constant';
 import useAuth from 'hooks/useAuth';
-import { IAudience, ICreatedBy } from 'queries/post';
+import { IAudience, ICreatedBy } from 'interfaces';
 import { Link } from 'react-router-dom';
 import {
   getAvatarColor,

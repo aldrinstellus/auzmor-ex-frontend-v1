@@ -4,11 +4,12 @@ import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import Icon from 'components/Icon';
 import { useMutation } from '@tanstack/react-query';
-import { parseImport, updateParseImport } from 'queries/importUsers';
 import ImportingForExcel from './ImportingForExcel';
 import usePoller from './usePoller';
 import ValidateHeaders from './ValidateHeaders';
 import { StepEnum } from './utils';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type AppProps = {
   open: boolean;
@@ -27,6 +28,7 @@ const ImportingFileStep: React.FC<AppProps> = ({
   meta,
   setMeta,
 }) => {
+  const { getApi } = usePermissions();
   const isCsv = meta?.file?.name?.includes('.csv');
   const [startPolling, setStartPolling] = useState(false);
   const { ready, data, loading } = usePoller({
@@ -36,6 +38,7 @@ const ImportingFileStep: React.FC<AppProps> = ({
     enabled: isCsv && startPolling,
   });
 
+  const updateParseImport = getApi(ApiEnum.UpdateParseImport);
   const updateParseMutation = useMutation(() =>
     updateParseImport(importId, {}),
   );
@@ -47,6 +50,7 @@ const ImportingFileStep: React.FC<AppProps> = ({
     }
   }, [ready]);
 
+  const parseImport = getApi(ApiEnum.ParseImport);
   const parseMutation = useMutation(() => parseImport(importId), {
     onSuccess: async () => {
       setMeta((m: any) => ({ ...m, parsed: true }));

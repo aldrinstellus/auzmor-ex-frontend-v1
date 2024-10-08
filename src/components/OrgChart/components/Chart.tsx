@@ -13,10 +13,9 @@ import UserNode from './UserNode';
 import ExpandButtonContent from './ExpandButtonContent';
 import Spinner from 'components/Spinner';
 import clsx from 'clsx';
-import { UserStatus, getOrgChart } from 'queries/users';
+import { UserStatus } from 'interfaces';
 import { QueryFunctionContext } from '@tanstack/react-query';
-import { IDesignation } from 'queries/designation';
-import { IProfileImage } from 'queries/post';
+import { IDesignation, IProfileImage } from 'interfaces';
 import {
   FOCUS_ZOOM,
   IZoom,
@@ -28,7 +27,8 @@ import {
 import useAuth from 'hooks/useAuth';
 import { mapRanges } from 'utils/misc';
 import NoDataFound from 'components/NoDataFound';
-import { useOrganization } from 'queries/organization';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export interface INode {
   id: string;
@@ -71,10 +71,13 @@ const Chart: FC<IChart> = ({
   setZoom,
   isMyTeam,
 }) => {
+  const { getApi } = usePermissions();
+  const useOrganization = getApi(ApiEnum.GetOrganization);
   const { data: organization } = useOrganization();
   const chartRef = useRef(null);
   const { user } = useAuth();
   const [autoSpotlight, setAutoSpotlight] = useState<boolean>(true);
+  const getOrgChart = getApi(ApiEnum.GetOrganizationChartApi);
   useEffect(() => {
     if (chartRef.current) {
       if (data.length) {

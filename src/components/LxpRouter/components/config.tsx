@@ -14,6 +14,7 @@ import ViewManager from './ViewManager';
 const ErrorBoundary = lazy(() => import('components/ErrorBoundary'));
 const HomeFeed = lazy(() => import('pages/Feed'));
 const Apps = lazy(() => import('pages/Apps'));
+const Login = lazy(() => import('pages/Login'));
 const Users = lazy(() => import('pages/Users'));
 const Channels = lazy(() => import('pages/Channels'));
 const TeamDetail = lazy(() => import('pages/TeamDetail'));
@@ -30,6 +31,7 @@ const routers = createBrowserRouter(
       <Route element={<RequireAuth />}>
         <Route element={<ViewManager />}>
           <Route path="/" element={<Navigate to="/feed" replace={true} />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/home" element={<HomeFeed />} />
           <Route path="/teams" element={<Users />} />
           <Route path="/teams/:teamId" element={<TeamDetail />} />

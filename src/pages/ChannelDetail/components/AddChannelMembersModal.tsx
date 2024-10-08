@@ -11,18 +11,15 @@ import {
 } from 'components/EntitySearchModal';
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import { CHANNEL_ROLE, IChannel } from 'stores/channelStore';
-import {
-  IChannelMembersPayload,
-  addChannelMembers,
-  useChannelMembersStatus,
-} from 'queries/channel';
+import { IChannelMembersPayload } from 'interfaces';
 import { useMutation } from '@tanstack/react-query';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import queryClient from 'utils/queryClient';
 import { useTranslation } from 'react-i18next';
-import { useInfiniteMembers } from 'queries/users';
 import Truncate from 'components/Truncate';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface IAddChannelMembersModalProps {
   open: boolean;
@@ -35,6 +32,7 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
   closeModal,
   channelData,
 }) => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('channelDetail', {
     keyPrefix: 'addChannelMemberModal',
   });
@@ -47,6 +45,8 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
     },
   });
 
+  const useInfiniteMembers = getApi(ApiEnum.GetMembers);
+
   const { form, setForm } = useEntitySearchFormStore();
   const channelMembers = form?.watch('channelMembers');
 
@@ -55,6 +55,7 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
     return () => setForm(null);
   }, []);
 
+  const addChannelMembers = getApi(ApiEnum.AddChannelMembers);
   const addChannelMembersMutation = useMutation({
     mutationKey: ['add-channel-members', channelData.id],
     mutationFn: ({
@@ -69,12 +70,13 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
         content: t('addChannelMembers.failure'),
       });
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       const jobId = data?.result?.data?.id || '';
       if (jobId) setJobId(jobId);
     },
   });
 
+  const useChannelMembersStatus = getApi(ApiEnum.GetAddChannelMembersStatus);
   useChannelMembersStatus({
     channelId: channelData.id,
     jobId,

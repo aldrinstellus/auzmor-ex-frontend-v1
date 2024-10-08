@@ -3,29 +3,35 @@ import Button, { Size, Variant } from 'components/Button';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
 import useModal from 'hooks/useModal';
-import { useInfiniteChannelMembers } from 'queries/channel';
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import AddChannelMembersModal from './AddChannelMembersModal';
 import { IChannel } from 'stores/channelStore';
-import { useChannelRole } from 'hooks/useChannelRole';
 import useNavigate from 'hooks/useNavigation';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { ChannelPermissionEnum } from './utils/channelPermission';
 
 export type MembersWidgetProps = {
   channelData: IChannel;
+  permissions: ChannelPermissionEnum[];
 };
-const MembersWidget: FC<MembersWidgetProps> = ({ channelData }) => {
-  const { isChannelAdmin } = useChannelRole(channelData.id);
+const MembersWidget: FC<MembersWidgetProps> = ({
+  channelData,
+  permissions,
+}) => {
   const [show, setShow] = useState(true);
   const { t } = useTranslation('channelDetail');
   const { channelId } = useParams();
+  const { getApi } = usePermissions();
+  const useInfiniteChannelMembers = getApi(ApiEnum.GetChannelMembers);
   const { data } = useInfiniteChannelMembers({
     channelId: channelId,
   });
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
-  const users = data?.pages.flatMap((page) => {
+  const users = data?.pages.flatMap((page: any) => {
     return page?.data?.result?.data.map((user: any) => {
       try {
         return { id: user.id, role: user.role, ...user.user };
@@ -75,7 +81,7 @@ const MembersWidget: FC<MembersWidgetProps> = ({ channelData }) => {
               />
             </div>
             <div className="mt-3">
-              {isChannelAdmin ? (
+              {permissions.includes(ChannelPermissionEnum.CanAddMember) ? (
                 <Button
                   size={Size.Small}
                   className="w-full"

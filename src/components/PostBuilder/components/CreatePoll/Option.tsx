@@ -1,6 +1,6 @@
 import Layout, { FieldType } from 'components/Form';
 import { Variant } from 'components/Input';
-import { IPoll } from 'contexts/CreatePostContext';
+import { IPoll } from 'interfaces';
 import { FC } from 'react';
 import {
   Control,

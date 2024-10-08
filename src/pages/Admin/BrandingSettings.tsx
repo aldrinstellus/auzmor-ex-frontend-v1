@@ -19,13 +19,12 @@ import {
 } from 'utils/misc';
 import { MB } from 'utils/constants';
 import { IRadioListOption } from 'components/RadioGroup';
-import { useUpdateBrandingMutation } from 'queries/organization';
 import { useBrandingStore } from 'stores/branding';
 import useModal from 'hooks/useModal';
 import ImageReposition from 'components/DynamicImagePreview/components/ImageReposition';
 import clsx from 'clsx';
 import { useUpload } from 'hooks/useUpload';
-import { EntityType } from 'queries/files';
+import { EntityType } from 'interfaces';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import Tooltip from 'components/Tooltip';
 import { Logo } from 'components/Logo';
@@ -38,6 +37,8 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Shape } from 'components/ImageCropper';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 const PRIMARY_COLOR = '#10B981';
 const SECONDARY_COLOR = '#1D4ED8FF';
@@ -162,6 +163,7 @@ const Preview: FC<{
 const BrandingSettings: FC = () => {
   const { t } = useTranslation('adminSetting', { keyPrefix: 'branding' });
   const { branding, setBranding } = useBrandingStore();
+  const { getApi } = usePermissions();
   const backgroundOption: IRadioListOption[] = [
     {
       data: { value: t('color') },
@@ -238,6 +240,9 @@ const BrandingSettings: FC = () => {
 
   const { uploadMedia } = useUpload();
 
+  const useUpdateBrandingMutation = getApi(
+    ApiEnum.UpdateOrganizationConfiguration,
+  );
   const updateBranding = useUpdateBrandingMutation();
 
   const [validationErrors, setValidationErrors] = useState<{
@@ -544,7 +549,7 @@ const BrandingSettings: FC = () => {
       },
     };
     updateBranding.mutate(newBranding, {
-      onSuccess: async (data, _variables, _context) => {
+      onSuccess: async (data: any, _variables: any, _context: any) => {
         const newBranding = data?.result?.data?.branding;
         successToastConfig({
           content: t('toast-success'),

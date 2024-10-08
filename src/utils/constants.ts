@@ -15,3 +15,34 @@ export const HEX_REGEX = /^#([0-9a-f]{6})$/i;
 export const SESSION_ID = 'auz-session-id';
 
 export const IS_PROD = process.env.REACT_APP_ENV === 'PRODUCTION';
+
+export const validImageTypes = [
+  'image/png',
+  'image/jpg',
+  'image/jpeg',
+  'image/avif',
+  'image/bmp',
+  'image/gif',
+  'image/svg+xml',
+  'image/tiff',
+  'image/webp',
+  'image/x-icon',
+];
+
+export const validVideoTypes = [
+  'video/x-msvideo',
+  'video/avi',
+  'video/mp4',
+  'video/mpeg',
+  'video/ogg',
+  'video/mp2t',
+  'video/webm',
+  'video/3gpp',
+  'video/3gpp2',
+];
+
+export const validDocumentFileTypes = [
+  'text/csv',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.ms-excel',
+];

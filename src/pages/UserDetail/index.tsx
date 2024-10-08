@@ -1,10 +1,5 @@
 import ContactWidget from 'components/ContactWidget';
-import {
-  UserEditType,
-  UserRole,
-  useCurrentUser,
-  useSingleUser,
-} from 'queries/users';
+import { UserEditType, UserRole } from 'interfaces';
 import ProfileInfo from 'components/ProfileInfo';
 import {
   Navigate,
@@ -26,6 +21,8 @@ import ManagerWidget from 'components/ManagerWidget';
 import Recognitions from './components/Recognitions';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export interface IUpdateProfileImage {
   profileImage: File;
@@ -35,6 +32,7 @@ export interface IUpdateProfileImage {
 interface IUserDetailProps {}
 
 const UserDetail: FC<IUserDetailProps> = () => {
+  const { getApi } = usePermissions();
   const [open, openModal, closeModal] = useModal(undefined, false);
   const { user } = useAuth();
   const { isAdmin } = useRole();
@@ -45,6 +43,8 @@ const UserDetail: FC<IUserDetailProps> = () => {
   let editType = UserEditType.NONE;
 
   let userDetail;
+  const useCurrentUser = getApi(ApiEnum.GetMe);
+  const useSingleUser = getApi(ApiEnum.GetUser);
   if (pathname === '/profile') {
     userDetail = useCurrentUser();
     usePageTitle('profile');

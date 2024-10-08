@@ -7,7 +7,6 @@ import Card from 'components/Card';
 import Tabs from 'components/Tabs';
 import OrgChart from 'components/OrgChart';
 import People from './components/People';
-import { Role } from 'utils/enum';
 import Team from './components/Teams';
 import { useLocation } from 'react-router-dom';
 import PopupMenu from 'components/PopupMenu';
@@ -15,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import useProduct from 'hooks/useProduct';
 import { usePageTitle } from 'hooks/usePageTitle';
 import useNavigate from 'hooks/useNavigation';
+import { UserRole } from 'interfaces';
 
 interface IUsersProps {}
 
@@ -93,7 +93,7 @@ const Users: FC<IUsersProps> = () => {
             iconColor="text-black"
             onClick={() => setShowOrgChart(true)}
           />
-          {user?.role !== Role.Member && (
+          {user?.role !== UserRole.Member && (
             <PopupMenu
               triggerNode={
                 <Button
@@ -139,7 +139,7 @@ const Users: FC<IUsersProps> = () => {
         />
       ),
       tabAction:
-        user?.role !== Role.Member && !isLxp ? (
+        user?.role !== UserRole.Member && !isLxp ? (
           <div className="flex space-x-2">
             <Button
               className="flex space-x-1 px-6 py-[10px] rounded-[24px]"

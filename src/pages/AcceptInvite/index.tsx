@@ -9,7 +9,6 @@ import { Logo } from 'components/Logo';
 import { useMutation } from '@tanstack/react-query';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useSearchParams } from 'react-router-dom';
-import { acceptInviteSetPassword, useVerifyInviteLink } from 'queries/users';
 import PageLoader from 'components/PageLoader';
 import InviteLinkExpired from './components/InviteLinkExpired';
 import useAuth from 'hooks/useAuth';
@@ -17,6 +16,8 @@ import { useNavigateWithToken } from 'hooks/useNavigateWithToken';
 import { usePageTitle } from 'hooks/usePageTitle';
 import { useTranslation } from 'react-i18next';
 import useNavigate from 'hooks/useNavigation';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface IForm {
   workEmail: string;
@@ -42,6 +43,7 @@ export interface IAcceptInviteProps {}
 
 const AcceptInvite: FC<IAcceptInviteProps> = () => {
   usePageTitle('acceptInvite');
+  const { getApi } = usePermissions();
   const { t } = useTranslation('acceptInvite', {
     keyPrefix: 'acceptInvite',
   });
@@ -55,15 +57,18 @@ const AcceptInvite: FC<IAcceptInviteProps> = () => {
   const navigate = useNavigate();
   const navigateWithToken = useNavigateWithToken();
 
+  const useVerifyInviteLink = getApi(ApiEnum.VerifyInviteLink);
   const { data, isLoading, isError, error } = useVerifyInviteLink({
     token,
     orgId,
   });
 
+  const acceptInviteSetPassword = getApi(ApiEnum.AcceptInviteSetPassword);
   const acceptInviteMutation = useMutation({
-    mutationFn: acceptInviteSetPassword,
+    mutationFn: (payload: Record<string, any>) =>
+      acceptInviteSetPassword(payload),
     mutationKey: ['accept-invite-mutation'],
-    onSuccess: (data) =>
+    onSuccess: (data: any) =>
       navigateWithToken(
         data.result.data.uat,
         data.result.data.redirectUrl,

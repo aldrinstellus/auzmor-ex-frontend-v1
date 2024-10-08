@@ -10,7 +10,6 @@ import FilterMenu from 'components/FilterMenu';
 import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useInfiniteChannels } from 'queries/channel';
 import { isFiltersEmpty } from 'utils/misc';
 import { ChannelVisibilityEnum } from 'stores/channelStore';
 import useModal from 'hooks/useModal';
@@ -31,6 +30,8 @@ import ChannelNotFound from 'images/notFound.png';
 import { useDebounce } from 'hooks/useDebounce';
 import _ from 'lodash';
 import useProduct from 'hooks/useProduct';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface IChannelsProps {
   isInfinite?: boolean;
@@ -60,7 +61,7 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
   });
   const { isLxp } = useProduct();
   const { ref, inView } = useInView();
-
+  const { getApi } = usePermissions();
   useEffect(() => {
     if (inView && isInfinite) {
       fetchNextPage();
@@ -72,6 +73,7 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
   const searchValue = watch('search');
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
 
+  const useInfiniteChannels = getApi(ApiEnum.GetChannels);
   const {
     data,
     channels,
@@ -115,7 +117,7 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
 
   const channelIds =
     (data?.pages.flatMap(
-      (page) =>
+      (page: any) =>
         page?.data?.result?.data.map((channel: { id: string }) => channel) ||
         [],
     ) as { id: string }[]) || [];

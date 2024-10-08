@@ -5,12 +5,7 @@ import useRole from 'hooks/useRole';
 import useNavigate from 'hooks/useNavigation';
 import useAuth from 'hooks/useAuth';
 import Icon from 'components/Icon';
-import {
-  IGetUser,
-  UserStatus,
-  updateRoleToAdmin,
-  useResendInvitation,
-} from 'queries/users';
+import { IGetUser, UserRole, UserStatus } from 'interfaces';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import {
   getEditSection,
@@ -30,23 +25,31 @@ import RemoveTeamMember from '../DeleteModals/TeamMember';
 import { FC } from 'react';
 import useProduct from 'hooks/useProduct';
 import Truncate from 'components/Truncate';
-import { updateMemberRole } from 'queries/channel';
-import { CHANNEL_ROLE, IChannel } from 'stores/channelStore';
+import { CHANNEL_ROLE } from 'stores/channelStore';
 import RemoveChannelMember from '../DeleteModals/ChannelMember';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
+
+export enum PeopleCardPermissionEnum {
+  CanPromote = 'CAN_PROMOTE',
+  CanRemoveFromChannel = 'CAN_REMOVE_FROM_CHANNEL',
+  CanRemoveFromTeam = 'CAN_REMOVE_FROM_TEAM',
+  CanEdit = 'CAN_EDIT',
+  CanResendInvite = 'CAN_RESEND_INVITE',
+  CanReactivate = 'CAN_REACTIVATE',
+  CanDeactivate = 'CAN_DEACTIVATE',
+  CanDelete = 'CAN_DELETE',
+}
 
 export interface IPeopleCardProps {
   userData: IGetUser;
   teamId?: string;
   teamMemberId?: string;
-  isTeamPeople?: boolean;
   isChannelPeople?: boolean;
   channelId?: string;
-  channelData?: IChannel;
-  isMember?: boolean;
-  isChannelAdmin?: boolean;
-  isReadOnly?: boolean;
   showNewJoineeBadge?: boolean;
+  permissions: PeopleCardPermissionEnum[];
 }
 
 export enum Status {
@@ -69,13 +72,12 @@ const PeopleCard: FC<IPeopleCardProps> = ({
   userData,
   teamId,
   teamMemberId,
-  isTeamPeople,
   isChannelPeople,
   channelId,
-  isChannelAdmin,
-  isReadOnly = true,
   showNewJoineeBadge = true,
+  permissions,
 }) => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('profile', { keyPrefix: 'peopleCard' });
   const {
     id,
@@ -87,7 +89,6 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     workLocation,
     workEmail,
     createdAt,
-    userId,
   } = userData;
 
   const { isLxp } = useProduct();
@@ -113,18 +114,32 @@ const PeopleCard: FC<IPeopleCardProps> = ({
   const [openDeactivate, openDeactivateModal, closeDeactivateModal] =
     useModal();
 
+  const useResendInvitation = getApi(ApiEnum.ResendInvitation);
   const resendInviteMutation = useResendInvitation();
 
+  const updateUser = getApi(ApiEnum.UpdateUser);
   const updateUserRoleMutation = useMutation({
-    mutationFn: updateRoleToAdmin,
+    mutationFn: (payload: { id: string; role: UserRole }) =>
+      updateUser(payload.id, { role: payload.role }),
     mutationKey: ['update-user-role'],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] });
       successToastConfig({ content: t('roleUpdated') });
     },
   });
+
+  const updateChannelMember = getApi(ApiEnum.UpdateChannelMember);
   const updateMemberRoleMutation = useMutation({
-    mutationFn: updateMemberRole,
+    mutationFn: (data: {
+      channelId: string;
+      memberId: string;
+      role: CHANNEL_ROLE;
+    }) =>
+      updateChannelMember({
+        channelId: data.channelId,
+        memberId: data.memberId,
+        data: { role: data.role },
+      }),
     mutationKey: ['update-channel-member-role'],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['channel-members'] });
@@ -168,7 +183,6 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     }
     return null;
   };
-
   const RenderLeftChip = () => {
     if ([Status.ADMIN, Status.SUPERADMIN].includes(role as unknown as Status)) {
       return (
@@ -186,6 +200,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
 
     return null;
   };
+
   const departmentName =
     department?.name && department?.name.length <= 22
       ? department?.name
@@ -199,6 +214,7 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     ? 'text-neutral-900'
     : 'text-neutral-300';
 
+  // event handlers
   const handleProfileClick = () => {
     if (isLxp) {
       return null;
@@ -208,6 +224,22 @@ const PeopleCard: FC<IPeopleCardProps> = ({
     }
     return navigate(`/users/${id}`);
   };
+  const handleEdit = () =>
+    navigate(`/users/${id}?edit=${getEditSection(id, user?.id, isAdmin)}`);
+  const handlePromote = () => {
+    isChannelPeople
+      ? updateMemberRoleMutation.mutate({
+          memberId: id,
+          channelId: channelId!,
+          role: CHANNEL_ROLE.Admin,
+        })
+      : updateUserRoleMutation.mutate({ id, role: UserRole.Admin });
+  };
+  const handleResendInvite = () => {
+    successToastConfig({ content: t('invitationSent') });
+    resendInviteMutation.mutate(id);
+  };
+
   return (
     <div
       className="cursor-pointer w-fit"
@@ -217,58 +249,35 @@ const PeopleCard: FC<IPeopleCardProps> = ({
       <Card
         shadowOnHover
         className={`relative w-[190px] ${
-          isLxp ? 'h-[190px] w-[189px] ' : 'h-[244px] w-[233px]'
+          isLxp ? 'w-[189px] ' : 'h-[244px] w-[233px]'
         } border-solid border rounded-9xl border-neutral-200 bg-white focus-within:shadow-xl`}
       >
-        {(!isLxp || (isChannelPeople && isReadOnly)) && (
-          <UserProfileDropdown
-            isChannelAdmin={isChannelAdmin}
-            id={id}
-            userId={userId}
-            loggedInUserId={user?.id}
-            role={role || ''}
-            status={status}
-            isHovered={isHovered}
-            onDeleteClick={openDeleteModal}
-            isTeamPeople={isTeamPeople}
-            isChannelPeople={isChannelPeople}
-            onEditClick={() =>
-              navigate(
-                `/users/${id}?edit=${getEditSection(id, user?.id, isAdmin)}`,
-              )
-            }
-            onReactivateClick={openReactivateModal}
-            onPromoteClick={() => {
-              isChannelPeople
-                ? updateMemberRoleMutation.mutate({
-                    id: id,
-                    channelId: channelId,
-                    role: CHANNEL_ROLE.Admin,
-                  })
-                : updateUserRoleMutation.mutate({ id });
-            }}
-            onDeactivateClick={openDeactivateModal}
-            onResendInviteClick={() => {
-              successToastConfig({ content: t('invitationSent') });
-              resendInviteMutation.mutate(id);
-            }}
-            onRemoveChannelMember={openRemoveChannelMemberModal}
-            onRemoveTeamMember={openRemoveTeamMemberModal}
-            triggerNode={
-              <div className="cursor-pointer">
-                <Icon
-                  name="moreOutline"
-                  className={`absolute z-10 top-${
-                    status === UserStatus.Inactive ? 6 : 2
-                  } right-2`}
-                  dataTestId="people-card-ellipsis"
-                />
-              </div>
-            }
-            showOnHover={true}
-            className="right-0 top-8 border border-[#e5e5e5]"
-          />
-        )}
+        <UserProfileDropdown
+          loggedInUserId={user?.id}
+          isHovered={isHovered}
+          onDeleteClick={openDeleteModal}
+          onEditClick={handleEdit}
+          onReactivateClick={openReactivateModal}
+          onPromoteClick={handlePromote}
+          onDeactivateClick={openDeactivateModal}
+          onResendInviteClick={handleResendInvite}
+          onRemoveChannelMember={openRemoveChannelMemberModal}
+          onRemoveTeamMember={openRemoveTeamMemberModal}
+          showOnHover={true}
+          className="right-0 top-8 border border-[#e5e5e5]"
+          permissions={permissions}
+          triggerNode={
+            <div className="cursor-pointer">
+              <Icon
+                name="moreOutline"
+                className={`absolute z-10 top-${
+                  status === UserStatus.Inactive ? 6 : 2
+                } right-2`}
+                dataTestId="people-card-ellipsis"
+              />
+            </div>
+          }
+        />
 
         {status === UserStatus.Inactive ? (
           <div

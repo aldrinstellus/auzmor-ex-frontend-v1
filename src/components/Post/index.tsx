@@ -21,8 +21,7 @@ import PublishPostModal from './components/PublishPostModal';
 import EditSchedulePostModal from './components/EditSchedulePostModal';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 
-// queries
-import { IPost, createBookmark, deleteBookmark } from 'queries/post';
+import { IPost } from 'interfaces';
 
 // utils
 import { getTimeInScheduleFormat, humanizeTime } from 'utils/time';
@@ -41,6 +40,8 @@ import remarkDirective from 'remark-directive';
 import remarkDirectiveRehype from 'remark-directive-rehype';
 import { useTranslation } from 'react-i18next';
 import useNavigate from 'hooks/useNavigation';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 export const iconsStyle = (key: string) => {
   const iconStyle = clsx(
     {
@@ -80,6 +81,7 @@ const Post: FC<PostProps> = ({
   readOnly = false,
 }) => {
   const { t } = useTranslation('post');
+  const { getApi } = usePermissions();
   const [feed, getPost, updateFeed] = useFeedStore((state) => [
     state.feed,
     state.getPost,
@@ -116,9 +118,10 @@ const Post: FC<PostProps> = ({
   }, [showComments]);
 
   // Mutations
+  const createBookmark = getApi(ApiEnum.CreateBookmarkPost);
   const createBookmarkMutation = useMutation({
     mutationKey: ['create-bookmark-mutation'],
-    mutationFn: createBookmark,
+    mutationFn: (id: string) => createBookmark(id),
     onMutate: (id) => {
       updateFeed(id, { ...getPost(id), bookmarked: true });
     },
@@ -138,9 +141,11 @@ const Post: FC<PostProps> = ({
       });
     },
   });
+
+  const deleteBookmark = getApi(ApiEnum.DeleteBookmarkPost);
   const deleteBookmarkMutation = useMutation({
     mutationKey: ['delete-bookmark-mutation'],
-    mutationFn: deleteBookmark,
+    mutationFn: (id: string) => deleteBookmark(id),
     onMutate: (variables) => {
       updateFeed(variables, { ...getPost(variables), bookmarked: false });
     },

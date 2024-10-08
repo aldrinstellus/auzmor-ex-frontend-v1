@@ -3,13 +3,14 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import Button, { Size, Variant } from 'components/Button';
 import Icon from 'components/Icon';
-import { announcementRead } from 'queries/post';
 import { useFeedStore } from 'stores/feedStore';
 import { produce } from 'immer';
 import useAuth from 'hooks/useAuth';
 import ProgressBar from 'components/ProgressBar';
 import { isRegularPost } from 'utils/misc';
 import useRole from 'hooks/useRole';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export interface IAcknowledgementBannerProps {
   data: any;
@@ -20,6 +21,7 @@ const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({
   data,
   readOnly = false,
 }) => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('post', { keyPrefix: 'acknowledgementBanner' });
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
@@ -31,9 +33,10 @@ const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({
     user?.id === data?.announcement?.actor?.userId;
   const currentDate = new Date().toISOString();
 
+  const announcementRead = getApi(ApiEnum.AcknowledgeAccouncement);
   const acknowledgeMutation = useMutation({
     mutationKey: ['acknowledge-announcement'],
-    mutationFn: announcementRead,
+    mutationFn: (postId: string) => announcementRead(postId),
     onMutate: (postId) => {
       const previousPost = getPost(postId);
       updateFeed(

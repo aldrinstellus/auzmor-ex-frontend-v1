@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import clsx from 'clsx';
 import SwitchToggle from 'components/SwitchToggle';
-import { INotificationSettings } from 'queries/users';
+import { INotificationSettings } from 'interfaces';
 import { useTranslation } from 'react-i18next';
 
 type AppProps = {

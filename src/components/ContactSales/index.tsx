@@ -4,13 +4,10 @@ import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
-import { contactSales } from 'queries/users';
-import { contactSales as contactLearnSales } from 'queries/learn';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { logout } from 'queries/account';
 import useAuth from 'hooks/useAuth';
 import {
   deleteCookie,
@@ -18,9 +15,10 @@ import {
   getLearnUrl,
   userChannel,
 } from 'utils/misc';
-import { learnLogout } from 'queries/learn';
 import useProduct from 'hooks/useProduct';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type AppProps = {
   open: boolean;
@@ -40,12 +38,13 @@ const ContactSales: React.FC<AppProps> = ({
   });
   const { user, reset } = useAuth();
   const { isLxp } = useProduct();
+  const { getApi } = usePermissions();
   const schema = yup.object({
     subject: yup.string().required(),
     body: yup.string().required(),
   });
 
-  const logoutMutation = useMutation(isLxp ? learnLogout : logout, {
+  const logoutMutation = useMutation(getApi(ApiEnum.Logout), {
     onSuccess: async () => {
       reset();
       userChannel.postMessage({
@@ -69,21 +68,18 @@ const ContactSales: React.FC<AppProps> = ({
 
   const _body = watch('body');
 
-  const postMutation = useMutation(
-    (formData: any) =>
-      isLxp ? contactLearnSales(formData) : contactSales(formData),
-    {
-      onError: () => {},
-      onSuccess: () => {
-        successToastConfig({
-          content: 'Your message has been successfully sent to sales team',
-          variant: 'bottom',
-        });
-        setValue('subject', '');
-        setValue('body', '');
-      },
+  const contactSales = getApi(ApiEnum.ContactSales);
+  const postMutation = useMutation((formData: any) => contactSales(formData), {
+    onError: () => {},
+    onSuccess: () => {
+      successToastConfig({
+        content: 'Your message has been successfully sent to sales team',
+        variant: 'bottom',
+      });
+      setValue('subject', '');
+      setValue('body', '');
     },
-  );
+  });
 
   const onSubmit = () => {
     const { subject, body } = getValues();

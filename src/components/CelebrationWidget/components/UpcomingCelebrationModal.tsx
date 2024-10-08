@@ -5,7 +5,6 @@ import Header from 'components/ModalHeader';
 import { CELEBRATION_TYPE } from '..';
 import Button, { Size, Variant } from 'components/Button';
 import User from './User';
-import { useCelebrations } from 'queries/post';
 import SkeletonLoader from './SkeletonLoader';
 import { AuthContext } from 'contexts/AuthContext';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
@@ -13,6 +12,8 @@ import Spinner from 'components/Spinner';
 import { useInView } from 'react-intersection-observer';
 import { hideEmojiPalette, isFiltersEmpty } from 'utils/misc';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface UpcomingCelebrationModalProps {
   open: boolean;
@@ -26,6 +27,7 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
   type,
 }) => {
   const { t } = useTranslation('celebrationWidget');
+  const { getApi } = usePermissions();
   const { user } = useContext(AuthContext);
   const { currentTimezone } = useCurrentTimezone();
   const userTimezone = user?.timezone || currentTimezone || 'Asia/Kolkata';
@@ -37,6 +39,7 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
   const { ref, inView } = useInView();
   const [stopScroll, setStopScroll] = useState(false);
 
+  const useCelebrations = getApi(ApiEnum.GetOrganizationCelebrations);
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useCelebrations(
       isFiltersEmpty({
@@ -71,7 +74,7 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
 
   const todaysCelebrationWithNoPost: any[] = [];
   let todaysCelebration = formattedData
-    ? formattedData.filter((item) => {
+    ? formattedData.filter((item: any) => {
         const itemDate = momentTz(item.nextOcassionDateTime).tz(userTimezone);
         if (
           itemDate.month() === currentDate.month() &&
@@ -94,7 +97,7 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
   todaysCelebration = [...todaysCelebration, ...todaysCelebrationWithNoPost];
 
   const thisMonthCelebration = formattedData
-    ? formattedData.filter((item) => {
+    ? formattedData.filter((item: any) => {
         const itemDate = momentTz(item.nextOcassionDateTime).tz(userTimezone);
         if (
           itemDate.month() === currentDate.month() &&
@@ -112,7 +115,7 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
     : [];
 
   const upcomingMonthCelebration = formattedData
-    ? formattedData.filter((item) => {
+    ? formattedData.filter((item: any) => {
         const itemDate = momentTz(item.nextOcassionDateTime).tz(userTimezone);
         const isSameYearAndSameorLaterMonth =
           itemDate.year() === currentDate.year() &&
@@ -198,7 +201,7 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
                   className="divide-y divide-neutral-200"
                   onMouseDown={(e) => e.stopPropagation()}
                 >
-                  {todaysCelebration.map((celebration) => (
+                  {todaysCelebration.map((celebration: any) => (
                     <div className="py-4" key={celebration.featuredUser.userId}>
                       <User
                         id={celebration.featuredUser.userId}
@@ -223,7 +226,7 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
                   className="divide-y divide-neutral-200"
                   onMouseDown={(e) => e.stopPropagation()}
                 >
-                  {thisMonthCelebration.map((celebration) => (
+                  {thisMonthCelebration.map((celebration: any) => (
                     <div className="py-4" key={celebration.featuredUser.userId}>
                       <User
                         id={celebration.featuredUser.userId}
@@ -248,7 +251,7 @@ const UpcomingCelebrationModal: FC<UpcomingCelebrationModalProps> = ({
                   className="divide-y divide-neutral-200"
                   onMouseDown={(e) => e.stopPropagation()}
                 >
-                  {upcomingMonthCelebration.map((celebration) => (
+                  {upcomingMonthCelebration.map((celebration: any) => (
                     <div className="py-4" key={celebration.featuredUser.userId}>
                       <User
                         id={celebration.featuredUser.userId}

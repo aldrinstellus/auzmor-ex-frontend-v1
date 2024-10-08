@@ -1,5 +1,4 @@
 import { FC, useState } from 'react';
-import { useInfiniteReplies } from 'queries/reaction';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
 import { Reply } from 'components/Reply/Reply';
@@ -8,7 +7,7 @@ import LoadMore from 'components/Comments/components/LoadMore';
 import { useCommentStore } from 'stores/commentStore';
 import CommentSkeleton from 'components/Comments/components/CommentSkeleton';
 import { CommentsRTE } from 'components/Comments/components/CommentsRTE';
-import { EntityType } from 'queries/files';
+import { EntityType } from 'interfaces';
 import {
   IMG_FILE_SIZE_LIMIT,
   IMediaValidationError,
@@ -17,6 +16,8 @@ import {
 import { validImageTypesForComments } from 'components/Comments';
 import { useUploadState } from 'hooks/useUploadState';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface CommentsProps {
   entityId: string;
@@ -30,6 +31,7 @@ export interface activeCommentsDataType {
 
 const Comments: FC<CommentsProps> = ({ entityId, className }) => {
   const { user } = useAuth();
+  const { getApi } = usePermissions();
   const {
     inputRef,
     media,
@@ -42,8 +44,9 @@ const Comments: FC<CommentsProps> = ({ entityId, className }) => {
   } = useUploadState();
   const [isCreateCommentLoading, setIsCreateCommentLoading] = useState(false);
 
+  const useInfiniteComments = getApi(ApiEnum.GetComments);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteReplies({
+    useInfiniteComments({
       entityId: entityId,
       entityType: 'comment',
       limit: 4,
@@ -51,14 +54,8 @@ const Comments: FC<CommentsProps> = ({ entityId, className }) => {
   const { t } = useTranslation('profile');
   const { comment } = useCommentStore();
 
-  const replyIds = data?.pages.flatMap((page) => {
-    return page.data?.result?.data.map((reply: { id: string }) => {
-      try {
-        return reply;
-      } catch (e) {
-        console.log('Error', { reply });
-      }
-    });
+  const replyIds = data?.pages.flatMap((page: any) => {
+    return page.data?.result?.data.map((reply: { id: string }) => reply);
   }) as { id: string }[];
 
   return (

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Card from 'components/Card';
 import Divider from 'components/Divider';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -19,12 +19,12 @@ import {
 import { oooReasons } from '../data';
 import Button, { Size, Variant } from 'components/Button';
 import SwitchToggle from 'components/SwitchToggle';
-import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateUserById } from 'queries/users';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useAuth from 'hooks/useAuth';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface IForm {
   timezone: { value: string; label: string };
@@ -45,12 +45,12 @@ const schema = yup.object({
 });
 
 const BasicSettings = () => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('userSetting');
   const { user, updateUser } = useAuth();
   const [ooo, setOOO] = useState(user?.outOfOffice?.outOfOffice);
   const userTimezone = getTimezoneNameFromIANA(user?.timezone || '');
   const queryClient = useQueryClient();
-  const firstUpdate = useRef(true);
 
   const {
     control,
@@ -72,6 +72,7 @@ const BasicSettings = () => {
     },
   });
 
+  const updateUserById = getApi(ApiEnum.UpdateUser);
   const updateMutation = useMutation({
     mutationKey: ['update-user-settings'],
     mutationFn: (data: any) => updateUserById(user?.id || '', data),

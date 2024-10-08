@@ -4,9 +4,10 @@ import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { IFilterForm } from '.';
 import { titleCase } from 'utils/misc';
 import { ICheckboxListOption } from 'components/CheckboxList';
-import { useGetStorageUser } from 'queries/storage';
 import ItemSkeleton from './ItemSkeleton';
 import { useDebounce } from 'hooks/useDebounce';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface IVisibilityProps {
   control: Control<IFilterForm, any>;
@@ -15,11 +16,13 @@ interface IVisibilityProps {
 }
 
 const DocumentPeople: FC<IVisibilityProps> = ({ control, watch }) => {
+  const { getApi } = usePermissions();
   const [docUserSearch] = watch(['docUserSearch']);
 
   // fetch team from search input
   const debouncedTeamSearchValue = useDebounce(docUserSearch || '', 300);
-  const { data: documentUser, isLoading } = useGetStorageUser({
+  const useGetStorageUsers = getApi(ApiEnum.GetStorageUsers);
+  const { data: documentUser, isLoading } = useGetStorageUsers({
     q: debouncedTeamSearchValue,
   });
   const docUsers = documentUser?.data?.result?.data || [];

@@ -1,4 +1,4 @@
-import { IMedia } from 'contexts/CreatePostContext';
+import { IMedia } from 'interfaces';
 import BlurImg from './components/BlurImg';
 import { FC } from 'react';
 

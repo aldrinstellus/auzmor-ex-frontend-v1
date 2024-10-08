@@ -4,7 +4,6 @@ import Popover from 'components/Popover';
 import Button, { Size, Variant } from 'components/Button';
 import clsx from 'clsx';
 import { useMutation } from '@tanstack/react-query';
-import { logout } from 'queries/account';
 import { Link } from 'react-router-dom';
 import Icon from 'components/Icon';
 import {
@@ -16,9 +15,10 @@ import {
 import useRole from 'hooks/useRole';
 import { useTranslation } from 'react-i18next';
 import useProduct from 'hooks/useProduct';
-import { learnLogout } from 'queries/learn';
-import { LearnRole } from 'utils/enum';
 import useNavigate from 'hooks/useNavigation';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { UserRole } from 'interfaces';
 
 const AccountCard = () => {
   const navigate = useNavigate();
@@ -27,8 +27,9 @@ const AccountCard = () => {
   const { t } = useTranslation('navbar');
   const { t: tp } = useTranslation('profile');
   const { isLxp, isOffice } = useProduct();
+  const { getApi } = usePermissions();
 
-  const logoutMutation = useMutation(isLxp ? learnLogout : logout, {
+  const logoutMutation = useMutation(getApi(ApiEnum.Logout), {
     onSuccess: async () => {
       userChannel.postMessage({
         userId: user?.id,
@@ -141,7 +142,7 @@ const AccountCard = () => {
                 </div>
               </Link>
             )}
-            {isLxp && (isAdmin || user?.learnRole === LearnRole.Manager) && (
+            {isLxp && (isAdmin || user?.role === UserRole.Manager) && (
               <Link to={getLearnUrl()}>
                 <div
                   className={`flex ${menuItemStyle} text-neutral-900 text-sm hover:text-primary-500 hover:font-bold group`}
@@ -155,7 +156,7 @@ const AccountCard = () => {
                     color="text-neutral-900"
                   />
                   <div>
-                    {user?.learnRole === LearnRole.Manager
+                    {user?.role === UserRole.Manager
                       ? t('switchToMangerView')
                       : t('switchToAdminsView')}
                   </div>

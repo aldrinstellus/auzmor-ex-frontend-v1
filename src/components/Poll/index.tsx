@@ -4,14 +4,10 @@ import IconButton, {
 } from 'components/IconButton';
 import { FC, Fragment, useContext, useEffect, useState } from 'react';
 import './styles.css';
-import {
-  CreatePostContext,
-  CreatePostFlow,
-  IPoll,
-} from 'contexts/CreatePostContext';
+import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import { getTimeFromNow } from 'utils/time';
 import { useMutation } from '@tanstack/react-query';
-import { IPost, PostType, deletePollVote, pollVote } from 'queries/post';
+import { IPost, IPoll, PostType } from 'interfaces';
 import { useFeedStore } from 'stores/feedStore';
 import { produce } from 'immer';
 import Button, {
@@ -23,6 +19,8 @@ import useRole from 'hooks/useRole';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import { getLearnUrl } from 'utils/misc';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export enum PollMode {
   VIEW = 'VIEW',
@@ -88,6 +86,7 @@ const Poll: FC<IPoll & PollProps> = ({
   const { t } = useTranslation('components', { keyPrefix: 'Poll' });
   const { currentTimezone } = useCurrentTimezone();
   const userTimezone = currentTimezone || 'Asia/Kolkata';
+  const { getApi } = usePermissions();
 
   const [showResults, setShowResults] = useState(false);
   const { isAdmin } = useRole();
@@ -95,9 +94,11 @@ const Poll: FC<IPoll & PollProps> = ({
   const updateFeed = useFeedStore((state) => state.updateFeed);
   const { setPoll, setActiveFlow, setPostType } = useContext(CreatePostContext);
 
+  const pollVote = getApi(ApiEnum.CreatePollVote);
   const voteMutation = useMutation({
     mutationKey: ['poll-vote'],
-    mutationFn: pollVote,
+    mutationFn: (payload: { postId: string; optionId: string }) =>
+      pollVote(payload),
     onMutate: ({ postId, optionId }) => {
       const previousPost = getPost(postId);
       updateFeed(
@@ -123,9 +124,11 @@ const Poll: FC<IPoll & PollProps> = ({
     },
   });
 
+  const deletePollVote = getApi(ApiEnum.DeletePollVote);
   const deleteVoteMutation = useMutation({
     mutationKey: ['delete-poll-vote'],
-    mutationFn: deletePollVote,
+    mutationFn: (payload: { postId: string; optionId: string }) =>
+      deletePollVote(payload),
     onMutate: ({ postId, optionId }) => {
       const previousPost = getPost(postId);
       updateFeed(

@@ -2,7 +2,8 @@ import Spinner from 'components/Spinner';
 import React, { useEffect } from 'react';
 import usePoller from '../usePoller';
 import { useMutation } from '@tanstack/react-query';
-import { validateImport } from 'queries/importUsers';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type AppProps = {
   importId: string;
@@ -10,8 +11,10 @@ type AppProps = {
 };
 
 const WaitForParse: React.FC<AppProps> = ({ importId, setNextStep }) => {
+  const { getApi } = usePermissions();
   const { ready } = usePoller({ importId, action: 'parse' });
 
+  const validateImport = getApi(ApiEnum.ValidateImport);
   const validateUserMutation = useMutation(() => validateImport(importId), {
     onError: () => {},
     onSuccess: () => {

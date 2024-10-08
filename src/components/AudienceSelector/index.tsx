@@ -4,11 +4,12 @@ import Icon from 'components/Icon';
 import { AudienceFlow } from 'components/PostBuilder/components/Audience';
 import Spinner from 'components/Spinner';
 import useRole from 'hooks/useRole';
-import { useOrganization } from 'queries/organization';
 import { FC, useEffect } from 'react';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 import { IS_PROD } from 'utils/constants';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface IAudienceSelectorProps {
   audienceFlow: AudienceFlow;
@@ -29,6 +30,8 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
 }) => {
   const { t } = useTranslation('components', { keyPrefix: 'AudienceSelector' });
   const { isAdmin } = useRole();
+  const { getApi } = usePermissions();
+  const useOrganization = getApi(ApiEnum.GetOrganization);
   const { data, isLoading } = useOrganization();
   const { form } = useEntitySearchFormStore();
 

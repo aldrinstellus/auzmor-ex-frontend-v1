@@ -1,13 +1,14 @@
 import Divider from 'components/Divider';
 import Notification from 'components/NotificationsOverview/components/Notification';
 import Spinner from 'components/Spinner';
-import { IMedia } from 'contexts/CreatePostContext';
-import { useInfiniteNotifications } from 'queries/notifications';
+import { IMedia } from 'interfaces';
 import { FC, ReactElement, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import NotificationSkeleton from './SkeletonLoader';
 import NoNotification from 'images/noNotification.svg';
 import { Card } from 'antd';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type NotificationsListing = {
   mentions?: boolean;
@@ -68,6 +69,8 @@ const NotificationsListing: FC<NotificationsListing> = ({
   className,
 }): ReactElement => {
   const { ref, inView } = useInView();
+  const { getApi } = usePermissions();
+  const useInfiniteNotifications = getApi(ApiEnum.GetNotifications);
   const {
     data,
     isLoading,
@@ -91,14 +94,8 @@ const NotificationsListing: FC<NotificationsListing> = ({
     if (isError) console.log({ error });
   }, [isError]);
 
-  const notifications = data?.pages.flatMap((page) => {
-    return page.data?.result?.data.map((notification: any) => {
-      try {
-        return notification;
-      } catch (e) {
-        console.log('Error', { notification });
-      }
-    });
+  const notifications = data?.pages.flatMap((page: any) => {
+    return page.data?.result?.data.map((notification: any) => notification);
   }) as NotificationProps[];
 
   return isLoading ? (

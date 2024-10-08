@@ -5,11 +5,12 @@ import Button, { Variant } from 'components/Button';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
-import { updatePost } from 'queries/post';
 import ErrorWarningPng from 'images/error-warning-line.png';
 import { useFeedStore } from 'stores/feedStore';
 import { produce } from 'immer';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type AppProps = {
   open: boolean;
@@ -18,6 +19,7 @@ type AppProps = {
 };
 
 const ChangeToRegularPostModal: FC<AppProps> = ({ open, closeModal, data }) => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('post', {
     keyPrefix: 'changeToRegularPostModal',
   });
@@ -25,6 +27,7 @@ const ChangeToRegularPostModal: FC<AppProps> = ({ open, closeModal, data }) => {
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
 
+  const updatePost = getApi(ApiEnum.UpdatePost);
   const removeAnnouncementMutation = useMutation({
     mutationKey: ['removeAnnouncementMutation', data.id],
     mutationFn: (payload: any) => updatePost(payload.id || '', payload),

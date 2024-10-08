@@ -4,11 +4,12 @@ import { useShouldRender } from 'hooks/useShouldRender';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getLearnUrl } from 'utils/misc';
-import { useGetEvaluation } from 'queries/learn';
 import EvaluationRequestRow from './Component/EvaluationRequestRow';
 import Card from 'components/Card';
 import EmptyState from './Component/EmptyState';
 import Skeleton from 'react-loading-skeleton';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 const ID = 'EvaluationRequestWidget';
 
@@ -18,6 +19,7 @@ export interface IEvaluationRequestWidgetProps {
 
 const EvaluationRequestWidget = ({ className = '' }) => {
   const shouldRender = useShouldRender(ID);
+  const { getApi } = usePermissions();
 
   if (!shouldRender) {
     return <></>;
@@ -29,7 +31,8 @@ const EvaluationRequestWidget = ({ className = '' }) => {
 
   const modules = ['Course', 'Event'];
 
-  const { data, isLoading } = useGetEvaluation({
+  const useGetEvaluations = getApi(ApiEnum.GetEvaluations);
+  const { data, isLoading } = useGetEvaluations({
     q: '',
     status: 'PENDING',
     modules: modules?.map((each) => each).join(','),

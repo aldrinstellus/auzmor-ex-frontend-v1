@@ -15,7 +15,7 @@ import ReactQuill from 'react-quill';
 import { convert } from 'html-to-text';
 import { operatorXOR } from 'utils/misc';
 import { PostBuilderMode } from 'components/PostBuilder';
-import { PostType } from 'queries/post';
+import { PostType } from 'interfaces';
 import { useTranslation } from 'react-i18next';
 
 export interface IFooterProps {

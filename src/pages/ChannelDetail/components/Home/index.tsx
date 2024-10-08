@@ -4,24 +4,32 @@ import Feed, { WidgetEnum } from 'components/Feed';
 import { ChannelRequestWidgetModeEnum } from 'components/ChannelRequestWidget/components/ChannelWidgetUser';
 import { FeedModeEnum } from 'stores/feedStore';
 import { useChannelRole } from 'hooks/useChannelRole';
+import { ChannelPermissionEnum } from '../utils/channelPermission';
 
 type HomeProps = {
   channelData: IChannel;
+  permissions: ChannelPermissionEnum[];
 };
-const Home: FC<HomeProps> = ({ channelData }) => {
+const Home: FC<HomeProps> = ({ channelData, permissions }) => {
   const { isChannelJoined } = useChannelRole(channelData.id);
 
   return (
     <Feed
       mode={FeedModeEnum.Channel}
-      showCreatePostCard={isChannelJoined}
-      showFeedFilterBar={isChannelJoined}
+      showCreatePostCard={permissions.includes(
+        ChannelPermissionEnum.CanPostContent,
+      )}
+      showFeedFilterBar={permissions.includes(
+        ChannelPermissionEnum.CanPostContent,
+      )}
       emptyFeedComponent={
         !isChannelJoined ? (
           <div className="text-center pt-4"> No post is available</div>
         ) : null
       }
-      isReadOnlyPost={!isChannelJoined}
+      isReadOnlyPost={permissions.includes(
+        ChannelPermissionEnum.CanViewContentOnly,
+      )}
       leftWidgets={[WidgetEnum.Links]}
       rightWidgets={[
         WidgetEnum.ChannelRequest,
@@ -29,10 +37,13 @@ const Home: FC<HomeProps> = ({ channelData }) => {
         WidgetEnum.ChannelAdmin,
       ]}
       widgetProps={{
-        [WidgetEnum.Links]: { channelData },
-        [WidgetEnum.ChannelMember]: { channelData },
+        [WidgetEnum.Links]: {
+          canEdit: permissions.includes(ChannelPermissionEnum.CanEditSettings),
+        },
+        [WidgetEnum.ChannelMember]: { channelData, permissions },
         [WidgetEnum.ChannelRequest]: {
           mode: ChannelRequestWidgetModeEnum.Channel,
+          permissions,
         },
       }}
       modeProps={{

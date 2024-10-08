@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Card from 'components/Card';
-import { announcementRead, useAnnouncementsWidget } from 'queries/post';
 import Button, { Size, Variant } from 'components/Button';
 import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
@@ -24,6 +23,8 @@ import AnnouncementAnalytics from 'components/Post/components/AnnouncementAnalyt
 import FeedPostMenu from 'components/Post/components/FeedPostMenu';
 import Truncate from 'components/Truncate';
 import useProduct from 'hooks/useProduct';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 const ID = 'AnnouncementWidget';
 
@@ -40,6 +41,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
   className = '',
   setCustomActiveFlow,
 }) => {
+  const { getApi } = usePermissions();
   const { t: tp } = useTranslation('profile');
   const { t } = useTranslation('announcement');
   const shouldRender = useShouldRender(ID);
@@ -63,6 +65,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
     queryKey = 'post-announcements-widget';
   }
 
+  const announcementRead = getApi(ApiEnum.AcknowledgeAccouncement);
   const acknowledgeAnnouncement = useMutation({
     mutationKey: ['acknowledge-announcement'],
     mutationFn: announcementRead,
@@ -74,6 +77,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
   });
   const showCreateAnnouncement = isAdmin && !!openModal;
 
+  const useAnnouncementsWidget = getApi(ApiEnum.GetAnnouncementPosts);
   const { data, isLoading } = useAnnouncementsWidget(
     { limit: limit },
     queryKey,

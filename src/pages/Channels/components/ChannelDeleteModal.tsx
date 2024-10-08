@@ -7,7 +7,6 @@ import Button, {
   Type as ButtonType,
 } from 'components/Button';
 import Modal from 'components/Modal';
-import { deleteChannel } from 'queries/channel';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
@@ -19,6 +18,8 @@ import { FC } from 'react';
 import { IChannel } from 'stores/channelStore';
 import { useTranslation } from 'react-i18next';
 import Truncate from 'components/Truncate';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 export interface IDeleteChannelModalProps {
   isOpen: boolean;
   closeModal: () => void;
@@ -30,8 +31,10 @@ const DeleteChannelModal: FC<IDeleteChannelModalProps> = ({
   closeModal,
   channelData,
 }) => {
+  const { getApi } = usePermissions();
   const navigate = useNavigate();
   const { t } = useTranslation('channels');
+  const deleteChannel = getApi(ApiEnum.DeleteChannel);
   const deleteChannelMutation = useMutation({
     mutationKey: ['delete-channel', channelData.id],
     mutationFn: (id: string) => deleteChannel(id),

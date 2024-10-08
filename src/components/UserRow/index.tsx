@@ -1,5 +1,5 @@
 import { FC, useMemo } from 'react';
-import { IGetUser } from 'queries/users';
+import { IGetUser } from 'interfaces';
 import Avatar from 'components/Avatar';
 import {
   getAvatarColor,

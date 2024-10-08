@@ -7,7 +7,7 @@ import {
   newHashtags,
 } from './mentions/utils';
 import { extractFirstWord } from 'utils/misc';
-import { UserStatus } from 'queries/users';
+import { UserStatus } from 'interfaces';
 
 // interface IOrg {
 //   id: string;

@@ -1,5 +1,4 @@
 import { useMutation } from '@tanstack/react-query';
-import { login } from 'queries/account';
 import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
@@ -13,14 +12,14 @@ import Button, {
 import { getSubDomain, readFirstAxiosError } from 'utils/misc';
 import { Link } from 'react-router-dom';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
-import { useGetSSOFromDomain } from 'queries/organization';
-import { useLoginViaSSO } from 'queries/auth';
 import 'utils/custom-yup-validators/email/validateEmail';
 import { FC } from 'react';
 import useAuth from 'hooks/useAuth';
 import { useNavigateWithToken } from 'hooks/useNavigateWithToken';
 import { useTranslation } from 'react-i18next';
 import useNavigate from 'hooks/useNavigation';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export interface ILoginViaCredProps {
   setViaSSO: (flag: boolean) => void;
@@ -34,11 +33,13 @@ interface IForm {
 
 const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
   const { setUser } = useAuth();
+  const { getApi } = usePermissions();
   const navigate = useNavigate();
   const { t } = useTranslation('auth', { keyPrefix: 'login' });
   const navigateWithToken = useNavigateWithToken();
+  const login = getApi(ApiEnum.Login);
   const loginMutation = useMutation((formData: IForm) => login(formData), {
-    onSuccess: (data) =>
+    onSuccess: (data: any) =>
       navigateWithToken(
         data.result.data.uat,
         data.result.data.redirectUrl,
@@ -56,8 +57,10 @@ const LoginViaCred: FC<ILoginViaCredProps> = ({ setViaSSO }) => {
     domain: yup.string(),
   });
   const domain = getSubDomain(window.location.host);
+  const useGetSSOFromDomain = getApi(ApiEnum.GetOrganizationDomain);
   const { data } = useGetSSOFromDomain(domain, domain !== '' ? true : false);
 
+  const useLoginViaSSO = getApi(ApiEnum.LoginSSO);
   const { refetch } = useLoginViaSSO(
     { domain },
     {

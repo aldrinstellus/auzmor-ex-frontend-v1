@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 import BlurImg from 'components/Image/components/BlurImg';
 import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 
-import { App } from 'queries/apps';
+import { IApp } from 'interfaces';
 import Tooltip from 'components/Tooltip';
 
 interface IAppWidgetCardProps {
-  data: App;
+  data: IApp;
 }
 
 const AppWidgetCard: FC<IAppWidgetCardProps> = ({ data }) => {

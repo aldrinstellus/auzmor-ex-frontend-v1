@@ -5,7 +5,7 @@ import { FieldValues, UseFormHandleSubmit } from 'react-hook-form';
 import { afterXUnit } from 'utils/time';
 import { CreateAnnouncementMode } from '.';
 import { useMutation } from '@tanstack/react-query';
-import { IPost, PostType, updatePost } from 'queries/post';
+import { IPost, PostType } from 'interfaces';
 import queryClient from 'utils/queryClient';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useFeedStore } from 'stores/feedStore';
@@ -13,6 +13,8 @@ import { produce } from 'immer';
 import useAuth from 'hooks/useAuth';
 import { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export interface IFooterProps {
   handleSubmit: UseFormHandleSubmit<FieldValues>;
@@ -30,6 +32,7 @@ const Footer: FC<IFooterProps> = ({
   closeModal,
   data,
 }) => {
+  const { getApi } = usePermissions();
   const preIsAnnouncement = data?.isAnnouncement;
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
@@ -60,6 +63,7 @@ const Footer: FC<IFooterProps> = ({
     makePostAnnouncementMutation.mutate(getSelectedAnnouncement(data).value);
   };
 
+  const updatePost = getApi(ApiEnum.UpdatePost);
   const makePostAnnouncementMutation = useMutation({
     mutationKey: ['makePostAnnouncementMutation', data?.id],
     mutationFn: (endDate: string) => {

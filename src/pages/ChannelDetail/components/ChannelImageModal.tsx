@@ -8,12 +8,13 @@ import clsx from 'clsx';
 import { channelCoverImages, channelCoverLogo } from './utils/ChannelImages';
 import { useUpload } from 'hooks/useUpload';
 import { useMutation } from '@tanstack/react-query';
-import { updateChannel } from 'queries/channel';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
-import { EntityType } from 'queries/files';
+import { EntityType } from 'interfaces';
 import queryClient from 'utils/queryClient';
 import { toBlob } from 'html-to-image';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type AppProps = {
   open: boolean;
@@ -29,6 +30,7 @@ const ChannelImageModal: FC<AppProps> = ({
   channelId,
   isCoverImg,
 }) => {
+  const { getApi } = usePermissions();
   const channelImages = isCoverImg ? channelCoverImages : channelCoverLogo;
   const [selectedImageId, setSelectedImageId] = useState<number>(0);
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -39,6 +41,7 @@ const ChannelImageModal: FC<AppProps> = ({
   const { t } = useTranslation('channelDetail', {
     keyPrefix: 'channelImageModal',
   });
+  const updateChannel = getApi(ApiEnum.UpdateChannel);
   const updateChannelMutation = useMutation({
     mutationFn: (data: any) => updateChannel(channelId, data),
     mutationKey: ['update-channel-name-mutation'],

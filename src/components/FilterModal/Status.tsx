@@ -5,7 +5,7 @@ import { useDebounce } from 'hooks/useDebounce';
 import { FC } from 'react';
 import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { IFilterForm, IStatus } from '.';
-import { UserStatus } from 'queries/users';
+import { UserStatus } from 'interfaces';
 import { titleCase } from 'utils/misc';
 import useProduct from 'hooks/useProduct';
 import Truncate from 'components/Truncate';

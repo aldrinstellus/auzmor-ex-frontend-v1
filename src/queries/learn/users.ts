@@ -1,0 +1,186 @@
+import {
+  QueryFunctionContext,
+  useInfiniteQuery,
+  useQuery,
+} from '@tanstack/react-query';
+import apiService from 'utils/apiService';
+import { IPostUser } from 'interfaces';
+
+// for future filters
+export enum PeopleFilterKeys {
+  PeopleFilterType = 'type',
+}
+
+export enum FilterType {
+  Status = 'STATUS',
+  Location = 'LOCATION',
+  Depratment = 'DEPARTMENT',
+  Reporter = 'REPORTER',
+}
+
+export interface IPeopleFilters {
+  [PeopleFilterKeys.PeopleFilterType]?: FilterType[];
+}
+
+export interface IProfileImage {
+  fileId: string;
+  original: string;
+}
+export interface IUserUpdate {
+  id: string;
+  profileImage?: IProfileImage;
+  timezone?: string;
+}
+
+export interface IPostUsers {
+  users: IPostUser[];
+}
+
+export const fetchMe = async () => {
+  const { data } = await apiService.get('/me');
+  const user = data?.result?.data;
+  const mappedData = {
+    message: data?.message,
+    result: {
+      data: {
+        id: user?.id,
+        fullName: user?.full_name,
+        workEmail: user?.email,
+        role: user?.role,
+        org: {
+          subscription: {},
+        },
+        ...(user?.designation && {
+          designation: {
+            name: user?.designation,
+          },
+        }),
+        ...(user?.image_url && {
+          profileImage: {
+            small: user.image_url,
+            medium: user.image_url,
+            large: user.image_url,
+            original: user.image_url,
+          },
+        }),
+        permissions: [],
+        preferences: {
+          ...(user?.preferences?.learner_view_type && {
+            learnerViewType: user?.preferences?.learner_view_type,
+          }),
+        },
+        timeZone: user?.time_zone,
+      },
+    },
+  };
+  console.log({ data, mappedData });
+  return mappedData;
+};
+
+export const getAllUser = async ({
+  pageParam = null,
+  queryKey,
+}: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
+  if (pageParam === null) {
+    return await apiService.get('/users', queryKey[1]);
+  } else return await apiService.get(pageParam);
+};
+
+// get all users by along with a boolean which identify if the user is already of the team/channel
+export const getMembers = async ({
+  pageParam = null,
+  queryKey,
+}: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
+  let transformedData;
+
+  if (pageParam === null) {
+    console.log({ 'queryKey[1]': queryKey[1] });
+    const response = await apiService.get(`/users/searchIn`, queryKey[1]);
+    const { data } = response;
+    transformedData = data?.result?.data?.map((item: any) => {
+      return {
+        id: item.userId,
+        ...item,
+      };
+    });
+    return { data: { result: { data: transformedData } } };
+  } else return apiService.get(pageParam);
+};
+
+// get user by id -> users/:id
+export const getUser = async (id: string) => {
+  const data = await apiService.get(`/users/${id}`, {});
+  return data;
+};
+
+/* REACT QUERY */
+
+export const useInfiniteUsers = ({
+  startFetching = true,
+  q,
+}: {
+  startFetching?: boolean;
+  q?: Record<string, any>;
+}) => {
+  return useInfiniteQuery({
+    queryKey: ['users', q],
+    queryFn: getAllUser,
+    getNextPageParam: (lastPage: any) => {
+      const pageDataLen = lastPage?.data?.result?.data?.length;
+      const pageLimit = lastPage?.data?.result?.paging?.limit;
+      if (pageDataLen < pageLimit) {
+        return null;
+      }
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
+    staleTime: 5 * 60 * 1000,
+    enabled: startFetching,
+  });
+};
+
+export const useInfiniteMembers = ({
+  q,
+}: {
+  entityId: string;
+  entityType: string;
+  q?: Record<string, any>;
+  startFetching?: boolean;
+}) => {
+  return useInfiniteQuery({
+    queryKey: ['search-team-members', q],
+    queryFn: (context) => getMembers(context),
+    getNextPageParam: (lastPage: any) => {
+      const pageDataLen = lastPage?.data?.result?.data?.length;
+      const pageLimit = lastPage?.data?.result?.paging?.limit;
+      if (pageDataLen < pageLimit) {
+        return null;
+      }
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+// use react query to get single user
+export const useSingleUser = (userId: string) => {
+  return useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => getUser(userId),
+    staleTime: 15 * 60 * 1000,
+  });
+};
+
+// use react query to get current user
+export const useCurrentUser = () => {
+  return useQuery({
+    queryKey: ['current-user-me'],
+    queryFn: () => fetchMe(),
+    staleTime: 15 * 60 * 1000,
+  });
+};

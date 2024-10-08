@@ -5,7 +5,6 @@ import IconButton, {
 } from 'components/IconButton';
 import RichTextEditor from 'components/RichTextEditor';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createComment, updateComment } from 'queries/comments';
 import ReactQuill from 'react-quill';
 import { DeltaStatic } from 'quill';
 import {
@@ -24,14 +23,14 @@ import Button, { Size, Variant } from 'components/Button';
 import { IComment } from 'components/Comments';
 import MediaPreview, { Mode } from 'components/MediaPreview';
 import {
-  IMedia,
   IMediaValidationError,
   MediaValidationError,
 } from 'contexts/CreatePostContext';
-import { EntityType } from 'queries/files';
+import { IMedia, IMention, EntityType } from 'interfaces';
 import { UploadStatus, useUpload } from 'hooks/useUpload';
-import { IMention } from 'queries/post';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export enum PostCommentMode {
   Create = 'CREATE',
@@ -97,10 +96,12 @@ export const CommentsRTE: FC<CommentFormProps> = ({
   const quillRef = useRef<ReactQuill>(null);
   const { uploadMedia, uploadStatus } = useUpload();
   const [isEmpty, setIsEmpty] = useState(true);
+  const { getApi } = usePermissions();
 
+  const createComment = getApi(ApiEnum.CreateComment);
   const createCommentMutation = useMutation({
     mutationKey: ['create-comment'],
-    mutationFn: createComment,
+    mutationFn: (payload: IUpdateCommentPayload) => createComment(payload),
     onError: () => {
       failureToastConfig({
         content: `Error adding ${entityType === 'post' ? 'Comment' : 'Reply'}`,
@@ -178,6 +179,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
     },
   });
 
+  const updateComment = getApi(ApiEnum.UpdateComment);
   const updateCommentMutation = useMutation({
     mutationKey: ['update-comment'],
     mutationFn: (payload: IUpdateCommentPayload) => {

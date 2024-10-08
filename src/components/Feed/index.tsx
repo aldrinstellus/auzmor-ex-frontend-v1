@@ -18,8 +18,7 @@ import {
   PostFilterPreference,
   PostType,
   PostTypeMapping,
-  useInfiniteFeed,
-} from 'queries/post';
+} from 'interfaces';
 import { useTranslation } from 'react-i18next';
 import { useInView } from 'react-intersection-observer';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
@@ -49,7 +48,6 @@ import MembersWidget, {
 } from 'pages/ChannelDetail/components/MembersWidget';
 import AdminsWidget from 'pages/ChannelDetail/components/AdminsWidget';
 import { IChannel } from 'stores/channelStore';
-import { useGetRecommendation } from 'queries/learn';
 import useAuth from 'hooks/useAuth';
 import Recommendation from 'components/Recommendation';
 import ChannelsWidget from 'components/ChannelsWidget';
@@ -73,6 +71,8 @@ import EvaluationRequestWidget, {
 import { CreatePostFlow } from 'contexts/CreatePostContext';
 import useProduct from 'hooks/useProduct';
 import AnnouncementFeedHeader from './components/AnnouncementFeedHeader';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 const EmptyWidget = () => <></>;
 
@@ -179,6 +179,7 @@ const Feed: FC<IFeedProps> = ({
   const [searchParams] = useSearchParams();
   const currentDate = new Date().toISOString();
   const { isLxp } = useProduct();
+  const { getApi } = usePermissions();
   const [appliedFeedFilters, setAppliedFeedFilters] = useState<IPostFilters>({
     [PostFilterKeys.PostType]: [],
     [PostFilterKeys.PostPreference]: [],
@@ -299,13 +300,18 @@ const Feed: FC<IFeedProps> = ({
   }, [hashtag]);
 
   // Learn data
+  const useGetRecommendations = getApi(ApiEnum.GetRecommendations);
   const { data: recommendationData, isLoading: recommendationLoading } =
-    useGetRecommendation(mode === FeedModeEnum.Default);
+    isLxp &&
+    useGetRecommendations({
+      enabled: isLxp && mode === FeedModeEnum.Default,
+    });
   const trendingCards =
     recommendationData?.data?.result?.data?.trending?.trainings || [];
   const recentlyPublishedCards =
     recommendationData?.data?.result?.data?.recently_published?.trainings || [];
 
+  const useInfiniteFeed = getApi(ApiEnum.GetFeedPosts);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteFeed(
       apiEndpoint,
@@ -328,7 +334,7 @@ const Feed: FC<IFeedProps> = ({
     );
   data;
   const feedIds = (
-    (data?.pages.flatMap((page) =>
+    (data?.pages.flatMap((page: any) =>
       page.data?.result?.data
         .filter((post: { id: string }) => {
           if (bookmarks) {

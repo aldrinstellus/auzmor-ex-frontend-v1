@@ -4,16 +4,15 @@ import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
 import Layout, { FieldType } from 'components/Form';
 import { useDebounce } from 'hooks/useDebounce';
-import { ICategory, useInfiniteCategories } from 'queries/category';
+import { ICategory, CategoryType } from 'interfaces';
 import { ICheckboxListOption } from 'components/CheckboxList';
 import Spinner from 'components/Spinner';
 import Icon from 'components/Icon';
 import ItemSkeleton from './ItemSkeleton';
-import { CategoryType } from 'queries/apps';
 import NoDataFound from 'components/NoDataFound';
-import { useInfiniteLearnCategory } from 'queries/learn';
-import useProduct from 'hooks/useProduct';
 import Truncate from 'components/Truncate';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface ICategoriesProps {
   control: Control<IFilterForm, any>;
@@ -29,6 +28,7 @@ const Categories: FC<ICategoriesProps> = ({
   type,
 }) => {
   const { ref, inView } = useInView();
+  const { getApi } = usePermissions();
   useEffect(() => {
     if (inView) {
       fetchNextPage();
@@ -50,28 +50,24 @@ const Categories: FC<ICategoriesProps> = ({
     'categorySearch',
     'categoryCheckbox',
   ]);
-  const { isLxp } = useProduct();
+
   // fetch category from search input
   const debouncedCategorySearchValue = useDebounce(categorySearch || '', 300);
 
-  // hit learn category api for lxp
+  const useInfiniteCategories = getApi(ApiEnum.GetCategories);
   const {
     data: fetchedDCategory,
     isLoading,
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-  } = isLxp
-    ? useInfiniteLearnCategory({
-        q: debouncedCategorySearchValue,
-        limit: 30,
-      })
-    : useInfiniteCategories({
-        q: debouncedCategorySearchValue,
-        type,
-      });
+  } = useInfiniteCategories({
+    q: debouncedCategorySearchValue,
+    limit: 30,
+    type,
+  });
 
-  const categoryData = fetchedDCategory?.pages.flatMap((page) => {
+  const categoryData = fetchedDCategory?.pages.flatMap((page: any) => {
     return page.data?.result?.data?.map((category: ICategory) => category);
   });
   const categoryFields = [
