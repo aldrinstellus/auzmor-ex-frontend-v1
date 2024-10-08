@@ -729,7 +729,8 @@ const CreatePostModal: FC<ICreatePostModal> = ({
               mode === PostBuilderMode.Create ? showConfirm : handleOnClose
             }
             mode={
-              customActiveFlow === CreatePostFlow.CreateAnnouncement
+              customActiveFlow === CreatePostFlow.CreateAnnouncement &&
+              mode === PostBuilderMode.Edit
                 ? CreateAnnouncementMode.DIRECT
                 : CreateAnnouncementMode.POST_BUILDER
             }

@@ -56,6 +56,7 @@ const routers = createBrowserRouter(
         <Route path="/apps/:id/launch" element={<AppLaunchPage />} />
         <Route path="/scheduledPosts" element={<HomeFeed />} />
         <Route path="/bookmarks" element={<HomeFeed />} />
+        <Route path="/announcements" element={<HomeFeed />} />
         <Route path="/feed" element={<HomeFeed />} />
         <Route path="/settings" element={<UserSettings />} />
         <Route element={<RequireAdminAuth />}>

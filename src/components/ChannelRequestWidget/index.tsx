@@ -12,6 +12,7 @@ import { CHANNEL_MEMBER_STATUS, IChannelRequest } from 'stores/channelStore';
 import { useParams } from 'react-router-dom';
 import Skeleton from 'react-loading-skeleton';
 import { useTranslation } from 'react-i18next';
+import { useShouldRender } from 'hooks/useShouldRender';
 import useNavigate from 'hooks/useNavigation';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
@@ -23,11 +24,17 @@ export type ChannelRequestWidgetProps = {
   permissions: ChannelPermissionEnum[];
 };
 
+const ID = 'ChannelRequestWidget';
+
 const ChannelRequestWidget: FC<ChannelRequestWidgetProps> = ({
   className = '',
   mode = ChannelRequestWidgetModeEnum.Feed,
   permissions,
 }) => {
+  const shouldRender = useShouldRender(ID);
+  if (!shouldRender) {
+    return <></>;
+  }
   const { t } = useTranslation('channelDetail', {
     keyPrefix: 'channelRequestWidget',
   });

@@ -50,24 +50,18 @@ export const deletePost = async (id: string) => {
   return data;
 };
 
-export const fetchAnnouncement = async (
-  postType: string,
-  limit: number,
-  excludeMyAnnouncements = true,
-) => {
-  const data = await apiService.get(
-    `/feed?feed=${postType}&excludeMyAnnouncements=${excludeMyAnnouncements}&limit=${limit}`,
-  );
+export const fetchAnnouncement = async (q: Record<string, any>) => {
+  const { data } = await apiService.get(`/feed/announcements`, q);
   return data;
 };
 
 export const useAnnouncementsWidget = (
-  limit = 1,
+  q: Record<string, any>,
   queryKey = 'feed-announcements-widget',
 ) =>
   useQuery({
-    queryKey: [queryKey],
-    queryFn: () => fetchAnnouncement('ANNOUNCEMENT', limit),
+    queryKey: [queryKey, q],
+    queryFn: () => fetchAnnouncement(q),
     staleTime: 15 * 60 * 1000,
   });
 
@@ -278,10 +272,61 @@ export const fetchBookmarks = async (
   return response;
 };
 
+export const fetchAnnouncements = async (
+  context: QueryFunctionContext<
+    (string | Record<string, any> | undefined)[],
+    any
+  >,
+  getFeed: () => {
+    [key: string]: IPost;
+  },
+  setFeed: (feed: { [key: string]: IPost }) => void,
+  appendComments: (comments: IComment[]) => void,
+) => {
+  let response: any = null;
+  const comments: IComment[] = [];
+  const feed = getFeed();
+
+  // Fetching data
+  if (!!!context.pageParam) {
+    response = await apiService.get(
+      `/feed/announcements?limit=10`,
+      context.queryKey[1],
+    );
+  } else {
+    response = await apiService.get(context.pageParam);
+  }
+
+  // Collecting all comments
+  collectComments(response, comments);
+
+  // appending post to comment store
+  appendComments(comments.flat());
+
+  // Updating feed store
+  setFeed({
+    ...feed,
+    ...chain(response.data.result.data).keyBy('id').value(),
+  });
+
+  // Updating response
+  response.data.result.data = response.data.result.data.map(
+    (eachPost: IPost) => ({ id: eachPost.id }),
+  );
+
+  // Setting next next param
+  if (!!context.pageParam) {
+    if (context.pageParam == response.data.result.paging.next) {
+      response.data.result.paging.next = null;
+    }
+  }
+  return response;
+};
 const feedFunction: Record<string, any> = {
   feed: fetchFeed,
   bookmarks: fetchBookmarks,
   scheduledPosts: fetchScheduledPosts,
+  announcements: fetchAnnouncements,
 };
 
 export const useInfiniteFeed = (pathname: string, q?: Record<string, any>) => {
