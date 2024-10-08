@@ -342,7 +342,7 @@ const Feed: FC<IFeedProps> = ({
           } else if (scheduled) {
             return !!feed[post.id]?.schedule;
           } else if (announcements) {
-            return !!feed[post.id]?.isAnnouncement;
+            return !isRegularPost(feed[post.id], currentDate, isAdmin);
           }
           return true;
         })
@@ -362,12 +362,12 @@ const Feed: FC<IFeedProps> = ({
           !isRegularPost(feed[post.id], currentDate, isAdmin),
       )
     : [];
-
   const regularFeedIds = feedIds
     ? feedIds.filter((post: { id: string }) =>
         isRegularPost(feed[post.id], currentDate, isAdmin),
       )
     : [];
+  console.log('regularFeedIds :', regularFeedIds);
   useEffect(() => {
     setActiveFeedPostCount(feedIds.length);
   }, [feedIds]);

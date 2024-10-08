@@ -51,7 +51,7 @@ export const deletePost = async (id: string) => {
 };
 
 export const fetchAnnouncement = async (q: Record<string, any>) => {
-  const { data } = await apiService.get(`/posts/announcements`, q);
+  const { data } = await apiService.get(`/feed/announcements`, q);
   return data;
 };
 
@@ -468,7 +468,7 @@ export const fetchAnnouncements = async (
   // Fetching data
   if (!!!context.pageParam) {
     response = await apiService.get(
-      `/posts/announcements`,
+      `/posts/announcements?limit=10`,
       context.queryKey[1],
     );
   } else {

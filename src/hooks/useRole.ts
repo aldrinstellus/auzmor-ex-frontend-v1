@@ -15,9 +15,12 @@ const useRole = (
   const { pathname } = useLocation();
   const { isLxp } = useProduct();
 
-  let isAdminOrSuperAdmin = [UserRole.Admin, UserRole.Superadmin].includes(
-    user?.role || UserRole.Member,
-  );
+  let isAdminOrSuperAdmin = [
+    UserRole.Admin,
+    UserRole.PrimaryAdmin,
+    UserRole.Superadmin,
+  ].includes(user?.role || UserRole.Member);
+
   const isOwner = user?.id === userId;
   let isOwnerOrAdmin = isAdminOrSuperAdmin || user?.id === userId;
   let isMember = user?.role === UserRole.Member;

@@ -75,6 +75,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
       await queryClient.invalidateQueries(['feed']);
     },
   });
+
   const showCreateAnnouncement = isAdmin && !!openModal;
 
   const useAnnouncementsWidget = getApi(ApiEnum.GetAnnouncementPosts);
@@ -83,9 +84,9 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
     queryKey,
   );
 
-  const result = data?.data?.result?.data;
+  const result = data?.result?.data;
 
-  const totalCount = data?.data?.result?.totalCount;
+  const totalCount = data?.result?.totalCount;
   // By default, postData will be result[0].
   // If postId is defined and result[0].id === postId, then set postData = result[1]
   let postData = result?.[0];
@@ -93,11 +94,11 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
     postData = result?.[1];
   }
 
-  const isAcknowledged = postData?.acknowledged;
+  // const isAcknowledged = postData?.acknowledged;
   const dataPostId = postData?.id;
 
   const hasLoggedInUserCreatedAnnouncement =
-    user?.id === postData?.announcement?.actor?.userId;
+    user?.id == postData?.announcement?.actor?.userId;
 
   const itemCount = isEmpty(postData) ? 0 : result?.length;
 
@@ -154,7 +155,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
             <SkeletonLoader />
           ) : (
             <div className="w-full px-6">
-              {itemCount && !isAcknowledged ? (
+              {itemCount ? (
                 <div className="flex flex-col items-start">
                   <div className="mt-4 w-full">
                     <div className="flex space-x-4">
@@ -223,7 +224,6 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
                       </div>
                     </Link>
                   </div>
-
                   {showCreateAnnouncement && (
                     <Button
                       label={t('viewInsight')}
@@ -237,7 +237,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
                       }}
                     />
                   )}
-                  {!hasLoggedInUserCreatedAnnouncement && (
+                  {!hasLoggedInUserCreatedAnnouncement && !isAdmin && (
                     <div className="w-full flex justify-center">
                       <Button
                         label={t('read-CTA')}

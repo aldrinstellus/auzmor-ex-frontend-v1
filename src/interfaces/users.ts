@@ -32,7 +32,7 @@ export interface IUserSettings {
 }
 
 export enum UserRole {
-  PrimaryAdmin = 'PRIMARYADMIN',
+  PrimaryAdmin = 'PRIMARY_ADMIN',
   Admin = 'ADMIN',
   Manager = 'MANAGER',
   Learner = 'LEARNER',
