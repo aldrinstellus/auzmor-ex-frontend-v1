@@ -18,6 +18,7 @@ import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
 import { FilterModalVariant } from 'components/FilterModal';
 import {
   CHANNEL_MEMBER_STATUS,
+  CHANNEL_ROLE,
   IChannel,
   IChannelRequest,
 } from '../../../../stores/channelStore';
@@ -34,7 +35,6 @@ import PageLoader from 'components/PageLoader';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import useAuth from 'hooks/useAuth';
-import { useChannelRole } from 'hooks/useChannelRole';
 import { ChannelPermissionEnum } from '../utils/channelPermission';
 
 type MembersProp = {
@@ -51,7 +51,6 @@ const Members: React.FC<MembersProp> = ({ channelData, permissions }) => {
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
   const { user: loggedInUser } = useAuth();
-  const { isChannelAdmin } = useChannelRole(channelData.id);
 
   const filterForm = useForm<{
     search: string;
@@ -222,18 +221,18 @@ const Members: React.FC<MembersProp> = ({ channelData, permissions }) => {
     return () => clearFilters();
   }, [parsedTab]);
 
-  const getCardPermissions = (userId: string) => {
+  const getCardPermissions = (user: any) => {
     const peopleCardPermissions: PeopleCardPermissionEnum[] = [];
     if (
       permissions.includes(ChannelPermissionEnum.CanPromoteMember) &&
-      loggedInUser?.id !== userId &&
-      !isChannelAdmin
+      loggedInUser?.id != user.userId &&
+      user.role !== CHANNEL_ROLE.Admin
     ) {
       peopleCardPermissions.push(PeopleCardPermissionEnum.CanPromote);
     }
     if (
       permissions.includes(ChannelPermissionEnum.CanRemoveMember) &&
-      loggedInUser?.id !== userId
+      loggedInUser?.id != user.userId
     ) {
       peopleCardPermissions.push(PeopleCardPermissionEnum.CanRemoveFromChannel);
     }
@@ -348,7 +347,7 @@ const Members: React.FC<MembersProp> = ({ channelData, permissions }) => {
                 userData={user}
                 channelId={channelData?.id}
                 showNewJoineeBadge={!isNewEntity(channelData.createdAt)}
-                permissions={getCardPermissions(user.userId)}
+                permissions={getCardPermissions(user)}
               />
             ))}
           </div>

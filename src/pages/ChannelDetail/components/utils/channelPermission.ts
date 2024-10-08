@@ -56,7 +56,6 @@ export const getChannelPermissions: (
           if (channelRole === CHANNEL_ROLE.Member) {
             // 2 -> LXP -> Admin view - > Public channel -> Joined -> Channel Role -> Member
             channelPermissions = [
-              ChannelPermissionEnum.CanViewContentOnly,
               ChannelPermissionEnum.CanAddMember,
               ChannelPermissionEnum.CanRemoveMember,
               ChannelPermissionEnum.CanPromoteMember,
@@ -72,7 +71,6 @@ export const getChannelPermissions: (
           } else if (channelRole === CHANNEL_ROLE.Admin) {
             // 3 -> LXP -> Admin view - > Public channel -> Joined -> Channel Role -> Channel Admin
             channelPermissions = [
-              ChannelPermissionEnum.CanViewContentOnly,
               ChannelPermissionEnum.CanAddMember,
               ChannelPermissionEnum.CanRemoveMember,
               ChannelPermissionEnum.CanPromoteMember,
@@ -107,7 +105,6 @@ export const getChannelPermissions: (
           if (channelRole === CHANNEL_ROLE.Member) {
             // 5 -> LXP -> Admin view - > Private channel -> Joined -> Channel Role -> Channel Member
             channelPermissions = [
-              ChannelPermissionEnum.CanViewContentOnly,
               ChannelPermissionEnum.CanAddMember,
               ChannelPermissionEnum.CanRemoveMember,
               ChannelPermissionEnum.CanPromoteMember,
@@ -124,7 +121,6 @@ export const getChannelPermissions: (
           } else if (channelRole === CHANNEL_ROLE.Admin) {
             // 6 -> LXP -> Admin view - > Private channel -> Joined -> Channel Role -> Channel Admin
             channelPermissions = [
-              ChannelPermissionEnum.CanViewContentOnly,
               ChannelPermissionEnum.CanAddMember,
               ChannelPermissionEnum.CanRemoveMember,
               ChannelPermissionEnum.CanPromoteMember,
@@ -145,12 +141,15 @@ export const getChannelPermissions: (
       if (channelPrivacy === ChannelVisibilityEnum.Public) {
         if (!isChannelJoined) {
           // 7 -> LXP -> Learner view - > Public channel -> Not joined
-          channelPermissions = [ChannelPermissionEnum.CanViewContentOnly];
+          channelPermissions = [
+            ChannelPermissionEnum.CanViewContentOnly,
+            ChannelPermissionEnum.CanAccessHomeTab,
+            ChannelPermissionEnum.CanAccessMembersTab,
+          ];
         } else {
           if (channelRole === CHANNEL_ROLE.Member) {
             // 8 -> LXP -> Learner view - > Public channel -> Joined -> Channel Role -> Member
             channelPermissions = [
-              ChannelPermissionEnum.CanViewContentOnly,
               ChannelPermissionEnum.CanPostContent,
               ChannelPermissionEnum.CanAccessHomeTab,
               ChannelPermissionEnum.CanAccessMembersTab,
@@ -160,7 +159,6 @@ export const getChannelPermissions: (
           } else if (channelRole === CHANNEL_ROLE.Admin) {
             // 9 -> LXP -> Learner view - > Public channel -> Joined -> Channel Role -> Channel Admin
             channelPermissions = [
-              ChannelPermissionEnum.CanViewContentOnly,
               ChannelPermissionEnum.CanAddMember,
               ChannelPermissionEnum.CanRemoveMember,
               ChannelPermissionEnum.CanPromoteMember,
@@ -184,7 +182,6 @@ export const getChannelPermissions: (
           if (channelRole === CHANNEL_ROLE.Member) {
             // 11 -> LXP -> Learner view - > Private channel -> Joined -> Channel Role -> Channel Member
             channelPermissions = [
-              ChannelPermissionEnum.CanViewContentOnly,
               ChannelPermissionEnum.CanPostContent,
               ChannelPermissionEnum.CanAccessHomeTab,
               ChannelPermissionEnum.CanAccessSettingsTab,
@@ -192,7 +189,6 @@ export const getChannelPermissions: (
           } else if (channelRole === CHANNEL_ROLE.Admin) {
             // 12 -> LXP -> Learner view - > Private channel -> Joined -> Channel Role -> Channel Admin
             channelPermissions = [
-              ChannelPermissionEnum.CanViewContentOnly,
               ChannelPermissionEnum.CanAddMember,
               ChannelPermissionEnum.CanRemoveMember,
               ChannelPermissionEnum.CanPromoteMember,
@@ -219,7 +215,6 @@ export const getChannelPermissions: (
         if (channelRole === CHANNEL_ROLE.Member) {
           // 14 -> Office -> Public channel -> Joined -> Channel Role -> Member
           channelPermissions = [
-            ChannelPermissionEnum.CanViewContentOnly,
             ChannelPermissionEnum.CanPostContent,
             ChannelPermissionEnum.CanAccessHomeTab,
             ChannelPermissionEnum.CanAccessMembersTab,
@@ -229,7 +224,6 @@ export const getChannelPermissions: (
         } else if (channelRole === CHANNEL_ROLE.Admin) {
           // 15 -> Office -> Public channel -> Joined -> Channel Role -> Channel Admin
           channelPermissions = [
-            ChannelPermissionEnum.CanViewContentOnly,
             ChannelPermissionEnum.CanAddMember,
             ChannelPermissionEnum.CanRemoveMember,
             ChannelPermissionEnum.CanPromoteMember,
@@ -257,7 +251,6 @@ export const getChannelPermissions: (
         if (channelRole === CHANNEL_ROLE.Member) {
           // 18 -> Office -> Private channel -> Joined -> Channel Role -> Channel Member
           channelPermissions = [
-            ChannelPermissionEnum.CanViewContentOnly,
             ChannelPermissionEnum.CanPostContent,
             ChannelPermissionEnum.CanAccessHomeTab,
             ChannelPermissionEnum.CanAccessSettingsTab,
@@ -265,7 +258,6 @@ export const getChannelPermissions: (
         } else if (channelRole === CHANNEL_ROLE.Admin) {
           // 19 -> Office -> Private channel -> Joined -> Channel Role -> Channel Admin
           channelPermissions = [
-            ChannelPermissionEnum.CanViewContentOnly,
             ChannelPermissionEnum.CanAddMember,
             ChannelPermissionEnum.CanRemoveMember,
             ChannelPermissionEnum.CanPromoteMember,
