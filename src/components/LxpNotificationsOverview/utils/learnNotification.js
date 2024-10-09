@@ -1,17 +1,31 @@
 /* eslint-disable */
 /* eslint-disable @typescript-eslint/no-unused-vars, react/jsx-key */
 
-import Text from '../../Text/Text';
 import truncate from 'lodash/truncate';
-import { NOTIFICATION_ACTION_TYPES } from './constants';
+import camelCase from 'lodash/camelCase';
+import pluralize from 'pluralize';
+import hasIn from 'lodash/hasIn';
+
+import {
+  NOTIFICATION_ACTION_TYPES,
+  LEARNING_TYPE,
+  LEARNER_YOUR_COURSES_TABS,
+  FORUM_POST_TYPE,
+  SOURCE,
+  LEARNING_PATH,
+  TASK_CONFIG_ROLES,
+  TASK_CREATION_SCOPE,
+  TASK_TYPE,
+} from './constants';
 import moment from 'moment';
-import { Trans } from 'react-i18next';
-import { Link } from 'react-router-dom'; // Assuming you're using React Router
+import NotificationTitle from '../components/NotificationTitle';
+import NotificationText from '../components/NotificationText';
 
 export const isLearnerRoute = () => {
   const path = window.location.pathname.toLowerCase();
   return (
     path.startsWith('/learn') ||
+    path.startsWith('/user') ||
     (path.startsWith('/user') && !path.includes('users'))
   );
 };
@@ -27,6 +41,25 @@ const SOCIAL_GROUP = {
 export const getIconForAction = (actionType) => {
   let iconName;
   switch (actionType) {
+    case NOTIFICATION_ACTION_TYPES.LxpAnnouncementReminderOnFeed:
+      iconName = 'AcknowledgeAnnouncementNotification';
+      break;
+    case NOTIFICATION_ACTION_TYPES.LxpPostSchedulePostPublish:
+      iconName = 'PostLiveNotification';
+      break;
+    case NOTIFICATION_ACTION_TYPES.LxpPostSchedulePrePublish:
+      iconName = 'PostScheduleClockNotification';
+      break;
+    case NOTIFICATION_ACTION_TYPES.ShoutOut:
+      iconName = 'starShoutOut';
+      break;
+
+    case NOTIFICATION_ACTION_TYPES.LxpMentionOnFeed:
+      iconName = 'MentionInPost';
+      break;
+    case NOTIFICATION_ACTION_TYPES.LxpCommentOnPost:
+      iconName = 'CommentNotification';
+      break;
     case NOTIFICATION_ACTION_TYPES.ReportGenerated:
     case NOTIFICATION_ACTION_TYPES.CourseCompleted:
     case NOTIFICATION_ACTION_TYPES.LearningPathCompleted:
@@ -163,9 +196,6 @@ export const getIconForAction = (actionType) => {
 
 export const humanizeTimestamp = (timestamp) => moment(timestamp).fromNow();
 
-// export const truncate = (input, limit) =>
-//   lTruncate(input, { length: limit, omission: '..' });
-
 export const parseMentions = (mentions, text) => {
   let finalText = text;
   //@ts-ignore
@@ -181,40 +211,6 @@ export const parseMentions = (mentions, text) => {
 };
 export const getAvatarInitial = ({ firstName = '', lastName = '' }) =>
   `${firstName && firstName.trim()[0]} ${lastName && lastName.trim()[0]}`;
-
-// export const getNotificationAPIEndpoint = (isLearn, role) => {
-//   let URL = '/notifications';
-//   if (isLearn || role === USER_ROLES.learner || role === USER_ROLES.trainee) {
-//     URL = '/learner/notifications';
-//   }
-//   return URL;
-// };
-
-const NotificationText = ({
-  viewInline = false,
-  bold = false,
-  children,
-  ...props
-}) => {
-  const baseClasses = viewInline ? 'text-sm leading-5' : 'text-base leading-7';
-
-  const boldClasses = bold
-    ? viewInline
-      ? 'font-extrabold'
-      : 'font-semibold'
-    : '';
-
-  const colorClass = bold ? '' : 'text-gray-600';
-
-  return (
-    <Text
-      className={`${baseClasses} ${boldClasses} ${colorClass} tracking-wide break-all`}
-      {...props}
-    >
-      {children}
-    </Text>
-  );
-};
 
 const CERTIFICATE = 'certificate';
 
@@ -266,8 +262,13 @@ const getSocialSourceRoute = (
   targetId1,
   userId,
   additionalInfo,
+  actionType,
 ) => {
   switch (target1Type) {
+    case 'POST': {
+      return `${isLearn ? '/user' : ''}/posts/${targetId1}`;
+    }
+
     case 'Poll':
       if (additionalInfo && additionalInfo.forum && additionalInfo.post) {
         return `${isLearn ? '/user' : ''}/forums/${additionalInfo.forum.id}/${
@@ -321,23 +322,35 @@ const getTasksRoute = (isLearn, target1Type, targetId1, additionalInfo) => {
 
   return `${urlPrefix}/tasks/${taskId}${roleUrl}/detail?${urlPostfix}`;
 };
-const NotificationTitle = ({ linkTo, i18nKey, values, components }) => {
-  const Component = linkTo ? Link : 'div';
-  // const { handleCloseNotificationsPopup } = useContext(TrialContext);
-  return (
-    <div>
-      <Component
-        to={linkTo}
-        // onClick={() => handleCloseNotificationsPopup(false)}
-      >
-        <NotificationText as="p" viewInline>
-          <Trans i18nKey={i18nKey} values={values} components={components} />
-        </NotificationText>
-      </Component>
-    </div>
-  );
-};
 
+// const NotificationTitle = ({
+//   linkTo,
+//   i18nKey,
+//   values,
+//   components,
+//   isLxpRoute,
+// }) => {
+//   isLxpRoute;
+//   console.log('isLxpRoute :', isLxpRoute);
+//   // const Component = linkTo ? Link : 'div';
+//   const navigate = useNavigate();
+//   return (
+//     <div
+//       className={`${linkTo ? 'cursor-pointer' : ''}`}
+//       onClick={() => {
+//         if (isLxpRoute) {
+//           navigate('/user/feed');
+//           return;
+//         }
+//         window.location.assign(`${getLearnUrl(`${linkTo}`)}`);
+//       }}
+//     >
+//       <NotificationText as="p">
+//         <Trans i18nKey={i18nKey} values={values} components={components} />
+//       </NotificationText>
+//     </div>
+//   );
+// };
 export const getNotificationTitle = (
   viewInline,
   actionType,
@@ -354,6 +367,136 @@ export const getNotificationTitle = (
 ) => {
   // const { currency } = useContext(TrialContext);
   // const { user = {} } = useContext(AuthContext);
+
+  // 1.when mention on feed-post -> actoName mention on post
+  if (
+    NOTIFICATION_ACTION_TYPES.LxpMentionOnFeed === actionType &&
+    target1Type == 'COMMENT'
+  ) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpuserMentionedOnComment"
+        values={{ actor: name }}
+        isLxpRoute={true}
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+          actionType,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  // 2.when mention on feed-comment -> actoName mention on comment
+  if (
+    NOTIFICATION_ACTION_TYPES.LxpMentionOnFeed === actionType &&
+    target1Type == 'POST'
+  ) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpuserMentionedOnPost"
+        values={{ actor: name }}
+        isLxpRoute={true}
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  // 3.  Lxp user base shoutOut , Shout-Out Kate Wilson gave you a shout-out for your outstanding efforts!
+  if (NOTIFICATION_ACTION_TYPES.ShoutOut === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpShoutOut"
+        values={{ actor: name }}
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+
+  // 4. system generated lxp Announcement Please acknowledge our recent announcement.
+  if (NOTIFICATION_ACTION_TYPES.LxpAnnouncementReminderOnFeed === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpAnnouncementReminder"
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  // 5.  Lxp user base shoutOut , Shout-Out Kate Wilson gave you a shout-out for your outstanding efforts!
+  if (NOTIFICATION_ACTION_TYPES.LxpCommentOnPost === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpCommentOnPost"
+        values={{ actor: name }}
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+
+  // 6. system generated pre Publish post . your post going live in 1 hour ...
+  if (NOTIFICATION_ACTION_TYPES.LxpPostSchedulePrePublish === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpSchedulePrePublishPost"
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  // 7. system generated post Publish post . your post is live now ...
+  if (NOTIFICATION_ACTION_TYPES.LxpPostSchedulePostPublish === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpSchedulePostPublishPost"
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+
+  //leran notification===============================
 
   if (NOTIFICATION_ACTION_TYPES.ReportGenerated === actionType) {
     return (

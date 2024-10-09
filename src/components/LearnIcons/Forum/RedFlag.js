@@ -1,0 +1,20 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+
+export const RedFlagSVG = props => (
+  <React.Fragment>
+    <svg width={props.width} height={props.height} viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M7.41176 1.64706C7.19335 1.64706 6.98387 1.56028 6.82943 1.40584C6.67499 1.2514 6.58824 1.04194 6.58824 0.823529C6.58824 0.605116 6.50146 0.39566 6.34702 0.241218C6.19258 0.0867764 5.98312 0 5.76471 0H0V13.5882C0 13.6974 0.0433882 13.8022 0.120609 13.8794C0.19783 13.9566 0.302558 14 0.411765 14C0.520971 14 0.6257 13.9566 0.70292 13.8794C0.780141 13.8022 0.823529 13.6974 0.823529 13.5882V6.58824H5.76471C5.98312 6.58824 6.19258 6.67501 6.34702 6.82945C6.50146 6.9839 6.58824 7.19335 6.58824 7.41176C6.58824 7.63018 6.67499 7.83963 6.82943 7.99408C6.98387 8.14852 7.19335 8.23529 7.41176 8.23529H13.1765V1.64706H7.41176Z" fill="#FF0000" />
+    </svg>
+  </React.Fragment>
+);
+
+RedFlagSVG.defaultProps = {
+  width: 14,
+  height: 14,
+};
+
+RedFlagSVG.propTypes = {
+  width: PropTypes.number,
+  height: PropTypes.number,
+};

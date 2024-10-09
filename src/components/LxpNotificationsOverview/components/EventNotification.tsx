@@ -19,7 +19,6 @@ const EventNotification: React.FC<EventNotificationProps> = ({
   name,
   profileColor,
 }) => {
-  console.log('actionType :', actionType);
   return (
     <div className="relative">
       {source === 'user' && (
@@ -30,10 +29,9 @@ const EventNotification: React.FC<EventNotificationProps> = ({
             size={50}
             className={`bg-${profileColor}`}
           />
-          <Icon
-            name={getIconForAction(actionType) || ''}
-            className="absolute z-50 rounded-full cursor-pointer bottom-0 right-0 -mr-2 -mb-2"
-          />
+          <div className="absolute z-50 rounded-full cursor-pointer bottom-0 right-0 -mr-2 -mb-2">
+            <Icon name={getIconForAction(actionType) || ''} />
+          </div>
         </div>
       )}
       {source === 'system' && (

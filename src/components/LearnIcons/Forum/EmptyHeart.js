@@ -1,0 +1,24 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+
+export const EmptyHeartSVG = props => (
+  <React.Fragment>
+    <svg width={props.width} height={props.height} viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.75 1C13.9487 1 15.0435 1.48841 15.8326 2.37528C16.5854 3.22132 17 4.35438 17 5.56574C17 6.88434 16.4802 8.11074 15.3642 9.42532C14.3668 10.6003 12.9319 11.8113 11.2704 13.2136L11.2646 13.2185C10.6472 13.7396 10.0087 14.2785 9.32922 14.8673L9.30875 14.8851C9.22038 14.9617 9.11019 15 9 15C8.88981 15 8.77962 14.9617 8.69125 14.8851L8.67078 14.8673C7.98914 14.2766 7.34887 13.7362 6.72973 13.2137L6.72969 13.2136C5.06809 11.8113 3.63319 10.6002 2.63578 9.42532C1.51978 8.11077 1 6.88434 1 5.56574C1 4.35438 1.41459 3.22132 2.16734 2.37531C2.95653 1.48844 4.05131 1 5.25 1C6.93588 1 8.00322 1.99724 8.60172 2.83385C8.75703 3.05094 8.88909 3.26861 9 3.47345C9.11091 3.26861 9.243 3.05094 9.39828 2.83385C9.99678 1.99724 11.0641 1 12.75 1Z" stroke={props.color} strokeLinejoin="round" />
+    </svg>
+
+
+  </React.Fragment>
+);
+
+EmptyHeartSVG.defaultProps = {
+  width: 18,
+  height: 16,
+  color: 'black',
+};
+
+EmptyHeartSVG.propTypes = {
+  width: PropTypes.number,
+  height: PropTypes.number,
+  color: PropTypes.string,
+};

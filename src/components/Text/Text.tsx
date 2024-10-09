@@ -12,7 +12,6 @@ type FontSize =
   | '4xl'
   | '5xl'
   | '6xl';
-type FontWeight = 'normal' | 'medium' | 'semibold' | 'bold' | 'extrabold';
 type FontFamily = 'sans' | 'serif' | 'mono';
 
 interface TextProps {
@@ -20,7 +19,7 @@ interface TextProps {
   fontSize?: FontSize;
   lineHeight?: string;
   letterSpacing?: string;
-  fontWeight?: FontWeight;
+  fontWeight?: any;
   fontFamily?: FontFamily;
   color?: string;
   opacity?: number;

@@ -1,4 +1,11 @@
 export const NOTIFICATION_ACTION_TYPES = {
+  ShoutOut: 'NOTIFICATION_SHOUT_OUT',
+  LxpCommentOnPost: 'NOTIFICATION_COMMENT_ON_FEED',
+  LxpMentionOnFeed: 'NOTIFICATION_MENTION_ON_FEED',
+  LxpAnnouncementReminderOnFeed:
+    'NOTIFICATION_ACKNOWLEDGEMENT_REMINDER_ON_FEED',
+  LxpPostSchedulePrePublish: 'NOTIFICATION_POST_SCHEDULE_PRE_PUBLISH_ON_FEED',
+  LxpPostSchedulePostPublish: 'NOTIFICATION_POST_SCHEDULE_POST_PUBLISH_ON_FEED',
   UserAdd: 'NOTIFICATION_USER_ADD',
   UserDelete: 'NOTIFICATION_USER_DELETE',
   TeamDelete: 'NOTIFICATION_DELETE_TEAM',
@@ -173,8 +180,9 @@ export const NOTIFICATION_ACTION_TYPES = {
   // Manual Reassignment
   ReassignCourse: 'NOTIFICATION_REASSIGN_COURSE',
   ReassignPath: 'NOTIFICATION_REASSIGN_LEARNING_PATH',
-
+  // first one are lxp
   SystemGenerated: [
+    'NOTIFICATION_ACKNOWLEDGEMENT_REMINDER_ON_FEED',
     'NOTIFICATION_USER_ADD',
     'NOTIFICATION_USER_DELETE',
     'NOTIFICATION_DELETE_TEAM',
@@ -232,7 +240,110 @@ export const USER_ROLES = {
   learner: 'LEARNER',
   trainee: 'TRAINEE',
 };
+export const LEARNING_TYPE = {
+  course: {
+    id: 'course',
+    category: 'COURSE',
+    route: 'courses',
+    managerRoute: 'managers/managed_courses',
+  },
+  path: {
+    id: 'path',
+    category: 'LEARNING_PATH',
+    route: 'learning_paths',
+    managerRoute: 'managers/managed_learning_paths',
+    pathAPIKey: 'learning_path',
+  },
+  event: {
+    id: 'event',
+    category: 'EVENT',
+    route: 'events',
+    managerRoute: 'managers/managed_events',
+  },
+  external_training: {
+    id: 'external_training',
+    category: 'EXTERNAL_TRAINING',
+    route: 'external_trainings',
+    managerRoute: 'external_trainings',
+  },
+};
+export const FORUM_POST_TYPES = ['Poll', 'Discussion'];
 
+export const LEARNING_PATH = 'LearningPath';
+
+export const TASK_CONFIG_ROLES = {
+  assignee: 'ASSIGNEE',
+  reviewer: 'REVIEWER',
+  viewer: 'VIEWER',
+};
+export const TASK_CREATION_SCOPE = {
+  creator: 'CREATOR',
+  global: 'GLOBAL',
+};
+export const TASK_TYPE = {
+  task: 'Checklist',
+  subtask: 'ChecklistItem',
+};
+
+export const SOURCE = {
+  ...LEARNING_TYPE,
+  user: {
+    id: 'user',
+    category: 'USER',
+    route: 'users',
+    managerRoute: 'users',
+  },
+  team: {
+    id: 'team',
+    category: 'TEAM',
+    route: 'teams',
+    managerRoute: 'teams',
+  },
+  organization: {
+    id: 'organization',
+    category: 'ORGANIZATION',
+    route: 'organizations',
+    managerRoute: 'organizations',
+  },
+  branch: {
+    id: 'branch',
+    category: 'BRANCH',
+    route: 'branches',
+    managerRoute: 'branches',
+  },
+  forum: {
+    id: 'forum',
+    category: 'FORUM',
+    route: 'forums',
+    managerRoute: 'forums',
+  },
+};
+
+export const LEARNER_YOUR_COURSES_TABS = {
+  assigned: 'ASSIGNED',
+  enrolled: 'ENROLLED',
+  inprogress: 'ONGOING',
+  completed: 'COMPLETED',
+  public: 'PUBLIC',
+  overdue: 'OVERDUE',
+  failed: 'FAILED',
+  multiple: 'MULTIPLE',
+};
+
+export const FORUM_POST_TYPE = {
+  poll: {
+    id: 'Poll',
+    route: 'polls',
+  },
+  discussion: {
+    id: 'Discussion',
+    route: 'discussions',
+  },
+  post: {
+    id: 'Post',
+    route: 'discussions',
+  },
+};
 export const TRAINING_KEYWORD = '[Training]';
 
 export const CURRENCY_NAMES = {

@@ -1,8 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-// import {
-//   humanizeTimestamp, truncate, getAvatarInitial, parseMentions,
-// } from '../../utils/misc';
+
 import {
   getAvatarInitial,
   getNotificationTitle,
@@ -12,11 +9,7 @@ import {
 import truncate from 'lodash/truncate';
 
 import EventNotification from './EventNotification';
-
-interface AdditionalInfo {
-  mentions?: any[];
-  [key: string]: any;
-}
+import { getLearnUrl } from 'utils/misc';
 
 interface EventNotificationCardProps {
   id: number;
@@ -32,8 +25,8 @@ interface EventNotificationCardProps {
   target2Type?: string;
   target1Type?: string;
   viewInline?: boolean;
-  onMarkAsRead: (id: number) => void;
-  additionalInfo?: AdditionalInfo;
+  onMarkAsRead: (id: any) => void;
+  additionalInfo?: any;
   isManager?: boolean;
 }
 
@@ -55,13 +48,6 @@ const EventNotificationCard: React.FC<EventNotificationCardProps> = ({
   additionalInfo,
   isManager = false,
 }) => {
-  const navigate = useNavigate();
-  console.log(
-    `  actionTypeasasasas
- :`,
-    actionType,
-  );
-
   const parseText = (targetText: string | undefined): string => {
     if (!targetText) return '';
     const finalText = targetText
@@ -75,11 +61,11 @@ const EventNotificationCard: React.FC<EventNotificationCardProps> = ({
   };
 
   const notificationTitle = getNotificationTitle(
-    viewInline,
+    true,
     actionType,
     periods,
     actor?.id,
-    actor && truncate(actor.displayName, { length: 30 }),
+    actor && truncate(actor.display_name, { length: 30 }),
     actor?.id,
     truncate(parseText(deletedTargetName), { length: 30 }),
     targetId1,
@@ -91,9 +77,7 @@ const EventNotificationCard: React.FC<EventNotificationCardProps> = ({
 
   return (
     <div
-      className={`flex justify-between items-center ${
-        viewInline ? '' : 'border border-gray-200 rounded-md h-[90px] w-[620px]'
-      }`}
+      className={`flex justify-between items-center `}
       data-testid={`notification_${id}`}
     >
       <div
@@ -107,7 +91,9 @@ const EventNotificationCard: React.FC<EventNotificationCardProps> = ({
           onClick={() =>
             isLearn || source === 'system' || isManager
               ? false
-              : navigate(`/people/${actor.id}/overview`)
+              : window.location.assign(
+                  `${getLearnUrl()}/people/${actor.id}/overview`,
+                )
           }
           data-testid="profile-icon"
         >
@@ -149,7 +135,7 @@ const EventNotificationCard: React.FC<EventNotificationCardProps> = ({
           <>
             <div
               className={`w-2 h-2 rounded-full cursor-pointer ${
-                isRead ? 'bg-transparent' : 'bg-blue-500'
+                isRead ? 'bg-transparent' : 'bg-red-500'
               }`}
               onClick={() => !isRead && onMarkAsRead(id)}
             />
@@ -161,7 +147,7 @@ const EventNotificationCard: React.FC<EventNotificationCardProps> = ({
         {viewInline && (
           <div
             className={`w-2 h-2 rounded-full cursor-pointer ${
-              isRead ? 'bg-transparent' : 'bg-blue-500'
+              isRead ? 'bg-transparent' : 'bg-red-500'
             }`}
             onClick={() => !isRead && onMarkAsRead(id)}
           />

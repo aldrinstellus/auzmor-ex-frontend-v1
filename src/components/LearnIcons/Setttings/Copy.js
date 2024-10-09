@@ -1,0 +1,20 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+
+export const CopySVG = props => (
+  <svg width={props.width} height={props.height} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 0H8C6.897 0 6 0.897 6 2V6H2C0.897 6 0 6.897 0 8V18C0 19.103 0.897 20 2 20H12C13.103 20 14 19.103 14 18V14H18C19.103 14 20 13.103 20 12V2C20 0.897 19.103 0 18 0ZM2 18V8H12L12.002 18H2ZM18 12H14V8C14 6.897 13.103 6 12 6H8V2H18V12Z" fill={props.color} />
+  </svg>
+);
+
+CopySVG.defaultProps = {
+  width: 20,
+  height: 20,
+  color: '#FF3366',
+};
+
+CopySVG.propTypes = {
+  width: PropTypes.number,
+  height: PropTypes.number,
+  color: PropTypes.string,
+};

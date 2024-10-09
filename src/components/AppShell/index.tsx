@@ -38,8 +38,8 @@ const AppShell: FC<IAppShellProps> = ({ children }) => {
       className="bg-neutral-100 h-screen overflow-y-auto"
       id="app-shell-container"
     >
-      {showNavbar && !isLxp && <Navbar />}
-      {showNavbar && isLxp && <NavbarLxp />}
+      {showNavbar && isLxp && <Navbar />}
+      {showNavbar && !isLxp && <NavbarLxp />}
       <main id="main-content" aria-label="Main Content" role="main">
         <div className={wraperStyle}>
           <div className={containerStyle}>{children}</div>

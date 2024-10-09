@@ -5,13 +5,12 @@ import { FC, useRef, useState } from 'react';
 import Spinner from 'components/Spinner';
 import Popover from 'components/Popover';
 import Tabs from 'components/Tabs';
-import NotificationsList from './components/NotificationsList';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import LearnNotificationTab from './components/LearnNotificationTab';
-import { markAllLearnNotificationsAsRead } from 'queries/learn';
-import { NavLink } from 'react-router-dom';
+// import { NavLink } from 'react-router-dom';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { getLearnUrl } from 'utils/misc';
 
 export enum NotificationType {
   ALL = 'All',
@@ -31,15 +30,9 @@ const LxpNotificationsOverview: FC = () => {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
 
   const markAllNotificationsAsRead = getApi(ApiEnum.MarkAllNotificationsAsRead);
-  const markReadMutation = useMutation(() => markAllNotificationsAsRead(), {
-    onSuccess: () => {
-      queryClient.invalidateQueries(['unread-count']);
-      queryClient.invalidateQueries(['get-notifications']);
-    },
-  });
 
-  const learnMarkReadMutation = useMutation(
-    () => markAllLearnNotificationsAsRead(),
+  const markReadMutation = useMutation(
+    (category: string) => markAllNotificationsAsRead(category),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(['unread-count']);
@@ -47,14 +40,12 @@ const LxpNotificationsOverview: FC = () => {
       },
     },
   );
+  const category = activeTabIndex === 0 ? 'LEARN' : 'LXP';
 
   const handleMarkAllAsRead = () => {
-    if (activeTabIndex === 0) {
-      learnMarkReadMutation.mutate();
-    } else {
-      markReadMutation.mutate();
-    }
+    markReadMutation.mutate(category);
   };
+
   const notifTabs = [
     {
       id: 0,
@@ -69,7 +60,7 @@ const LxpNotificationsOverview: FC = () => {
           Learn
         </p>
       ),
-      tabContent: <LearnNotificationTab />,
+      tabContent: <LearnNotificationTab isSocial={false} />,
       dataTestId: 'notifications-learn',
     },
     {
@@ -85,9 +76,7 @@ const LxpNotificationsOverview: FC = () => {
           Social
         </p>
       ),
-      tabContent: (
-        <NotificationsList key="All" className="max-h-96" ref={viewAllRef} />
-      ),
+      tabContent: <LearnNotificationTab isSocial={true} />,
       dataTestId: 'notifications-social',
     },
   ];
@@ -126,51 +115,44 @@ const LxpNotificationsOverview: FC = () => {
             LXp Notifications
           </p>
           {/* Mark all as read */}
-          {!!data?.data.result.unread && (
-            <div className="flex items-center gap-1 text-sm">
-              <p
-                onClick={handleMarkAllAsRead}
-                role="button"
-                title="mark all as read"
-                tabIndex={0}
-                onKeyUp={(e) =>
-                  e.code === 'Enter' ? markReadMutation.mutate() : ''
-                }
-                className="text-primary-500 cursor-pointer"
-              >
-                Mark all as read
-              </p>
-              <span className="text-gray-300">|</span>
-              <p className="text-primary-500  cursor-pointer">Settings </p>
-            </div>
-          )}
+
+          <div className="flex items-center gap-1 text-sm">
+            <p
+              onClick={handleMarkAllAsRead}
+              role="button"
+              title="mark all as read"
+              tabIndex={0}
+              onKeyUp={(e) =>
+                e.code === 'Enter' ? markReadMutation.mutate(category) : ''
+              }
+              className="text-primary-500 cursor-pointer"
+            >
+              Mark all as read
+            </p>
+            <span className="text-gray-300">|</span>
+            <p
+              onClick={() =>
+                window.location.assign(
+                  `${getLearnUrl()}/settings/notifications`,
+                )
+              }
+              className="text-primary-500  cursor-pointer"
+            >
+              Settings{' '}
+            </p>
+          </div>
         </div>
         {/* Content */}
         <Divider />
         <Tabs
           tabs={notifTabs}
           tabContentClassName=""
-          className="flex justify-start gap-x-1 px-4 border-b-1 border-neutral-200 w-full "
+          className="flex justify-start gap-x-1 mb-2 px-4 border-b-1 border-neutral-200 w-full "
           itemSpacing={4}
           onTabChange={(index) => setActiveTabIndex(index)}
         />
         <Divider />
-        <NavLink
-          to="/notifications"
-          className={({ isActive }) =>
-            isActive ? 'text-primary-500' : 'text-neutral-500'
-          }
-        >
-          <div
-            className="  rounded-5xl bg-white text-sm font-normal flex items-center justify-center py-4 "
-            onClick={() => viewAllRef.current?.click()}
-            data-testid="notifications-view-all"
-          >
-            <p className="text-neutral-900 font-bold text-base cursor-pointer">
-              View All
-            </p>
-          </div>
-        </NavLink>
+        {/* see All */}
       </Card>
     </Popover>
   );

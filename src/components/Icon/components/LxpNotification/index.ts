@@ -18,4 +18,4 @@ export * from './ThumbsDown';
 export * from './ThumbsUpNotification';
 export * from './FeedbackPending';
 export * from './PollNotification';
-// export * from './TaskUpdateNotification';
+export * from './TaskUpdateNotification';
