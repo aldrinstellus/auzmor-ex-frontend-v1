@@ -3,7 +3,7 @@ import * as queries from 'queries/learn';
 import { ApiEnum } from '../enums/apiEnum';
 import { LxpRoleEnum } from '../enums/roleEnum';
 
-const { Default } = LxpRoleEnum;
+const { Default, Learner, Manager } = LxpRoleEnum;
 
 export const apiConfigLxp = {
   //apps
@@ -30,6 +30,7 @@ export const apiConfigLxp = {
   //channels
   [ApiEnum.GetChannels]: {
     [Default]: queries.useInfiniteChannels,
+    [Learner]: queries.useInfiniteChannelsLearner,
   },
   [ApiEnum.GetChannel]: { [Default]: queries.useChannelDetails },
   [ApiEnum.CreateChannel]: { [Default]: queries.createChannel },
@@ -72,7 +73,11 @@ export const apiConfigLxp = {
   [ApiEnum.GetComments]: { [Default]: queries.useInfiniteComments },
   [ApiEnum.CreateComment]: { [Default]: queries.createComment },
   [ApiEnum.UpdateComment]: { [Default]: queries.updateComment },
-  [ApiEnum.DeleteComment]: { [Default]: queries.deleteComment },
+  [ApiEnum.DeleteComment]: {
+    [Default]: queries.deleteComment,
+    [Learner]: queries.deleteCommentLearner,
+    [Manager]: queries.deleteCommentLearner,
+  },
 
   //events
   [ApiEnum.GetEvents]: { [Default]: queries.useInfiniteLearnEvents },
@@ -104,10 +109,22 @@ export const apiConfigLxp = {
   [ApiEnum.UploadImage]: { [Default]: queries.uploadImage },
 
   //posts
-  [ApiEnum.GetPost]: { [Default]: queries.useGetPost },
-  [ApiEnum.CreatePost]: { [Default]: queries.createPost },
+  [ApiEnum.GetPost]: {
+    [Default]: queries.useGetPost,
+    [Learner]: queries.useGetLearnerPost,
+    [Manager]: queries.useGetLearnerPost,
+  },
+  [ApiEnum.CreatePost]: {
+    [Default]: queries.createPost,
+    [Learner]: queries.createPostLearner,
+    [Manager]: queries.createPostLearner,
+  },
   [ApiEnum.UpdatePost]: { [Default]: queries.updatePost },
-  [ApiEnum.DeletePost]: { [Default]: queries.deletePost },
+  [ApiEnum.DeletePost]: {
+    [Default]: queries.deletePost,
+    [Learner]: queries.deletePostLearner,
+    [Manager]: queries.deletePostLearner,
+  },
 
   [ApiEnum.AcknowledgeAccouncement]: { [Default]: queries.announcementRead },
   [ApiEnum.GetPostAcknowledgements]: {
@@ -121,7 +138,11 @@ export const apiConfigLxp = {
   [ApiEnum.CreatePollVote]: { [Default]: queries.pollVote },
   [ApiEnum.DeletePollVote]: { [Default]: queries.deletePollVote },
 
-  [ApiEnum.GetFeedPosts]: { [Default]: queries.useInfiniteFeed },
+  [ApiEnum.GetFeedPosts]: {
+    [Default]: queries.useInfiniteFeed,
+    [Learner]: queries.useInfiniteLearnerFeed,
+    [Manager]: queries.useInfiniteLearnerFeed,
+  },
   [ApiEnum.GetAnnouncementPosts]: { [Default]: queries.useAnnouncementsWidget },
 
   [ApiEnum.CreateBookmarkPost]: { [Default]: queries.createBookmark },

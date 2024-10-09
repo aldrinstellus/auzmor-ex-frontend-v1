@@ -26,6 +26,9 @@ export interface IComments {
 export const deleteComment = async (id: string) => {
   await apiService.delete(`/comments/${id}`);
 };
+export const deleteCommentLearner = async (id: string) => {
+  await apiService.delete(`/learner/comments/${id}`);
+};
 
 export const getComments = async (
   context: QueryFunctionContext<

@@ -19,12 +19,16 @@ export const getAllChannels = async (
     any
   >,
   setChannels: (channels: { [key: string]: IChannel }) => void,
+  apiPrefix = '',
 ) => {
   let response = null;
 
   try {
     if (!!!context.pageParam) {
-      response = await apiService.get('/channels', context.queryKey[1]);
+      response = await apiService.get(
+        `${apiPrefix}/channels`,
+        context.queryKey[1],
+      );
     } else {
       response = await apiService.get(context.pageParam);
     }
@@ -313,6 +317,32 @@ export const useInfiniteChannels = (
     ...useInfiniteQuery({
       queryKey: ['channel', q],
       queryFn: (context) => getAllChannels(context, setChannels),
+      getNextPageParam: (lastPage: any) => {
+        const pageDataLen = lastPage?.data?.result?.data?.length;
+        const pageLimit = lastPage?.data?.result?.paging?.limit;
+        if (pageDataLen < pageLimit) {
+          return null;
+        }
+        return lastPage?.data?.result?.paging?.next;
+      },
+      getPreviousPageParam: (currentPage: any) => {
+        return currentPage?.data?.result?.paging?.prev;
+      },
+      staleTime: 5 * 60 * 1000,
+      ...options,
+    }),
+    channels,
+  };
+};
+export const useInfiniteChannelsLearner = (
+  q?: Record<string, any>,
+  options?: Record<string, any>,
+) => {
+  const { channels, setChannels } = useChannelStore();
+  return {
+    ...useInfiniteQuery({
+      queryKey: ['channel', q],
+      queryFn: (context) => getAllChannels(context, setChannels, '/learner'),
       getNextPageParam: (lastPage: any) => {
         const pageDataLen = lastPage?.data?.result?.data?.length;
         const pageLimit = lastPage?.data?.result?.paging?.limit;

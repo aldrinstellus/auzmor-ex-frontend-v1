@@ -14,6 +14,10 @@ export const createPost = async (payload: IPostPayload) => {
   const data = await apiService.post('/feed', payload);
   return data;
 };
+export const createPostLearner = async (payload: IPostPayload) => {
+  const data = await apiService.post('/learner/feed', payload);
+  return data;
+};
 
 export const updatePost = async (id: string, payload: IPostPayload) => {
   const fileIds = payload.files
@@ -47,6 +51,10 @@ export const updatePost = async (id: string, payload: IPostPayload) => {
 
 export const deletePost = async (id: string) => {
   const data = await apiService.delete(`/posts/${id}`);
+  return data;
+};
+export const deletePostLearner = async (id: string) => {
+  const data = await apiService.delete(`/learner/posts/${id}`);
   return data;
 };
 
@@ -142,6 +150,7 @@ export const fetchFeed = async (
   },
   setFeed: (feed: { [key: string]: IPost }) => void,
   appendComments: (comments: IComment[]) => void,
+  apiPrefix = '',
 ) => {
   let response: any = null;
   const comments: IComment[] = [];
@@ -150,7 +159,7 @@ export const fetchFeed = async (
   // Fetching data
   if (!!!context.pageParam) {
     response = await apiService.get(
-      '/feed',
+      `${apiPrefix}/feed`,
       context.queryKey[1],
       context.signal,
     );
@@ -234,6 +243,7 @@ export const fetchBookmarks = async (
   },
   setFeed: (feed: { [key: string]: IPost }) => void,
   appendComments: (comments: IComment[]) => void,
+  apiPrefix = '',
 ) => {
   let response: any = null;
   const comments: IComment[] = [];
@@ -241,7 +251,10 @@ export const fetchBookmarks = async (
 
   // Fetching data
   if (!!!context.pageParam) {
-    response = await apiService.get('/feed/my-bookmarks', context.queryKey[1]);
+    response = await apiService.get(
+      `${apiPrefix}/feed/my-bookmarks`,
+      context.queryKey[1],
+    );
   } else {
     response = await apiService.get(context.pageParam);
   }
@@ -357,15 +370,47 @@ export const useInfiniteFeed = (pathname: string, q?: Record<string, any>) => {
   };
 };
 
+export const useInfiniteLearnerFeed = (
+  pathname: string,
+  q?: Record<string, any>,
+) => {
+  const { feed, getFeed, setFeed } = useFeedStore();
+  const { appendComments } = useCommentStore();
+  const queryKey = pathname.replaceAll('/', '') || 'feed';
+  const queryFunction = queryKey === '' ? fetchFeed : feedFunction[queryKey];
+  return {
+    ...useInfiniteQuery({
+      queryKey: [queryKey, q],
+      queryFn: (context) =>
+        queryFunction(context, getFeed, setFeed, appendComments, '/learner'),
+      getNextPageParam: (lastPage: any) => {
+        const pageDataLen = lastPage?.data?.result?.data?.length;
+        const pageLimit = lastPage?.data?.result?.paging?.limit;
+        if (pageDataLen < pageLimit) {
+          return null;
+        }
+        return lastPage?.data?.result?.paging?.next;
+      },
+      getPreviousPageParam: (currentPage: any) => {
+        return currentPage?.data?.result?.paging?.prev;
+      },
+      staleTime: 5 * 60 * 1000,
+      refetchOnMount: 'always',
+    }),
+    feed,
+  };
+};
+
 const getPost = async (
   id: string,
   updateFeed: (id: string, post: IPost) => void,
   appendComments: (comments: IComment[]) => void,
   commentId?: string,
+  apiPrefix = '',
 ) => {
   const comments: IComment[] = [];
   const response = await apiService.get(
-    `/feed/${id}${commentId ? '?commentId=' + commentId : ''}`,
+    `${apiPrefix}/feed/${id}${commentId ? '?commentId=' + commentId : ''}`,
   );
 
   // Collecting all comments
@@ -401,12 +446,23 @@ const getPost = async (
   return response;
 };
 
+// getPost
 export const useGetPost = (id: string, commentId?: string) => {
   const updateFeed = useFeedStore((state) => state.updateFeed);
   const { appendComments } = useCommentStore();
   return useQuery({
     queryKey: ['posts', id, commentId],
     queryFn: () => getPost(id, updateFeed, appendComments, commentId),
+    refetchOnMount: 'always',
+  });
+};
+export const useGetLearnerPost = (id: string, commentId?: string) => {
+  const updateFeed = useFeedStore((state) => state.updateFeed);
+  const { appendComments } = useCommentStore();
+  return useQuery({
+    queryKey: ['posts', id, commentId],
+    queryFn: () =>
+      getPost(id, updateFeed, appendComments, commentId, '/learner'),
     refetchOnMount: 'always',
   });
 };
