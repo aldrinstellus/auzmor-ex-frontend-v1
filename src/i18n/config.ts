@@ -31,7 +31,6 @@ const resources = {
     notifications: require('locales/en-US/notifications.json'),
     pageTitle: require('locales/en-US/pageTitle.json'),
     components: require('locales/en-US/components.json'),
-    lxpNotifications: require('locales/en-US/lxpNotifications.json'),
   },
 };
 
@@ -67,6 +66,5 @@ i18next.use(initReactI18next).init({
     'notifications',
     'pageTitle',
     'components',
-    'lxpNotifications',
   ],
 });

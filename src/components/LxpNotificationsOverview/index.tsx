@@ -6,18 +6,15 @@ import Spinner from 'components/Spinner';
 import Popover from 'components/Popover';
 import Tabs from 'components/Tabs';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import LearnNotificationTab from './components/LearnNotificationTab';
 // import { NavLink } from 'react-router-dom';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { getLearnUrl } from 'utils/misc';
-
-export enum NotificationType {
-  ALL = 'All',
-  MENTIONS = 'Mentions',
-}
+import { useTranslation } from 'react-i18next';
+import Notifications from './components/Notifications';
 
 const LxpNotificationsOverview: FC = () => {
+  const { t } = useTranslation('notifications');
   const { getApi } = usePermissions();
 
   const useGetUnreadNotificationsCount = getApi(
@@ -57,10 +54,10 @@ const LxpNotificationsOverview: FC = () => {
               : 'text-neutral-500 group-hover:text-neutral-900 group-focus:text-neutral-900'
           }`}
         >
-          Learn
+          {t('learn')}
         </p>
       ),
-      tabContent: <LearnNotificationTab isSocial={false} />,
+      tabContent: <Notifications isSocial={false} />,
       dataTestId: 'notifications-learn',
     },
     {
@@ -73,10 +70,10 @@ const LxpNotificationsOverview: FC = () => {
               : 'text-neutral-500 group-hover:text-neutral-900 group-focus:text-neutral-900'
           }`}
         >
-          Social
+          {t('social')}
         </p>
       ),
-      tabContent: <LearnNotificationTab isSocial={true} />,
+      tabContent: <Notifications isSocial={true} />,
       dataTestId: 'notifications-social',
     },
   ];
@@ -89,9 +86,7 @@ const LxpNotificationsOverview: FC = () => {
             data?.data?.result?.data?.notification_count > 0 && (
               <div className="absolute rounded-full bg-red-600 border border-white text-white antialiased text-xs font-bold leading-4 top-2 right-2.5 flex w-4 h-4 items-center justify-center">
                 {/* Get unread notif count here */}
-                {(data?.data?.result?.data?.notification_count > 10
-                  ? '9+'
-                  : data?.data?.result?.data?.notification_count) || ''}
+                {data?.data?.result?.data?.notification_count || ''}
               </div>
             )}
           {isLoading && (
@@ -112,10 +107,9 @@ const LxpNotificationsOverview: FC = () => {
         {/* Header */}
         <div className="px-4 py-2 flex items-center justify-between">
           <p className="text-gray-900 font-extrabold text-base">
-            Notifications
+            {t('notifications')}
           </p>
           {/* Mark all as read */}
-
           <div className="flex items-center gap-1 text-sm">
             <p
               onClick={handleMarkAllAsRead}
@@ -127,7 +121,7 @@ const LxpNotificationsOverview: FC = () => {
               }
               className="text-primary-500 cursor-pointer"
             >
-              Mark all as read
+              {t('markAsRead')}
             </p>
             <span className="text-gray-300">|</span>
             <p
@@ -138,7 +132,7 @@ const LxpNotificationsOverview: FC = () => {
               }
               className="text-primary-500  cursor-pointer"
             >
-              Settings{' '}
+              {t('settings')}{' '}
             </p>
           </div>
         </div>

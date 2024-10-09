@@ -198,11 +198,9 @@ export const humanizeTimestamp = (timestamp) => moment(timestamp).fromNow();
 
 export const parseMentions = (mentions, text) => {
   let finalText = text;
-  //@ts-ignore
   mentions.map((m) => {
     finalText = finalText.replaceAll(
       `{{${m.id}}}{{${m.type}}}`,
-      //@ts-ignore
       `@${m.type === 'SocialGroup' ? SOCIAL_GROUP[m.name] : m.name}`,
     );
     return m;
@@ -323,34 +321,6 @@ const getTasksRoute = (isLearn, target1Type, targetId1, additionalInfo) => {
   return `${urlPrefix}/tasks/${taskId}${roleUrl}/detail?${urlPostfix}`;
 };
 
-// const NotificationTitle = ({
-//   linkTo,
-//   i18nKey,
-//   values,
-//   components,
-//   isLxpRoute,
-// }) => {
-//   isLxpRoute;
-//   console.log('isLxpRoute :', isLxpRoute);
-//   // const Component = linkTo ? Link : 'div';
-//   const navigate = useNavigate();
-//   return (
-//     <div
-//       className={`${linkTo ? 'cursor-pointer' : ''}`}
-//       onClick={() => {
-//         if (isLxpRoute) {
-//           navigate('/user/feed');
-//           return;
-//         }
-//         window.location.assign(`${getLearnUrl(`${linkTo}`)}`);
-//       }}
-//     >
-//       <NotificationText as="p">
-//         <Trans i18nKey={i18nKey} values={values} components={components} />
-//       </NotificationText>
-//     </div>
-//   );
-// };
 export const getNotificationTitle = (
   viewInline,
   actionType,
@@ -365,9 +335,6 @@ export const getNotificationTitle = (
   target2Type,
   additionalInfo,
 ) => {
-  // const { currency } = useContext(TrialContext);
-  // const { user = {} } = useContext(AuthContext);
-
   // 1.when mention on feed-post -> actoName mention on post
   if (
     NOTIFICATION_ACTION_TYPES.LxpMentionOnFeed === actionType &&
@@ -377,7 +344,7 @@ export const getNotificationTitle = (
       <NotificationTitle
         i18nKey="notifications.LxpuserMentionedOnComment"
         values={{ actor: name }}
-        isLxpRoute={true}
+        isLxpRoute
         linkTo={getSocialSourceRoute(
           isLearn,
           target1Type,
@@ -399,7 +366,7 @@ export const getNotificationTitle = (
       <NotificationTitle
         i18nKey="notifications.LxpuserMentionedOnPost"
         values={{ actor: name }}
-        isLxpRoute={true}
+        isLxpRoute
         linkTo={getSocialSourceRoute(
           isLearn,
           target1Type,
@@ -417,6 +384,7 @@ export const getNotificationTitle = (
       <NotificationTitle
         i18nKey="notifications.LxpShoutOut"
         values={{ actor: name }}
+        isLxpRoute
         linkTo={getSocialSourceRoute(
           isLearn,
           target1Type,
@@ -434,6 +402,7 @@ export const getNotificationTitle = (
     return (
       <NotificationTitle
         i18nKey="notifications.LxpAnnouncementReminder"
+        isLxpRoute
         linkTo={getSocialSourceRoute(
           isLearn,
           target1Type,
@@ -451,6 +420,7 @@ export const getNotificationTitle = (
       <NotificationTitle
         i18nKey="notifications.LxpCommentOnPost"
         values={{ actor: name }}
+        isLxpRoute
         linkTo={getSocialSourceRoute(
           isLearn,
           target1Type,
@@ -468,6 +438,7 @@ export const getNotificationTitle = (
     return (
       <NotificationTitle
         i18nKey="notifications.LxpSchedulePrePublishPost"
+        isLxpRoute
         linkTo={getSocialSourceRoute(
           isLearn,
           target1Type,
@@ -484,6 +455,7 @@ export const getNotificationTitle = (
     return (
       <NotificationTitle
         i18nKey="notifications.LxpSchedulePostPublishPost"
+        isLxpRoute
         linkTo={getSocialSourceRoute(
           isLearn,
           target1Type,
@@ -496,8 +468,7 @@ export const getNotificationTitle = (
     );
   }
 
-  //leran notification===============================
-
+  //leran notification===============================================================
   if (NOTIFICATION_ACTION_TYPES.ReportGenerated === actionType) {
     return (
       <NotificationTitle

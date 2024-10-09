@@ -2,28 +2,26 @@ import React, { FC, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import NotificationsOverviewSkeleton from './NotificationsOverviewSkeleton';
 import Divider from 'components/Divider';
-import EventNotificationCard from './LearnEventNotificationCard';
+import EventNotificationCard from './EventNotificationCard';
 import { NOTIFICATION_ACTION_TYPES } from '../utils/constants';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
-import Spinner from 'components/Spinner';
 import { isLearnerRoute } from '../utils/learnNotification';
 import useAuth from 'hooks/useAuth';
 import { UserRole } from 'interfaces';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
 import NoNotification from 'images/noNotification.svg';
+import { useTranslation } from 'react-i18next';
 
-type LearnNotificationTab = {
+type Notifications = {
   isSocial?: boolean;
 };
 
-const LearnNotificationTab: FC<LearnNotificationTab> = ({
-  isSocial = false,
-}) => {
+const Notifications: FC<Notifications> = ({ isSocial = false }) => {
   const { getApi } = usePermissions();
   const useInfiniteNotifications = getApi(ApiEnum.GetNotifications);
-
+  const { t } = useTranslation('notifications');
   const { ref, inView } = useInView();
 
   const {
@@ -42,11 +40,7 @@ const LearnNotificationTab: FC<LearnNotificationTab> = ({
   const markNotificationAsReadMutation = useMutation({
     mutationKey: ['mark-notification-as-read'],
     mutationFn: (id: string) => markNotificationAsReadById(id),
-    onSuccess: (response) => {
-      console.log(
-        'Notification successfully marked as read: ',
-        JSON.stringify(response),
-      );
+    onSuccess: () => {
       queryClient.invalidateQueries(['get-notifications']);
       queryClient.invalidateQueries(['unread-count']);
       queryClient.refetchQueries(['notifications-page']);
@@ -114,9 +108,12 @@ const LearnNotificationTab: FC<LearnNotificationTab> = ({
               )}
             </React.Fragment>
           ))}
-          {(hasNextPage || isFetchingNextPage) && (
-            <div ref={ref} className="h-10" />
-          )}
+          <div>
+            {hasNextPage && isFetchingNextPage && (
+              <NotificationsOverviewSkeleton />
+            )}
+            {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+          </div>
         </div>
       ) : (
         <div className="w-full flex flex-col items-center py-12">
@@ -129,20 +126,16 @@ const LearnNotificationTab: FC<LearnNotificationTab> = ({
             />
           </div>
           <p className="text-neutral-900 font-semibold text-lg mt-2">
-            No Notifications yet
+            {t('emptyMessageTitle')}
           </p>
           <p className="text-neutral-500 text-sm font-medium text-center mt-2.5">
-            We will notify you once we have <br /> something for you
+            {t('emptyMessage1')}
+            <br /> {t('emptyMessage2')}
           </p>
-        </div>
-      )}
-      {isFetchingNextPage && (
-        <div className="w-full flex items-center justify-center p-4">
-          <Spinner />
         </div>
       )}
     </>
   );
 };
 
-export default LearnNotificationTab;
+export default Notifications;

@@ -60,7 +60,7 @@ export const fetchNotifications = async ({
 
 export const useInfiniteNotifications = (query?: Record<string, any>) => {
   return useInfiniteQuery({
-    queryKey: ['learn-notification', query],
+    queryKey: ['get-notifications', query],
     queryFn: fetchNotifications,
     getNextPageParam: (lastPage, pages) => {
       const lastPageDataLength = lastPage?.data?.result?.data?.length || 0;
@@ -75,19 +75,5 @@ export const useInfiniteNotifications = (query?: Record<string, any>) => {
       return currentPage + 1;
     },
     staleTime: 5 * 60 * 1000,
-  });
-};
-
-//get unread notification count
-const getLearnUnreadNotificationsCount = async () => {
-  const data = await apiService.get('/notifications/counts');
-  return data;
-};
-
-export const useGetLearnUnreadNotificationsCount = () => {
-  return useQuery({
-    queryKey: ['unread-learn-notifications-count'],
-    queryFn: () => getLearnUnreadNotificationsCount(),
-    refetchInterval: 60 * 1000,
   });
 };

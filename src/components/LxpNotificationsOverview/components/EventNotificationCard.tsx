@@ -8,8 +8,8 @@ import {
 } from '../utils/learnNotification';
 import truncate from 'lodash/truncate';
 
-import EventNotification from './EventNotification';
 import { getLearnUrl } from 'utils/misc';
+import EventNotificationAvatar from './EventNotificationAvatar';
 
 interface EventNotificationCardProps {
   id: number;
@@ -97,7 +97,7 @@ const EventNotificationCard: React.FC<EventNotificationCardProps> = ({
           }
           data-testid="profile-icon"
         >
-          <EventNotification
+          <EventNotificationAvatar
             source={source}
             actionType={actionType}
             userImageUrl={actor && actor.image_Url}

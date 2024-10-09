@@ -4,7 +4,7 @@ import Icon from 'components/Icon';
 import { getIconForAction } from '../utils/learnNotification';
 
 // Define the types for the props
-type EventNotificationProps = {
+type EventNotificationAvatarProps = {
   source: 'user' | 'system';
   actionType: string;
   userImageUrl?: string;
@@ -12,7 +12,7 @@ type EventNotificationProps = {
   profileColor?: string;
 };
 
-const EventNotification: React.FC<EventNotificationProps> = ({
+const EventNotificationAvatar: React.FC<EventNotificationAvatarProps> = ({
   source,
   actionType,
   userImageUrl,
@@ -46,4 +46,4 @@ const EventNotification: React.FC<EventNotificationProps> = ({
   );
 };
 
-export default EventNotification;
+export default EventNotificationAvatar;

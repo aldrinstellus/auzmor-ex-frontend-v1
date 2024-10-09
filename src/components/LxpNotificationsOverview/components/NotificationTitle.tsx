@@ -10,7 +10,6 @@ const NotificationTitle = ({
   components,
   isLxpRoute,
 }: any) => {
-  console.log('linkTo :', linkTo);
   const navigate = useNavigate();
   const handleClick = () => {
     if (isLxpRoute) {
@@ -21,7 +20,7 @@ const NotificationTitle = ({
   };
 
   return (
-    <div className={linkTo ? 'cursor-pointer' : ''} onClick={handleClick}>
+    <div className={`${linkTo ? 'cursor-pointer' : ''}`} onClick={handleClick}>
       <NotificationText as="p">
         <Trans i18nKey={i18nKey} values={values} components={components} />
       </NotificationText>
