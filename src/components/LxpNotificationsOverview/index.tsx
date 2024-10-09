@@ -112,7 +112,7 @@ const LxpNotificationsOverview: FC = () => {
         {/* Header */}
         <div className="px-4 py-2 flex items-center justify-between">
           <p className="text-gray-900 font-extrabold text-base">
-            LXp Notifications
+            Notifications
           </p>
           {/* Mark all as read */}
 
