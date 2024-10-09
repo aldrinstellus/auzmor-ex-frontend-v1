@@ -184,6 +184,8 @@ import DeelIcon from '../components/Deel/DeelIcon';
 import MinusCircle from '../components/MinusCircle';
 import DeelIcon2 from '../components/DeelIcon2/DeelIcon2';
 import RestInPeaceIcon from '../components/RestInPeace';
+import TrainingIcon from '../components/Training';
+import LearningCenterIcon from '../components/LearningCenter';
 
 export const icon = {
   add: Add,
@@ -282,6 +284,7 @@ export const icon = {
   insightfulReaction: InsightfulReaction,
   integration: Integration,
   launcher: LauncherIcon,
+  learningCenter: LearningCenterIcon,
   lifeBuoy: LifeBuoyIcon,
   like: Like,
   likeIcon: LikeIcon,
@@ -354,6 +357,7 @@ export const icon = {
   threeDots: ThreeDots,
   tickCircle: TickCircleIcon,
   trash: Trash,
+  training: TrainingIcon,
   'user-tag': UserTagIcon,
   userAdmin: UserAdminIcon,
   userManagement: UserManagement,

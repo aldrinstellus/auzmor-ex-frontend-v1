@@ -2,3 +2,8 @@
   stroke: var(--primary-500);
   transition: stroke 0.15s ease;
 }
+
+.nav-item:hover path {
+  stroke: var(--primary-500);
+  transition: stroke 0.15s ease;
+}

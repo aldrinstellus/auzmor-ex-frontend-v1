@@ -27,6 +27,11 @@
     "courses": "Courses",
     "paths": "Paths",
     "events": "Events",
-    "external": "External"
+    "external": "External",
+    "channels": "Channels",
+    "tasks": "Tasks",
+    "mentorship": "Mentorship",
+    "myLearning": "My Learning",
+    "allTrainings": "All Trainings"
   }
 }

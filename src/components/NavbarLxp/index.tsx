@@ -1,7 +1,7 @@
 import { FC } from 'react';
 
 import ModernNavbar from './components/Navbar.modern';
-import ClassicNavbar from './components/Navbar.modern';
+import ClassicNavbar from './components/Navbar.classic';
 import useRole from 'hooks/useRole';
 import AdminNavbar from './components/AdminNavbar.classic';
 
