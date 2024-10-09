@@ -1,23 +1,26 @@
 import { FC } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
 
 import { Logo } from 'components/Logo';
 import Icon from 'components/Icon';
 
 import './style.css';
 import PopupMenu from 'components/PopupMenu';
+import { getLearnUrl } from 'utils/misc';
 
 interface INavbarLxpProps {}
 
 const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
   const { t } = useTranslation('navbar');
+  const navigate = useNavigate();
 
   const navbarMenu = [
     {
       id: 'home',
       label: t('learn.home'),
-      to: '/',
+      to: getLearnUrl(),
       show: true,
       options: [],
     },
@@ -29,14 +32,14 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       options: [
         {
           id: 'feed',
-          label: t('feed'),
-          to: '/feed',
+          label: t('learn.feed'),
+          onClick: () => navigate('/feed'),
           show: true,
         },
         {
           id: 'channels',
-          label: t('channels'),
-          to: '/channels',
+          label: t('learn.channels'),
+          onClick: () => navigate('/channels'),
           show: true,
         },
       ],
@@ -50,25 +53,26 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
         {
           id: 'courses',
           label: t('learn.courses'),
-          to: '/courses',
+          onClick: () => window.location.replace(`${getLearnUrl('/courses')}`),
           show: true,
         },
         {
           id: 'paths',
           label: t('learn.paths'),
-          to: '/paths',
+          onClick: () => window.location.replace(`${getLearnUrl('/paths')}`),
           show: true,
         },
         {
           id: 'events',
           label: t('learn.events'),
-          to: '/events',
+          onClick: () => window.location.replace(`${getLearnUrl('/events')}`),
           show: true,
         },
         {
           id: 'external',
           label: t('learn.external'),
-          to: '/external-trainings',
+          onClick: () =>
+            window.location.replace(`${getLearnUrl('/external-trainings')}`),
           show: true,
         },
       ],
@@ -80,25 +84,25 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       show: true,
       options: [
         {
-          id: 'feed',
-          label: t('feed'),
-          to: '/feed',
+          id: 'tasks',
+          label: t('learn.tasks'),
+          onClick: () => window.location.replace(`${getLearnUrl('/tasks')}`),
           show: true,
         },
         {
-          id: 'channels',
-          label: t('channels'),
-          to: '/channels',
+          id: 'mentorship',
+          label: t('learn.mentorship'),
+          onClick: () =>
+            window.location.replace(`${getLearnUrl('/mentorship')}`),
+          show: true,
+        },
+        {
+          id: 'forums',
+          label: t('learn.forums'),
+          onClick: () => window.location.replace(`${getLearnUrl('/forums')}`),
           show: true,
         },
       ],
-    },
-    {
-      id: 'forums',
-      label: t('learn.forums'),
-      to: '/',
-      show: true,
-      options: [],
     },
     {
       id: 'company',
@@ -107,15 +111,25 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       show: true,
       options: [
         {
-          id: 'feed',
-          label: t('feed'),
-          to: '/feed',
+          id: 'people',
+          label: t('learn.people'),
+          onClick: () =>
+            window.location.replace(
+              `${getLearnUrl('/peoples?tab=individuals')}`,
+            ),
           show: true,
         },
         {
-          id: 'channels',
-          label: t('channels'),
-          to: '/channels',
+          id: 'teams',
+          label: t('learn.teams'),
+          onClick: () =>
+            window.location.replace(`${getLearnUrl('/peoples?tab=teams')}`),
+          show: true,
+        },
+        {
+          id: 'branches',
+          label: t('learn.branches'),
+          onClick: () => window.location.replace(`${getLearnUrl('/branches')}`),
           show: true,
         },
       ],
@@ -127,15 +141,15 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       show: true,
       options: [
         {
-          id: 'feed',
-          label: t('feed'),
-          to: '/feed',
+          id: 'insights',
+          label: t('learn.insights'),
+          onClick: () => window.location.replace(`${getLearnUrl('/insights')}`),
           show: true,
         },
         {
-          id: 'channels',
-          label: t('channels'),
-          to: '/channels',
+          id: 'reports',
+          label: t('learn.reports'),
+          onClick: () => window.location.replace(`${getLearnUrl('/reports')}`),
           show: true,
         },
       ],
@@ -147,15 +161,15 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       show: true,
       options: [
         {
-          id: 'feed',
-          label: t('feed'),
-          to: '/feed',
+          id: 'orders',
+          label: t('learn.orders'),
+          onClick: () => window.location.replace(`${getLearnUrl('/orders')}`),
           show: true,
         },
         {
-          id: 'channels',
-          label: t('channels'),
-          to: '/channels',
+          id: 'coupons',
+          label: t('learn.coupons'),
+          onClick: () => window.location.replace(`${getLearnUrl('/coupons')}`),
           show: true,
         },
       ],
