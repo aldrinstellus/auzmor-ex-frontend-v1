@@ -47,7 +47,11 @@ export const getInitials = (name: string) => {
 
 export const getProfileImage = (user: any, preferredKey = 'small') => {
   if (user?.status !== UserStatus.Inactive) {
-    return user?.profileImage?.[preferredKey] || user?.profileImage?.original;
+    return (
+      user.image ||
+      user?.profileImage?.[preferredKey] ||
+      user?.profileImage?.original
+    );
   }
   return DeactivatedUser;
 };

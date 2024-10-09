@@ -5,6 +5,12 @@ import {
 } from '@tanstack/react-query';
 import { chain } from 'lodash';
 import {
+  ChannelUserRequests,
+  channelLinks,
+  dummyChannels,
+} from 'mocks/Channels';
+import { channelMemberData } from 'mocks/channelMember';
+import {
   CHANNEL_ROLE,
   CHANNEL_STATUS,
   ChannelVisibilityEnum,
@@ -45,14 +51,26 @@ export const getAllChannels = async (
   setChannels: (channels: { [key: string]: IChannel }) => void,
 ) => {
   let response = null;
-
-  try {
-    if (!!!context.pageParam) {
-      response = await apiService.get('/channels', context.queryKey[1]);
-    } else {
-      response = await apiService.get(context.pageParam);
-    }
-  } catch (e) {}
+  const isOffice =
+    apiService.getBaseUrl() === process.env.REACT_APP_OFFICE_BACKEND_BASE_URL;
+  if (isOffice) {
+    response = {
+      data: {
+        result: {
+          data: dummyChannels,
+          paging: { limit: 30 },
+        },
+      },
+    };
+  } else {
+    try {
+      if (!!!context.pageParam) {
+        response = await apiService.get('/channels', context.queryKey[1]);
+      } else {
+        response = await apiService.get(context.pageParam);
+      }
+    } catch (e) {}
+  }
   setChannels({
     ...chain(response?.data.result.data).keyBy('id').value(),
   });
@@ -94,7 +112,22 @@ export const getChannelDetails = async (
   id: string,
   setChannel: (channel: IChannel) => void,
 ) => {
-  const data = await apiService.get(`/channels/${id}`);
+  let data = null;
+  const isOffice =
+    apiService.getBaseUrl() === process.env.REACT_APP_OFFICE_BACKEND_BASE_URL;
+
+  if (isOffice) {
+    const channelDetails = dummyChannels.find((channel) => channel.id == id);
+    data = {
+      data: {
+        result: {
+          data: channelDetails,
+        },
+      },
+    };
+  } else {
+    data = await apiService.get(`/channels/${id}`);
+  }
   if (data?.data?.result?.data) setChannel(data?.data?.result?.data);
   return data;
 };
@@ -138,6 +171,19 @@ export const getChannelMembers = async (
   id: string,
 ) => {
   let response = null;
+  const isOffice =
+    apiService.getBaseUrl() === process.env.REACT_APP_OFFICE_BACKEND_BASE_URL;
+  if (isOffice)
+    return {
+      data: {
+        result: {
+          data: channelMemberData,
+          totalCount: 4,
+          paging: { limit: 30 },
+        },
+      },
+    };
+
   try {
     if (pageParam == null)
       response = await apiService.get(`/channels/${id}/members`, queryKey[1]);
@@ -211,6 +257,9 @@ export const removeChannelMember = async (channelId: any, memberId: any) => {
 export const getChannelLinks = async (
   channelId: string,
 ): Promise<IChannelLink[]> => {
+  const isOffice =
+    apiService.getBaseUrl() === process.env.REACT_APP_OFFICE_BACKEND_BASE_URL;
+  if (isOffice) return channelLinks;
   const data = await apiService.get(`/channels/${channelId}/links`);
   return new Promise((res) => {
     res(data?.data?.result?.data);
@@ -284,6 +333,18 @@ export const getJoinChannelRequests = async (
   channelId?: string,
 ) => {
   let response = null;
+  const isOffice =
+    apiService.getBaseUrl() === process.env.REACT_APP_OFFICE_BACKEND_BASE_URL;
+  if (isOffice)
+    return {
+      data: {
+        result: {
+          data: ChannelUserRequests,
+          totalCount: 3,
+          paging: { limit: 30 },
+        },
+      },
+    };
   const reqPath = channelId
     ? `channels/${channelId}/join-requests`
     : `channels/join-requests`;
