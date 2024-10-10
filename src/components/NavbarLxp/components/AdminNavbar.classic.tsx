@@ -10,6 +10,8 @@ import './style.css';
 import PopupMenu from 'components/PopupMenu';
 import { getLearnUrl } from 'utils/misc';
 import { clsx } from 'clsx';
+import LxpNotificationsOverview from 'components/LxpNotificationsOverview';
+import AccountCard from 'components/AppShell/components/AccountCard';
 
 interface INavbarLxpProps {}
 
@@ -217,40 +219,50 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           )}
         </div>
         {!backBtn.show && (
-          <div className="ml-[26px] flex items-center gap-[16px]">
-            {navbarMenu
-              .filter((item) => item.show)
-              .map((item) =>
-                item.options.length > 0 ? (
-                  <div className="relative" key={item.id}>
-                    <PopupMenu
-                      triggerNode={
-                        <div
-                          tabIndex={0}
-                          className="px-[10px] py-[4px] cursor-pointer flex items-center transition ease duration-150 hover:text-primary-500 multi-navitem"
-                        >
-                          <span className="text-[15px]">{item.label}</span>
-                          <Icon
-                            name="arrowDown2"
-                            size={20}
-                            dataTestId={`${item.id}-collapse`}
-                          />
-                        </div>
-                      }
-                      menuItems={item.options}
-                      className="mt-1 right-0 border-1 border-neutral-200 focus-visible:outline-none"
-                    />
-                  </div>
-                ) : (
-                  <NavLink
-                    to={item.to}
-                    key={item.id}
-                    className="text-[15px] px-[10px] py-[4px] transition ease duration-150 hover:text-primary-500"
-                  >
-                    {item.label}
-                  </NavLink>
-                ),
-              )}
+          <div className="flex items-center justify-between gap-8 h-full w-full">
+            <div className="ml-[26px] flex items-center gap-[16px]">
+              {navbarMenu
+                .filter((item) => item.show)
+                .map((item) =>
+                  item.options.length > 0 ? (
+                    <div className="relative" key={item.id}>
+                      <PopupMenu
+                        triggerNode={
+                          <div
+                            tabIndex={0}
+                            className="px-[10px] py-[4px] cursor-pointer flex items-center transition ease duration-150 hover:text-primary-500 multi-navitem"
+                          >
+                            <span className="text-[15px]">{item.label}</span>
+                            <Icon
+                              name="arrowDown2"
+                              size={20}
+                              dataTestId={`${item.id}-collapse`}
+                            />
+                          </div>
+                        }
+                        menuItems={item.options}
+                        className="mt-1 right-0 border-1 border-neutral-200 focus-visible:outline-none"
+                      />
+                    </div>
+                  ) : (
+                    <NavLink
+                      to={item.to}
+                      key={item.id}
+                      className="text-[15px] px-[10px] py-[4px] transition ease duration-150 hover:text-primary-500"
+                    >
+                      {item.label}
+                    </NavLink>
+                  ),
+                )}
+            </div>
+            <ul className="flex items-center gap-6">
+              <li>
+                <LxpNotificationsOverview />
+              </li>
+              <li>
+                <AccountCard />
+              </li>
+            </ul>
           </div>
         )}
         {backBtn.show && (
