@@ -67,4 +67,5 @@ i18next.use(initReactI18next).init({
     'pageTitle',
     'components',
   ],
+  defaultNS: 'base',
 });
