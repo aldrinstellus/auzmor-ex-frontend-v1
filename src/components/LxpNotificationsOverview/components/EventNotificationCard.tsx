@@ -100,7 +100,7 @@ const EventNotificationCard: React.FC<EventNotificationCardProps> = ({
           <EventNotificationAvatar
             source={source}
             actionType={actionType}
-            userImageUrl={actor && actor.image_Url}
+            userImageUrl={actor && actor.image_url}
             profileColor={actor && actor.profile_color}
             name={
               actor &&
