@@ -22,11 +22,12 @@ export const fetchApps = async (
     [key: string]: IApp;
   },
   setApp: (apps: { [key: string]: IApp }) => void,
+  apiPrefix = '',
 ) => {
   const apps = getApps();
   let response = null;
   if (!!!context.pageParam) {
-    response = await apiService.get('/apps', context.queryKey[1]);
+    response = await apiService.get(`${apiPrefix}/apps`, context.queryKey[1]);
   } else {
     response = await apiService.get(context.pageParam);
   }
@@ -212,6 +213,40 @@ export const useInfiniteApps = ({
         myApp
           ? fetchMyApps(context, getApps, setApp)
           : fetchApps(context, getApps, setApp),
+      getNextPageParam: (lastPage: any) => {
+        const pageDataLen = lastPage?.data?.result?.data?.length;
+        const pageLimit = lastPage?.data?.result?.paging?.limit;
+        if (pageDataLen < pageLimit) {
+          return null;
+        }
+        return lastPage?.data?.result?.paging?.next;
+      },
+      getPreviousPageParam: (currentPage: any) => {
+        return currentPage?.data?.result?.paging?.prev;
+      },
+      staleTime: 5 * 60 * 1000,
+      enabled: startFetching,
+    }),
+    apps,
+  };
+};
+export const useInfiniteAppsLearner = ({
+  q,
+  myApp = false,
+  startFetching = true,
+}: {
+  q?: Record<string, any>;
+  startFetching?: boolean;
+  myApp?: boolean;
+}) => {
+  const { apps, getApps, setApp } = useAppStore();
+  return {
+    ...useInfiniteQuery({
+      queryKey: [myApp ? 'my-apps' : 'apps', q],
+      queryFn: (context) =>
+        myApp
+          ? fetchMyApps(context, getApps, setApp)
+          : fetchApps(context, getApps, setApp, '/learner'),
       getNextPageParam: (lastPage: any) => {
         const pageDataLen = lastPage?.data?.result?.data?.length;
         const pageLimit = lastPage?.data?.result?.paging?.limit;

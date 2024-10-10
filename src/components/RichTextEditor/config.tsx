@@ -1,6 +1,6 @@
 import { renderToString } from 'react-dom/server';
 import ReactionSkeleton from 'components/Post/components/ReactionModal/ReactionSkeleton';
-import apiService from 'utils/apiService';
+import apiService, { getProduct, ProductEnum } from 'utils/apiService';
 import {
   createMentionsList,
   createHashtagsList,
@@ -8,6 +8,7 @@ import {
 } from './mentions/utils';
 import { extractFirstWord } from 'utils/misc';
 import { UserStatus } from 'interfaces';
+import { mapUser } from 'queries/learn/users';
 
 // interface IOrg {
 //   id: string;
@@ -51,7 +52,10 @@ const mentionEntityFetch = async (character: string, searchTerm: string) => {
       q: searchTerm,
       status: [UserStatus.Active],
     });
-    const mentionList = mentions?.result?.data;
+    const mentionList =
+      getProduct() === ProductEnum.Lxp
+        ? mentions?.result?.data.map(mapUser)
+        : mentions?.result?.data;
     return createMentionsList(mentionList, character);
   } else if (character === '#' && !isContainWhiteSpace) {
     const hashtag = extractFirstWord(searchTerm);

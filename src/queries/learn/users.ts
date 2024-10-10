@@ -36,6 +36,16 @@ export interface IPostUsers {
   users: IPostUser[];
 }
 
+export const mapUser = (user: Record<string, any>) => ({
+  preferredName: user?.display_name,
+  fullName: user?.full_name,
+  firstName: user?.first_name,
+  lastName: user?.last_name,
+  profileImage: { original: user?.image_url },
+  workEmail: user?.email,
+  ...user,
+});
+
 export const fetchMe = async () => {
   const { data } = await apiService.get('/me');
   const user = data?.result?.data;
@@ -81,9 +91,23 @@ export const getAllUser = async ({
   pageParam = null,
   queryKey,
 }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
+  let response = null;
   if (pageParam === null) {
-    return await apiService.get('/users', queryKey[1]);
-  } else return await apiService.get(pageParam);
+    response = await apiService.get('/users', queryKey[1]);
+  } else {
+    response = await apiService.get(pageParam);
+  }
+  const mappedResponse = {
+    ...response,
+    data: {
+      ...response.data,
+      result: {
+        ...response.data.result,
+        data: response.data.result.data.map(mapUser),
+      },
+    },
+  };
+  return mappedResponse;
 };
 
 // get all users by along with a boolean which identify if the user is already of the team/channel
@@ -94,7 +118,6 @@ export const getMembers = async ({
   let transformedData;
 
   if (pageParam === null) {
-    console.log({ 'queryKey[1]': queryKey[1] });
     const response = await apiService.get(`/users/searchIn`, queryKey[1]);
     const { data } = response;
     transformedData = data?.result?.data?.map((item: any) => {
@@ -110,7 +133,17 @@ export const getMembers = async ({
 // get user by id -> users/:id
 export const getUser = async (id: string) => {
   const data = await apiService.get(`/users/${id}`, {});
-  return data;
+  const mappedData = {
+    ...data,
+    data: {
+      ...data.data,
+      result: {
+        ...data.data.result,
+        data: data.data.result.data.map(mapUser),
+      },
+    },
+  };
+  return mappedData;
 };
 
 /* REACT QUERY */

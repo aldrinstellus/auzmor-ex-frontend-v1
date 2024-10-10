@@ -3,6 +3,7 @@ import {
   useInfiniteQuery,
   useQuery,
 } from '@tanstack/react-query';
+import { ITeam } from 'interfaces';
 import apiService from 'utils/apiService';
 
 export interface ITeamPayload {
@@ -11,13 +12,39 @@ export interface ITeamPayload {
   description?: string;
 }
 
+export const mapTeam = (team: any) =>
+  ({
+    category: team?.category,
+    createdAt: team.created_at,
+    description: team?.description,
+    id: team.id,
+    name: team.name,
+    orgId: team?.orgId,
+    recentMembers: team.recent_users,
+    totalMembers: team.members_count,
+  } as ITeam);
+
 export const getAllTeams = async ({
   pageParam = null,
   queryKey,
 }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
+  let response = null;
   if (pageParam === null) {
-    return await apiService.get('/teams', queryKey[1]);
-  } else return await apiService.get(pageParam);
+    response = await apiService.get('/teams', queryKey[1]);
+  } else {
+    response = await apiService.get(pageParam);
+  }
+  const mappedResponse = {
+    ...response,
+    data: {
+      ...response.data,
+      result: {
+        ...response.data.result,
+        data: response.data.result.data.map(mapTeam),
+      },
+    },
+  };
+  return mappedResponse;
 };
 
 // get team members by team id -> /teams/:id/members
@@ -28,15 +55,39 @@ export const getTeamMembers = async (
   }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>,
   id: string,
 ) => {
-  if (pageParam === null)
-    return apiService.get(`/teams/members/${id}`, queryKey[1]);
-  else return apiService.get(pageParam);
+  let response = null;
+  if (pageParam === null) {
+    response = await apiService.get(`/teams/members/${id}`, queryKey[1]);
+  } else {
+    response = await apiService.get(pageParam);
+  }
+  const mappedResponse = {
+    ...response,
+    data: {
+      ...response.data,
+      result: {
+        ...response.data.result,
+        data: response.data.result.data.map(mapTeam),
+      },
+    },
+  };
+  return mappedResponse;
 };
 
 // get team by id -> teams/:id
 export const getTeam = async (id: string) => {
   const data = await apiService.get(`/teams/${id}`, {});
-  return data;
+  const mappedData = {
+    ...data,
+    data: {
+      ...data.data,
+      result: {
+        ...data.data.result,
+        data: data.data.result.data.map(mapTeam),
+      },
+    },
+  };
+  return mappedData;
 };
 
 // ------------------ React Query -----------------------

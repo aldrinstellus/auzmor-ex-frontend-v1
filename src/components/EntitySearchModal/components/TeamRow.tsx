@@ -133,7 +133,7 @@ const TeamRow: FC<ITeamRowProps> = ({
               className="text-neutral-500 text-xs ml-1"
               data-testid="team-category"
             >
-              {truncate(team.category.name || '', {
+              {truncate(team?.category?.name || '', {
                 length: 15,
                 separator: ' ',
               })}
