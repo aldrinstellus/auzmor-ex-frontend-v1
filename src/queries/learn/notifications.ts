@@ -6,10 +6,22 @@ import {
 import apiService from 'utils/apiService';
 
 // Mark all notifications as read
-export const markAllNotificationsAsRead = async (category: string) => {
-  const data = await apiService.post('/notifications/mark_all_as_read', {
-    category,
+
+export const markAllNotificationsAsRead = async (q: Record<string, any>) => {
+  const data = await apiService.post(`/notifications/mark_all_as_read`, {
+    category: q.category || 'LXP',
   });
+  return data;
+};
+export const markAllNotificationsAsReadLearner = async (
+  q: Record<string, any>,
+) => {
+  const data = await apiService.post(
+    `/learner/notifications/mark_all_as_read`,
+    {
+      category: q.category || 'LXP',
+    },
+  );
   return data;
 };
 
@@ -33,12 +45,15 @@ export const useGetUnreadNotificationsCount = () => {
   });
 };
 
-export const fetchNotifications = async ({
-  pageParam = 1,
-  queryKey,
-}: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
+export const fetchNotifications = async (
+  {
+    pageParam = 1,
+    queryKey,
+  }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>,
+  apiPrefix = '',
+) => {
   const query: any = queryKey[1];
-  const response = await apiService.get('/notifications', {
+  const response = await apiService.get(`${apiPrefix}/notifications`, {
     ...query,
     page: pageParam,
   });
@@ -75,5 +90,20 @@ export const useInfiniteNotifications = (query?: Record<string, any>) => {
       return currentPage + 1;
     },
     staleTime: 5 * 60 * 1000,
+  });
+};
+export const useInfiniteNotificationsLearner = (q?: Record<string, any>) => {
+  return useInfiniteQuery({
+    queryKey: ['notifications-page', q],
+    queryFn: (context) => fetchNotifications(context, '/learner'),
+    getNextPageParam: (lastPage: any) =>
+      lastPage?.data?.result?.data?.length >= q?.limit
+        ? lastPage?.data?.result?.paging?.next
+        : null,
+    getPreviousPageParam: (currentPage: any) =>
+      currentPage?.data?.result?.data?.length >= q?.limit
+        ? currentPage?.data?.result?.paging?.prev
+        : null,
+    staleTime: 0,
   });
 };

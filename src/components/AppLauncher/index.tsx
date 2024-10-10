@@ -21,6 +21,7 @@ import { useShouldRender } from 'hooks/useShouldRender';
 import useNavigate from 'hooks/useNavigation';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
+import useProduct from 'hooks/useProduct';
 
 const ID = 'AppLauncher';
 
@@ -32,7 +33,8 @@ const AppLauncher = () => {
   }
   const { getApi } = usePermissions();
   const navigate = useNavigate();
-  const { isAdmin } = useRole();
+  const { isAdmin, isLearner } = useRole();
+  const { isLxp } = useProduct();
   const widgetApps = useAppStore((state) => state.widgetApps);
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const [openAddApp, openAddAppModal, closeAddAppModal] = useModal();
@@ -131,9 +133,13 @@ const AppLauncher = () => {
                   className="py-[7px]"
                   label={t('view-All-CTA')}
                   dataTestId="app-launcher-view-all"
-                  onClick={() =>
-                    navigate(isAdmin ? '/apps?myApp=true' : '/apps')
-                  }
+                  onClick={() => {
+                    if (isLxp) {
+                      navigate(isLearner ? '/apps?myApp=true' : '/apps');
+                    } else {
+                      navigate(isAdmin ? '/apps?myApp=true' : '/apps');
+                    }
+                  }}
                 />
               </div>
             );

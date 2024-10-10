@@ -7,7 +7,11 @@ const { Default, Learner, Manager } = LxpRoleEnum;
 
 export const apiConfigLxp = {
   //apps
-  [ApiEnum.GetApps]: { [Default]: queries.useInfiniteApps },
+  [ApiEnum.GetApps]: {
+    [Default]: queries.useInfiniteApps,
+    [Learner]: queries.useInfiniteAppsLearner,
+    [Manager]: queries.useInfiniteAppsLearner,
+  },
   [ApiEnum.GetFeaturedApps]: { [Default]: queries.useInfiniteFeaturedApps },
   [ApiEnum.GetWidgetApps]: { [Default]: queries.useInfiniteWidgetApps },
   [ApiEnum.CreateApp]: { [Default]: queries.createApp },
@@ -91,7 +95,11 @@ export const apiConfigLxp = {
   [ApiEnum.GetLinkPreviewApi]: { [Default]: queries.getPreviewLink },
 
   //notifications
-  [ApiEnum.GetNotifications]: { [Default]: queries.useInfiniteNotifications },
+  [ApiEnum.GetNotifications]: {
+    [Default]: queries.useInfiniteNotifications,
+    [Learner]: queries.useInfiniteNotificationsLearner,
+    [Manager]: queries.useInfiniteNotificationsLearner,
+  },
   [ApiEnum.GetNotificationsUnreadCount]: {
     [Default]: queries.useGetUnreadNotificationsCount,
   },
@@ -100,6 +108,8 @@ export const apiConfigLxp = {
   },
   [ApiEnum.MarkAllNotificationsAsRead]: {
     [Default]: queries.markAllNotificationsAsRead,
+    [Learner]: queries.markAllNotificationsAsReadLearner,
+    [Manager]: queries.markAllNotificationsAsReadLearner,
   },
 
   //organizations

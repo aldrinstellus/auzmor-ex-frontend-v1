@@ -29,7 +29,7 @@ const LxpNotificationsOverview: FC = () => {
   const markAllNotificationsAsRead = getApi(ApiEnum.MarkAllNotificationsAsRead);
 
   const markReadMutation = useMutation(
-    (category: string) => markAllNotificationsAsRead(category),
+    (category: string) => markAllNotificationsAsRead({ category }),
     {
       onSuccess: () => {
         queryClient.invalidateQueries(['unread-count']);
