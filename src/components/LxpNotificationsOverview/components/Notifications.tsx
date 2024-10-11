@@ -77,7 +77,7 @@ const Notifications: FC<Notifications> = ({ isSocial = false }) => {
   return (
     <>
       {!isError && notificationData?.length ? (
-        <div className="flex flex-col mt-2 mb-4 gap-y-2 h-[470px] overflow-y-auto">
+        <div className="flex flex-col mt-1 gap-y-2 ">
           {notificationData.map((notification: any, index: number) => (
             <React.Fragment key={notification.id}>
               <EventNotificationCard
