@@ -24,6 +24,7 @@ import ImageCropper from 'components/ImageCropper';
 import PageLoader from 'components/PageLoader';
 import useProduct from 'hooks/useProduct';
 import { updateChannel } from 'queries/channel';
+import { uploadImage } from 'queries/learn';
 
 export interface AppProps {
   title: string;
@@ -171,17 +172,21 @@ const EditImageModal: FC<AppProps> = ({
       );
       let profileImageUploadResponse;
       if (newFile) {
-        profileImageUploadResponse = await uploadMedia(
-          [newFile],
-          fileEntityType,
-        );
-
+        // only call office gcp in Office.
+        if (!isLxp) {
+          profileImageUploadResponse = await uploadMedia(
+            [newFile],
+            fileEntityType,
+          );
+        }
         if (fileEntityType === EntityType.UserProfileImage) {
           if (isLxp) {
+            const formData = new FormData();
+            formData.append('url', newFile);
+            const res = await uploadImage(formData);
+            const uploadedFile = res.result?.data?.url;
             updateChannelMutation.mutate({
-              displayImageUrl:
-                profileImageUploadResponse &&
-                profileImageUploadResponse[0].original,
+              displayImageUrl: uploadedFile,
             });
           } else
             updateUsersPictureMutation.mutate({
@@ -196,10 +201,12 @@ const EditImageModal: FC<AppProps> = ({
             });
         } else {
           if (isLxp) {
+            const formData = new FormData();
+            formData.append('url', newFile);
+            const res = await uploadImage(formData);
+            const uploadedFile = res.result?.data?.url;
             updateChannelMutation.mutate({
-              bannerUrl:
-                profileImageUploadResponse &&
-                profileImageUploadResponse[0].original,
+              bannerUrl: uploadedFile,
             });
           } else
             updateUsersPictureMutation.mutate({
