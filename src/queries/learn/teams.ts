@@ -63,13 +63,10 @@ export const getAllTeams = async ({
   queryKey,
 }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
   let response = null;
-  if (pageParam === null) {
-    const { userId, ...q } = queryKey[1] as Record<string, any>;
-    if (userId) response = await apiService.get(`/users/teams`, q);
-    else response = await apiService.get('/teams', q);
-  } else {
-    response = await apiService.get(pageParam);
-  }
+  const { userId, ...params } = queryKey[1] as Record<string, any>;
+  if (pageParam) params['page'] = pageParam;
+  if (userId) response = await apiService.get(`/users/teams`, params);
+  else response = await apiService.get('/teams', params);
   const mappedResponse = {
     ...response,
     data: {
@@ -91,12 +88,10 @@ export const getTeamMembers = async (
   }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>,
   id: string,
 ) => {
-  let response = null;
-  if (pageParam === null) {
-    response = await apiService.get(`users/teams/${id}/users`, queryKey[1]);
-  } else {
-    response = await apiService.get(pageParam);
-  }
+  const params = (queryKey[1] as Record<string, any>) || {};
+  if (pageParam) params['page'] = pageParam;
+  const response = await apiService.get(`users/teams/${id}/users`, params);
+
   const mappedResponse = {
     ...response,
     data: {
@@ -140,16 +135,15 @@ export const useInfiniteTeams = ({
   return useInfiniteQuery({
     queryKey: ['teams', q],
     queryFn: getAllTeams,
-    getNextPageParam: (lastPage: any) => {
+    getNextPageParam: (lastPage: any, pages: any) => {
       const pageDataLen = lastPage?.data?.result?.data?.length;
-      const pageLimit = lastPage?.data?.result?.paging?.limit;
-      if (pageDataLen < pageLimit) {
+      const pageLimit = lastPage?.data?.result?.limit;
+      const totalCount = lastPage?.data?.result?.total_records;
+      const fetchedCount = pageLimit * pages?.length;
+      if (pageDataLen < pageLimit || fetchedCount >= totalCount) {
         return null;
       }
-      return lastPage?.data?.result?.paging?.next;
-    },
-    getPreviousPageParam: (currentPage: any) => {
-      return currentPage?.data?.result?.paging?.prev;
+      return pages?.length + 1;
     },
     staleTime: 5 * 60 * 1000,
     enabled: startFetching,
@@ -168,16 +162,15 @@ export const useInfiniteTeamMembers = ({
   return useInfiniteQuery({
     queryKey: ['team-members', q, teamId],
     queryFn: (context) => getTeamMembers(context, teamId),
-    getNextPageParam: (lastPage: any) => {
+    getNextPageParam: (lastPage: any, pages: any) => {
       const pageDataLen = lastPage?.data?.result?.data?.length;
-      const pageLimit = lastPage?.data?.result?.paging?.limit;
-      if (pageDataLen < pageLimit) {
+      const pageLimit = lastPage?.data?.result?.limit;
+      const totalCount = lastPage?.data?.result?.total_records;
+      const fetchedCount = pageLimit * pages?.length;
+      if (pageDataLen < pageLimit || fetchedCount >= totalCount) {
         return null;
       }
-      return lastPage?.data?.result?.paging?.next;
-    },
-    getPreviousPageParam: (currentPage: any) => {
-      return currentPage?.data?.result?.paging?.prev;
+      return pages?.length + 1;
     },
     staleTime: 5 * 60 * 1000,
     enabled: startFetching,

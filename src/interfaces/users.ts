@@ -36,6 +36,7 @@ export enum UserRole {
   Admin = 'ADMIN',
   Manager = 'MANAGER',
   Learner = 'LEARNER',
+  Trainee = 'TRAINEE',
   Superadmin = 'SUPERADMIN',
   Member = 'MEMBER',
 }

@@ -11,7 +11,7 @@ import PopupMenu from 'components/PopupMenu';
 import { getLearnUrl } from 'utils/misc';
 import { clsx } from 'clsx';
 import LxpNotificationsOverview from 'components/LxpNotificationsOverview';
-import AccountCard from 'components/AppShell/components/AccountCard';
+import AccountCard from './AccountCard';
 
 interface INavbarLxpProps {}
 

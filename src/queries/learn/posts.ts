@@ -50,11 +50,11 @@ export const updatePost = async (id: string, payload: IPostPayload) => {
 };
 
 export const deletePost = async (id: string) => {
-  const data = await apiService.delete(`/posts/${id}`);
+  const data = await apiService.delete(`/feed/${id}`);
   return data;
 };
 export const deletePostLearner = async (id: string) => {
-  const data = await apiService.delete(`/learner/posts/${id}`);
+  const data = await apiService.delete(`/learner/feed/${id}`);
   return data;
 };
 

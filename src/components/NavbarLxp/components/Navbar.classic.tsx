@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import AccountCard from 'components/AppShell/components/AccountCard';
+import AccountCard from './AccountCard';
 import Icon from 'components/Icon';
 import { Logo } from 'components/Logo';
 import LxpNotificationsOverview from 'components/LxpNotificationsOverview';

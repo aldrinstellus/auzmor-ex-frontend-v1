@@ -8,7 +8,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import './style.css';
 import { getLearnUrl } from 'utils/misc';
 import LxpNotificationsOverview from 'components/LxpNotificationsOverview';
-import AccountCard from 'components/AppShell/components/AccountCard';
+import AccountCard from './AccountCard';
 
 interface INavbarLxpProps {}
 
