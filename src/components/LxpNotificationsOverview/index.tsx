@@ -12,8 +12,10 @@ import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { getLearnUrl } from 'utils/misc';
 import { useTranslation } from 'react-i18next';
 import Notifications from './components/Notifications';
+import useRole from 'hooks/useRole';
 
 const LxpNotificationsOverview: FC = () => {
+  const { isAdmin } = useRole();
   const { t } = useTranslation('notifications');
   const { getApi } = usePermissions();
 
@@ -78,18 +80,24 @@ const LxpNotificationsOverview: FC = () => {
       dataTestId: 'notifications-social',
     },
   ];
+  const notificationCountData = data?.data?.result?.data;
+  // notification field
+  const notificationField = isAdmin
+    ? 'notification_count'
+    : 'notification_learners_count';
+  const notificationCount =
+    notificationCountData?.[notificationField] +
+    notificationCountData?.lxp_notifications_count;
   return (
     <Popover
       triggerNode={
         <div className="font-bold flex flex-row justify-center items-center p-3 border-none relative">
-          {!isLoading &&
-            !isError &&
-            data?.data?.result?.data?.notification_count > 0 && (
-              <div className="absolute rounded-full bg-red-600 border border-white text-white antialiased text-xs font-bold leading-4 top-2 right-2.5 flex w-4 h-4 items-center justify-center">
-                {/* Get unread notif count here */}
-                {data?.data?.result?.data?.notification_count || ''}
-              </div>
-            )}
+          {!isLoading && !isError && notificationCount > 0 && (
+            <div className="absolute rounded-full bg-red-600 border border-white text-white antialiased text-xs font-bold leading-4 top-2 right-2.5 flex w-4 h-4 items-center justify-center">
+              {/* Get unread notif count here */}
+              {notificationCount || ''}
+            </div>
+          )}
           {isLoading && (
             <Spinner className="absolute top-1.5 right-2.5 fill-red-600 !w-4 !h-4 !m-0" />
           )}
@@ -104,14 +112,14 @@ const LxpNotificationsOverview: FC = () => {
       }
       ref={viewAllRef}
     >
-      <Card className=" rounded absolute w-[455px] right-0 top-4 border border-neutral-200">
+      <Card className=" rounded absolute w-[455px] h-[487px] right-0 top-4 border border-neutral-200 mt-1   overflow-y-auto">
         {/* Header */}
         <div className="px-4 py-2 flex items-center justify-between">
           <p className="text-gray-900 font-extrabold text-base">
             {t('notifications')}
           </p>
           {/* Mark all as read */}
-          <div className="flex items-center gap-1 text-sm">
+          <div className="flex items-center gap-1 text-sm font-normal">
             <p
               onClick={handleMarkAllAsRead}
               role="button"
@@ -146,8 +154,6 @@ const LxpNotificationsOverview: FC = () => {
           itemSpacing={4}
           onTabChange={(index) => setActiveTabIndex(index)}
         />
-        <Divider />
-        {/* see All */}
       </Card>
     </Popover>
   );
