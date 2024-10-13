@@ -27,6 +27,14 @@
     --secondary-800: #1e40af;
     --secondary-900: #1e3a8a;
   }
+  .navbar-arrow-icon-hover {
+    transform: rotateX(-180deg) translateY(-3px) !important;
+    transition: 0.45s !important;
+  }
+  .navbar-arrow-icon {
+    transform: rotateX(0deg) !important;
+    transition: 0.45s !important;
+  }
 }
 
 body {

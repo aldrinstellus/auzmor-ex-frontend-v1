@@ -22,12 +22,16 @@ const getOrganization = async (domain: string) => {
   return data.data.result.data as IOrganization;
 };
 
-export const useOrganization = (domain?: string) => {
+export const useOrganization = (
+  domain?: string,
+  options?: Record<string, any>,
+) => {
   const setBranding = useBrandingStore((state) => state.setBranding);
   const { user } = useAuth();
   return useQuery({
     queryKey: ['organization', domain || user?.organization.domain],
     queryFn: () => getOrganization(domain || user?.organization.domain || ''),
     onSuccess: (data) => setBranding(data?.branding || null),
+    ...options,
   });
 };

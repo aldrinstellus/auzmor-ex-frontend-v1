@@ -24,6 +24,7 @@ export interface IMenuItem {
   fill?: string;
   onClick?: () => any;
   permissions?: string[];
+  className?: string;
 }
 
 export interface IPopupMenuProps {

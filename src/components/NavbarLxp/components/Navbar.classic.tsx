@@ -28,12 +28,6 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       backBtn.label = t('learn.backToFeed');
       backBtn.for = t('learn.appLauncher');
       break;
-    case '/apps':
-      backBtn.show = true;
-      backBtn.linkTo = '/feed';
-      backBtn.label = t('learn.backToFeed');
-      backBtn.for = t('learn.appLauncher');
-      break;
     case '/user/teams':
       backBtn.show = true;
       backBtn.linkTo = '/user/feed';
@@ -48,12 +42,14 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       label: t('learn.home'),
       to: '/user/feed',
       show: true,
+      isActive: pathname.startsWith('/user/feed'),
     },
     {
       id: 'channels',
       label: t('learn.channels'),
       to: '/user/channels',
       show: true,
+      isActive: pathname.startsWith('/user/channels'),
     },
     {
       id: 'myLearning',
@@ -124,7 +120,11 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
                   <NavLink
                     to={item.to}
                     key={item.id}
-                    className="nav-item text-[15px] px-[10px] py-[4px] gap-[8px] transition ease duration-150 hover:text-primary-500 flex items-center"
+                    className={`nav-item text-[15px] px-[10px] py-[4px] gap-[8px] transition ease duration-150 flex items-center hover:bg-neutral-100 ${
+                      item.isActive
+                        ? 'font-bold text-primary-500 hover:!text-black'
+                        : ''
+                    }`}
                   >
                     {item.label}
                   </NavLink>

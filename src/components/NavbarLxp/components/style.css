@@ -7,3 +7,13 @@
   stroke: var(--primary-500);
   transition: stroke 0.15s ease;
 }
+
+.dropdown-menu-option {
+  z-index: 1000;
+  border: none;
+  border-radius: 3px;
+  transform-origin: center top;
+  transition-timing-function: ease;
+  box-shadow: 0 1px 2px 0 rgba(34, 36, 38, 0.15);
+  border: 1px solid rgb(229, 229, 229);
+}

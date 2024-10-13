@@ -251,10 +251,10 @@ export const fetchBookmarks = async (
 
   // Fetching data
   if (!!!context.pageParam) {
-    response = await apiService.get(
-      `${apiPrefix}/feed/my-bookmarks`,
-      context.queryKey[1],
-    );
+    response = await apiService.get(`${apiPrefix}/feed`, {
+      ...(context.queryKey[1] as Record<string, any>),
+      bookmarkedbyme: true,
+    });
   } else {
     response = await apiService.get(context.pageParam);
   }

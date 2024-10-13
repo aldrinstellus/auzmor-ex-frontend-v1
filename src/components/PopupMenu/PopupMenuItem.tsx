@@ -26,6 +26,7 @@ const PopupMenuItem: FC<PopupMenuItemProps> = ({
         { 'border-b-1 border-b-neutral-200': border },
         { '!cursor-default': menuItem.disabled },
         { 'bg-primary-50': isActive },
+        { [menuItem.className || '']: true },
       )}
       {...eventHandlers}
       data-testid={menuItem.dataTestId}
