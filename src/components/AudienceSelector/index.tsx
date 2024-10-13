@@ -10,6 +10,7 @@ import { IS_PROD } from 'utils/constants';
 import { useTranslation } from 'react-i18next';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import useProduct from 'hooks/useProduct';
 
 interface IAudienceSelectorProps {
   audienceFlow: AudienceFlow;
@@ -29,19 +30,24 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
   infoText,
 }) => {
   const { t } = useTranslation('components', { keyPrefix: 'AudienceSelector' });
-  const { isAdmin } = useRole();
+  const { isAdmin, isLearner } = useRole();
+  const { isLxp } = useProduct();
   const { getApi } = usePermissions();
   const useOrganization = getApi(ApiEnum.GetOrganization);
-  const { data, isLoading } = useOrganization();
+  const { data, isLoading } = useOrganization(undefined, { enabled: !isLxp });
   const { form } = useEntitySearchFormStore();
-
   const [teams, channels, users] = form!.watch(['teams', 'channels', 'users']);
+  let isLimitGlobalPosting = true;
+
+  if (isLxp) {
+    isLimitGlobalPosting = !!isLearner;
+  } else {
+    isLimitGlobalPosting =
+      !!data?.adminSettings?.postingControls?.limitGlobalPosting && !isAdmin;
+  }
 
   useEffect(() => {
-    if (
-      !isAdmin &&
-      !!data?.adminSettings?.postingControls?.limitGlobalPosting
-    ) {
+    if (isLimitGlobalPosting) {
       setIsEveryoneSelected(false);
     }
   }, [data, isAdmin]);
@@ -53,8 +59,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
       title: t('everyone'),
       subTitle: t('everyoneSubtitle'),
       onClick: () => setIsEveryoneSelected(true),
-      isHidden:
-        data?.adminSettings?.postingControls?.limitGlobalPosting && !isAdmin,
+      isHidden: isLimitGlobalPosting,
       isSelected: isEveryoneSelected,
       selectedCount: 0,
       dataTestId: 'audience-selection-everyone',
@@ -107,7 +112,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
               {infoText || t('defaultInfoText')}
             </div>
           </div>
-          {isLoading ? (
+          {isLoading && !isLxp ? (
             <Spinner className="w-full m-10" />
           ) : (
             audienceEntity.map((entity) => (

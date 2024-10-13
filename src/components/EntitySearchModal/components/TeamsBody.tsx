@@ -31,11 +31,13 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
   const { form } = useEntitySearchFormStore();
   const { watch, setValue, control } = form!;
   const { user } = useAuth();
-  const { isAdmin } = useRole();
+  const { isAdmin, isLearner } = useRole();
   const { isLxp } = useProduct();
   const { getApi } = usePermissions();
   const useOrganization = getApi(ApiEnum.GetOrganization);
-  const { data: organization } = useOrganization();
+  const { data: organization } = useOrganization(undefined, {
+    enabled: !isLxp,
+  });
   const [teamSearch, showSelectedMembers, teams, categorySearch, categories] =
     watch([
       'teamSearch',
@@ -44,6 +46,15 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
       'categorySearch',
       'categories',
     ]);
+
+  let isLimitGlobalPosting = true;
+  if (isLxp) {
+    isLimitGlobalPosting = !!isLearner;
+  } else {
+    isLimitGlobalPosting =
+      !!organization?.adminSettings?.postingControls?.limitGlobalPosting &&
+      !isAdmin;
+  }
 
   // Reset state on unmount
   useEffect(
@@ -65,11 +76,7 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
           selectedCategories && selectedCategories.length
             ? selectedCategories.join(',')
             : undefined,
-        userId:
-          organization?.adminSettings?.postingControls?.limitGlobalPosting &&
-          !isAdmin
-            ? user?.id
-            : undefined,
+        userId: isLimitGlobalPosting ? user?.id : undefined,
       }),
     });
   const teamsData = data?.pages
