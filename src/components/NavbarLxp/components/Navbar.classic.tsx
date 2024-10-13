@@ -1,6 +1,8 @@
 import clsx from 'clsx';
+import AccountCard from './AccountCard';
 import Icon from 'components/Icon';
 import { Logo } from 'components/Logo';
+import LxpNotificationsOverview from 'components/LxpNotificationsOverview';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation } from 'react-router-dom';
@@ -114,18 +116,29 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           )}
         </div>
         {!backBtn.show && (
-          <div className="ml-[26px] flex items-center gap-[16px]">
-            {navbarMenu
-              .filter((item) => item.show)
-              .map((item) => (
-                <NavLink
-                  to={item.to}
-                  key={item.id}
-                  className="nav-item text-[15px] px-[10px] py-[4px] gap-[8px] transition ease duration-150 hover:text-primary-500 flex items-center"
-                >
-                  {item.label}
-                </NavLink>
-              ))}
+          <div className="flex items-center justify-between gap-8 h-full w-full">
+            <div className="ml-[26px] flex items-center gap-[16px]">
+              {navbarMenu
+                .filter((item) => item.show)
+                .map((item) => (
+                  <NavLink
+                    to={item.to}
+                    key={item.id}
+                    className="nav-item text-[15px] px-[10px] py-[4px] gap-[8px] transition ease duration-150 hover:text-primary-500 flex items-center"
+                  >
+                    {item.label}
+                  </NavLink>
+                ))}
+            </div>
+
+            <ul className="flex items-center gap-6">
+              <li>
+                <LxpNotificationsOverview />
+              </li>
+              <li>
+                <AccountCard />
+              </li>
+            </ul>
           </div>
         )}
         {backBtn.show && (

@@ -7,6 +7,8 @@ import { NavLink, useLocation } from 'react-router-dom';
 
 import './style.css';
 import { getLearnUrl } from 'utils/misc';
+import LxpNotificationsOverview from 'components/LxpNotificationsOverview';
+import AccountCard from './AccountCard';
 
 interface INavbarLxpProps {}
 
@@ -124,52 +126,62 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           )}
         </div>
         {!backBtn.show && (
-          <div className="flex items-center gap-[24px]">
-            {navbarMenu
-              .filter((item) => item.show)
-              .map((item) =>
-                item.options.length > 0 ? (
-                  <div className="relative" key={item.id}>
-                    <PopupMenu
-                      triggerNode={
-                        <div
-                          tabIndex={0}
-                          className="nav-item px-[10px] py-[4px] cursor-pointer flex items-center transition ease duration-150 hover:text-primary-500 multi-navitem"
-                        >
-                          <Icon
-                            name={item.icon}
-                            size={18}
-                            dataTestId={`${item.id}-collapse`}
-                          />
-                          <span className="text-[15px] ml-[8px]">
-                            {item.label}
-                          </span>
-                          <Icon
-                            name="arrowDown2"
-                            size={20}
-                            dataTestId={`${item.id}-collapse`}
-                          />
-                        </div>
-                      }
-                      menuItems={item.options}
-                      className="mt-1 right-0 border-1 border-neutral-200 focus-visible:outline-none"
-                    />
-                  </div>
-                ) : (
-                  <NavLink
-                    to={item.to}
-                    key={item.id}
-                    className={`nav-item text-[15px] px-[10px] py-[4px] gap-[8px] transition ease duration-150 hover:text-primary-500 flex items-center`}
-                  >
-                    <Icon
-                      name={item.icon}
-                      size={item.id === 'channels' ? 22 : 18}
-                      dataTestId={`${item.id}-collapse`}
-                    />
-                    {item.label}
-                  </NavLink>
-                ),
-              )}
+          <div className="flex items-center gap-8 h-full">
+            <div className="flex items-center gap-[24px]">
+              {navbarMenu
+                .filter((item) => item.show)
+                .map((item) =>
+                  item.options.length > 0 ? (
+                    <div className="relative" key={item.id}>
+                      <PopupMenu
+                        triggerNode={
+                          <div
+                            tabIndex={0}
+                            className="nav-item px-[10px] py-[4px] cursor-pointer flex items-center transition ease duration-150 hover:text-primary-500 multi-navitem"
+                          >
+                            <Icon
+                              name={item.icon}
+                              size={18}
+                              dataTestId={`${item.id}-collapse`}
+                            />
+                            <span className="text-[15px] ml-[8px]">
+                              {item.label}
+                            </span>
+                            <Icon
+                              name="arrowDown2"
+                              size={20}
+                              dataTestId={`${item.id}-collapse`}
+                            />
+                          </div>
+                        }
+                        menuItems={item.options}
+                        className="mt-1 right-0 border-1 border-neutral-200 focus-visible:outline-none"
+                      />
+                    </div>
+                  ) : (
+                    <NavLink
+                      to={item.to}
+                      key={item.id}
+                      className={`nav-item text-[15px] px-[10px] py-[4px] gap-[8px] transition ease duration-150 hover:text-primary-500 flex items-center`}
+                    >
+                      <Icon
+                        name={item.icon}
+                        size={item.id === 'channels' ? 22 : 18}
+                        dataTestId={`${item.id}-collapse`}
+                      />
+                      {item.label}
+                    </NavLink>
+                  ),
+                )}
+            </div>
+            <ul className="flex items-center gap-6">
+              <li>
+                <LxpNotificationsOverview />
+              </li>
+              <li>
+                <AccountCard />
+              </li>
+            </ul>
           </div>
         )}
 

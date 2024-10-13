@@ -116,9 +116,11 @@ export const getMembers = async ({
   queryKey,
 }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
   let transformedData;
-
   if (pageParam === null) {
-    const response = await apiService.get(`/users/searchIn`, queryKey[1]);
+    const response = await apiService.get(
+      `/channels/${(queryKey[1] as Record<string, any>)?.entityId}/users`,
+      queryKey[1],
+    );
     const { data } = response;
     transformedData = data?.result?.data?.map((item: any) => {
       return {

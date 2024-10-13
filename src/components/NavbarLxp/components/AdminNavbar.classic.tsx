@@ -11,7 +11,7 @@ import PopupMenu from 'components/PopupMenu';
 import { getLearnUrl } from 'utils/misc';
 import { clsx } from 'clsx';
 import LxpNotificationsOverview from 'components/LxpNotificationsOverview';
-import AccountCard from 'components/AppShell/components/AccountCard';
+import AccountCard from './AccountCard';
 
 interface INavbarLxpProps {}
 
@@ -55,30 +55,18 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       label: t('learn.engage'),
       to: '',
       show: true,
-      isActive: true,
-      optionContainerClassname: 'group-hover/item:h-[78px]',
       options: [
         {
           id: 'feed',
           label: t('learn.feed'),
           onClick: () => navigate('/feed'),
           show: true,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: `!text-black hover:!text-black leading-4 ${
-            pathname.startsWith('/feed') &&
-            '!font-bold !text-primary-500 hover:!text-primary-500'
-          }`,
         },
         {
           id: 'channels',
           label: t('learn.channels'),
           onClick: () => navigate('/channels'),
           show: true,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: `!text-black hover:!text-black leading-4 ${
-            pathname.startsWith('/channels') &&
-            '!font-bold !text-primary-500 hover:!text-primary-500'
-          }`,
         },
       ],
     },
@@ -87,31 +75,24 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       label: t('learn.training'),
       to: '',
       show: true,
-      optionContainerClassname: 'group-hover/item:h-[156px]',
       options: [
         {
           id: 'courses',
           label: t('learn.courses'),
           onClick: () => window.location.replace(`${getLearnUrl('/courses')}`),
           show: true,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
         },
         {
           id: 'paths',
           label: t('learn.paths'),
           onClick: () => window.location.replace(`${getLearnUrl('/paths')}`),
           show: true,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
         },
         {
           id: 'events',
           label: t('learn.events'),
           onClick: () => window.location.replace(`${getLearnUrl('/events')}`),
           show: true,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
         },
         {
           id: 'external',
@@ -119,8 +100,6 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () =>
             window.location.replace(`${getLearnUrl('/external-trainings')}`),
           show: true,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
         },
       ],
     },
@@ -129,15 +108,12 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       label: t('learn.learningCenter'),
       to: '',
       show: true,
-      optionContainerClassname: 'group-hover/item:h-[117px]',
       options: [
         {
           id: 'tasks',
           label: t('learn.tasks'),
           onClick: () => window.location.replace(`${getLearnUrl('/tasks')}`),
           show: true,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
         },
         {
           id: 'mentorship',
@@ -145,16 +121,12 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () =>
             window.location.replace(`${getLearnUrl('/mentorship')}`),
           show: true,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
         },
         {
           id: 'forums',
           label: t('learn.forums'),
           onClick: () => window.location.replace(`${getLearnUrl('/forums')}`),
           show: true,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
         },
       ],
     },
@@ -163,7 +135,6 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       label: t('learn.company'),
       to: '',
       show: true,
-      optionContainerClassname: 'group-hover/item:h-[117px]',
       options: [
         {
           id: 'people',
@@ -173,8 +144,6 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
               `${getLearnUrl('/peoples?tab=individuals')}`,
             ),
           show: true,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
         },
         {
           id: 'teams',
@@ -182,16 +151,12 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () =>
             window.location.replace(`${getLearnUrl('/peoples?tab=teams')}`),
           show: true,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
         },
         {
           id: 'branches',
           label: t('learn.branches'),
           onClick: () => window.location.replace(`${getLearnUrl('/branches')}`),
           show: true,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
         },
       ],
     },
@@ -200,23 +165,18 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       label: t('learn.analytics'),
       to: '',
       show: true,
-      optionContainerClassname: 'group-hover/item:h-[78px]',
       options: [
         {
           id: 'insights',
           label: t('learn.insights'),
           onClick: () => window.location.replace(`${getLearnUrl('/insights')}`),
           show: true,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
         },
         {
           id: 'reports',
           label: t('learn.reports'),
           onClick: () => window.location.replace(`${getLearnUrl('/reports')}`),
           show: true,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
         },
       ],
     },
@@ -225,23 +185,18 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       label: t('learn.ecommerce'),
       to: '',
       show: true,
-      optionContainerClassname: 'group-hover/item:h-[78px]',
       options: [
         {
           id: 'orders',
           label: t('learn.orders'),
           onClick: () => window.location.replace(`${getLearnUrl('/orders')}`),
           show: true,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
         },
         {
           id: 'coupons',
           label: t('learn.coupons'),
           onClick: () => window.location.replace(`${getLearnUrl('/coupons')}`),
           show: true,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
         },
       ],
     },
@@ -252,34 +207,8 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
     'justify-between': backBtn.show,
   });
 
-  const getNavItemStyle = (id: string) => {
-    switch (id) {
-      case 'engage':
-        return clsx({
-          'my-[5px] text-[15px] px-2.5 py-1 transition ease duration-150 text-primary-500 group-hover/item:bg-neutral-100 group-hover/item:text-black font-semibold cursor-pointer rounded-xl flex group':
-            true,
-        });
-      case 'home':
-      case 'training':
-      case 'learningCenter':
-      case 'company':
-      case 'analytics':
-      case 'ecommerce':
-        return clsx({
-          'my-[5px] flex text-[15px] px-2.5 py-1 transition ease duration-150 group-hover/item:bg-neutral-100 hover:bg-neutral-100 group-hover/item:text-black font-medium rounded-xl cursor-pointer group':
-            true,
-        });
-      case 'backBtn':
-        return clsx({
-          'my-[5px] nav-item text-[15px] gap-[8px] transition ease duration-150 group-hover/item:text-primary-500 flex items-center px-4 py-2 border rounded-17xl group':
-            true,
-        });
-    }
-    return '';
-  };
-
   return (
-    <div className="group-hover/item:h-[78px] flex items-center justify-center bg-white px-14 sticky top-0 w-full z-50">
+    <div className="h-[78px] flex items-center justify-center bg-white px-14 sticky top-0 w-full z-50">
       <div className={optionWrapperStyle}>
         <div className="flex items-center gap-2">
           <Logo />
@@ -296,38 +225,30 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
                 .filter((item) => item.show)
                 .map((item) =>
                   item.options.length > 0 ? (
-                    <div className="relative group/item" key={item.id}>
+                    <div className="relative" key={item.id}>
                       <PopupMenu
                         triggerNode={
                           <div
                             tabIndex={0}
-                            className={getNavItemStyle(item.id)}
+                            className="px-[10px] py-[4px] cursor-pointer flex items-center transition ease duration-150 hover:text-primary-500 multi-navitem"
                           >
                             <span className="text-[15px]">{item.label}</span>
                             <Icon
                               name="arrowDown2"
                               size={20}
                               dataTestId={`${item.id}-collapse`}
-                              className="group-hover/item:!text-black navbar-arrow-icon group-hover/item:navbar-arrow-icon-hover"
-                              color={
-                                item.id === 'engage'
-                                  ? 'text-primary-500'
-                                  : '!text-black'
-                              }
                             />
                           </div>
                         }
                         menuItems={item.options}
-                        className={`dropdown-menu-option group-hover/item:visible invisible h-[39px] !transition-[height] !duration-500 w-[124px] left-1/2 -translate-x-1/2 ${item.optionContainerClassname}`}
-                        controlled
-                        isOpen
+                        className="mt-1 right-0 border-1 border-neutral-200 focus-visible:outline-none"
                       />
                     </div>
                   ) : (
                     <NavLink
                       to={item.to}
                       key={item.id}
-                      className={getNavItemStyle(item.id)}
+                      className="text-[15px] px-[10px] py-[4px] transition ease duration-150 hover:text-primary-500"
                     >
                       {item.label}
                     </NavLink>
@@ -348,7 +269,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           <NavLink
             to={backBtn.linkTo}
             key={'backBtnAdminNavbarClassic'}
-            className={getNavItemStyle('backBtn')}
+            className={`nav-item text-[15px] gap-[8px] transition ease duration-150 hover:text-primary-500 flex items-center px-4 py-2 border rounded-17xl`}
           >
             <Icon
               name={'arrowLeft'}

@@ -332,7 +332,6 @@ const Feed: FC<IFeedProps> = ({
         ...((modeProps as any)[mode as any]?.params || {}),
       }),
     );
-  data;
   const feedIds = (
     (data?.pages.flatMap((page: any) =>
       page.data?.result?.data
@@ -367,7 +366,6 @@ const Feed: FC<IFeedProps> = ({
         isRegularPost(feed[post.id], currentDate, isAdmin),
       )
     : [];
-  console.log('regularFeedIds :', regularFeedIds);
   useEffect(() => {
     setActiveFeedPostCount(feedIds.length);
   }, [feedIds]);

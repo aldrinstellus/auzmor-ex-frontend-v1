@@ -3,14 +3,13 @@ import * as queries from 'queries/learn';
 import { ApiEnum } from '../enums/apiEnum';
 import { LxpRoleEnum } from '../enums/roleEnum';
 
-const { Default, Learner, Manager } = LxpRoleEnum;
+const { Default, Learner } = LxpRoleEnum;
 
 export const apiConfigLxp = {
   //apps
   [ApiEnum.GetApps]: {
     [Default]: queries.useInfiniteApps,
     [Learner]: queries.useInfiniteAppsLearner,
-    [Manager]: queries.useInfiniteAppsLearner,
   },
   [ApiEnum.GetFeaturedApps]: { [Default]: queries.useInfiniteFeaturedApps },
   [ApiEnum.GetWidgetApps]: { [Default]: queries.useInfiniteWidgetApps },
@@ -80,7 +79,6 @@ export const apiConfigLxp = {
   [ApiEnum.DeleteComment]: {
     [Default]: queries.deleteComment,
     [Learner]: queries.deleteCommentLearner,
-    [Manager]: queries.deleteCommentLearner,
   },
 
   //events
@@ -98,7 +96,6 @@ export const apiConfigLxp = {
   [ApiEnum.GetNotifications]: {
     [Default]: queries.useInfiniteNotifications,
     [Learner]: queries.useInfiniteNotificationsLearner,
-    [Manager]: queries.useInfiniteNotificationsLearner,
   },
   [ApiEnum.GetNotificationsUnreadCount]: {
     [Default]: queries.useGetUnreadNotificationsCount,
@@ -109,7 +106,6 @@ export const apiConfigLxp = {
   [ApiEnum.MarkAllNotificationsAsRead]: {
     [Default]: queries.markAllNotificationsAsRead,
     [Learner]: queries.markAllNotificationsAsReadLearner,
-    [Manager]: queries.markAllNotificationsAsReadLearner,
   },
 
   //organizations
@@ -122,18 +118,15 @@ export const apiConfigLxp = {
   [ApiEnum.GetPost]: {
     [Default]: queries.useGetPost,
     [Learner]: queries.useGetLearnerPost,
-    [Manager]: queries.useGetLearnerPost,
   },
   [ApiEnum.CreatePost]: {
     [Default]: queries.createPost,
     [Learner]: queries.createPostLearner,
-    [Manager]: queries.createPostLearner,
   },
   [ApiEnum.UpdatePost]: { [Default]: queries.updatePost },
   [ApiEnum.DeletePost]: {
     [Default]: queries.deletePost,
     [Learner]: queries.deletePostLearner,
-    [Manager]: queries.deletePostLearner,
   },
 
   [ApiEnum.AcknowledgeAccouncement]: { [Default]: queries.announcementRead },
@@ -151,7 +144,6 @@ export const apiConfigLxp = {
   [ApiEnum.GetFeedPosts]: {
     [Default]: queries.useInfiniteFeed,
     [Learner]: queries.useInfiniteLearnerFeed,
-    [Manager]: queries.useInfiniteLearnerFeed,
   },
   [ApiEnum.GetAnnouncementPosts]: { [Default]: queries.useAnnouncementsWidget },
 

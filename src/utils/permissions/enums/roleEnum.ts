@@ -3,6 +3,7 @@ export enum LxpRoleEnum {
   Admin = 'ADMIN',
   Manager = 'MANAGER',
   Learner = 'LEARNER',
+  Trainee = 'TRAINEE',
   Default = 'DEFAULT',
 }
 

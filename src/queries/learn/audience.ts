@@ -6,8 +6,9 @@ const getAudience = async ({
   queryKey,
 }: QueryFunctionContext<any>) => {
   const [_queryKey, entity, entityId, params] = queryKey;
+  const mappedEntity = entity === 'posts' ? 'feed' : entity;
   if (pageParam === null) {
-    return await apiService.get(`/${entity}/${entityId}/audience`, {
+    return await apiService.get(`/${mappedEntity}/${entityId}/audience`, {
       limit: 10,
       ...(params || {}),
     });

@@ -8,8 +8,6 @@
   "channels": "Channels",
   "userSetting": "User Settings",
   "adminSetting": "Admin Settings",
-  "switchToAdminsView": "Switch to Admin's View",
-  "switchToMangerView": "Switch to Manager's View",
   "myBookmarks": "My Bookmarks",
   "signOut": "Sign Out",
   "account": {
@@ -43,6 +41,14 @@
     "allTrainings": "All Trainings",
     "backToFeed": "Back to Feed",
     "appLauncher": "App Launcher",
-    "myTeams": "My Teams"
+    "myTeams": "My Teams",
+    "settings": "Settings",
+    "myCertificates": "My Certificates",
+    "myActivity": "My Activity",
+    "switchToAdminsView": "Switch to Admin's View",
+    "switchToMangersView": "Switch to Manager's View",
+    "switchToLearnersView": "Switch to Learner's View",
+    "switchTheme": "Switch Theme",
+    "signOut": "Sign Out"
   }
 }

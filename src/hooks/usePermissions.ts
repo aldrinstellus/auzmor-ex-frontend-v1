@@ -10,11 +10,7 @@ export const usePermissions = () => {
     if (getProduct() === ProductEnum.Lxp) {
       const path = window.location.pathname;
       const isLearner = path.split('/')[1] === 'user';
-      if (isLearner) {
-        if (role === UserRole.Admin || role === UserRole.PrimaryAdmin) {
-          role = UserRole.Learner;
-        }
-      }
+      if (isLearner) role = UserRole.Learner;
     }
     return role;
   };

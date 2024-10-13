@@ -79,13 +79,16 @@ const NotificationsList = forwardRef(
       ...(mentions ? { mentions: true } : undefined),
     });
 
+    const notificationData = data?.pages?.flatMap((page: any) =>
+      page.data.result.data.map((item: any) => item),
+    );
     return isLoading ? (
       <NotificationsOverviewSkeleton />
     ) : (
       <div>
-        {!isError && data.data?.result?.data?.length ? (
+        {!isError && notificationData?.length ? (
           <div className={`flex flex-col overflow-y-auto ${className}`}>
-            {data.data?.result?.data?.map(
+            {notificationData?.map(
               (notification: NotificationProps, index: number) => (
                 <div key={index} onClick={() => ref?.current?.click()}>
                   <Notification

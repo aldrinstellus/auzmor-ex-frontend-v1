@@ -6,8 +6,9 @@ import {
 import apiService from 'utils/apiService';
 
 // Mark all notifications as read
+
 export const markAllNotificationsAsRead = async (q: Record<string, any>) => {
-  const data = await apiService.put(`/notifications/mark_all_as_read`, {
+  const data = await apiService.post(`/notifications/mark_all_as_read`, {
     category: q.category || 'LXP',
   });
   return data;
@@ -15,21 +16,24 @@ export const markAllNotificationsAsRead = async (q: Record<string, any>) => {
 export const markAllNotificationsAsReadLearner = async (
   q: Record<string, any>,
 ) => {
-  const data = await apiService.put(`/learner/notifications/mark_all_as_read`, {
-    category: q.category || 'LXP',
-  });
+  const data = await apiService.post(
+    `/learner/notifications/mark_all_as_read`,
+    {
+      category: q.category || 'LXP',
+    },
+  );
   return data;
 };
 
 // Mark a notification as ready by its id
 export const markNotificationAsReadById = async (id: string) => {
-  const data = await apiService.put(`/notifications/${id}`);
+  const data = await apiService.put(`/notifications/${id}/mark_as_read`);
   return data;
 };
 
 // Get unread notifications count
 const getUnreadNotificationsCount = async () => {
-  const data = await apiService.get('/notifications/count');
+  const data = await apiService.get('/notifications/counts');
   return data;
 };
 
@@ -41,37 +45,56 @@ export const useGetUnreadNotificationsCount = () => {
   });
 };
 
-export const fetchNotifications = (
+export const fetchNotifications = async (
   {
-    pageParam = null,
+    pageParam = 1,
     queryKey,
-  }: QueryFunctionContext<(string | Record<string, any> | undefined)[], any>,
+  }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>,
   apiPrefix = '',
 ) => {
-  if (pageParam === null)
-    return apiService.get(`${apiPrefix}/notifications`, queryKey[1]);
-  else return apiService.get(pageParam);
+  const query: any = queryKey[1];
+  const response = await apiService.get(`${apiPrefix}/notifications`, {
+    ...query,
+    page: pageParam,
+  });
+  const { data } = response;
+
+  const transformedData = data?.result?.data?.map((item: any) => ({
+    ...item,
+  }));
+
+  return {
+    data: {
+      result: {
+        data: transformedData,
+      },
+      nextPage: pageParam + 1,
+    },
+  };
 };
 
-// Infinite scroll for notifications
-export const useInfiniteNotifications = (q?: Record<string, any>) => {
+export const useInfiniteNotifications = (query?: Record<string, any>) => {
   return useInfiniteQuery({
-    queryKey: ['notifications-page', q],
+    queryKey: ['get-notifications', query],
     queryFn: fetchNotifications,
-    getNextPageParam: (lastPage: any) =>
-      lastPage?.data?.result?.data?.length >= q?.limit
-        ? lastPage?.data?.result?.paging?.next
-        : null,
-    getPreviousPageParam: (currentPage: any) =>
-      currentPage?.data?.result?.data?.length >= q?.limit
-        ? currentPage?.data?.result?.paging?.prev
-        : null,
-    staleTime: 0,
+    getNextPageParam: (lastPage, pages) => {
+      const lastPageDataLength = lastPage?.data?.result?.data?.length || 0;
+      const limit = query?.limit || 20;
+
+      if (lastPageDataLength < limit) {
+        return undefined; // No more data to fetch
+      }
+
+      // Otherwise, return the next page number
+      const currentPage = pages.length;
+      return currentPage + 1;
+    },
+    staleTime: 5 * 60 * 1000,
   });
 };
 export const useInfiniteNotificationsLearner = (q?: Record<string, any>) => {
   return useInfiniteQuery({
-    queryKey: ['notifications-page', q],
+    queryKey: ['get-learner-notifications', q],
     queryFn: (context) => fetchNotifications(context, '/learner'),
     getNextPageParam: (lastPage: any) =>
       lastPage?.data?.result?.data?.length >= q?.limit
