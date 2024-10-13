@@ -9,6 +9,7 @@ import './style.css';
 import { getLearnUrl } from 'utils/misc';
 import LxpNotificationsOverview from 'components/LxpNotificationsOverview';
 import AccountCard from './AccountCard';
+import { clsx } from 'clsx';
 
 interface INavbarLxpProps {}
 
@@ -52,6 +53,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       icon: 'home',
       show: true,
       options: [],
+      isActive: pathname.startsWith('/user/feed'),
     },
     {
       id: 'channels',
@@ -60,6 +62,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       show: true,
       icon: 'exploreOutline',
       options: [],
+      isActive: pathname.startsWith('/user/channels'),
     },
     {
       id: 'training',
@@ -67,12 +70,15 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       to: '',
       show: true,
       icon: 'training',
+      optionContainerClassname: 'group-hover/item:h-[78px]',
       options: [
         {
           id: 'myLearning',
           label: t('learn.myLearning'),
           onClick: () => window.location.replace(`${getLearnUrl('/user')}`),
           show: true,
+          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
+          labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
         },
         {
           id: 'allTrainings',
@@ -80,6 +86,8 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () =>
             window.location.replace(`${getLearnUrl('/user/trainings')}`),
           show: true,
+          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
+          labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
         },
       ],
     },
@@ -89,6 +97,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       to: '',
       show: true,
       icon: 'learningCenter',
+      optionContainerClassname: 'group-hover/item:h-[117px]',
       options: [
         {
           id: 'tasks',
@@ -96,6 +105,8 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () =>
             window.location.replace(`${getLearnUrl('/user/tasks')}`),
           show: true,
+          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
+          labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
         },
         {
           id: 'mentorship',
@@ -103,6 +114,8 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () =>
             window.location.replace(`${getLearnUrl('/mentorship/overview')}`),
           show: true,
+          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
+          labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
         },
         {
           id: 'forums',
@@ -110,10 +123,35 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () =>
             window.location.replace(`${getLearnUrl('/user/forums')}`),
           show: true,
+          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
+          labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
         },
       ],
     },
   ];
+
+  const getNavItemStyle = (id: string) => {
+    switch (id) {
+      case 'home':
+      case 'channels':
+      case 'training':
+      case 'learningCenter':
+        return clsx({
+          'my-[5px] flex gap-2 items-center text-[15px] text-neutral-500 px-2.5 py-1 transition ease duration-150 group-hover/item:bg-neutral-100 hover:bg-neutral-100 font-medium rounded-xl cursor-pointer group':
+            true,
+          'text-primary-500':
+            (!!pathname.startsWith('/user/feed') && id === 'home') ||
+            (!!pathname.startsWith('/user/channels') && id === 'channels'),
+        });
+      case 'backBtn':
+        return clsx({
+          'my-[5px] nav-item text-[15px] gap-[8px] transition ease duration-150 group-hover/item:text-primary-500 flex items-center px-4 py-2 border rounded-17xl group':
+            true,
+        });
+    }
+    return '';
+  };
+
   return (
     <div className="h-[78px] flex items-center justify-center bg-white px-14 sticky top-0 w-full z-50">
       <div className="w-full max-w-[1440px] flex items-center justify-between">
@@ -132,42 +170,49 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
                 .filter((item) => item.show)
                 .map((item) =>
                   item.options.length > 0 ? (
-                    <div className="relative" key={item.id}>
+                    <div className="relative group/item" key={item.id}>
                       <PopupMenu
                         triggerNode={
                           <div
                             tabIndex={0}
-                            className="nav-item px-[10px] py-[4px] cursor-pointer flex items-center transition ease duration-150 hover:text-primary-500 multi-navitem"
+                            className={getNavItemStyle(item.id)}
                           >
                             <Icon
                               name={item.icon}
                               size={18}
                               dataTestId={`${item.id}-collapse`}
+                              className="group-hover/item:!text-neutral-500"
                             />
-                            <span className="text-[15px] ml-[8px]">
-                              {item.label}
-                            </span>
+                            <span className="text-[15px]">{item.label}</span>
                             <Icon
                               name="arrowDown2"
                               size={20}
                               dataTestId={`${item.id}-collapse`}
+                              className="group-hover/item:!text-neutral-500 navbar-arrow-icon group-hover/item:navbar-arrow-icon-hover"
                             />
                           </div>
                         }
                         menuItems={item.options}
-                        className="mt-1 right-0 border-1 border-neutral-200 focus-visible:outline-none"
+                        className={`dropdown-menu-option group-hover/item:visible invisible h-[39px] !transition-[height] !duration-300 w-[124px] left-1/2 -translate-x-1/2 ${item.optionContainerClassname}`}
+                        controlled
+                        isOpen
                       />
                     </div>
                   ) : (
                     <NavLink
                       to={item.to}
                       key={item.id}
-                      className={`nav-item text-[15px] px-[10px] py-[4px] gap-[8px] transition ease duration-150 hover:text-primary-500 flex items-center`}
+                      className={getNavItemStyle(item.id)}
                     >
                       <Icon
                         name={item.icon}
                         size={item.id === 'channels' ? 22 : 18}
                         dataTestId={`${item.id}-collapse`}
+                        className={
+                          item?.isActive
+                            ? 'text-primary-500 group-hover:!text-primary-500'
+                            : 'group-hover:!text-neutral-500'
+                        }
                       />
                       {item.label}
                     </NavLink>
@@ -189,7 +234,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           <NavLink
             to={backBtn.linkTo}
             key={'backBtnNavbarModern'}
-            className={`nav-item text-[15px] gap-[8px] transition ease duration-150 hover:text-primary-500 flex items-center px-4 py-2 border rounded-17xl`}
+            className={getNavItemStyle('backBtn')}
           >
             <Icon
               name={'arrowLeft'}

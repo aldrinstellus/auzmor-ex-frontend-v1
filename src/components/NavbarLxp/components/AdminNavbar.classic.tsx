@@ -318,7 +318,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
                           </div>
                         }
                         menuItems={item.options}
-                        className={`dropdown-menu-option group-hover/item:visible invisible h-[39px] !transition-[height] !duration-500 w-[124px] left-1/2 -translate-x-1/2 ${item.optionContainerClassname}`}
+                        className={`dropdown-menu-option group-hover/item:visible invisible h-[39px] !transition-[height] !duration-300 w-[124px] left-1/2 -translate-x-1/2 ${item.optionContainerClassname}`}
                         controlled
                         isOpen
                       />
