@@ -139,7 +139,9 @@ const TeamRow: FC<ITeamRowProps> = ({
               })}
             </div>
           </div>
-          <div className="mx-6 w-1 h-1 bg-neutral-500 rounded-full" />
+          {team.category ? (
+            <div className="mx-6 w-1 h-1 bg-neutral-500 rounded-full" />
+          ) : null}
           <div className="flex">
             <Icon name="profileUserOutline" size={16} />
             <div
