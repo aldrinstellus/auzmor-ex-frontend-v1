@@ -78,8 +78,8 @@ export const useInfiniteComments = (q: IComments) => {
 };
 
 export const createComment = async (payload: IComments) => {
-  const { data } = await apiService.post(`/comments`, payload);
-  return data;
+  const { result } = await apiService.post(`/comments`, payload);
+  return result?.data;
 };
 
 export const updateComment = async (id: string, payload: any) => {
