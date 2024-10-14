@@ -10,6 +10,7 @@ type EventNotificationAvatarProps = {
   userImageUrl?: string;
   name?: string;
   profileColor?: string;
+  target1Type?: string;
 };
 
 const EventNotificationAvatar: React.FC<EventNotificationAvatarProps> = ({
@@ -18,6 +19,7 @@ const EventNotificationAvatar: React.FC<EventNotificationAvatarProps> = ({
   userImageUrl,
   name,
   profileColor,
+  target1Type,
 }) => {
   return (
     <div className="relative">
@@ -30,14 +32,14 @@ const EventNotificationAvatar: React.FC<EventNotificationAvatarProps> = ({
             bgColor={profileColor}
           />
           <div className="absolute z-50 rounded-full cursor-pointer bottom-0 right-0 -mr-2 -mb-2">
-            <Icon name={getIconForAction(actionType) || ''} />
+            <Icon name={getIconForAction(actionType, target1Type) || ''} />
           </div>
         </div>
       )}
       {source === 'system' && (
         <div className="w-[50px] h-[50px] rounded-full flex items-center justify-center">
           <Icon
-            name={getIconForAction(actionType) || ''}
+            name={getIconForAction(actionType, target1Type) || ''}
             className="w-[50px] h-[50px] min-w-[50px] min-h-[50px]"
           />
         </div>
