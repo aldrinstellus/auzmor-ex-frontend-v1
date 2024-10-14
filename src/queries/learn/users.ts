@@ -60,6 +60,12 @@ export const fetchMe = async () => {
         role: user?.role,
         org: {
           subscription: {},
+          setting: {
+            enableMentorship:
+              orgData.result.data.organization_setting.enable_mentorship,
+            enablechecklist:
+              orgData.result.data.organization_setting.enablechecklist,
+          },
         },
         ...(user?.designation && {
           designation: {
@@ -81,7 +87,6 @@ export const fetchMe = async () => {
           }),
         },
         timeZone: user?.time_zone,
-        organizationSetting: { ...orgData.result.data.organization_setting },
         branding: {
           primaryColor: orgData.result.data?.primary_color,
           secondaryColor: orgData.result.data?.secondary_color,

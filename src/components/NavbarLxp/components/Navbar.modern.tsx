@@ -10,12 +10,14 @@ import { getLearnUrl } from 'utils/misc';
 import LxpNotificationsOverview from 'components/LxpNotificationsOverview';
 import AccountCard from './AccountCard';
 import { clsx } from 'clsx';
+import useAuth from 'hooks/useAuth';
 
 interface INavbarLxpProps {}
 
 const Navbar: FC<INavbarLxpProps> = ({}) => {
   const { t } = useTranslation('navbar');
   const { pathname } = useLocation();
+  const { user } = useAuth();
 
   const backBtn = {
     show: false,
@@ -72,7 +74,6 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       to: '',
       show: true,
       icon: 'training',
-      optionContainerClassname: 'group-hover/item:h-[78px]',
       options: [
         {
           id: 'myLearning',
@@ -99,14 +100,13 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       to: '',
       show: true,
       icon: 'learningCenter',
-      optionContainerClassname: 'group-hover/item:h-[117px]',
       options: [
         {
           id: 'tasks',
           label: t('learn.tasks'),
           onClick: () =>
             window.location.replace(`${getLearnUrl('/user/tasks')}`),
-          show: true,
+          show: !!user?.organization?.setting?.enablechecklist,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
         },
@@ -115,7 +115,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           label: t('learn.mentorship'),
           onClick: () =>
             window.location.replace(`${getLearnUrl('/mentorship/overview')}`),
-          show: true,
+          show: !!user?.organization?.setting?.enableMentorship,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
         },
@@ -128,7 +128,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
         },
-      ],
+      ].filter((option) => option.show),
     },
   ];
 
@@ -152,6 +152,14 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
         });
     }
     return '';
+  };
+  const getOptionHeight = (length: number) => {
+    return clsx({
+      'group-hover/item:h-[39px]': length === 1,
+      'group-hover/item:h-[78px]': length === 2,
+      'group-hover/item:h-[117px]': length === 3,
+      'group-hover/item:h-[156px]': length === 4,
+    });
   };
 
   return (
@@ -195,7 +203,9 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
                           </div>
                         }
                         menuItems={item.options}
-                        className={`dropdown-menu-option group-hover/item:visible invisible h-[39px] !transition-[height] !duration-300 w-[124px] left-1/2 -translate-x-1/2 ${item.optionContainerClassname}`}
+                        className={`dropdown-menu-option group-hover/item:visible invisible h-[39px] !transition-[height] !duration-300 w-[124px] left-1/2 -translate-x-1/2 ${getOptionHeight(
+                          item.options.length,
+                        )}`}
                         controlled
                         isOpen
                       />

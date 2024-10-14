@@ -7,12 +7,14 @@ import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation } from 'react-router-dom';
 import { getLearnUrl } from 'utils/misc';
+import useAuth from 'hooks/useAuth';
 
 interface INavbarLxpProps {}
 
 const Navbar: FC<INavbarLxpProps> = ({}) => {
   const { t } = useTranslation('navbar');
   const { pathname } = useLocation();
+  const { user } = useAuth();
 
   const backBtn = {
     show: false,
@@ -79,13 +81,13 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       id: 'tasks',
       label: t('learn.tasks'),
       to: `${getLearnUrl('/user/tasks')}`,
-      show: true,
+      show: !!user?.organization?.setting?.enablechecklist,
     },
     {
       id: 'mentorship',
       label: t('learn.mentorship'),
       to: `${getLearnUrl('/user/mentorship/overview')}`,
-      show: true,
+      show: !!user?.organization?.setting?.enableMentorship,
     },
     {
       id: 'forums',
