@@ -93,13 +93,13 @@ const LxpNotificationsOverview: FC = () => {
       triggerNode={
         <div className="font-bold flex flex-row justify-center items-center p-3 border-none relative">
           {!isLoading && !isError && notificationCount > 0 && (
-            <div className="absolute rounded-full bg-red-600 border border-white text-white antialiased text-xs font-bold leading-4 top-2 right-2.5 flex w-4 h-4 items-center justify-center">
+            <div className="absolute text-[8px] tracking-[0.3px] font-semibold font-lato text-light opacity-100 no-underline rounded-full bg-primary-500 border border-white text-white antialiased  leading-4 top-2 right-2.5 flex w-4 h-4 items-center justify-center">
               {/* Get unread notif count here */}
               {notificationCount || ''}
             </div>
           )}
           {isLoading && (
-            <Spinner className="absolute top-1.5 right-2.5 fill-red-600 !w-4 !h-4 !m-0" />
+            <Spinner className="absolute top-1.5 right-2.5 bg-primary-500 !w-4 !h-4 !m-0" />
           )}
 
           <Icon
