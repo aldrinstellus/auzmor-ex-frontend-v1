@@ -110,6 +110,8 @@ export class ApiService {
     );
   }
 
+  getBaseUrl = () => this.instance.defaults.baseURL;
+
   updateBaseUrl = (baseURL: string) => {
     this.instance.defaults.baseURL = baseURL;
   };

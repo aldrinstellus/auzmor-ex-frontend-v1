@@ -6,14 +6,13 @@ import Button, { Variant as ButtonVariant } from 'components/Button';
 import Icon from 'components/Icon';
 import clsx from 'clsx';
 import { channelCoverImages, channelCoverLogo } from './utils/ChannelImages';
-import { useUpload } from 'hooks/useUpload';
 import { useMutation } from '@tanstack/react-query';
 import { updateChannel } from 'queries/channel';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
-import { EntityType } from 'queries/files';
 import queryClient from 'utils/queryClient';
 import { toBlob } from 'html-to-image';
 import { useTranslation } from 'react-i18next';
+import { uploadImage } from 'queries/learn';
 
 type AppProps = {
   open: boolean;
@@ -59,7 +58,6 @@ const ChannelImageModal: FC<AppProps> = ({
     },
   });
 
-  const { uploadMedia } = useUpload();
   const uploadMediaFn = async () => {
     setIsFile(true);
     if (isCoverImg) {
@@ -81,14 +79,13 @@ const ChannelImageModal: FC<AppProps> = ({
                 type: blob.type,
               });
 
-              const profileImageUploadResponse = await uploadMedia(
-                [file],
-                EntityType.UserCoverImage,
-              );
-
-              if (profileImageUploadResponse) {
+              const formData = new FormData();
+              formData.append('url', file);
+              const res = await uploadImage(formData);
+              const uploadedFile = res.result?.data?.url;
+              if (uploadedFile) {
                 updateChannelMutation.mutate({
-                  bannerUrl: profileImageUploadResponse[0].original,
+                  bannerUrl: uploadedFile,
                 });
               }
             }
@@ -106,18 +103,17 @@ const ChannelImageModal: FC<AppProps> = ({
         });
 
         if (newFile) {
-          const profileImageUploadResponse = await uploadMedia(
-            [
-              new File([newFile], 'logo.png', {
-                type: newFile.type,
-              }),
-            ],
-            EntityType.UserProfileImage,
-          );
+          const file = new File([newFile], 'icon.png', {
+            type: newFile.type,
+          });
+          const formData = new FormData();
+          formData.append('url', file);
+          const res = await uploadImage(formData);
+          const uploadedFile = res.result?.data?.url;
 
-          if (profileImageUploadResponse) {
+          if (uploadedFile) {
             updateChannelMutation.mutate({
-              displayImageUrl: profileImageUploadResponse[0].original,
+              displayImageUrl: uploadedFile,
             });
           }
         }

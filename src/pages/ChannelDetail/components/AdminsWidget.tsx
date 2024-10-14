@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Role } from 'utils/enum';
+import { getProfileImage } from 'utils/misc';
 
 const AdminsWidget = () => {
   const navigate = useNavigate();
@@ -60,7 +61,11 @@ const AdminsWidget = () => {
         >
           {admins?.slice(0, 3).map((admin) => (
             <div key={admin.id} className="flex items-center gap-2 py-2">
-              <Avatar name={admin.fullName} size={32} image={admin.image} />
+              <Avatar
+                name={admin.fullName}
+                size={32}
+                image={getProfileImage(admin)}
+              />
               <div>
                 <div className="text-neutral-900 font-bold text-sm">
                   {admin.fullName}
