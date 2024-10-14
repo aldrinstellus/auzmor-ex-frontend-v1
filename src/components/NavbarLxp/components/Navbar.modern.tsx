@@ -50,7 +50,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       id: 'home',
       label: t('learn.home'),
       to: '/user/feed',
-      icon: 'home',
+      icon: pathname.startsWith('/user/feed') ? 'homeFilled' : 'home',
       show: true,
       options: [],
       isActive: pathname.startsWith('/user/feed'),
@@ -60,7 +60,9 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       label: t('learn.channels'),
       to: '/user/channels',
       show: true,
-      icon: 'exploreOutline',
+      icon: pathname.startsWith('/user/channels')
+        ? 'exploreFilled'
+        : 'exploreOutline',
       options: [],
       isActive: pathname.startsWith('/user/channels'),
     },
