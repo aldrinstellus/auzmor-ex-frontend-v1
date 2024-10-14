@@ -48,6 +48,7 @@ export const mapUser = (user: Record<string, any>) => ({
 
 export const fetchMe = async () => {
   const { data } = await apiService.get('/me');
+  const { data: orgData } = await apiService.get('/organization');
   const user = data?.result?.data;
   const mappedData = {
     message: data?.message,
@@ -80,10 +81,16 @@ export const fetchMe = async () => {
           }),
         },
         timeZone: user?.time_zone,
+        organizationSetting: { ...orgData.result.data.organization_setting },
+        branding: {
+          primaryColor: orgData.result.data?.primary_color,
+          secondaryColor: orgData.result.data?.secondary_color,
+          favicon: { original: orgData.result.data?.favicon },
+          logo: { original: orgData.result.data?.logo },
+        },
       },
     },
   };
-  console.log({ data, mappedData });
   return mappedData;
 };
 
