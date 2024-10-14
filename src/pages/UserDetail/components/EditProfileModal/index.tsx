@@ -173,8 +173,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
     },
   ];
 
-  const useInfiniteDesignations =
-    getApi(ApiEnum.GetDesignations) || (() => ({}));
+  const useInfiniteDesignations = getApi(ApiEnum.GetDesignations);
   const positionTitlefields = [
     {
       type: FieldType.CreatableSearch,

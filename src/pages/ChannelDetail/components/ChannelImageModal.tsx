@@ -29,7 +29,7 @@ const ChannelImageModal: FC<AppProps> = ({
   isCoverImg,
 }) => {
   const { getApi } = usePermissions();
-  const uploadLearnMedia = getApi(ApiEnum.UploadImage);
+  const uploadMedia = getApi(ApiEnum.UploadImage);
   const channelImages = isCoverImg ? channelCoverImages : channelCoverLogo;
   const [selectedImageId, setSelectedImageId] = useState<number>(0);
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -82,7 +82,7 @@ const ChannelImageModal: FC<AppProps> = ({
               });
               const formData = new FormData();
               formData.append('url', file);
-              const res = await uploadLearnMedia(formData);
+              const res = await uploadMedia(formData);
               const uploadedFile = res.result?.data?.url;
 
               if (uploadedFile) {
@@ -110,7 +110,7 @@ const ChannelImageModal: FC<AppProps> = ({
           });
           const formData = new FormData();
           formData.append('url', file);
-          const res = await uploadLearnMedia(formData);
+          const res = await uploadMedia(formData);
           const uploadedFile = res.result?.data?.url;
 
           if (uploadedFile) {

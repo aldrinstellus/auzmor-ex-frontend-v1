@@ -44,7 +44,7 @@ const MembersBody: FC<IMembersBodyProps> = ({
   fetchUsers,
   usersQueryParams = {},
 }) => {
-  const { isOffice, isLxp } = useProduct();
+  const { isOffice } = useProduct();
   const { user: currentUser } = useAuth();
   const { getApi } = usePermissions();
   const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
@@ -133,20 +133,13 @@ const MembersBody: FC<IMembersBodyProps> = ({
     isFetchingNextPage: isFetchingNextDepartmentPage,
     fetchNextPage: fetchNextDepartmentPage,
     hasNextPage: hasNextDepartmentPage,
-  } = !isLxp &&
-  useInfiniteDepartments({
+  } = useInfiniteDepartments({
     q: debouncedDepartmentSearchValue,
-  });
-  const departmentData = fetchedDepartments?.pages?.flatMap((page: any) => {
-    return page?.data?.result?.data?.map((department: IDepartmentAPI) => {
-      try {
-        return department;
-      } catch (e) {
-        console.log('Error', { department });
-        return null;
-      }
-    });
-  });
+  }) ?? {};
+
+  const departmentData = fetchedDepartments?.pages.flatMap(
+    (page: any) => page.data.result.data,
+  );
 
   // fetch location from search input
   const debouncedLocationSearchValue = useDebounce(locationSearch || '', 500);
@@ -157,19 +150,13 @@ const MembersBody: FC<IMembersBodyProps> = ({
     isFetchingNextPage: isFetchingNextLocationPage,
     fetchNextPage: fetchNextLocationPage,
     hasNextPage: hasNextLocationPage,
-  } = !isLxp &&
-  useInfiniteLocations({
+  } = useInfiniteLocations({
     q: debouncedLocationSearchValue,
-  });
-  const locationData = fetchedLocations?.pages.flatMap((page: any) => {
-    return page.data.result.data.map((location: ILocationAPI) => {
-      try {
-        return location;
-      } catch (e) {
-        console.log('Error', { location });
-      }
-    });
-  });
+  }) ?? {};
+
+  const locationData = fetchedLocations?.pages.flatMap(
+    (page: any) => page.data.result.data,
+  );
 
   // fetch designation from search input
   const debouncedDesignationSearchValue = useDebounce(
@@ -183,22 +170,15 @@ const MembersBody: FC<IMembersBodyProps> = ({
     isFetchingNextPage: isFetchingNextDesignationPage,
     fetchNextPage: fetchNextDesignationPage,
     hasNextPage: hasNextDesignationPage,
-  } = !isLxp &&
-  useInfiniteDesignations({
+  } = useInfiniteDesignations({
     q: {
       q: debouncedDesignationSearchValue,
     },
     startFetching: !!showJobTitleFilter,
-  });
-  const designationData = fetchedDesignations?.pages.flatMap((page: any) => {
-    return page.data.result.data.map((designation: IDesignationAPI) => {
-      try {
-        return designation;
-      } catch (e) {
-        console.log('Error', { designation });
-      }
-    });
-  });
+  }) ?? {};
+  const designationData = fetchedDesignations?.pages.flatMap(
+    (page: any) => page.data.result.data,
+  );
 
   const { ref, inView } = useInView({
     root: document.getElementById('entity-search-members-body'),
