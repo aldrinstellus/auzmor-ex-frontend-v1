@@ -47,6 +47,8 @@ export const getIconForAction = (actionType) => {
     case NOTIFICATION_ACTION_TYPES.LxpPostSchedulePostPublish:
       iconName = 'PostLiveNotification';
       break;
+
+    case NOTIFICATION_ACTION_TYPES.LxpPostScheduled:
     case NOTIFICATION_ACTION_TYPES.LxpPostSchedulePrePublish:
       iconName = 'PostScheduleClockNotification';
       break;
@@ -54,10 +56,16 @@ export const getIconForAction = (actionType) => {
       iconName = 'starShoutOut';
       break;
 
-    case NOTIFICATION_ACTION_TYPES.LxpMentionOnFeed:
+    case NOTIFICATION_ACTION_TYPES.LxpMentionOnFeed && actionType == 'POST':
       iconName = 'MentionInPost';
       break;
+    case NOTIFICATION_ACTION_TYPES.LxpMentionOnFeed && actionType == 'COMMENT':
+      iconName = 'CommentNotification';
+      break;
     case NOTIFICATION_ACTION_TYPES.LxpCommentOnPost:
+      iconName = 'CommentNotification';
+      break;
+    case NOTIFICATION_ACTION_TYPES.LxpRepliedOnFeedComment:
       iconName = 'CommentNotification';
       break;
     case NOTIFICATION_ACTION_TYPES.ReportGenerated:
@@ -433,7 +441,24 @@ export const getNotificationTitle = (
     );
   }
 
-  // 6. system generated pre Publish post . your post going live in 1 hour ...
+  // 6.  schedule post . your post is scheduled .
+  if (NOTIFICATION_ACTION_TYPES.LxpPostScheduled === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpPostScheduled"
+        isLxpRoute
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  // 7.  schedule pre Publish post . your post going live in 1 hour ...
   if (NOTIFICATION_ACTION_TYPES.LxpPostSchedulePrePublish === actionType) {
     return (
       <NotificationTitle
@@ -450,7 +475,7 @@ export const getNotificationTitle = (
       />
     );
   }
-  // 7. system generated post Publish post . your post is live now ...
+  // 8. schedule post Publish post . your post is live now ...
   if (NOTIFICATION_ACTION_TYPES.LxpPostSchedulePostPublish === actionType) {
     return (
       <NotificationTitle
@@ -462,6 +487,43 @@ export const getNotificationTitle = (
           targetId1,
           userId,
           additionalInfo,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  //9 . replied on comment
+  if (NOTIFICATION_ACTION_TYPES.LxpRepliedOnFeedComment === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpRepliedOnComment"
+        values={{ actor: name }}
+        isLxpRoute
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+          actionType,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.LxpRepliedOnFeedComment === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpPostScheduled"
+        values={{ actor: name }}
+        isLxpRoute
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+          actionType,
         )}
         components={[<NotificationText bold viewInline />]}
       />

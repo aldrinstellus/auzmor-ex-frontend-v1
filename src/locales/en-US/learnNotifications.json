@@ -1,5 +1,7 @@
 {
   "notifications": {
+    "LxpPostScheduled": "Your <0>post<0/> is scheduled.",
+    "LxpRepliedOnComment": "<0>{{actor}}</0> replied to your <0>comment</0>",
     "LxpuserMentionedOnComment": "<0>{{actor}}</0> mentioned you in a <0>comment!.</0>",
     "LxpuserMentionedOnPost": "<0>{{actor}}</0> mentioned you in a <0>Post!.</0>",
     "LxpCommentOnPost": "<0>{{actor}}</0> commented on your <0>Post!.</0>",

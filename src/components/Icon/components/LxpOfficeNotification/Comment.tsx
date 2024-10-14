@@ -22,13 +22,14 @@ const CommentNotificationSVG = (props: SVGProps<SVGSVGElement>) => (
       stroke="#fff"
       strokeLinecap="round"
       strokeLinejoin="round"
-      d="M16 10v2.5c0 2.5-1 3.5-3.5 3.5h-3C7 16 6 15 6 12.5v-3C6 7 7 6 9.5 6H12"
+      strokeMiterlimit="10"
+      d="M9.25 14.5H9c-2 0-3-.5-3-3V9c0-2 1-3 3-3h4c2 0 3 1 3 3v2.5c0 2-1 3-3 3h-.25a.507.507 0 00-.4.2l-.75 1c-.33.44-.87.44-1.2 0l-.75-1a.565.565 0 00-.4-.2z"
     ></path>
     <path
       stroke="#fff"
       strokeLinecap="round"
       strokeLinejoin="round"
-      d="M16 10h-2c-1.5 0-2-.5-2-2V6l4 4zM8.5 11.5h3M8.5 13.5h2"
+      d="M12.998 10.5h.005M10.997 10.5h.005M8.997 10.5h.005"
     ></path>
   </svg>
 );
