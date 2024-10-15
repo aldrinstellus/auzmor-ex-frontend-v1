@@ -49,6 +49,8 @@
     "switchToMangersView": "Switch to Manager's View",
     "switchToLearnersView": "Switch to Learner's View",
     "switchTheme": "Switch Theme",
+    "classic": "Classic",
+    "modern": "Modern",
     "signOut": "Sign Out"
   }
 }

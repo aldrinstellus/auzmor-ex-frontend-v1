@@ -17,6 +17,7 @@ export enum ApiEnum {
   GetLoginApi = 'GET_LOGIN_API',
   LoginSSO = 'LOGIN_SSO',
   Logout = 'LOGOUT',
+  ToggleView = 'TOGGLE_VIEW',
 
   //categories
   GetCategories = 'GET_CATEGORIES',

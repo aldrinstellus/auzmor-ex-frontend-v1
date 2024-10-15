@@ -25,6 +25,7 @@ export const apiConfigLxp = {
   [ApiEnum.GetLogin]: { [Default]: queries.useCheckLogin },
   [ApiEnum.GetLoginApi]: { [Default]: queries.checkLogin },
   [ApiEnum.Logout]: { [Default]: queries.learnLogout },
+  [ApiEnum.ToggleView]: { [Default]: queries.toggleView },
 
   //categories
   [ApiEnum.GetCategories]: { [Default]: queries.useInfiniteLearnCategory },

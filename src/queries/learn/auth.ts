@@ -21,3 +21,9 @@ export const learnLogout = async () => {
   if (visitToken) url += `&visit_token=${visitToken}`;
   await apiService.delete(url);
 };
+
+export const toggleView = async (viewType: string) => {
+  await apiService.post('/learner/views/switch', {
+    view_type: viewType,
+  });
+};

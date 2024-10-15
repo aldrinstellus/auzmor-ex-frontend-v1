@@ -17,6 +17,7 @@ import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { UserRole } from 'interfaces';
 import Divider from 'components/Divider';
+import { SwitchView } from './SwitchView';
 
 const AccountCard = () => {
   const { user, reset } = useAuth();
@@ -54,22 +55,26 @@ const AccountCard = () => {
   return (
     <Popover
       triggerNode={
-        <div className="flex gap-1 items-center">
+        <div
+          tabIndex={0}
+          className="flex items-center px-[7px] py-2 transition ease duration-150 group-hover:bg-neutral-100 hover:bg-neutral-100 rounded-xl cursor-pointer group"
+        >
           <Avatar
             dataTestId="my-profile-avatar"
             name={user?.name || tp('nameNotSpecified')}
-            size={32}
+            size={26}
             image={user?.profileImage}
             ariaLabel="profile image"
           />
           <Icon
-            name="arrowDownOutline"
-            size={16}
-            ariaLabel="Account dropdown"
+            name="arrowDown2"
+            size={20}
+            dataTestId={`$my-profile-avatar-collapse`}
+            className="group-hover:!text-neutral-500 navbar-arrow-icon group-hover:navbar-arrow-icon-hover"
           />
         </div>
       }
-      className="-right-2 top-[52px] rounded-9xl"
+      className="-right-2 top-[52px] rounded-9xl shadow-sm shadow-[#22242626] border border-neutral-200 border-solid"
       contentRenderer={(close) => (
         <div className="rounded-9xl flex flex-col items-center w-[300px] shadow overflow-hidden">
           <div className="w-full px-5 py-5 pb-0 flex gap-[14px] items-center">
@@ -150,10 +155,11 @@ const AccountCard = () => {
             <Divider className="my-[6px]" />
             {isLearnerView && (
               <div
-                className={`flex ${menuItemStyle}`}
+                className={`flex ${menuItemStyle} justify-between`}
                 data-testid="user-menu-switch-theme"
               >
                 <div>{t('switchTheme')}</div>
+                <SwitchView viewType={user?.preferences?.learnerViewType} />
               </div>
             )}
             <div
