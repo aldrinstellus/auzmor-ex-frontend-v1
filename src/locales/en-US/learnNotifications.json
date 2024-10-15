@@ -1,12 +1,12 @@
 {
   "notifications": {
     "LxpPostScheduled": "Your <0>post<0/> is scheduled.",
-    "LxpRepliedOnComment": "<0>{{actor}}</0> replied to your <0>comment</0>",
-    "LxpuserMentionedOnComment": "<0>{{actor}}</0> mentioned you in a <0>comment!.</0>",
-    "LxpuserMentionedOnPost": "<0>{{actor}}</0> mentioned you in a <0>Post!.</0>",
-    "LxpCommentOnPost": "<0>{{actor}}</0> commented on your <0>Post!.</0>",
+    "LxpRepliedOnComment": "<0>{{actor}}</0> replied to your <0>comment</0>.",
+    "LxpuserMentionedOnComment": "<0>{{actor}}</0> mentioned you in a <0>comment!</0>",
+    "LxpuserMentionedOnPost": "<0>{{actor}}</0> mentioned you in a <0>Post!</0>",
+    "LxpCommentOnPost": "<0>{{actor}}</0> commented on your <0>Post!</0>",
     "LxpShoutOut": "<0>{{actor}}</0>  gave you a <0>shout-out</0> for your outstanding efforts!",
-    "LxpAnnouncementReminder": "Please acknowledge our recent <0>announcement.<0/>",
+    "LxpAnnouncementReminder": "Please acknowledge our recent <0>announcement<0/>.",
     "LxpSchedulePrePublishPost": "Your <0>post</0> is going live in 1 hour. ",
     "LxpSchedulePostPublishPost": "Your <0>post</0> is now live!  ",
     "feedbackReminder": "Feedback is pending for <0>{{trainingName}}</0>",
