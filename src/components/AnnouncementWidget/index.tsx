@@ -111,6 +111,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
           <Button
             rightIcon="addCircle"
             label={t('addNew')}
+            dataTestId="add-new-announcement"
             variant={Variant.Secondary}
             onClick={() => {
               openModal?.();
@@ -143,6 +144,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
               <div
                 onClick={() => navigate('/announcements')}
                 className="text-xs font-bold cursor-pointer"
+                data-testid="view-all-announcement"
               >
                 {t('viewAll')}
               </div>
@@ -193,7 +195,10 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
                             {t('share-post')}
                           </span>
 
-                          <div className="relative">
+                          <div
+                            className="relative"
+                            data-testid="announcement-widget-ellipses"
+                          >
                             <FeedPostMenu data={postData} />
                           </div>
                         </div>
@@ -226,6 +231,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
                       label={t('viewInsight')}
                       variant={Variant.Secondary}
                       size={Size.Small}
+                      dataTestId="announcement-insights"
                       className="border-2 border-neutral-200 mt-4 w-full"
                       labelClassName="text-sm font-bold"
                       loading={acknowledgeAnnouncement.isLoading}

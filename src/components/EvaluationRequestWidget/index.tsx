@@ -61,6 +61,7 @@ const EvaluationRequestWidget = ({ className = '' }) => {
         <Button
           variant={Variant.Secondary}
           label={t('viewAll')}
+          dataTestId={'pending-evaluation-view-all'}
           className="border-0 !bg-transparent !px-0 !py-1 group"
           labelClassName=" text-primary-500 hover:text-primary-600  group-focus:text-primary-500"
           onClick={() => window.location.assign(`${getLearnUrl()}/evaluations`)}
