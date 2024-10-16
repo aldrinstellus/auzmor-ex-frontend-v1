@@ -3,12 +3,8 @@ import { useState } from 'react';
 import { ApiEnum } from '../../../utils/permissions/enums/apiEnum';
 import { useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { FRONTEND_VIEWS } from 'interfaces';
 import clsx from 'clsx';
-
-export enum FRONTEND_VIEWS {
-  modern = 'MODERN',
-  classic = 'CLASSIC',
-}
 
 export const SwitchView = ({ viewType }: { viewType: FRONTEND_VIEWS }) => {
   const { getApi } = usePermissions();

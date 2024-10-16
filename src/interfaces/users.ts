@@ -58,6 +58,11 @@ export enum EditUserSection {
   PROFILE = 'profile',
 }
 
+export enum FRONTEND_VIEWS {
+  modern = 'MODERN',
+  classic = 'CLASSIC',
+}
+
 export interface ICreatedBy {
   department?: string;
   designation?: string;

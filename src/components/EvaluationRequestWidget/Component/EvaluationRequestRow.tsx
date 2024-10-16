@@ -43,6 +43,7 @@ const EvaluationRequestRow: FC<EvaluationRequestRowProps> = ({
                 `${getLearnUrl()}/evaluations/${data?.id}?status=PENDING`,
               );
             }}
+            dataTestId="pending-evaluation"
             name="documentView"
           />
         </Tooltip>

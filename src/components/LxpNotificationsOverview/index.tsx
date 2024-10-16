@@ -61,7 +61,7 @@ const LxpNotificationsOverview: FC = () => {
         </p>
       ),
       tabContent: <Notifications isSocial={false} />,
-      dataTestId: 'notifications-learn',
+      dataTestId: 'learn-notification',
     },
     {
       id: 1,
@@ -77,7 +77,7 @@ const LxpNotificationsOverview: FC = () => {
         </p>
       ),
       tabContent: <Notifications isSocial={true} />,
-      dataTestId: 'notifications-social',
+      dataTestId: 'social-notification',
     },
   ];
   const notificationCountData = data?.data?.result?.data;
@@ -128,6 +128,7 @@ const LxpNotificationsOverview: FC = () => {
               onKeyUp={(e) =>
                 e.code === 'Enter' ? markReadMutation.mutate(category) : ''
               }
+              data-testid="notifications-mark-all-read"
               className="text-primary-500 cursor-pointer"
             >
               {t('markAsRead')}
@@ -139,6 +140,7 @@ const LxpNotificationsOverview: FC = () => {
                   `${getLearnUrl()}/settings/notifications`,
                 )
               }
+              data-testid="notification-setting"
               className="text-primary-500  cursor-pointer"
             >
               {t('settings')}{' '}

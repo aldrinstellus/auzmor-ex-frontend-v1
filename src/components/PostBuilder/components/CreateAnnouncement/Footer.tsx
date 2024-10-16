@@ -119,9 +119,9 @@ const Footer: FC<IFooterProps> = ({
           : 'announcement-updated-toast',
       });
       closeModal();
-      await queryClient.invalidateQueries([
-        'feed-announcements-widget',
-        'post-announcements-widget',
+      await Promise.allSettled([
+        queryClient.invalidateQueries(['feed-announcements-widget']),
+        queryClient.invalidateQueries(['post-announcements-widget'])
       ]);
     },
   });

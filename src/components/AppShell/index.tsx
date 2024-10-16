@@ -9,7 +9,6 @@ import JobProgress from 'components/JobProgress';
 import { useJobStore } from 'stores/jobStore';
 import useProduct from 'hooks/useProduct';
 import NavbarLxp from 'components/NavbarLxp';
-import useAuth from 'hooks/useAuth';
 
 export interface IAppShellProps {
   children: ReactNode;
@@ -18,7 +17,6 @@ export interface IAppShellProps {
 const AppShell: FC<IAppShellProps> = ({ children }) => {
   const { isOrgChartMounted } = useOrgChartStore();
   const { pathname } = useLocation();
-  const { user } = useAuth();
   const wraperStyle = clsx({
     'flex w-full justify-center h-[calc(100%-64px)]': true,
     'px-14 pt-6': !isOrgChartMounted,
@@ -41,9 +39,7 @@ const AppShell: FC<IAppShellProps> = ({ children }) => {
       id="app-shell-container"
     >
       {showNavbar && !isLxp && <Navbar />}
-      {showNavbar && isLxp && (
-        <NavbarLxp view={user?.preferences?.learnerViewType} />
-      )}
+      {showNavbar && isLxp && <NavbarLxp />}
       <main id="main-content" aria-label="Main Content" role="main">
         <div className={wraperStyle}>
           <div className={containerStyle}>{children}</div>
