@@ -190,12 +190,14 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
             notificationSettings: data?.notificationSettings,
             subscription: {
               type: data?.org?.subscription.type,
-              daysRemaining: Math.max(
-                getRemainingTime(
-                  data?.org?.subscription?.subscriptionExpiresAt,
-                ),
-                0,
-              ),
+              daysRemaining: isLxp
+                ? data?.org?.subscription?.daysRemaining
+                : Math.max(
+                    getRemainingTime(
+                      data?.org?.subscription?.subscriptionExpiresAt,
+                    ),
+                    0,
+                  ),
             },
             // set integration here !
             integrations: data?.org?.integrations ?? [],

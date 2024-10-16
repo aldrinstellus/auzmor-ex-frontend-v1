@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import useNavigate from 'hooks/useNavigation';
@@ -12,6 +12,8 @@ import { getLearnUrl } from 'utils/misc';
 import { clsx } from 'clsx';
 import LxpNotificationsOverview from 'components/LxpNotificationsOverview';
 import AccountCard from './AccountCard';
+import useAuth from 'hooks/useAuth';
+import SubscriptionBanner from 'components/AppShell/components/SubscriptionBanner';
 
 interface INavbarLxpProps {}
 
@@ -19,6 +21,12 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
   const { t } = useTranslation('navbar');
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { user } = useAuth();
+
+  const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(
+    user?.subscription?.type === 'TRIAL' &&
+      user?.subscription?.daysRemaining > -1,
+  );
 
   const backBtn = {
     show: false,
@@ -279,86 +287,93 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
   };
 
   return (
-    <div className="group-hover/item:h-[78px] flex items-center justify-center bg-white px-14 sticky top-0 w-full z-50">
-      <div className={optionWrapperStyle}>
-        <div className="flex items-center gap-2">
-          <Logo />
-          {backBtn.show && (
-            <div className="text-neutral-900 text-base font-bold">
-              {backBtn.for}
+    <div className="sticky top-0 w-full z-50">
+      <div className="group-hover/item:h-[78px] flex items-center justify-center bg-white px-14">
+        <div className={optionWrapperStyle}>
+          <div className="flex items-center gap-2">
+            <Logo />
+            {backBtn.show && (
+              <div className="text-neutral-900 text-base font-bold">
+                {backBtn.for}
+              </div>
+            )}
+          </div>
+          {!backBtn.show && (
+            <div className="flex items-center justify-between gap-8 h-full w-full">
+              <div className="ml-[26px] flex items-center gap-[16px]">
+                {navbarMenu
+                  .filter((item) => item.show)
+                  .map((item) =>
+                    item.options.length > 0 ? (
+                      <div className="relative group/item" key={item.id}>
+                        <PopupMenu
+                          triggerNode={
+                            <div
+                              tabIndex={0}
+                              className={getNavItemStyle(item.id)}
+                            >
+                              <span className="text-[15px]">{item.label}</span>
+                              <Icon
+                                name="arrowDown2"
+                                size={20}
+                                dataTestId={`${item.id}-collapse`}
+                                className="group-hover/item:!text-black navbar-arrow-icon group-hover/item:navbar-arrow-icon-hover"
+                                color={
+                                  item.id === 'engage'
+                                    ? 'text-primary-500'
+                                    : '!text-black'
+                                }
+                              />
+                            </div>
+                          }
+                          menuItems={item.options}
+                          className={`dropdown-menu-option group-hover/item:visible invisible h-[39px] !transition-[height] !duration-300 w-[124px] left-1/2 -translate-x-1/2 ${item.optionContainerClassname}`}
+                          controlled
+                          isOpen
+                        />
+                      </div>
+                    ) : (
+                      <NavLink
+                        to={item.to}
+                        key={item.id}
+                        className={getNavItemStyle(item.id)}
+                      >
+                        {item.label}
+                      </NavLink>
+                    ),
+                  )}
+              </div>
+              <ul className="flex items-center gap-6">
+                <li>
+                  <LxpNotificationsOverview />
+                </li>
+                <li>
+                  <AccountCard />
+                </li>
+              </ul>
             </div>
           )}
+          {backBtn.show && (
+            <NavLink
+              to={backBtn.linkTo}
+              key={'backBtnAdminNavbarClassic'}
+              className={getNavItemStyle('backBtn')}
+            >
+              <Icon
+                name={'arrowLeft'}
+                size={18}
+                dataTestId={`backBtnAdminNavbarClassicIcon`}
+              />
+              {backBtn.label}
+            </NavLink>
+          )}
         </div>
-        {!backBtn.show && (
-          <div className="flex items-center justify-between gap-8 h-full w-full">
-            <div className="ml-[26px] flex items-center gap-[16px]">
-              {navbarMenu
-                .filter((item) => item.show)
-                .map((item) =>
-                  item.options.length > 0 ? (
-                    <div className="relative group/item" key={item.id}>
-                      <PopupMenu
-                        triggerNode={
-                          <div
-                            tabIndex={0}
-                            className={getNavItemStyle(item.id)}
-                          >
-                            <span className="text-[15px]">{item.label}</span>
-                            <Icon
-                              name="arrowDown2"
-                              size={20}
-                              dataTestId={`${item.id}-collapse`}
-                              className="group-hover/item:!text-black navbar-arrow-icon group-hover/item:navbar-arrow-icon-hover"
-                              color={
-                                item.id === 'engage'
-                                  ? 'text-primary-500'
-                                  : '!text-black'
-                              }
-                            />
-                          </div>
-                        }
-                        menuItems={item.options}
-                        className={`dropdown-menu-option group-hover/item:visible invisible h-[39px] !transition-[height] !duration-300 w-[124px] left-1/2 -translate-x-1/2 ${item.optionContainerClassname}`}
-                        controlled
-                        isOpen
-                      />
-                    </div>
-                  ) : (
-                    <NavLink
-                      to={item.to}
-                      key={item.id}
-                      className={getNavItemStyle(item.id)}
-                    >
-                      {item.label}
-                    </NavLink>
-                  ),
-                )}
-            </div>
-            <ul className="flex items-center gap-6">
-              <li>
-                <LxpNotificationsOverview />
-              </li>
-              <li>
-                <AccountCard />
-              </li>
-            </ul>
-          </div>
-        )}
-        {backBtn.show && (
-          <NavLink
-            to={backBtn.linkTo}
-            key={'backBtnAdminNavbarClassic'}
-            className={getNavItemStyle('backBtn')}
-          >
-            <Icon
-              name={'arrowLeft'}
-              size={18}
-              dataTestId={`backBtnAdminNavbarClassicIcon`}
-            />
-            {backBtn.label}
-          </NavLink>
-        )}
       </div>
+      {showSubscriptionBanner && (
+        <SubscriptionBanner
+          closeBanner={() => setShowSubscriptionBanner(false)}
+        />
+      )}
     </div>
   );
 };

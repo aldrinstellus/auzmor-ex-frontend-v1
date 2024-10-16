@@ -1,7 +1,7 @@
 import Icon from 'components/Icon';
 import { Logo } from 'components/Logo';
 import PopupMenu from 'components/PopupMenu';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation } from 'react-router-dom';
 
@@ -11,6 +11,7 @@ import LxpNotificationsOverview from 'components/LxpNotificationsOverview';
 import AccountCard from './AccountCard';
 import { clsx } from 'clsx';
 import useAuth from 'hooks/useAuth';
+import SubscriptionBanner from 'components/AppShell/components/SubscriptionBanner';
 
 interface INavbarLxpProps {}
 
@@ -18,6 +19,11 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
   const { t } = useTranslation('navbar');
   const { pathname } = useLocation();
   const { user } = useAuth();
+
+  const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(
+    user?.subscription?.type === 'TRIAL' &&
+      user?.subscription?.daysRemaining > -1,
+  );
 
   const backBtn = {
     show: false,
@@ -163,100 +169,107 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
   };
 
   return (
-    <div className="h-[78px] flex items-center justify-center bg-white px-14 sticky top-0 w-full z-50">
-      <div className="w-full max-w-[1440px] flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Logo />
-          {backBtn.show && (
-            <div className="text-neutral-900 text-base font-bold">
-              {backBtn.for}
+    <div className="flex flex-col justify-center bg-white sticky w-full top-0 z-50">
+      <div className="h-[78px] flex items-center justify-center bg-white px-14">
+        <div className="w-full max-w-[1440px] flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Logo />
+            {backBtn.show && (
+              <div className="text-neutral-900 text-base font-bold">
+                {backBtn.for}
+              </div>
+            )}
+          </div>
+          {!backBtn.show && (
+            <div className="flex items-center gap-8 h-full">
+              <div className="flex items-center gap-[24px]">
+                {navbarMenu
+                  .filter((item) => item.show)
+                  .map((item) =>
+                    item.options.length > 0 ? (
+                      <div className="relative group/item" key={item.id}>
+                        <PopupMenu
+                          triggerNode={
+                            <div
+                              tabIndex={0}
+                              className={getNavItemStyle(item.id)}
+                            >
+                              <Icon
+                                name={item.icon}
+                                size={18}
+                                dataTestId={`${item.id}-collapse`}
+                                className="group-hover/item:!text-neutral-500"
+                              />
+                              <span className="text-[15px]">{item.label}</span>
+                              <Icon
+                                name="arrowDown2"
+                                size={20}
+                                dataTestId={`${item.id}-collapse`}
+                                className="group-hover/item:!text-neutral-500 navbar-arrow-icon group-hover/item:navbar-arrow-icon-hover"
+                              />
+                            </div>
+                          }
+                          menuItems={item.options}
+                          className={`dropdown-menu-option group-hover/item:visible invisible h-[39px] !transition-[height] !duration-300 w-[124px] left-1/2 -translate-x-1/2 ${getOptionHeight(
+                            item.options.length,
+                          )}`}
+                          controlled
+                          isOpen
+                        />
+                      </div>
+                    ) : (
+                      <NavLink
+                        to={item.to}
+                        key={item.id}
+                        className={getNavItemStyle(item.id)}
+                      >
+                        <Icon
+                          name={item.icon}
+                          size={item.id === 'channels' ? 22 : 18}
+                          dataTestId={`${item.id}-collapse`}
+                          className={
+                            item?.isActive
+                              ? 'text-primary-500 group-hover:!text-primary-500'
+                              : 'group-hover:!text-neutral-500'
+                          }
+                        />
+                        {item.label}
+                      </NavLink>
+                    ),
+                  )}
+              </div>
+              <ul className="flex items-center gap-6">
+                <li>
+                  <LxpNotificationsOverview />
+                </li>
+                <li>
+                  <AccountCard />
+                </li>
+              </ul>
             </div>
           )}
-        </div>
-        {!backBtn.show && (
-          <div className="flex items-center gap-8 h-full">
-            <div className="flex items-center gap-[24px]">
-              {navbarMenu
-                .filter((item) => item.show)
-                .map((item) =>
-                  item.options.length > 0 ? (
-                    <div className="relative group/item" key={item.id}>
-                      <PopupMenu
-                        triggerNode={
-                          <div
-                            tabIndex={0}
-                            className={getNavItemStyle(item.id)}
-                          >
-                            <Icon
-                              name={item.icon}
-                              size={18}
-                              dataTestId={`${item.id}-collapse`}
-                              className="group-hover/item:!text-neutral-500"
-                            />
-                            <span className="text-[15px]">{item.label}</span>
-                            <Icon
-                              name="arrowDown2"
-                              size={20}
-                              dataTestId={`${item.id}-collapse`}
-                              className="group-hover/item:!text-neutral-500 navbar-arrow-icon group-hover/item:navbar-arrow-icon-hover"
-                            />
-                          </div>
-                        }
-                        menuItems={item.options}
-                        className={`dropdown-menu-option group-hover/item:visible invisible h-[39px] !transition-[height] !duration-300 w-[124px] left-1/2 -translate-x-1/2 ${getOptionHeight(
-                          item.options.length,
-                        )}`}
-                        controlled
-                        isOpen
-                      />
-                    </div>
-                  ) : (
-                    <NavLink
-                      to={item.to}
-                      key={item.id}
-                      className={getNavItemStyle(item.id)}
-                    >
-                      <Icon
-                        name={item.icon}
-                        size={item.id === 'channels' ? 22 : 18}
-                        dataTestId={`${item.id}-collapse`}
-                        className={
-                          item?.isActive
-                            ? 'text-primary-500 group-hover:!text-primary-500'
-                            : 'group-hover:!text-neutral-500'
-                        }
-                      />
-                      {item.label}
-                    </NavLink>
-                  ),
-                )}
-            </div>
-            <ul className="flex items-center gap-6">
-              <li>
-                <LxpNotificationsOverview />
-              </li>
-              <li>
-                <AccountCard />
-              </li>
-            </ul>
-          </div>
-        )}
 
-        {backBtn.show && (
-          <NavLink
-            to={backBtn.linkTo}
-            key={'backBtnNavbarModern'}
-            className={getNavItemStyle('backBtn')}
-          >
-            <Icon
-              name={'arrowLeft'}
-              size={18}
-              dataTestId={`backBtnNavbarModernIcon`}
-            />
-            {backBtn.label}
-          </NavLink>
-        )}
+          {backBtn.show && (
+            <NavLink
+              to={backBtn.linkTo}
+              key={'backBtnNavbarModern'}
+              className={getNavItemStyle('backBtn')}
+            >
+              <Icon
+                name={'arrowLeft'}
+                size={18}
+                dataTestId={`backBtnNavbarModernIcon`}
+              />
+              {backBtn.label}
+            </NavLink>
+          )}
+        </div>
       </div>
+      {showSubscriptionBanner && (
+        <SubscriptionBanner
+          closeBanner={() => setShowSubscriptionBanner(false)}
+        />
+      )}
     </div>
   );
 };
