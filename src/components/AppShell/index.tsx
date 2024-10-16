@@ -25,7 +25,7 @@ const AppShell: FC<IAppShellProps> = ({ children }) => {
   const containerStyle = clsx({
     'w-full': true,
     'max-w-[1440px]': !isOrgChartMounted,
-    'max-w-[1280px]': isLxp,
+    '!max-w-[1280px]': isLxp,
   });
 
   const showNavbar =
