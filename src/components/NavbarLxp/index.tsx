@@ -4,9 +4,10 @@ import ModernNavbar from './components/Navbar.modern';
 import ClassicNavbar from './components/Navbar.classic';
 import useRole from 'hooks/useRole';
 import AdminNavbar from './components/AdminNavbar.classic';
+import { FRONTEND_VIEWS } from './components/SwitchView';
 
 interface INavbarLxpProps {
-  view: string;
+  view: FRONTEND_VIEWS;
 }
 
 const NavbarLxp: FC<INavbarLxpProps> = ({ view, ...rest }) => {
@@ -17,7 +18,7 @@ const NavbarLxp: FC<INavbarLxpProps> = ({ view, ...rest }) => {
   }
 
   switch (view) {
-    case 'modern':
+    case FRONTEND_VIEWS.modern:
       return <ModernNavbar {...rest} />;
 
     default:

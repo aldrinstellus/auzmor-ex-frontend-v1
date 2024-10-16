@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import clsx from 'clsx';
 
-enum FRONTEND_VIEWS {
+export enum FRONTEND_VIEWS {
   modern = 'MODERN',
   classic = 'CLASSIC',
 }

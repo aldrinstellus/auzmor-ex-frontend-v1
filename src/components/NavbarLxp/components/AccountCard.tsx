@@ -54,7 +54,7 @@ const AccountCard = () => {
 
   return (
     <Popover
-      triggerNode={
+      triggerNodeRenderer={(isOpen) => (
         <div
           tabIndex={0}
           className="flex items-center px-[7px] py-2 transition ease duration-150 group-hover:bg-neutral-100 hover:bg-neutral-100 rounded-xl cursor-pointer group"
@@ -70,10 +70,12 @@ const AccountCard = () => {
             name="arrowDown2"
             size={20}
             dataTestId={`$my-profile-avatar-collapse`}
-            className="group-hover:!text-neutral-500 navbar-arrow-icon group-hover:navbar-arrow-icon-hover"
+            className={`group-hover:!text-neutral-500 ${
+              isOpen ? 'navbar-arrow-icon-hover' : 'navbar-arrow-icon'
+            }`}
           />
         </div>
-      }
+      )}
       className="-right-2 top-[52px] rounded-9xl shadow-sm shadow-[#22242626] border border-neutral-200 border-solid"
       contentRenderer={(close) => (
         <div className="rounded-9xl flex flex-col items-center w-[300px] shadow overflow-hidden">
@@ -175,6 +177,7 @@ const AccountCard = () => {
           </div>
         </div>
       )}
+      triggerNodeClassName="outline-none"
     />
   );
 };
