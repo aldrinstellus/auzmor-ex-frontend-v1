@@ -51,7 +51,7 @@ const LxpNotificationsOverview: FC = () => {
       id: 0,
       tabLabel: (isActive: boolean) => (
         <p
-          className={`font-bold text-sm pb-2 w-[53px] text-center ${
+          className={`font-bold text-sm  w-[53px] text-center ${
             isActive
               ? 'text-neutral-900'
               : 'text-neutral-500 group-hover:text-neutral-900 group-focus:text-neutral-900'
@@ -67,7 +67,7 @@ const LxpNotificationsOverview: FC = () => {
       id: 1,
       tabLabel: (isActive: boolean) => (
         <p
-          className={`font-bold text-sm pb-2 w-[53px] text-center ${
+          className={`font-bold text-sm  w-[53px] text-center ${
             isActive
               ? 'text-neutral-900'
               : 'text-neutral-500 group-hover:text-neutral-900 group-focus:text-neutral-900'
@@ -114,7 +114,7 @@ const LxpNotificationsOverview: FC = () => {
       ref={viewAllRef}
       triggerNodeClassName="outline-none"
     >
-      <Card className=" rounded absolute w-[455px] h-[487px] right-0 top-4 border border-neutral-200 mt-1   overflow-y-auto">
+      <Card className=" rounded absolute w-[455px]   right-0 top-4 border border-neutral-200 ">
         {/* Header */}
         <div className="px-4 py-2 flex items-center justify-between">
           <p className="text-gray-900 font-extrabold text-base">
@@ -154,6 +154,7 @@ const LxpNotificationsOverview: FC = () => {
         <Tabs
           tabs={notifTabs}
           tabContentClassName=""
+          underlineOffset={2}
           className="flex justify-start gap-x-1 mb-2 px-4 border-b-1 border-neutral-200 w-full "
           itemSpacing={4}
           onTabChange={(index) => setActiveTabIndex(index)}

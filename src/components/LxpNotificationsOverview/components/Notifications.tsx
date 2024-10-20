@@ -83,7 +83,7 @@ const Notifications: FC<Notifications> = ({ isSocial = false }) => {
   return (
     <>
       {!isError && notificationData?.length ? (
-        <div className="flex flex-col mt-1 gap-y-2 ">
+        <div className="flex flex-col h-[394px] overflow-y-auto mt-1 gap-y-2 ">
           {notificationData.map((notification: any, index: number) => (
             <React.Fragment key={notification.id}>
               <EventNotificationCard
@@ -117,7 +117,7 @@ const Notifications: FC<Notifications> = ({ isSocial = false }) => {
           ))}
           <div>
             {hasNextPage && isFetchingNextPage && (
-              <NotificationSkeleton loaderCount={1} />
+              <NotificationSkeleton loaderCount={3} />
             )}
             {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
           </div>

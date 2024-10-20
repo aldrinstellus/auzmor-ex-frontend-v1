@@ -77,7 +77,7 @@ const EventNotificationCard: React.FC<EventNotificationCardProps> = ({
 
   return (
     <div
-      className={`flex justify-between items-center `}
+      className={`flex justify-between  items-center  `}
       data-testid={`notification_${id}`}
     >
       <div

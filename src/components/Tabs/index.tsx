@@ -20,6 +20,7 @@ export interface ITabsProps {
   tabSwitcherClassName?: string;
   disableAnimation?: boolean;
   onTabChange?: (param: any) => void;
+  underlineOffset?: number;
 }
 
 const Tabs: FC<ITabsProps> = ({
@@ -33,6 +34,7 @@ const Tabs: FC<ITabsProps> = ({
   disableAnimation = false,
   onTabChange,
   activeTabIndex = 0,
+  underlineOffset = 0,
 }) => {
   const [activeTab, setActiveTab] = useState(activeTabIndex);
   const [previousTab, setPreviousTab] = useState(activeTab);
@@ -101,7 +103,9 @@ const Tabs: FC<ITabsProps> = ({
               >
                 {tab.tabLabel(activeTab === index)}
                 {isActive(index) && showUnderline && (
-                  <div className="absolute bottom-0 bg-primary-500 w-full rounded-7xl h-1"></div>
+                  <div
+                    className={`absolute bg-primary-500 w-full rounded-7xl h-1 bottom-${underlineOffset} `}
+                  ></div>
                 )}
               </li>
             ))}
