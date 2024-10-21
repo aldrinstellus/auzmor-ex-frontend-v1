@@ -185,6 +185,8 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanPostContent,
               ChannelPermissionEnum.CanAccessHomeTab,
               ChannelPermissionEnum.CanAccessSettingsTab,
+              ChannelPermissionEnum.CanAccessMembersTab,
+              ChannelPermissionEnum.CanAccessDocumentsTab,
             ];
           } else if (channelRole === CHANNEL_ROLE.Admin) {
             // 12 -> LXP -> Learner view - > Private channel -> Joined -> Channel Role -> Channel Admin
