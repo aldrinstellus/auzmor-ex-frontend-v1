@@ -148,7 +148,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       case 'training':
       case 'learningCenter':
         return clsx({
-          'my-[5px] flex gap-2 items-center text-sm text-neutral-500 px-2.5 py-1 transition ease duration-150 group-hover/item:bg-neutral-100 hover:bg-neutral-100 font-medium rounded-xl cursor-pointer group':
+          'modern-nav-item flex gap-2 items-center text-sm text-neutral-500 px-[13px] py-[9px] transition ease duration-150 group-hover/item:bg-neutral-100 hover:bg-neutral-100 font-medium rounded-xl cursor-pointer group':
             true,
           'text-primary-500':
             (!!pathname.startsWith('/user/feed') && id === 'home') ||
@@ -178,7 +178,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           <div className="flex items-center gap-2">
             <Logo
               onClick={() => navigate('/feed')}
-              className="cursor-pointer"
+              className="cursor-pointer min-h-[40px] max-h-[40px] max-w-full align-middle relative border-none"
             />
             {backBtn.show && (
               <div className="text-neutral-900 text-base font-bold">
@@ -206,10 +206,10 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
                                 dataTestId={`${item.id}-collapse`}
                                 className="group-hover/item:!text-neutral-500"
                               />
-                              <span className="text-sm">{item.label}</span>
+                              {item.label}
                               <Icon
-                                name="arrowDown2"
-                                size={20}
+                                name="arrowDown3"
+                                size={10}
                                 dataTestId={`${item.id}-collapse`}
                                 className="group-hover/item:!text-neutral-500 navbar-arrow-icon group-hover/item:navbar-arrow-icon-hover"
                               />

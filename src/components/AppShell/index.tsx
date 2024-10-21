@@ -34,13 +34,15 @@ const AppShell: FC<IAppShellProps> = ({ children }) => {
   const showJobProgress = useJobStore((state) => state.showJobProgress);
 
   return (
-    <div
-      className="bg-neutral-100 h-screen overflow-y-auto"
-      id="app-shell-container"
-    >
+    <div className="bg-neutral-100 h-screen" id="app-shell-container">
       {showNavbar && !isLxp && <Navbar />}
       {showNavbar && isLxp && <NavbarLxp />}
-      <main id="main-content" aria-label="Main Content" role="main">
+      <main
+        id="main-content"
+        aria-label="Main Content"
+        role="main"
+        className="h-[calc(100vh-78px)] overflow-y-auto"
+      >
         <div className={wraperStyle}>
           <div className={containerStyle}>{children}</div>
         </div>

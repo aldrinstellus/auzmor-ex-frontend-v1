@@ -259,7 +259,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
     switch (id) {
       case 'engage':
         return clsx({
-          'my-[5px] text-[15px] px-2.5 py-1 transition ease duration-150 text-primary-500 group-hover/item:bg-neutral-100 group-hover/item:text-black font-semibold cursor-pointer rounded-xl flex group':
+          'gap-1 font-lato items-center font-lato my-[5px] text-[15px] px-2.5 py-1 transition ease duration-150 text-primary-500 group-hover/item:bg-neutral-100 group-hover/item:text-black font-semibold cursor-pointer rounded-xl flex group':
             true,
         });
       case 'home':
@@ -269,12 +269,12 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       case 'analytics':
       case 'ecommerce':
         return clsx({
-          'my-[5px] flex text-[15px] px-2.5 py-1 transition ease duration-150 group-hover/item:bg-neutral-100 hover:bg-neutral-100 group-hover/item:text-black font-medium rounded-xl cursor-pointer group':
+          'gap-1 font-lato items-center font-lato my-[5px] flex text-[15px] px-2.5 py-1 transition ease duration-150 group-hover/item:bg-neutral-100 hover:bg-neutral-100 group-hover/item:text-black font-medium rounded-xl cursor-pointer group':
             true,
         });
       case 'backBtn':
         return clsx({
-          'my-[5px] nav-item text-[15px] gap-[8px] transition ease duration-150 group-hover/item:text-primary-500 flex items-center px-4 py-2 border rounded-17xl group':
+          'font-lato my-[5px] nav-item text-[15px] gap-[8px] transition ease duration-150 group-hover/item:text-primary-500 flex items-center px-4 py-2 border rounded-17xl group':
             true,
         });
     }
@@ -296,7 +296,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
         <div className={optionWrapperStyle}>
           <div className="flex items-center gap-2">
             <Logo
-              className="cursor-pointer"
+              className="cursor-pointer min-h-[40px] max-h-[40px] max-w-full align-middle relative mr-1 border-none"
               onClick={() => window.location.replace(getLearnUrl())}
             />
             {backBtn.show && (
@@ -307,22 +307,22 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           </div>
           {!backBtn.show && (
             <div className="flex items-center justify-between gap-8 h-full w-full">
-              <div className="ml-[26px] flex items-center gap-[16px]">
+              <ul className="ml-[26px] flex items-center gap-[16px]">
                 {navbarMenu
                   .filter((item) => item.show)
                   .map((item) =>
                     item.options.length > 0 ? (
-                      <div className="relative group/item" key={item.id}>
+                      <li className="relative group/item" key={item.id}>
                         <PopupMenu
                           triggerNode={
                             <div
                               tabIndex={0}
                               className={getNavItemStyle(item.id)}
                             >
-                              <span className="text-[15px]">{item.label}</span>
+                              {item.label}
                               <Icon
-                                name="arrowDown2"
-                                size={20}
+                                name="arrowDown3"
+                                size={10}
                                 dataTestId={`${item.id}-collapse`}
                                 className="group-hover/item:!text-black navbar-arrow-icon group-hover/item:navbar-arrow-icon-hover"
                                 color={
@@ -340,18 +340,19 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
                           controlled
                           isOpen
                         />
-                      </div>
+                      </li>
                     ) : (
-                      <NavLink
-                        to={item.to}
-                        key={item.id}
-                        className={getNavItemStyle(item.id)}
-                      >
-                        {item.label}
-                      </NavLink>
+                      <li key={item.id}>
+                        <NavLink
+                          to={item.to}
+                          className={getNavItemStyle(item.id)}
+                        >
+                          {item.label}
+                        </NavLink>
+                      </li>
                     ),
                   )}
-              </div>
+              </ul>
               <ul className="flex items-center gap-[19px]">
                 <div className="w-[1px] h-5 bg-[#e5e5e5]"></div>
                 <li>

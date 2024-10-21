@@ -28,7 +28,7 @@
     --secondary-900: #1e3a8a;
   }
   .navbar-arrow-icon-hover {
-    transform: rotateX(-180deg) translateY(-3px) !important;
+    transform: rotateX(-180deg) !important;
     transition: 0.45s !important;
   }
   .navbar-arrow-icon {

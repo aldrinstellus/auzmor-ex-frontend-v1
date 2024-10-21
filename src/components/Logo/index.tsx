@@ -21,9 +21,8 @@ export const Logo = ({ className = '', onClick }: IProps) => {
       clsx({
         'h-[64px]': true,
         [className]: true,
-        'py-3': isLxp,
       }),
-    [className, isLxp],
+    [className],
   );
   return (
     <img

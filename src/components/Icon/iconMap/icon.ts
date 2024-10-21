@@ -186,6 +186,7 @@ import DeelIcon2 from '../components/DeelIcon2/DeelIcon2';
 import RestInPeaceIcon from '../components/RestInPeace';
 import TrainingIcon from '../components/Training';
 import LearningCenterIcon from '../components/LearningCenter';
+import ArrowDown3 from '../components/ArrowDown3';
 
 export const icon = {
   add: Add,
@@ -195,6 +196,7 @@ export const icon = {
   archive: ArchiveIcon,
   arrowDown: ArrowDown,
   arrowDown2: ArrowDown2,
+  arrowDown3: ArrowDown3,
   arrowLeft: ArrowLeftIcon,
   arrowRight: ArrowRightIcon,
   arrowRightUp: ArrowRightUp,

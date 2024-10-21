@@ -74,7 +74,7 @@ const HomeFeed: FC<IHomeFeedProps> = () => {
       ]}
       widgetProps={{
         [WidgetEnum.MyTeam]: {
-          className: isLargeScreen ? 'sticky top-24' : '',
+          className: isLargeScreen ? 'sticky top-4' : '',
         },
         [WidgetEnum.CelebrationBirthday]: {
           type: CELEBRATION_TYPE.Birthday,
@@ -83,13 +83,13 @@ const HomeFeed: FC<IHomeFeedProps> = () => {
           type: CELEBRATION_TYPE.WorkAnniversary,
         },
         [WidgetEnum.Event]: {
-          className: 'sticky top-24',
+          className: 'sticky top-4',
         },
         [WidgetEnum.AnnouncementCard]: {
-          className: isOffice ? 'sticky top-24' : ' ',
+          className: isOffice ? 'sticky top-4' : ' ',
         },
         [WidgetEnum.EvaluationRequestWidget]: {
-          className: 'sticky top-24',
+          className: 'sticky top-4',
         },
       }}
       modeProps={{ [FeedModeEnum.Default]: {} }}
