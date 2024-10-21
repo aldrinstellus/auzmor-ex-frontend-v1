@@ -185,7 +185,6 @@ export const useInfiniteUsers = ({
   startFetching?: boolean;
   q?: Record<string, any>;
 }) => {
-  console.log('hi');
   return useInfiniteQuery({
     queryKey: ['users', q],
     queryFn: getAllUser,

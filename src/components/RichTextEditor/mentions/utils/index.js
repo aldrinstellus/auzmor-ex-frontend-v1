@@ -70,7 +70,6 @@ function createMentionsList(mentionsList, character) {
         title: 'Anything', // Profile Designation
       });
     });
-  console.log('atValues', atValues);
   return atValues;
 }
 
