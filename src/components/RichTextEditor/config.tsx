@@ -47,7 +47,6 @@ export const previewLinkRegex = /(http|https):\/\/[^\s]+/gi;
 
 const mentionEntityFetch = async (character: string, searchTerm: string) => {
   const isContainWhiteSpace = /^\s/.test(searchTerm);
-  console.log('hi i am in mention entity fetch function! ');
   if (character === '@' && !isContainWhiteSpace) {
     const getAllUser =
       getProduct() === ProductEnum.Lxp

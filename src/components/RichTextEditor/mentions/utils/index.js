@@ -49,7 +49,6 @@ function hasValidMentionCharIndex(mentionCharIndex, text, isolateChar) {
 
 // create user mention list with the require props
 function createMentionsList(mentionsList, character) {
-  console.log('mentionsList', mentionsList);
   const atValues = [];
   // eslint-disable-next-line array-callback-return
   mentionsList &&
