@@ -52,7 +52,7 @@ export const deletePost = async (id: string) => {
   return data;
 };
 
-export const fetchAdminAnnouncment = async (limit: number) => {
+export const fetchAdminAnnouncement = async (limit: number) => {
   const { data } = await apiService.get(`/posts/announcements`, {
     limit: limit,
     acknowledged: true,
@@ -60,7 +60,7 @@ export const fetchAdminAnnouncment = async (limit: number) => {
   });
   return data;
 };
-export const fetchMemberAnnouncment = async (limit: number) => {
+export const fetchMemberAnnouncement = async (limit: number) => {
   const { data } = await apiService.get(`/posts/announcements`, {
     limit: limit,
     acknowledged: false,
