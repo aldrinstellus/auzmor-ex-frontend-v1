@@ -8,6 +8,7 @@ import BlurImg from 'components/Image/components/BlurImg';
 import Icon from 'components/Icon';
 import useProduct from 'hooks/useProduct';
 import useAuth from 'hooks/useAuth';
+import { useBrandingStore } from 'stores/branding';
 
 export type AvatarProps = {
   name?: string;
@@ -51,9 +52,10 @@ const Avatar: FC<AvatarProps> = ({
 }) => {
   const { isLxp } = useProduct();
   const { user } = useAuth();
+  const branding = useBrandingStore((state) => state.branding);
 
   if (isLxp) {
-    bgColor = user?.profileColor || '#ff3366';
+    bgColor = user?.profileColor || branding.primaryColor;
   }
 
   const containerStyles = useMemo(

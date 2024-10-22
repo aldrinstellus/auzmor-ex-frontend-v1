@@ -5,7 +5,7 @@ import { setItem } from 'utils/persist';
 import { create } from 'zustand';
 
 interface IBrandingStore {
-  branding: IBranding | null;
+  branding: IBranding;
   setBranding: (branding: IBranding, isLxp?: boolean) => void;
 }
 
