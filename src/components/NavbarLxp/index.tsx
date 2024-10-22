@@ -5,13 +5,13 @@ import ClassicNavbar from './components/Navbar.classic';
 import useRole from 'hooks/useRole';
 import AdminNavbar from './components/AdminNavbar.classic';
 import useAuth from 'hooks/useAuth';
-import { FRONTEND_VIEWS, UserRole } from 'interfaces';
+import { FRONTEND_VIEWS } from 'interfaces';
 
 const NavbarLxp: FC = () => {
   const { isOwnerOrAdmin } = useRole();
   const { user } = useAuth();
 
-  if (isOwnerOrAdmin || user?.role === UserRole.Manager) {
+  if (isOwnerOrAdmin) {
     return <AdminNavbar />;
   }
 

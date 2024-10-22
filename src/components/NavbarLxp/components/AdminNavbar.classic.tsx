@@ -15,7 +15,6 @@ import AccountCard from './AccountCard';
 import useAuth from 'hooks/useAuth';
 import SubscriptionBanner from 'components/AppShell/components/SubscriptionBanner';
 import IconButton from 'components/IconButton';
-import { UserRole } from 'interfaces';
 
 interface INavbarLxpProps {}
 
@@ -229,9 +228,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       id: 'ecommerce',
       label: t('learn.ecommerce'),
       to: '',
-      show:
-        !!user?.organization?.setting?.enableEcommerce &&
-        user.role !== UserRole.Manager,
+      show: !!user?.organization?.setting?.enableEcommerce,
       options: [
         {
           id: 'orders',

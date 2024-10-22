@@ -65,7 +65,7 @@ export interface IUser {
 }
 
 export interface IBranding {
-  primaryColor?: string;
+  primaryColor: string;
   secondaryColor?: string;
   pageTitle?: string;
   favicon?: { blurHash?: string; id: string; original: string };
