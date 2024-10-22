@@ -61,6 +61,7 @@ export interface IUser {
   notificationSettings?: INotificationSettings;
   preferences?: Record<string, any>;
   integrations?: IIntegration[];
+  profileColor?: string;
 }
 
 export interface IBranding {
@@ -202,6 +203,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
             // set integration here !
             integrations: data?.org?.integrations ?? [],
             preferences: data?.preferences,
+            profileColor: data?.profileColor,
           });
           setBranding(data.branding);
         } else {

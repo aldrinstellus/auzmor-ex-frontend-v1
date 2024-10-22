@@ -100,6 +100,7 @@ export const fetchMe = async () => {
           favicon: { original: orgData.result.data?.favicon },
           logo: { original: orgData.result.data?.logo },
         },
+        profileColor: user?.profile_color,
       },
     },
   };

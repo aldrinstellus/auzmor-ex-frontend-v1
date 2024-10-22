@@ -6,8 +6,8 @@ import { getInitials } from 'utils/misc';
 import Spinner from 'components/Spinner';
 import BlurImg from 'components/Image/components/BlurImg';
 import Icon from 'components/Icon';
-import { getProduct, ProductEnum } from 'utils/apiService';
 import useProduct from 'hooks/useProduct';
+import useAuth from 'hooks/useAuth';
 
 export type AvatarProps = {
   name?: string;
@@ -39,7 +39,7 @@ const Avatar: FC<AvatarProps> = ({
   image = '',
   size = 48,
   showActiveIndicator = false,
-  bgColor = getProduct() === ProductEnum.Lxp ? '#ff3366' : '#262626',
+  bgColor = '#262626',
   indicatorIcon = null,
   loading = false,
   dataTestId = '',
@@ -50,6 +50,12 @@ const Avatar: FC<AvatarProps> = ({
   ariaLabel = 'Avatar',
 }) => {
   const { isLxp } = useProduct();
+  const { user } = useAuth();
+
+  if (isLxp) {
+    bgColor = user?.profileColor || '#ff3366';
+  }
+
   const containerStyles = useMemo(
     () =>
       clsx(
