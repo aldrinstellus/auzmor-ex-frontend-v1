@@ -14,7 +14,7 @@ const NotificationTitle = ({
   const navigate = useNavigate();
   const handleClick = () => {
     if (isLxpRoute) {
-      navigate(`/${linkTo}`);
+      navigate(`${linkTo}`);
     } else if (linkTo) {
       window.location.assign(`${getLearnUrl(`${linkTo}`)}`);
     }
