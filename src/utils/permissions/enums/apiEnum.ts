@@ -126,7 +126,7 @@ export enum ApiEnum {
   DeletePost = 'DELETE_POST',
   MarkAsAnnouncement = 'MARK_AS_ANNOUNCEMENT',
 
-  AcknowledgeAccouncement = 'ACKNOWLEDGE_ANNOUNCEMENT',
+  AcknowledgeAnnouncement = 'ACKNOWLEDGE_ANNOUNCEMENT',
   GetPostAcknowledgements = 'GET_POST_ACKNOWLEDGEMENTS',
   DownloadPostAcknowledgements = 'DOWNLOAD_POST_ACKNOWLEDGEMENTS',
 
@@ -141,7 +141,6 @@ export enum ApiEnum {
 
   GetFeedPosts = 'GET_FEED_POSTS',
   GetAnnouncementPosts = 'GET_ANNOUNCEMENT_POSTS',
-  FetchAnnouncement = 'FETCH_ANNOUNCEMENT',
 
   CreateBookmarkPost = 'CREATE_BOOKMARK_POST',
   DeleteBookmarkPost = 'DELETE_BOOKMARK_POST',

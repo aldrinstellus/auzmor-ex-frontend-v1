@@ -33,7 +33,7 @@ const AcknowledgementBanner: FC<IAcknowledgementBannerProps> = ({
     user?.id === data?.announcement?.actor?.userId;
   const currentDate = new Date().toISOString();
 
-  const announcementRead = getApi(ApiEnum.AcknowledgeAccouncement);
+  const announcementRead = getApi(ApiEnum.AcknowledgeAnnouncement);
   const acknowledgeMutation = useMutation({
     mutationKey: ['acknowledge-announcement'],
     mutationFn: (postId: string) => announcementRead(postId),

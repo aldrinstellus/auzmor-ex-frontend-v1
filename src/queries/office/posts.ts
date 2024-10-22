@@ -9,8 +9,6 @@ import { IComment } from 'components/Comments';
 import { useFeedStore } from 'stores/feedStore';
 import { useCommentStore } from 'stores/commentStore';
 import { IPost, IPollVotes, IPostPayload } from 'interfaces';
-import { usePermissions } from 'hooks/usePermissions';
-import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export const createPost = async (payload: IPostPayload) => {
   const data = await apiService.post('/posts', payload);
@@ -52,39 +50,28 @@ export const deletePost = async (id: string) => {
   return data;
 };
 
-export const fetchAdminAnnouncement = async (limit: number) => {
+export const fetchAnnouncement = async (
+  limit: number,
+  acknowledged: boolean,
+  excludeMyAnnouncements: boolean,
+) => {
   const { data } = await apiService.get(`/posts/announcements`, {
-    limit: limit,
-    acknowledged: true,
-    excludeMyAnnouncements: false,
+    limit,
+    acknowledged,
+    excludeMyAnnouncements,
   });
   return data;
 };
-export const fetchMemberAnnouncement = async (limit: number) => {
-  const { data } = await apiService.get(`/posts/announcements`, {
-    limit: limit,
-    acknowledged: false,
-    excludeMyAnnouncements: true,
-  });
-  return data;
-};
-export const fetchAnnouncement = async (limit: number) => {
-  const { data } = await apiService.get(`/posts/announcements`, {
-    limit: limit,
-    acknowledged: true,
-  });
-  return data;
-};
-
 export const useAnnouncementsWidget = (
   limit = 1,
   queryKey = 'feed-announcements-widget',
+  acknowledged = true,
+  excludeMyAnnouncements = false,
 ) => {
-  const { getApi } = usePermissions();
-  const fetchAnnouncement = getApi(ApiEnum.FetchAnnouncement);
   return useQuery({
     queryKey: [queryKey],
-    queryFn: () => fetchAnnouncement(limit),
+    queryFn: () =>
+      fetchAnnouncement(limit, acknowledged, excludeMyAnnouncements),
     staleTime: 15 * 60 * 1000,
   });
 };

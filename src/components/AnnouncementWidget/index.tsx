@@ -65,7 +65,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
     queryKey = 'post-announcements-widget';
   }
 
-  const announcementRead = getApi(ApiEnum.AcknowledgeAccouncement);
+  const announcementRead = getApi(ApiEnum.AcknowledgeAnnouncement);
   const acknowledgeAnnouncement = useMutation({
     mutationKey: ['acknowledge-announcement'],
     mutationFn: announcementRead,
