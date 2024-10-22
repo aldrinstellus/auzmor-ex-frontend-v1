@@ -2,7 +2,7 @@ import * as queries from 'queries/office';
 import { ApiEnum } from '../enums/apiEnum';
 import { OfficeRoleEnum } from '../enums/roleEnum';
 
-const { Default } = OfficeRoleEnum;
+const { Default, Member } = OfficeRoleEnum;
 
 export const apiConfigOffice = {
   //audience
@@ -147,7 +147,7 @@ export const apiConfigOffice = {
   [ApiEnum.UpdatePost]: { [Default]: queries.updatePost },
   [ApiEnum.DeletePost]: { [Default]: queries.deletePost },
 
-  [ApiEnum.AcknowledgeAccouncement]: { [Default]: queries.announcementRead },
+  [ApiEnum.AcknowledgeAnnouncement]: { [Default]: queries.announcementRead },
   [ApiEnum.GetPostAcknowledgements]: {
     [Default]: queries.useInfiniteAcknowledgements,
   },
@@ -171,7 +171,12 @@ export const apiConfigOffice = {
   },
 
   [ApiEnum.GetFeedPosts]: { [Default]: queries.useInfiniteFeed },
-  [ApiEnum.GetAnnouncementPosts]: { [Default]: queries.useAnnouncementsWidget },
+  [ApiEnum.GetAnnouncementPosts]: {
+    [Default]: (limit: number, queryKey: string) =>
+      queries.useAnnouncementsWidget(limit, queryKey, true, false),
+    [Member]: (limit: number, queryKey: string) =>
+      queries.useAnnouncementsWidget(limit, queryKey, false, true),
+  },
 
   [ApiEnum.CreateBookmarkPost]: { [Default]: queries.createBookmark },
   [ApiEnum.DeleteBookmarkPost]: { [Default]: queries.deleteBookmark },

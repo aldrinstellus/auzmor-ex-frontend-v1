@@ -51,26 +51,30 @@ export const deletePost = async (id: string) => {
 };
 
 export const fetchAnnouncement = async (
-  postType: string,
   limit: number,
-  excludeMyAnnouncements = true,
+  acknowledged: boolean,
+  excludeMyAnnouncements: boolean,
 ) => {
-  const data = await apiService.get(
-    `/posts?feed=${postType}&excludeMyAnnouncements=${excludeMyAnnouncements}&limit=${limit}`,
-  );
+  const { data } = await apiService.get(`/posts/announcements`, {
+    limit,
+    acknowledged,
+    excludeMyAnnouncements,
+  });
   return data;
 };
-
 export const useAnnouncementsWidget = (
   limit = 1,
   queryKey = 'feed-announcements-widget',
-) =>
-  useQuery({
+  acknowledged = true,
+  excludeMyAnnouncements = false,
+) => {
+  return useQuery({
     queryKey: [queryKey],
-    queryFn: () => fetchAnnouncement('ANNOUNCEMENT', limit),
+    queryFn: () =>
+      fetchAnnouncement(limit, acknowledged, excludeMyAnnouncements),
     staleTime: 15 * 60 * 1000,
   });
-
+};
 const collectComments = (response: any, comments: IComment[]) => {
   response?.data.result.data.forEach((eachPost: IPost) => {
     const postComments = eachPost.relevantComments || [];
@@ -474,7 +478,7 @@ export const fetchAnnouncements = async (
   // Fetching data
   if (!!!context.pageParam) {
     response = await apiService.get(
-      `/posts/announcements?limit=10`,
+      `/posts/announcements?limit=10&acknowledged=true`,
       context.queryKey[1],
     );
   } else {

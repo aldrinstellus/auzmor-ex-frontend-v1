@@ -126,7 +126,7 @@ export enum ApiEnum {
   DeletePost = 'DELETE_POST',
   MarkAsAnnouncement = 'MARK_AS_ANNOUNCEMENT',
 
-  AcknowledgeAccouncement = 'ACKNOWLEDGE_ANNOUNCEMENT',
+  AcknowledgeAnnouncement = 'ACKNOWLEDGE_ANNOUNCEMENT',
   GetPostAcknowledgements = 'GET_POST_ACKNOWLEDGEMENTS',
   DownloadPostAcknowledgements = 'DOWNLOAD_POST_ACKNOWLEDGEMENTS',
 

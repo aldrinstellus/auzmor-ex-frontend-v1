@@ -131,7 +131,7 @@ export const apiConfigLxp = {
     [Learner]: queries.deletePostLearner,
   },
 
-  [ApiEnum.AcknowledgeAccouncement]: { [Default]: queries.announcementRead },
+  [ApiEnum.AcknowledgeAnnouncement]: { [Default]: queries.announcementRead },
   [ApiEnum.GetPostAcknowledgements]: {
     [Default]: queries.useInfiniteAcknowledgements,
   },

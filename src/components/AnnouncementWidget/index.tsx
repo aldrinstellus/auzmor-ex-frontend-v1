@@ -65,7 +65,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
     queryKey = 'post-announcements-widget';
   }
 
-  const announcementRead = getApi(ApiEnum.AcknowledgeAccouncement);
+  const announcementRead = getApi(ApiEnum.AcknowledgeAnnouncement);
   const acknowledgeAnnouncement = useMutation({
     mutationKey: ['acknowledge-announcement'],
     mutationFn: announcementRead,
@@ -73,6 +73,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
     onSuccess: async () => {
       await queryClient.invalidateQueries([queryKey]);
       await queryClient.invalidateQueries(['feed']);
+      await queryClient.invalidateQueries(['announcements']);
     },
   });
 
@@ -107,7 +108,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
     <div className={style}>
       <div className="flex justify-between items-center ">
         <div className="text-base font-bold">{t('title')}</div>
-        {showCreateAnnouncement && (
+        {showCreateAnnouncement && totalCount > 0 && (
           <Button
             rightIcon="addCircle"
             label={t('addNew')}
