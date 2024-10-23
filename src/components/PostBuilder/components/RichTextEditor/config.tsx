@@ -48,10 +48,18 @@ export const previewLinkRegex = /(http|https):\/\/[^\s]+/gi;
 const mentionEntityFetch = async (character: string, searchTerm: string) => {
   const isContainWhiteSpace = /^\s/.test(searchTerm);
   if (character === '@' && !isContainWhiteSpace) {
-    const { data: mentions } = await apiService.get('/users', {
-      q: searchTerm,
-      status: [UserStatus.Active],
-    });
+    const getAllUser =
+      getProduct() === ProductEnum.Lxp
+        ? apiService.get('/mentions/auto_suggest', {
+            identifier: '@',
+            q: searchTerm || '',
+          })
+        : apiService.get('/users', {
+            q: searchTerm,
+            status: [UserStatus.Active],
+          });
+    const { data: mentions } = await getAllUser;
+
     const mentionList =
       getProduct() === ProductEnum.Lxp
         ? mentions?.result?.data.map(mapUser)
@@ -143,7 +151,12 @@ export const mention = {
                                     ${
                                       item?.firstName?.charAt(0) +
                                         item?.lastName?.charAt(0) ||
-                                      item?.fullName?.charAt(0).toUpperCase()
+                                      item?.fullName
+                                        ?.split(' ')
+                                        .map((name: any) =>
+                                          name.charAt(0).toUpperCase(),
+                                        )
+                                        .join('')
                                     }
                                 </div>`
                           }
