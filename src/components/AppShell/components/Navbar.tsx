@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 
 // components
 import { Logo } from 'components/Logo';
@@ -17,6 +17,7 @@ import useProduct from 'hooks/useProduct';
 import { getLearnUrl } from 'utils/misc';
 import GlobalSearch from './GlobalSearch';
 import IconButton, { Size } from 'components/IconButton';
+import Icon from 'components/Icon';
 
 const learnNavigations = [
   {
@@ -33,12 +34,35 @@ const Navbar = () => {
   const { isLxp } = useProduct();
   const { isAdmin } = useRole();
   const { user } = useAuth();
+  const { pathname } = useLocation();
   const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(
     user?.subscription?.type === 'TRIAL' &&
       user?.subscription?.daysRemaining > -1,
   );
 
   const { t } = useTranslation('navbar');
+
+  const backBtn = {
+    show: false,
+    linkTo: '',
+    label: '',
+    for: '',
+  };
+
+  switch (pathname) {
+    case '/user/apps':
+      backBtn.show = true;
+      backBtn.linkTo = getLearnUrl('/user');
+      backBtn.label = t('backToHome');
+      backBtn.for = t('appLauncher');
+      break;
+    case '/apps':
+      backBtn.show = true;
+      backBtn.linkTo = getLearnUrl();
+      backBtn.label = t('backToHome');
+      backBtn.for = t('appLauncher');
+      break;
+  }
 
   const adminNavigations = [
     {
@@ -116,60 +140,82 @@ const Navbar = () => {
     <nav className="w-full sticky top-0 z-50">
       <div className="bg-white shadow h-16 w-full py-[2px] px-8">
         <div className="bg-white h-full w-full max-w-[1440px] flex items-center py-0.5 gap-8 mx-auto justify-between">
-          <Link
-            to="/feed"
-            data-testid="office-logo"
-            aria-label={`${
-              user?.organization.name || user?.organization.domain
-            } logo`}
-          >
-            <Logo />
-          </Link>
-
-          {process.env.REACT_APP_ENV != 'PRODUCTION' && (
+          <div className="flex items-center gap-2">
+            <Link
+              to={backBtn.show ? backBtn.linkTo : '/feed'}
+              data-testid="office-logo"
+              aria-label={`${
+                user?.organization.name || user?.organization.domain
+              } logo`}
+            >
+              <Logo />
+            </Link>
+            {backBtn.show && (
+              <div className="text-neutral-900 text-base font-bold">
+                {backBtn.for}
+              </div>
+            )}
+          </div>
+          {!backBtn.show && process.env.REACT_APP_ENV != 'PRODUCTION' && (
             <div className="flex-1" title="global search">
               <GlobalSearch />
             </div>
           )}
-          <div className="flex items-center gap-8 h-full">
-            <ul className="flex items-center gap-6">
-              {navigations.map((nav) => (
-                <li key={nav.dataTestId} className="flex">
-                  <NavbarMenuItem nav={nav} />
-                </li>
-              ))}
-            </ul>
-            <Divider className="h-full" variant={Variant.Vertical} />
-            <ul className="flex items-center gap-6">
-              {!isLxp &&
-                isAdmin &&
-                adminNavigations.map((nav) => (
+          {!backBtn.show && (
+            <div className="flex items-center gap-8 h-full">
+              <ul className="flex items-center gap-6">
+                {navigations.map((nav) => (
                   <li key={nav.dataTestId} className="flex">
                     <NavbarMenuItem nav={nav} />
                   </li>
                 ))}
-              {isLxp &&
-                learnNavigations.map((nav) => (
-                  <li key={nav.dataTestId}>
-                    <IconButton
-                      icon={nav.icon}
-                      size={Size.Large}
-                      onClick={() => {
-                        window.open(nav.linkTo);
-                      }}
-                      ariaLabel="help and support"
-                      className="bg-white hover:bg-white active:bg-white"
-                    />
-                  </li>
-                ))}
-              <li>
-                <NotificationsOverview />
-              </li>
-              <li>
-                <AccountCard />
-              </li>
-            </ul>
-          </div>
+              </ul>
+              <Divider className="h-full" variant={Variant.Vertical} />
+              <ul className="flex items-center gap-6">
+                {!isLxp &&
+                  isAdmin &&
+                  adminNavigations.map((nav) => (
+                    <li key={nav.dataTestId} className="flex">
+                      <NavbarMenuItem nav={nav} />
+                    </li>
+                  ))}
+                {isLxp &&
+                  learnNavigations.map((nav) => (
+                    <li key={nav.dataTestId}>
+                      <IconButton
+                        icon={nav.icon}
+                        size={Size.Large}
+                        onClick={() => {
+                          window.open(nav.linkTo);
+                        }}
+                        ariaLabel="help and support"
+                        className="bg-white hover:bg-white active:bg-white"
+                      />
+                    </li>
+                  ))}
+                <li>
+                  <NotificationsOverview />
+                </li>
+                <li>
+                  <AccountCard />
+                </li>
+              </ul>
+            </div>
+          )}
+          {backBtn.show && (
+            <NavLink
+              to={backBtn.linkTo}
+              key={'backBtnNavbar'}
+              className="my-[5px] nav-item text-[15px] gap-[8px] transition ease duration-150 group-hover/item:text-primary-500 flex items-center px-4 py-2 border rounded-17xl group"
+            >
+              <Icon
+                name={'arrowLeft'}
+                size={18}
+                dataTestId={`backBtnNavbarIcon`}
+              />
+              {backBtn.label}
+            </NavLink>
+          )}
         </div>
       </div>
       {showSubscriptionBanner && (

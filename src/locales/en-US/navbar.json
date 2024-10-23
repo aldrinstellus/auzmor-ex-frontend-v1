@@ -14,5 +14,7 @@
   "signOut": "Sign Out",
   "account": {
     "goToProfile": "Go to My Profile"
-  }
+  },
+  "backToHome": "Back to Home",
+  "appLauncher": "App Launcher"
 }

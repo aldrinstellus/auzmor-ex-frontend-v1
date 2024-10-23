@@ -37,6 +37,8 @@ import { useInfiniteLearnCategory } from 'queries/learn';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from 'hooks/usePageTitle';
 import { isTrim } from 'pages/ChannelDetail/components/utils';
+import { useLocation } from 'react-router-dom';
+import PageLoader from 'components/PageLoader';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -97,6 +99,17 @@ const Apps: FC<IAppsProps> = () => {
   const { isAdmin } = useRole();
   const [selectedQuickCategory, setSelectedQuickCategory] =
     useState<string>('');
+  const { pathname } = useLocation();
+
+  // Redirect Non Admins to /user/apps for LXP
+  if (isLxp && pathname === '/apps' && isAdmin) {
+    window.location.assign('/user/apps');
+    return (
+      <div className="w-full h-screen">
+        <PageLoader />
+      </div>
+    );
+  }
 
   // Add apps modal
   const [open, openModal, closeModal] = useModal(false, false);

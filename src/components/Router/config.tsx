@@ -83,6 +83,7 @@ const routers = createBrowserRouter(
           />
         </Route>
         <Route path="/apps" element={<Apps />} />
+        <Route path="/user/apps" element={<Apps />} />
         <Route path="/apps/:id/launch" element={<AppLaunchPage />} />
         <Route path="/scheduledPosts" element={<HomeFeed />} />
         <Route path="/bookmarks" element={<HomeFeed />} />
