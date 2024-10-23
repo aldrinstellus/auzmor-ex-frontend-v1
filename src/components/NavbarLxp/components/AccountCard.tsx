@@ -64,7 +64,7 @@ const AccountCard = () => {
             name={user?.name || tp('nameNotSpecified')}
             size={26}
             image={user?.profileImage}
-            ariaLabel="profile image"
+            ariaLabel={user?.name || 'profile image'}
           />
           <Icon
             name="arrowDown2"

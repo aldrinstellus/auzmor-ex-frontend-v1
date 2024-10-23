@@ -62,7 +62,7 @@ const AccountCard = () => {
             name={user?.name || tp('nameNotSpecified')}
             size={32}
             image={user?.profileImage}
-            ariaLabel="profile image"
+            ariaLabel={user?.name || 'profile image'}
           />
           <Icon
             name="arrowDownOutline"
@@ -79,7 +79,7 @@ const AccountCard = () => {
               size={80}
               name={user?.name || tp('nameNotSpecified')}
               image={user?.profileImage}
-              // showActiveIndicator
+              ariaLabel={user?.name || 'avatar'}
             />
             <div
               className="text-sm font-bold mt-4"

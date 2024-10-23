@@ -63,8 +63,13 @@ const FilterMenu: FC<IFilterMenu> = ({
     clearFilters: clearAppliedFilters,
   } = useAppliedFiltersStore();
   const { control, getValues, formState } = filterForm;
-  const { parseParams, updateParam, serializeFilter, deleteParam } =
-    useURLParams();
+  const {
+    parseParams,
+    updateParam,
+    serializeFilter,
+    deleteParam,
+    removeSensitiveData,
+  } = useURLParams();
   const { t } = useTranslation('common');
   const { t: tf } = useTranslation('filterModal');
   const defaultChannelRequestStatus =
@@ -86,6 +91,7 @@ const FilterMenu: FC<IFilterMenu> = ({
       channelRequestStatus:
         parseParams('channelRequestStatus') || defaultChannelRequestStatus,
     });
+    removeSensitiveData();
     return () => {
       // Clear URL parameters on unmount
       clearAppliedFilters();

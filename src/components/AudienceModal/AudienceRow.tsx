@@ -39,6 +39,7 @@ const AudienceRow: FC<IAudienceRowProps> = ({ audience }) => {
               name={audience?.name}
               image={audience?.profileImage}
               size={32}
+              ariaLabel={audience?.name}
             />
           ) : (audience?.recentMembers || []).length > 0 ? (
             <AvatarList

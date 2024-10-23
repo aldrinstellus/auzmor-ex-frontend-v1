@@ -51,6 +51,7 @@ const UserCard: FC<IUserCardProps> = ({ className = '' }) => {
             size={80}
             className="border-4 border-white mt-11 overflow-hidden"
             dataTestId="profilecard-profilepic"
+            ariaLabel={user?.name || 'avatar'}
           />
           <div className="flex flex-col gap-2">
             <Truncate
