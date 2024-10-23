@@ -279,7 +279,14 @@ const getSocialSourceRoute = (
   switch (target1Type) {
     case 'COMMENT':
     case 'POST': {
-      return `${isLearn ? '/user' : ''}/posts/${targetId1}`;
+      const targetComment = additionalInfo?.target.find(
+        (item) => item.entity_type === 'COMMENT',
+      );
+      const url = `${isLearn ? '/user' : ''}/posts/${targetId1}${
+        targetComment ? `?commentId=${targetComment.entity_id}` : ''
+      }`;
+
+      return url;
     }
 
     case 'Poll':

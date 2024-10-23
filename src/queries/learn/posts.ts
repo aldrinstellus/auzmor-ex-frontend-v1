@@ -462,7 +462,7 @@ export const useGetPost = (id: string, commentId?: string) => {
   return useQuery({
     queryKey: ['posts', id, commentId],
     queryFn: () => getPost(id, updateFeed, appendComments, commentId),
-    refetchOnMount: 'always',
+    cacheTime: 0,
   });
 };
 export const useGetLearnerPost = (id: string, commentId?: string) => {
