@@ -248,13 +248,6 @@ const AccountCard = () => {
                           </div>
 
                           <div className="flex flex-col">
-                            {/* <p
-                              className={`font-semibold  text-[14px] leading-[30px] flex items-center gap-2 ${
-                                active ? 'text-black' : 'text-gray-500'
-                              }`}
-                            >
-                              {branch.name}
-                            </p> */}
                             <Truncate
                               className={`font-semibold  text-[14px] leading-[30px] flex items-center gap-2 ${
                                 active ? 'text-black' : 'text-gray-500'
