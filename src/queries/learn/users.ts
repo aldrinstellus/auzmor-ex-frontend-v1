@@ -75,6 +75,14 @@ export const fetchMe = async () => {
             enableEcommerce:
               orgData.result.data.organization_setting.enable_ecommerce,
           },
+          orgDetails: {
+            customDomain: orgData.result.data.custom_domain,
+            customDomainEnabled: orgData.result.data.custom_domain_enabled,
+            id: orgData.result.data.id,
+            name: orgData.result.data.name,
+            orgType: orgData.result.data.organization_type,
+            url: orgData.result.data.url,
+          },
         },
         ...(user?.designation && {
           designation: {
@@ -176,6 +184,21 @@ export const getUser = async (id: string) => {
   };
   return mappedData;
 };
+export const getBranches = async (orgId: string) => {
+  const { data } = await apiService.get(
+    `users/organizations?limit=2&exclude_organizations=${orgId}&sort=%2Blast_sign_in_at`,
+    {},
+  );
+
+  return data;
+};
+
+export const useGetBranches = (orgId: string) =>
+  useQuery({
+    queryKey: ['learn-branches'],
+    queryFn: () => getBranches(orgId),
+    staleTime: 15 * 60 * 1000,
+  });
 
 /* REACT QUERY */
 

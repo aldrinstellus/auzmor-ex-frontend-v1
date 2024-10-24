@@ -187,6 +187,7 @@ import RestInPeaceIcon from '../components/RestInPeace';
 import TrainingIcon from '../components/Training';
 import LearningCenterIcon from '../components/LearningCenter';
 import ArrowDown3 from '../components/ArrowDown3';
+import { ExclamationSVG } from 'components/LearnIcons';
 
 export const icon = {
   add: Add,
@@ -380,4 +381,5 @@ export const icon = {
   deel: DeelIcon,
   deel2: DeelIcon2,
   restInPeace: RestInPeaceIcon,
+  exclamation: ExclamationSVG,
 };

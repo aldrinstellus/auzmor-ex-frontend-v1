@@ -204,4 +204,7 @@ export enum ApiEnum {
   GetOrganizationChart = 'GET_ORGANIZATION_CHART',
   GetOrganizationChartApi = 'GET_ORGANIZATION_CHART_API',
   ResendInvitation = 'RESEND_INVITATION',
+
+  //Learn
+  GetLearnBranch = 'GET_LEARN_Branch',
 }

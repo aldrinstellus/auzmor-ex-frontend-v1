@@ -192,4 +192,7 @@ export const apiConfigLxp = {
   [ApiEnum.GetUser]: { [Default]: queries.useSingleUser },
   [ApiEnum.GetUserApi]: { [Default]: queries.getUser },
   [ApiEnum.GetMembers]: { [Default]: queries.useInfiniteMembers },
+
+  //learn
+  [ApiEnum.GetLearnBranch]: { [Default]: queries.useGetBranches },
 };
