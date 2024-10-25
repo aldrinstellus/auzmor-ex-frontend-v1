@@ -111,6 +111,7 @@ export const apiConfigLxp = {
 
   //organizations
   [ApiEnum.GetOrganization]: { [Default]: queries.useOrganization },
+  [ApiEnum.GetOrganizationBranch]: { [Default]: queries.useGetBranches },
 
   //photos
   [ApiEnum.UploadImage]: { [Default]: queries.uploadImage },

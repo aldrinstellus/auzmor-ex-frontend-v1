@@ -5,6 +5,7 @@ import {
 } from '@tanstack/react-query';
 import apiService from 'utils/apiService';
 import { IPostUser } from 'interfaces';
+import { convertKeysToCamelCase } from 'utils/misc';
 
 // for future filters
 export enum PeopleFilterKeys {
@@ -61,6 +62,10 @@ export const fetchMe = async () => {
         workEmail: user?.email,
         role: user?.role,
         org: {
+          id: orgData.result.data.id,
+          domain: orgData.result.data.custom_domain,
+          name: orgData.result.data.name,
+          url: orgData.result.data.url,
           subscription: {
             type: orgData.result.data?.remaining_trial_days
               ? 'TRIAL'
@@ -176,6 +181,21 @@ export const getUser = async (id: string) => {
   };
   return mappedData;
 };
+export const getBranches = async (orgId: string) => {
+  const { data } = await apiService.get(
+    `users/organizations?limit=2&exclude_organizations=${orgId}&sort=%2Blast_sign_in_at`,
+    {},
+  );
+
+  return convertKeysToCamelCase(data);
+};
+
+export const useGetBranches = (orgId: string) =>
+  useQuery({
+    queryKey: ['learn-branches'],
+    queryFn: () => getBranches(orgId),
+    staleTime: 15 * 60 * 1000,
+  });
 
 /* REACT QUERY */
 

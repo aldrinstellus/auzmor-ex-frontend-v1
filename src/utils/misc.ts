@@ -29,9 +29,31 @@ import {
   validImageTypes,
 } from './constants';
 
+export const toCamelCase = (str: string) => {
+  return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
+};
+
+export const convertKeysToCamelCase = (obj: any): any => {
+  if (Array.isArray(obj)) {
+    return obj.map((item) => convertKeysToCamelCase(item));
+  } else if (obj !== null && typeof obj === 'object') {
+    return Object.keys(obj).reduce((acc, key) => {
+      const camelCaseKey = toCamelCase(key);
+      acc[camelCaseKey] = convertKeysToCamelCase(obj[key]);
+      return acc;
+    }, {} as any);
+  }
+  return obj; // Return the value if it's neither an object nor an array
+};
+
 export const twConfig: any = resolveConfig(tailwindConfig);
 
 export const userChannel = new BroadcastChannel('user');
+
+export const isSafariBrowser = () => {
+  const ua = navigator.userAgent.toLowerCase();
+  return ua.indexOf('safari') !== -1 && ua.indexOf('chrome') === -1;
+};
 
 export const humanFileSize = (size: number) => {
   if (size === 0) return ' ';

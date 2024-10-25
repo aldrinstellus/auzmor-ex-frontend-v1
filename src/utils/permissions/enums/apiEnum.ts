@@ -109,6 +109,7 @@ export enum ApiEnum {
   DeleteOrganizationSSO = 'DELETE_ORGANIZATION_SSO',
   UpdateOrganizationConfiguration = 'UPDATE_ORGANIZATION_CONFIGURATION',
   GetOrganizationCelebrations = 'GET_ORGANIZATION_CELEBRATIONS',
+  GetOrganizationBranch = 'GET_ORGANIZATION_BRANCH',
 
   //password
   ForgotPassword = 'FORGOT_PASSWORD',

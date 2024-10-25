@@ -52,6 +52,12 @@
     "classic": "Classic",
     "modern": "Modern",
     "signOut": "Sign Out",
+    "switchBranch": "Switch branch",
+    "Pending": "Pending",
+    "viewAll": "View All",
+    "accept": "Accept",
+    "cancel": "Cancel",
+    "confirmationMsg": "Do you want to accept the invitation to join the branch?",
     "toastMessages": {
       "switchingToModernView": "Switching to Modern View...",
       "switchingToClassicView": "Switching to Classic View..."
