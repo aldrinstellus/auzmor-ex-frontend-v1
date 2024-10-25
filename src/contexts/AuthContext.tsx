@@ -18,6 +18,7 @@ import useProduct from 'hooks/useProduct';
 import apiService, { ProductEnum, getProduct } from 'utils/apiService';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
+import { useTranslation } from 'react-i18next';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -105,6 +106,7 @@ export const AuthContext = createContext<IAuthContext>({
 });
 
 const AuthProvider: FC<AuthContextProps> = ({ children }) => {
+  const { t } = useTranslation('common');
   const [loading, setLoading] = useState(true);
   const queryClient = useQueryClient();
   const [showOnboard, setShowOnboard] = useState(false);
@@ -333,7 +335,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   if (loading) {
     return (
       <div className="h-screen w-screen">
-        <PageLoader />
+        <PageLoader title={t('authenticating')} />
       </div>
     );
   }
