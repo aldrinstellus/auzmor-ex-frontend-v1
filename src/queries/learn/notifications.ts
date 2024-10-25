@@ -31,6 +31,13 @@ export const markNotificationAsReadById = async (id: string) => {
   return data;
 };
 
+export const markNotificationAsReadByIdLearner = async (id: string) => {
+  const data = await apiService.put(
+    `/learner/notifications/${id}/mark_as_read`,
+  );
+  return data;
+};
+
 // Get unread notifications count
 const getUnreadNotificationsCount = async () => {
   const data = await apiService.get('/notifications/counts');

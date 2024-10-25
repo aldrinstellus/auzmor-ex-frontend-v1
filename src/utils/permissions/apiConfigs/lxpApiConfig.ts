@@ -103,6 +103,7 @@ export const apiConfigLxp = {
   },
   [ApiEnum.MarkNotificationAsRead]: {
     [Default]: queries.markNotificationAsReadById,
+    [Learner]: queries.markNotificationAsReadByIdLearner,
   },
   [ApiEnum.MarkAllNotificationsAsRead]: {
     [Default]: queries.markAllNotificationsAsRead,
