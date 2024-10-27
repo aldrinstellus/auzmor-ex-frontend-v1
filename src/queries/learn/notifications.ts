@@ -96,21 +96,25 @@ export const useInfiniteNotifications = (query?: Record<string, any>) => {
       const currentPage = pages.length;
       return currentPage + 1;
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 0,
   });
 };
 export const useInfiniteNotificationsLearner = (q?: Record<string, any>) => {
   return useInfiniteQuery({
     queryKey: ['get-learner-notifications', q],
     queryFn: (context) => fetchNotifications(context, '/learner'),
-    getNextPageParam: (lastPage: any) =>
-      lastPage?.data?.result?.data?.length >= q?.limit
-        ? lastPage?.data?.result?.paging?.next
-        : null,
-    getPreviousPageParam: (currentPage: any) =>
-      currentPage?.data?.result?.data?.length >= q?.limit
-        ? currentPage?.data?.result?.paging?.prev
-        : null,
+    getNextPageParam: (lastPage, pages) => {
+      const lastPageDataLength = lastPage?.data?.result?.data?.length || 0;
+      const limit = q?.limit || 20;
+
+      if (lastPageDataLength < limit) {
+        return undefined; // No more data to fetch
+      }
+
+      // Otherwise, return the next page number
+      const currentPage = pages.length;
+      return currentPage + 1;
+    },
     staleTime: 0,
   });
 };

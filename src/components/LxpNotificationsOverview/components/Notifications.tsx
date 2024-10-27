@@ -121,7 +121,9 @@ const Notifications = forwardRef(
               {hasNextPage && isFetchingNextPage && (
                 <NotificationSkeleton loaderCount={3} />
               )}
-              {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
+              {hasNextPage && !isFetchingNextPage && (
+                <div ref={ref} className="h-20" />
+              )}
             </div>
           </div>
         ) : (
