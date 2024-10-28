@@ -6,7 +6,7 @@
   "emptyMessageTitle": "No Notifications yet",
   "emptyMessage1": " We will notify you once we have ",
   "emptyMessage2": " something for you",
-
+  "notificationCount": "99+",
   "markAsRead": "Mark all as read",
   "othersInteracted": "and {{count}} others ",
   "announcementHeadline": "Announcement",

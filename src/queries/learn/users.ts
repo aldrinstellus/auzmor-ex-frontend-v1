@@ -76,7 +76,7 @@ export const fetchMe = async () => {
             enableMentorship:
               orgData.result.data.organization_setting.enable_mentorship,
             enablechecklist:
-              orgData.result.data.organization_setting.enablechecklist,
+              orgData.result.data.organization_setting.enable_checklist,
             enableEcommerce:
               orgData.result.data.organization_setting.enable_ecommerce,
           },

@@ -93,9 +93,16 @@ const LxpNotificationsOverview: FC = () => {
       triggerNode={
         <div className="font-bold flex flex-row justify-center items-center border-none relative px-[13px] py-[9px] hover:bg-neutral-100 rounded-md cursor-pointer outline-none">
           {!isLoading && !isError && notificationCount > 0 && (
-            <div className="absolute text-[8px] tracking-[0.3px] font-semibold font-lato text-light opacity-100 no-underline rounded-full bg-primary-500 border border-white text-white antialiased  leading-4 top-1 right-2.5 flex w-4 h-4 items-center justify-center">
-              {/* Get unread notif count here */}
-              {notificationCount || ''}
+            <div
+              className="absolute text-[8px] tracking-[0.3px] 
+             h-[15px] min-w-[15px] 
+            font-semibold font-lato text-light opacity-100
+             no-underline rounded-full bg-primary-500 border border-white text-white 
+               leading-[10px] p-[3px] top-1 right-2.5 flex  items-center justify-center"
+            >
+              {notificationCount > 99
+                ? t('notificationCount')
+                : notificationCount || ''}
             </div>
           )}
           {isLoading && (

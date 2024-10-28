@@ -525,24 +525,6 @@ export const getNotificationTitle = (
       />
     );
   }
-  if (NOTIFICATION_ACTION_TYPES.LxpRepliedOnFeedComment === actionType) {
-    return (
-      <NotificationTitle
-        i18nKey="notifications.LxpPostScheduled"
-        values={{ actor: name }}
-        isLxpRoute
-        linkTo={getSocialSourceRoute(
-          isLearn,
-          target1Type,
-          targetId1,
-          userId,
-          additionalInfo,
-          actionType,
-        )}
-        components={[<NotificationText bold viewInline />]}
-      />
-    );
-  }
 
   //leran notification===============================================================
   if (NOTIFICATION_ACTION_TYPES.ReportGenerated === actionType) {
