@@ -23,7 +23,10 @@ const Notifications = forwardRef(
     const { getApi } = usePermissions();
     const useInfiniteNotifications = getApi(ApiEnum.GetNotifications);
     const { t } = useTranslation('notifications');
-    const { ref, inView } = useInView();
+    const { ref, inView } = useInView({
+      root: document.getElementById('notification-body'),
+      rootMargin: '20%',
+    });
 
     const {
       data,
@@ -84,7 +87,10 @@ const Notifications = forwardRef(
     return (
       <>
         {!isError && notificationData?.length ? (
-          <div className="flex flex-col h-[394px] overflow-y-auto mt-1 gap-y-2 ">
+          <div
+            id="notification-body"
+            className="flex flex-col h-[394px] overflow-y-auto mt-1 gap-y-2 "
+          >
             {notificationData.map((notification: any, index: number) => (
               <React.Fragment key={notification.id}>
                 <EventNotificationCard
@@ -121,9 +127,7 @@ const Notifications = forwardRef(
               {hasNextPage && isFetchingNextPage && (
                 <NotificationSkeleton loaderCount={3} />
               )}
-              {hasNextPage && !isFetchingNextPage && (
-                <div ref={ref} className="h-20" />
-              )}
+              {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
             </div>
           </div>
         ) : (
