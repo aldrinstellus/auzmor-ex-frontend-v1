@@ -49,19 +49,21 @@ const Navbar = () => {
     for: '',
   };
 
-  switch (pathname) {
-    case '/user/apps':
-      backBtn.show = true;
-      backBtn.linkTo = getLearnUrl('/user');
-      backBtn.label = t('backToHome');
-      backBtn.for = t('appLauncher');
-      break;
-    case '/apps':
-      backBtn.show = true;
-      backBtn.linkTo = getLearnUrl();
-      backBtn.label = t('backToHome');
-      backBtn.for = t('appLauncher');
-      break;
+  if (user?.organization.type === 'LMS') {
+    switch (pathname) {
+      case '/user/apps':
+        backBtn.show = true;
+        backBtn.linkTo = getLearnUrl('user');
+        backBtn.label = t('backToHome');
+        backBtn.for = t('appLauncher');
+        break;
+      case '/apps':
+        backBtn.show = true;
+        backBtn.linkTo = getLearnUrl();
+        backBtn.label = t('backToHome');
+        backBtn.for = t('appLauncher');
+        break;
+    }
   }
 
   const adminNavigations = [

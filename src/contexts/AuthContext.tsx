@@ -25,6 +25,7 @@ interface IOrganization {
   id: string;
   domain: string;
   name: string;
+  type?: string;
 }
 
 interface ISubscription {
@@ -197,6 +198,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
               id: data?.org.id,
               domain: data?.org.domain,
               name: data?.org.name,
+              type: data?.org.type,
             },
             profileImage:
               data?.profileImage?.small || data?.profileImage?.original,

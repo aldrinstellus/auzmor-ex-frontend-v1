@@ -39,6 +39,7 @@ import { usePageTitle } from 'hooks/usePageTitle';
 import { isTrim } from 'pages/ChannelDetail/components/utils';
 import { useLocation } from 'react-router-dom';
 import PageLoader from 'components/PageLoader';
+import useAuth from 'hooks/useAuth';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -95,14 +96,20 @@ const Apps: FC<IAppsProps> = () => {
     },
   });
   const { isLxp } = useProduct();
+  const { user } = useAuth();
   const { apps, featuredApps } = useAppStore();
   const { isAdmin } = useRole();
   const [selectedQuickCategory, setSelectedQuickCategory] =
     useState<string>('');
   const { pathname } = useLocation();
 
-  // Redirect Non Admins to /user/apps for LXP
-  if (isLxp && pathname === '/apps' && isAdmin) {
+  // Redirect Non Admins to /user/apps for LMS
+  if (
+    isLxp &&
+    user?.organization.type === 'LMS' &&
+    pathname === '/apps' &&
+    !isAdmin
+  ) {
     window.location.assign('/user/apps');
     return (
       <div className="w-full h-screen">
