@@ -53,7 +53,7 @@ const Navbar = () => {
     switch (pathname) {
       case '/user/apps':
         backBtn.show = true;
-        backBtn.linkTo = getLearnUrl('user');
+        backBtn.linkTo = getLearnUrl('/user');
         backBtn.label = t('backToHome');
         backBtn.for = t('appLauncher');
         break;

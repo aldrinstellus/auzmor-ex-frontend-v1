@@ -12,7 +12,6 @@ const RequireAuth: FC<IRequireAuthProps> = () => {
   const { pathname } = useLocation();
 
   if (user?.organization.type === 'LMS') {
-    console.log({ pathname });
     if (!pathname.startsWith('/apps') && !pathname.startsWith('/user/apps')) {
       return <Navigate to="404" />;
     }
