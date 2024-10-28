@@ -6,6 +6,7 @@ interface UseURLParamsHook {
   deleteParam: (key: string) => void;
   parseParams: (key: string) => any;
   serializeFilter: (filter: any) => string;
+  removeSensitiveData: (keysToRemove?: string[]) => void;
 }
 
 const useURLParams = (): UseURLParamsHook => {
@@ -49,12 +50,29 @@ const useURLParams = (): UseURLParamsHook => {
     }
   };
 
+  const removeSensitiveData = (keysToRemove?: string[]) => {
+    const keys = [
+      'auth_token',
+      'token',
+      'generic_access_token',
+      'public_token',
+      'accessToken',
+      'visitToken',
+      'regionUrl',
+      ...(keysToRemove || []),
+    ];
+    keys.forEach((key) => {
+      deleteParam(key);
+    });
+  };
+
   return {
     searchParams,
     updateParam,
     deleteParam,
     serializeFilter,
     parseParams,
+    removeSensitiveData,
   };
 };
 
