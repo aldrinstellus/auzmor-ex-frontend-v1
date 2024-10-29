@@ -65,6 +65,7 @@ export const fetchMe = async () => {
           id: orgData.result.data.id,
           domain: orgData.result.data.custom_domain,
           name: orgData.result.data.name,
+          type: orgData.result.data.organization_type,
           url: orgData.result.data.url,
           subscription: {
             type: orgData.result.data?.remaining_trial_days
