@@ -47,6 +47,9 @@ export const useNavigateWithToken = () => {
             id: user?.org.id,
             domain: user?.org.domain,
             name: user?.org.name,
+            type: user?.org.type,
+            url: user?.org?.url,
+            setting: user?.org?.setting,
           },
           profileImage:
             user?.profileImage?.small || user?.profileImage?.original,

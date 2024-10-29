@@ -36,17 +36,23 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
     for: '',
   };
 
+  const isLxpEnabled = user?.organization.type === 'LXP';
+
   switch (pathname) {
     case '/user/apps':
       backBtn.show = true;
-      backBtn.linkTo = '/user/feed';
-      backBtn.label = t('learn.backToFeed');
+      backBtn.linkTo = isLxpEnabled ? '/user/feed' : getLearnUrl('/user');
+      backBtn.label = isLxpEnabled
+        ? t('learn.backToFeed')
+        : t('learn.backToHome');
       backBtn.for = t('learn.appLauncher');
       break;
     case '/apps':
       backBtn.show = true;
-      backBtn.linkTo = '/feed';
-      backBtn.label = t('learn.backToFeed');
+      backBtn.linkTo = isLxpEnabled ? '/feed' : getLearnUrl();
+      backBtn.label = isLxpEnabled
+        ? t('learn.backToFeed')
+        : t('learn.backToHome');
       backBtn.for = t('learn.appLauncher');
       break;
   }

@@ -100,7 +100,7 @@ const ManageAccessTable: FC<AppProps> = ({
                     <Avatar
                       name={getFullName(user) || 'U'}
                       size={32}
-                      image={getProfileImage(user?.profileImage)}
+                      image={getProfileImage(user)}
                       dataTestId="member-profile-pic"
                     />
                     <div

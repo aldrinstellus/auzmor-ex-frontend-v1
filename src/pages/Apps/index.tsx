@@ -74,6 +74,7 @@ const Apps: FC<IAppsProps> = () => {
     deleteParam,
     serializeFilter,
     parseParams,
+    removeSensitiveData,
   } = useURLParams();
   // Form for searching apps
   const {
@@ -243,6 +244,7 @@ const Apps: FC<IAppsProps> = () => {
       setSortByFilter(parsedSort);
     }
     setStartFetching(true);
+    removeSensitiveData();
   }, []);
 
   // Change URL params for search filters

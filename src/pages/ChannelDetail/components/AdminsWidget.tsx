@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { CHANNEL_ROLE } from 'stores/channelStore';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { getProfileImage } from 'utils/misc';
 
 const AdminsWidget = () => {
   const navigate = useNavigate();
@@ -67,7 +68,11 @@ const AdminsWidget = () => {
         >
           {admins?.slice(0, 3).map((admin: any) => (
             <div key={admin.id} className="flex items-center gap-2 py-2">
-              <Avatar name={admin.fullName} size={32} image={admin.image} />
+              <Avatar
+                name={admin.fullName}
+                size={32}
+                image={getProfileImage(admin)}
+              />
               <div>
                 <div className="text-neutral-900 font-bold text-sm">
                   {admin.fullName}

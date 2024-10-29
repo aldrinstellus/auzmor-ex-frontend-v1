@@ -1,14 +1,14 @@
+import { UserRole } from 'interfaces';
+
 export const channelMemberData = [
   {
     id: '659d591b78f1208fd225c585',
-    member: {
+    role: UserRole.Admin,
+    user: {
       fullName: 'Abby Wolff',
-      designation: {
-        designationId: '65155cf3de64ba075d039879',
-        name: 'Quality Assurance',
-      },
+      designation: 'Quality Assurance',
       department: {
-        departmentId: '6516afa8dc958600e4619c07',
+        id: '6516afa8dc958600e4619c07',
         name: 'Grocery',
       },
       workLocation: {
@@ -20,12 +20,10 @@ export const channelMemberData = [
       email: 'Sim_Kris@hotmail.com',
       profileImage: {
         id: '653f87281ef0a90b7d1e7b54',
-        original:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1698662184834-original.jpg',
+        original: 'https://i.pravatar.cc/150?img=40',
         blurHash: '',
       },
     },
-    team: '659d58e986a0dc3db965f64c',
     createdBy: {
       userId: '646311ed765368daacc601f9',
       email: 'monika.gedam@american-technology.net',
@@ -34,30 +32,14 @@ export const channelMemberData = [
       workLocation: 'Chennai',
       designation: 'Software Engineer 3',
       department: 'Software Engineering',
-      profileImage: {
-        id: '6596dfae7609bc3f6226b092',
-        original:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386478662-original.jpg',
-        thumbnail:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386517237-thumbnail.jpg',
-        small:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386517467-small.jpg',
-        medium:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386517700-medium.jpg',
-        large:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386517952-large.jpg',
-        blurHash: 'UDF6wZ01v}t7v$RjX8of_M4:~VWB~VD*?bt7',
-      },
     },
   },
   {
     id: '659d591b78f1208fd225c590',
-    member: {
+    role: UserRole.Member,
+    user: {
       fullName: 'Adaline  popo',
-      designation: {
-        designationId: '65801415713f71214c69604b',
-        name: 'Performance Enginneer',
-      },
+      designation: 'Performance Enginneer',
       department: {
         departmentId: '658af7f506b573a7ebc9f728',
         name: 'test department',
@@ -69,8 +51,12 @@ export const channelMemberData = [
       status: 'ACTIVE',
       userId: '6516afb0dc958600e461ab27',
       email: 'Isom_Mills@hotmail.com',
+      profileImage: {
+        id: '653f87281ef0a90b7d1e7b54',
+        original: 'https://i.pravatar.cc/150?img=41',
+        blurHash: '',
+      },
     },
-    team: '659d58e986a0dc3db965f64c',
     createdBy: {
       userId: '646311ed765368daacc601f9',
       email: 'monika.gedam@american-technology.net',
@@ -79,27 +65,14 @@ export const channelMemberData = [
       workLocation: 'Chennai',
       designation: 'Software Engineer 3',
       department: 'Software Engineering',
-      profileImage: {
-        id: '6596dfae7609bc3f6226b092',
-        original:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386478662-original.jpg',
-        thumbnail:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386517237-thumbnail.jpg',
-        small:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386517467-small.jpg',
-        medium:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386517700-medium.jpg',
-        large:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386517952-large.jpg',
-        blurHash: 'UDF6wZ01v}t7v$RjX8of_M4:~VWB~VD*?bt7',
-      },
     },
   },
   {
     id: '659d591b78f1208fd225c59a',
-    member: {
+    role: UserRole.Admin,
+    user: {
       fullName: 'Agnes Fahey',
-      designation: {},
+      designation: '',
       department: {
         departmentId: '6516afa7dc958600e4619bc7',
         name: 'Industrial',
@@ -111,8 +84,12 @@ export const channelMemberData = [
       status: 'DELETED',
       userId: '6516afb0dc958600e461aad7',
       email: 'Delbert23@hotmail.com',
+      profileImage: {
+        id: '653f87281ef0a90b7d1e7b54',
+        original: 'https://i.pravatar.cc/150?img=42',
+        blurHash: '',
+      },
     },
-    team: '659d58e986a0dc3db965f64c',
     createdBy: {
       userId: '646311ed765368daacc601f9',
       email: 'monika.gedam@american-technology.net',
@@ -121,27 +98,14 @@ export const channelMemberData = [
       workLocation: 'Chennai',
       designation: 'Software Engineer 3',
       department: 'Software Engineering',
-      profileImage: {
-        id: '6596dfae7609bc3f6226b092',
-        original:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386478662-original.jpg',
-        thumbnail:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386517237-thumbnail.jpg',
-        small:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386517467-small.jpg',
-        medium:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386517700-medium.jpg',
-        large:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386517952-large.jpg',
-        blurHash: 'UDF6wZ01v}t7v$RjX8of_M4:~VWB~VD*?bt7',
-      },
     },
   },
   {
     id: '659d591b78f1208fd225c5a6',
-    member: {
+    role: UserRole.Member,
+    user: {
       fullName: "Alex D'Amore",
-      designation: {},
+      designation: '',
       department: {
         departmentId: '6516afa8dc958600e4619c17',
         name: 'Books',
@@ -153,8 +117,12 @@ export const channelMemberData = [
       status: 'ACTIVE',
       userId: '6516afabdc958600e461a1af',
       email: 'Aurelie83@hotmail.com',
+      profileImage: {
+        id: '653f87281ef0a90b7d1e7b54',
+        original: 'https://i.pravatar.cc/150?img=43',
+        blurHash: '',
+      },
     },
-    team: '659d58e986a0dc3db965f64c',
     createdBy: {
       userId: '646311ed765368daacc601f9',
       email: 'monika.gedam@american-technology.net',
@@ -163,20 +131,6 @@ export const channelMemberData = [
       workLocation: 'Chennai',
       designation: 'Software Engineer 3',
       department: 'Software Engineering',
-      profileImage: {
-        id: '6596dfae7609bc3f6226b092',
-        original:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386478662-original.jpg',
-        thumbnail:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386517237-thumbnail.jpg',
-        small:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386517467-small.jpg',
-        medium:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386517700-medium.jpg',
-        large:
-          'https://office-qa-cdn.auzmor.com/646311ed765368daacc601f7/public/users/646311ed765368daacc601f9/profile/1704386517952-large.jpg',
-        blurHash: 'UDF6wZ01v}t7v$RjX8of_M4:~VWB~VD*?bt7',
-      },
     },
   },
 ];

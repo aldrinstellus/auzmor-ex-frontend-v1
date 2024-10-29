@@ -6,6 +6,12 @@ import {
 import { IChannelMembersPayload, IChannelPayload } from 'interfaces';
 import { chain } from 'lodash';
 import {
+  ChannelUserRequests,
+  channelLinks,
+  dummyChannels,
+} from 'mocks/Channels';
+import { channelMemberData } from 'mocks/channelMember';
+import {
   CHANNEL_ROLE,
   IChannel,
   IChannelLink,
@@ -20,15 +26,14 @@ export const getAllChannels = async (
   >,
   setChannels: (channels: { [key: string]: IChannel }) => void,
 ) => {
-  let response = null;
-
-  try {
-    if (!!!context.pageParam) {
-      response = await apiService.get('/channels', context.queryKey[1]);
-    } else {
-      response = await apiService.get(context.pageParam);
-    }
-  } catch (e) {}
+  const response = {
+    data: {
+      result: {
+        data: dummyChannels,
+        paging: { limit: 30 },
+      },
+    },
+  };
   setChannels({
     ...chain(response?.data.result.data).keyBy('id').value(),
   });
@@ -56,7 +61,17 @@ export const getChannelDetails = async (
   id: string,
   setChannel: (channel: IChannel) => void,
 ) => {
-  const data = await apiService.get(`/channels/${id}`);
+  let data = null;
+
+  const channelDetails = dummyChannels.find((channel) => channel.id == id);
+  data = {
+    data: {
+      result: {
+        data: channelDetails,
+      },
+    },
+  };
+
   if (data?.data?.result?.data) setChannel(data?.data?.result?.data);
   return data;
 };
@@ -99,13 +114,16 @@ export const getChannelMembers = async (
   }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>,
   id: string,
 ) => {
-  let response = null;
-  try {
-    if (pageParam == null)
-      response = await apiService.get(`/channels/${id}/members`, queryKey[1]);
-    else response = await apiService.get(pageParam);
-  } catch (e) {}
-  return response;
+  console.log({ pageParam, queryKey, id });
+  return {
+    data: {
+      result: {
+        data: channelMemberData,
+        totalCount: 4,
+        paging: { limit: 30 },
+      },
+    },
+  };
 };
 
 export const addChannelMembers = async (
@@ -173,10 +191,8 @@ export const removeChannelMember = async (channelId: any, memberId: any) => {
 export const getChannelLinks = async (
   channelId: string,
 ): Promise<IChannelLink[]> => {
-  const data = await apiService.get(`/channels/${channelId}/links`);
-  return new Promise((res) => {
-    res(data?.data?.result?.data);
-  });
+  console.log({ channelId });
+  return channelLinks;
 };
 
 export const createLinks = async (
@@ -238,19 +254,16 @@ export const getJoinChannelRequests = async (
   >,
   channelId?: string,
 ) => {
-  let response = null;
-  const reqPath = channelId
-    ? `channels/${channelId}/join-requests`
-    : `channels/join-requests`;
-  try {
-    if (!!!context.pageParam) {
-      response = await apiService.get(reqPath, context.queryKey[1]);
-    } else {
-      response = await apiService.get(context.pageParam, context.queryKey[1]);
-    }
-  } catch (e) {}
-
-  return response;
+  console.log({ context, channelId });
+  return {
+    data: {
+      result: {
+        data: ChannelUserRequests,
+        totalCount: 3,
+        paging: { limit: 30 },
+      },
+    },
+  };
 };
 
 export const approveChannelJoinRequest = async (

@@ -28,6 +28,7 @@ interface IOrganization {
   id: string;
   domain: string;
   name: string;
+  type?: string;
   url?: string;
   setting?: Record<string, string>;
 }
@@ -182,6 +183,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
               id: data?.org.id,
               domain: data?.org?.domain,
               name: data?.org?.name,
+              type: data?.org?.type,
               url: data?.org?.url,
               setting: data?.org?.setting,
             },

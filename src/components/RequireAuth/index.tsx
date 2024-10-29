@@ -9,7 +9,13 @@ interface IRequireAuthProps {}
 
 const RequireAuth: FC<IRequireAuthProps> = () => {
   const { user, loggedIn } = useAuth();
-  const location = useLocation();
+  const { pathname } = useLocation();
+
+  if (user?.organization.type === 'LMS') {
+    if (!pathname.startsWith('/apps') && !pathname.startsWith('/user/apps')) {
+      return <Navigate to="404" />;
+    }
+  }
 
   if (user) {
     return (
@@ -27,7 +33,7 @@ const RequireAuth: FC<IRequireAuthProps> = () => {
     );
   }
 
-  setItem('redirect_post_login_to', location.pathname);
+  setItem('redirect_post_login_to', pathname);
   return <Navigate to={loggedIn ? '/logout' : '/login'} />;
 };
 
