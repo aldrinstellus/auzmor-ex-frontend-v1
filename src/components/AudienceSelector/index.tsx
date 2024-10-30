@@ -9,6 +9,7 @@ import { FC, useEffect } from 'react';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 import { IS_PROD } from 'utils/constants';
 import { useTranslation } from 'react-i18next';
+import useAuth from 'hooks/useAuth';
 
 interface IAudienceSelectorProps {
   audienceFlow: AudienceFlow;
@@ -29,6 +30,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
 }) => {
   const { t } = useTranslation('components', { keyPrefix: 'AudienceSelector' });
   const { isAdmin } = useRole();
+  const { user } = useAuth();
   const { data, isLoading } = useOrganization();
   const { form } = useEntitySearchFormStore();
 
@@ -79,7 +81,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
       title: t('channels'),
       subTitle: t('channelsSubtitle'),
       onClick: () => setAudienceFlow(AudienceFlow.ChannelSelect),
-      isHidden: IS_PROD,
+      isHidden: IS_PROD || user?.organization.type === 'LMS',
       isSelected:
         channels &&
         Object.keys(channels).some(
