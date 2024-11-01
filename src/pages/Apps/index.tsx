@@ -306,24 +306,32 @@ const Apps: FC<IAppsProps> = () => {
 
   return (
     <div>
-      <Card className="p-8">
-        <div className="flex justify-between">
-          <h1 className="font-bold text-2xl text-black" tabIndex={0}>
-            {t('title')}
-          </h1>
-          {isAdmin && (
-            <Button
-              onClick={openModal}
-              label={t('add-app-CTA')}
-              leftIcon="add"
-              leftIconClassName="!text-white"
-              className="flex space-x-1"
-              leftIconSize={20}
-              dataTestId="app-add-app-cta"
-            />
-          )}
-        </div>
-        <div className="flex justify-between py-4">
+      <Card
+        className={`p-8 ${
+          user?.organization.type === 'LMS'
+            ? 'min-h-[calc(100vh-112px)] relative mb-6'
+            : ''
+        }`}
+      >
+        {user?.organization.type != 'LMS' ? (
+          <div className="flex justify-between pb-4">
+            <h1 className="font-bold text-2xl text-black" tabIndex={0}>
+              {t('title')}
+            </h1>
+            {isAdmin && (
+              <Button
+                onClick={openModal}
+                label={t('add-app-CTA')}
+                leftIcon="add"
+                leftIconClassName="!text-white"
+                className="flex space-x-1"
+                leftIconSize={20}
+                dataTestId="app-add-app-cta"
+              />
+            )}
+          </div>
+        ) : null}
+        <div className="flex justify-between pb-4">
           <div className="flex items-center gap-x-4">
             {isAdmin && (
               <Button
@@ -629,6 +637,17 @@ const Apps: FC<IAppsProps> = () => {
             appGridTitle="All apps"
           />
         </div>
+        {isAdmin && user?.organization.type === 'LMS' && (
+          <IconButton
+            onClick={openModal}
+            icon="add"
+            color="!text-white"
+            hoverColor="text-white"
+            size={IconSize.ExtraLarge}
+            className="fixed bottom-[78px] right-[max(8%,calc(50%-720px))] p-[15px] z-50 hover:!text-white"
+            dataTestId="app-add-app-cta"
+          />
+        )}
       </Card>
       <AddApp open={open} closeModal={closeModal} />
       {showFilterModal && (

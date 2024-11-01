@@ -6,11 +6,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Layout, { FieldType } from 'components/Form';
 import Modal from 'components/Modal';
 import IconButton, {
-  Size,
+  Size as IconSize,
   Variant as IconVariant,
 } from 'components/IconButton';
 import DefaultCoverImage from 'images/png/CoverImage.png';
-import Button, { Variant as ButtonVariant } from 'components/Button';
+import Button, {
+  Size as ButtonSize,
+  Variant as ButtonVariant,
+} from 'components/Button';
 import Avatar from 'components/Avatar';
 import { Variant as InputVariant } from 'components/Input';
 import { getProfileImage, twConfig } from 'utils/misc';
@@ -403,7 +406,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
                   icon="edit"
                   className="bg-white p-2.5 text-black"
                   variant={IconVariant.Secondary}
-                  size={Size.Medium}
+                  size={IconSize.Medium}
                   dataTestId="edit-coverpic-btn"
                 />
               </div>
@@ -426,7 +429,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
                   icon="edit"
                   className="bg-white m-0 absolute top-0 right-0 p-[7px] text-black"
                   variant={IconVariant.Secondary}
-                  size={Size.Medium}
+                  size={IconSize.Medium}
                   onClick={() => {
                     userProfileImageRef?.current?.click();
                   }}
@@ -453,7 +456,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
             variant={ButtonVariant.Secondary}
-            size={Size.Small}
+            size={ButtonSize.Small}
             label={t('cancel')}
             className="mr-3"
             onClick={() => {
@@ -464,7 +467,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
           />
           <Button
             label={t('saveChanges')}
-            size={Size.Small}
+            size={ButtonSize.Small}
             disabled={!isValid}
             onClick={handleSubmit(onSubmit)}
             loading={updateUsersMutation.isLoading}
