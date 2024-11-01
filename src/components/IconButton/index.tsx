@@ -9,6 +9,7 @@ export enum Variant {
 }
 
 export enum Size {
+  ExtraLarge = 'EXTRALARGE',
   Large = 'LARGE',
   Medium = 'MEDIUM',
   Small = 'SMALL',
@@ -25,6 +26,7 @@ export type IconButtonProps = {
   borderAround?: boolean;
   borderAroundClassName?: string;
   color?: string;
+  hoverColor?: string;
   dataTestId?: string;
   ariaLabel?: string;
 };
@@ -40,6 +42,7 @@ const IconButton = ({
   borderAroundClassName = '',
   onClick = () => {},
   color,
+  hoverColor,
   dataTestId,
   ariaLabel = 'icon button',
 }: IconButtonProps) => {
@@ -86,6 +89,8 @@ const IconButton = ({
 
   const getSize = () => {
     switch (size) {
+      case Size.ExtraLarge:
+        return 30;
       case Size.Large:
         return 24;
       case Size.Medium:
@@ -109,6 +114,7 @@ const IconButton = ({
           name={icon}
           size={getSize()}
           color={color}
+          hoverColor={hoverColor}
           disabled={disabled || loading}
         />
         {loading && <Spinner />}
