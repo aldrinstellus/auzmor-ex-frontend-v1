@@ -45,12 +45,6 @@ const ChannelRequestWidget: FC<ChannelRequestWidgetProps> = ({
     useModal();
   const { channelId } = useParams();
 
-  if (
-    channelId &&
-    !permissions.includes(ChannelPermissionEnum.CanManageChannelRequests)
-  )
-    return <></>;
-
   const useInfiniteChannelsRequest = getApi(ApiEnum.GetJoinChannelRequests);
   const { data, isLoading } = useInfiniteChannelsRequest(
     channelId,
@@ -63,13 +57,23 @@ const ChannelRequestWidget: FC<ChannelRequestWidgetProps> = ({
 
   const requests = data?.pages.flatMap((page: any) => {
     return (
-      page?.data?.result?.data.map((request: IChannelRequest) => {
+      page?.data?.result?.data?.map((request: IChannelRequest) => {
         try {
           return request;
         } catch (e) {}
       }) || []
     );
   }) as IChannelRequest[];
+  if (requests?.length === 0 || isLoading) {
+    return <></>;
+  }
+
+  if (
+    channelId &&
+    !permissions.includes(ChannelPermissionEnum.CanManageChannelRequests)
+  ) {
+    return <></>;
+  }
   const totalCount = data?.pages[0]?.data?.result?.totalCount;
 
   const widgetTitle = (
@@ -94,9 +98,6 @@ const ChannelRequestWidget: FC<ChannelRequestWidgetProps> = ({
     [className],
   );
 
-  if (requests?.length === 0 || isLoading) {
-    return <></>;
-  }
   return (
     <Card className={style} dataTestId="requestwidget" shadowOnHover>
       <div
