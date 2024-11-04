@@ -185,7 +185,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           <div className="flex items-center gap-2">
             <Logo
               onClick={() => navigate('/feed')}
-              className="cursor-pointer min-h-[40px] max-h-[40px] max-w-full align-middle relative border-none"
+              className="cursor-pointer min-h-[24px] max-h-[24px] max-w-full align-middle relative border-none"
             />
             {backBtn.show && (
               <div className="text-neutral-900 text-base font-bold">

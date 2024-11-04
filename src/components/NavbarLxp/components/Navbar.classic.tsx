@@ -123,7 +123,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
         <div className={optionWrapperStyle}>
           <div className="flex items-center gap-2">
             <Logo
-              className="cursor-pointer"
+              className="cursor-pointer min-h-[24px] max-h-[24px]"
               onClick={() => navigate('/feed')}
             />
             {backBtn.show && (

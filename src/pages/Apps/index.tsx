@@ -32,7 +32,6 @@ import { usePageTitle } from 'hooks/usePageTitle';
 import { isTrim } from 'pages/ChannelDetail/components/utils';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
-import useAuth from 'hooks/useAuth';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -94,7 +93,6 @@ const Apps: FC<IAppsProps> = () => {
   const { getApi } = usePermissions();
   const { apps, featuredApps } = useAppStore();
   const { isAdmin } = useRole();
-  const { user } = useAuth();
   const [selectedQuickCategory, setSelectedQuickCategory] =
     useState<string>('');
 
@@ -281,12 +279,10 @@ const Apps: FC<IAppsProps> = () => {
     <div>
       <Card
         className={`p-8 ${
-          user?.organization.type === 'LMS'
-            ? 'min-h-[calc(100vh-112px)] relative mb-6'
-            : ''
+          isLxp ? 'min-h-[calc(100vh-112px)] relative mb-6' : ''
         }`}
       >
-        {user?.organization.type != 'LMS' ? (
+        {!isLxp ? (
           <div className="flex justify-between pb-4">
             <h1 className="font-bold text-2xl text-black" tabIndex={0}>
               {t('title')}
@@ -612,7 +608,7 @@ const Apps: FC<IAppsProps> = () => {
             appGridTitle="All apps"
           />
         </div>
-        {isAdmin && user?.organization.type === 'LMS' && (
+        {isAdmin && isLxp && (
           <IconButton
             onClick={openModal}
             icon="add"

@@ -302,7 +302,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
         <div className={optionWrapperStyle}>
           <div className="flex items-center gap-2">
             <Logo
-              className="cursor-pointer min-h-[40px] max-h-[40px] max-w-full align-middle relative mr-1 border-none"
+              className="cursor-pointer min-h-[24px] max-h-[24px] max-w-full align-middle relative mr-1 border-none"
               onClick={() => window.location.replace(getLearnUrl())}
             />
             {backBtn.show && (
