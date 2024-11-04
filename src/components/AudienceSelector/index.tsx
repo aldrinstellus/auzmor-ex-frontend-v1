@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import useProduct from 'hooks/useProduct';
+import useAuth from 'hooks/useAuth';
 
 interface IAudienceSelectorProps {
   audienceFlow: AudienceFlow;
@@ -35,6 +36,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
   const { getApi } = usePermissions();
   const useOrganization = getApi(ApiEnum.GetOrganization);
   const { data, isLoading } = useOrganization(undefined, { enabled: !isLxp });
+  const { user } = useAuth();
   const { form } = useEntitySearchFormStore();
   const [teams, channels, users] = form!.watch(['teams', 'channels', 'users']);
   let isLimitGlobalPosting = true;
@@ -87,7 +89,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
       title: t('channels'),
       subTitle: t('channelsSubtitle'),
       onClick: () => setAudienceFlow(AudienceFlow.ChannelSelect),
-      isHidden: IS_PROD,
+      isHidden: IS_PROD || user?.organization.type === 'LMS',
       isSelected:
         channels &&
         Object.keys(channels).some(

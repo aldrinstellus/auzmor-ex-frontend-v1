@@ -1,5 +1,5 @@
 import Modal from 'components/Modal';
-import { FC, FormEvent, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import AppDetailsForm from './AppDetailsForm';
 import clsx from 'clsx';
@@ -86,7 +86,7 @@ const AddApp: FC<AddAppProps> = ({
   const {
     control,
     formState: { errors },
-    trigger,
+    handleSubmit,
     setValue,
     getValues,
     watch,
@@ -126,7 +126,9 @@ const AddApp: FC<AddAppProps> = ({
 
     getPreviewLink(getUrlWithProtocol(url)).then((response: any) => {
       if (!getValues('label') && response?.title) {
-        setValue('label', response.title);
+        setValue('label', response.title.slice(0, 60), {
+          shouldValidate: true,
+        });
       }
     });
   }, [url, setValue]);
@@ -186,9 +188,7 @@ const AddApp: FC<AddAppProps> = ({
     });
   const { uploadMedia, uploadStatus } = useUpload();
 
-  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    trigger();
+  const onSubmit = async () => {
     if (!errors.url && !errors.label && !errors.description) {
       const formData = getValues();
       let uploadedFile: any;
@@ -230,7 +230,7 @@ const AddApp: FC<AddAppProps> = ({
           : `https://${formData.url}`,
         label: formData.label,
         featured: mode === APP_MODE.Edit ? !!data?.featured : false,
-        ...(formData.description && { description: formData.description }),
+        description: formData.description || '',
         ...(formData.category &&
           formData.category.label && { category: formData.category.label }),
         ...(uploadedFile && uploadedFile[0] && { icon: uploadedFile[0].id }),
@@ -242,7 +242,7 @@ const AddApp: FC<AddAppProps> = ({
           : `https://${formData.url}`,
         label: formData.label,
         featured: mode === APP_MODE.Edit ? !!data?.featured : false,
-        ...(formData.description && { description: formData.description }),
+        description: formData.description || '',
         ...(formData.category &&
           lxpCategoryId && {
             category: lxpCategoryId.toString(),
@@ -296,7 +296,7 @@ const AddApp: FC<AddAppProps> = ({
             closeBtnDataTestId="add-app-close"
           />
           <form
-            onSubmit={onSubmit}
+            onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col justify-between h-full"
           >
             <div className="py-3 px-6">

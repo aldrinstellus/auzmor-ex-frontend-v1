@@ -25,7 +25,7 @@ const SubscriptionBanner: React.FC<AppProps> = ({ closeBanner }) => {
     return null;
   }
 
-  const productName = isLxp ? t('productNameLxp') : t('productNameOffice');
+  const productName = isLxp ? t('productNameLearn') : t('productNameOffice');
 
   return (
     <div className="h-9 bg-neutral-900 flex justify-center items-center text-sm text-white relative">

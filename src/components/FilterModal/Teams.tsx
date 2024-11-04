@@ -13,6 +13,7 @@ import ItemSkeleton from './ItemSkeleton';
 import Truncate from 'components/Truncate';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
+import NoDataFound from 'components/NoDataFound';
 
 interface ITeamsProps {
   control: Control<IFilterForm, any>;
@@ -180,17 +181,35 @@ const Teams: FC<ITeamsProps> = ({ control, watch, setValue }) => {
           }
           return (
             <>
-              {(debouncedTeamSearchValue === undefined ||
-                debouncedTeamSearchValue === '') &&
-              teamData?.length === 0 ? (
+              {debouncedTeamSearchValue === undefined ||
+              (debouncedTeamSearchValue === '' && teamData?.length === 0) ? (
                 <div className="flex items-center w-full text-lg font-bold">
-                  No Teams found
+                  <NoDataFound
+                    illustration="noResultAlt"
+                    className="py-10 w-full"
+                    searchString={''}
+                    onClearSearch={() => {}}
+                    labelHeader={<p> No Teams found</p>}
+                    hideClearBtn
+                    dataTestId={`noresult`}
+                  />
                 </div>
               ) : (
-                <div className="py-16 w-full text-lg font-bold text-center">
-                  {`No result found`}
-                  {debouncedTeamSearchValue &&
-                    ` for '${debouncedTeamSearchValue}'`}
+                <div className="flex items-center w-full text-lg font-bold ">
+                  <NoDataFound
+                    illustration="noResultAlt"
+                    className="py-10 w-full"
+                    searchString={debouncedTeamSearchValue}
+                    onClearSearch={() => {}}
+                    message={
+                      <p>
+                        Sorry we can&apos;t find the team you are looking for.
+                        <br /> Please try using different filters
+                      </p>
+                    }
+                    hideClearBtn
+                    dataTestId={`noresult`}
+                  />
                 </div>
               )}
             </>

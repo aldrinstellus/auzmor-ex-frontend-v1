@@ -6,6 +6,7 @@ import { useInView } from 'react-intersection-observer';
 import PageLoader from 'components/PageLoader';
 import TeamNotFound from 'images/TeamNotFound.svg';
 import NoDataFound from 'components/NoDataFound';
+import useRole from 'hooks/useRole';
 
 type ApiCallFunction = (queryParams: any) => any;
 
@@ -43,6 +44,7 @@ const AppList: FC<IAppListProps> = ({
   appGridTitle,
 }) => {
   const { ref, inView } = useInView();
+  const { isAdmin } = useRole();
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     fetchQuery({
       q: isFiltersEmpty({
@@ -138,19 +140,25 @@ const AppList: FC<IAppListProps> = ({
                       No Apps found
                     </div>
                   </div>
-                  <div className="flex space-x-1 text-xs font-normal">
-                    <div className="text-neutral-500">
-                      There is no app found in your organization right now. Be
-                      the first to
+                  {isAdmin ? (
+                    <div className="flex space-x-1 text-xs font-normal">
+                      <div className="text-neutral-500">
+                        There is no app found in your organization right now. Be
+                        the first to
+                      </div>
+                      <div
+                        className="text-blue-500 cursor-pointer"
+                        onClick={openAddAppModal}
+                        data-testid="create-app"
+                      >
+                        create one
+                      </div>
                     </div>
-                    <div
-                      className="text-blue-500 cursor-pointer"
-                      onClick={openAddAppModal}
-                      data-testid="create-app"
-                    >
-                      create one
+                  ) : (
+                    <div className="text-neutral-500 text-xs font-normal">
+                      There is no app found in your organization right now.
                     </div>
-                  </div>
+                  )}
                 </div>
               ) : (
                 <NoDataFound
