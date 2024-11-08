@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 import useNavigate from 'hooks/useNavigation';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import useProduct from 'hooks/useProduct';
 
 export interface IFeedPostMenuProps {
   data: IPost;
@@ -56,6 +57,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
   const isChannelPage = location.pathname.startsWith('/channels/');
   const { channelId = '' } = useParams();
   const { t } = useTranslation('post', { keyPrefix: 'feedPostMenu' });
+  const { isOffice } = useProduct();
 
   const deletePost = getApi(ApiEnum.DeletePost);
   const deletePostMutation = useMutation({
@@ -131,8 +133,8 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
 
   const allOptions = [
     {
-      icon: 'cyclicArrow',
       label: t('promoteToAnnouncement'),
+      icon: 'cyclicArrow',
       onClick: () => {
         setCustomActiveFlow(CreatePostFlow.CreateAnnouncement);
         openModal();
@@ -140,11 +142,11 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-promote-to-announcement',
       permissions: ['CREATE_ANNOUNCEMENTS'],
-      enabled: isRegularPost(data, currentDate, isAdmin),
+      enabled: isRegularPost(data, currentDate, isAdmin) && isAdmin,
     },
     {
-      icon: 'editReceipt',
       label: t('editAnnouncement'),
+      icon: 'editReceipt',
       onClick: () => {
         setCustomActiveFlow(CreatePostFlow.CreateAnnouncement);
         openModal();
@@ -155,8 +157,8 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
       enabled: !isRegularPost(data, currentDate, isAdmin),
     },
     {
-      icon: 'cyclicArrow',
       label: t('changeToRegularPost'),
+      icon: 'cyclicArrow',
       onClick: () => showRemoveAnnouncement(),
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-changeto-regularpost',
@@ -164,8 +166,8 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
       enabled: !isRegularPost(data, currentDate, isAdmin),
     },
     {
-      icon: 'edit',
       label: t('editPost'),
+      icon: 'edit',
       onClick: () => {
         setCustomActiveFlow(CreatePostFlow.CreatePost);
         openModal();
@@ -176,8 +178,8 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
       enabled: !data?.isAutomatedPost && data.createdBy?.userId === user?.id,
     },
     {
-      icon: 'closeCircle',
       label: t('closePoll'),
+      icon: 'closeCircle',
       onClick: () => showClosePoll(),
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-close-poll',
@@ -188,8 +190,8 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
         (isAdmin || data.createdBy?.userId === user?.id),
     },
     {
-      icon: 'chartOutline',
       label: t('seeWhoVoted'),
+      icon: 'chartOutline',
       onClick: () => showPollVotes(),
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-see-poll-votes',
@@ -199,8 +201,8 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
         (isAdmin || data.createdBy?.userId === user?.id),
     },
     {
-      icon: 'announcementChart',
       label: t('viewAcknowledgementReport'),
+      icon: 'announcementChart',
       onClick: () => showAnalytics(),
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-view-acknowledgement-report',
@@ -208,8 +210,8 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
       enabled: !isRegularPost(data, currentDate, isAdmin),
     },
     {
-      icon: 'delete',
       label: t('deletePost'),
+      icon: 'delete',
       onClick: () => showConfirm(),
       iconClassName: '!text-red-500',
       labelClassName: '!text-red-500',
@@ -239,18 +241,20 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
     }
   };
 
-  const postOptions = allOptions
-    .filter((option) => option.enabled)
-    .filter((menuItem) => {
+  const postOptions = allOptions.filter((option) => {
+    if (option.enabled) {
       if (
-        menuItem.permissions &&
-        !canPerform(menuItem.permissions, user?.permissions) &&
-        isMember
+        option.permissions &&
+        !canPerform(option.permissions, user?.permissions) &&
+        isMember &&
+        isOffice
       ) {
         return false;
       }
       return true;
-    });
+    }
+    return false;
+  });
 
   useEffect(
     () => useFeedStore.subscribe((state) => (feedRef.current = state.feed)),
@@ -259,7 +263,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
 
   if (postOptions.length && !readOnly) {
     return (
-      <>
+      <div className="relative">
         <PopupMenu
           triggerNode={
             <div
@@ -327,7 +331,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
             closeModal={closeAnalytics}
           />
         )}
-      </>
+      </div>
     );
   }
 

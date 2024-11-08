@@ -378,12 +378,7 @@ const Post: FC<PostProps> = ({
                 />
               </Tooltip>
             )}
-            <div className="relative">
-              <FeedPostMenu
-                readOnly={readOnly}
-                data={post as unknown as IPost}
-              />
-            </div>
+            <FeedPostMenu readOnly={readOnly} data={post as unknown as IPost} />
           </div>
           {post?.schedule && (
             <div className="flex items-center gap-2 bg-primary-50 justify-between px-3 py-2">
