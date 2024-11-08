@@ -5,6 +5,7 @@ import truncate from 'lodash/truncate';
 import camelCase from 'lodash/camelCase';
 import pluralize from 'pluralize';
 import hasIn from 'lodash/hasIn';
+import i18n from 'i18next';
 
 import {
   NOTIFICATION_ACTION_TYPES,
@@ -20,6 +21,8 @@ import {
 import moment from 'moment';
 import NotificationTitle from '../components/NotificationTitle';
 import NotificationText from '../components/NotificationText';
+
+import { convertKeysToCamelCase } from 'utils/misc';
 
 export const isLearnerRoute = () => {
   const path = window.location.pathname.toLowerCase();
@@ -357,6 +360,9 @@ export const getNotificationTitle = (
   target2Type,
   additionalInfo,
 ) => {
+  if (additionalInfo) {
+    additionalInfo = convertKeysToCamelCase(additionalInfo);
+  }
   // 1.when mention on feed-post -> actoName mention on post
   if (
     NOTIFICATION_ACTION_TYPES.LxpMentionOnFeed === actionType &&
