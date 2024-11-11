@@ -87,6 +87,9 @@ export const fetchMe = async () => {
             daysRemaining: orgData.result.data?.remaining_trial_days || 0,
           },
           setting: {
+            enableBranches:
+              orgData.result.data.organization_setting
+                .enable_sister_organization,
             enableMentorship:
               orgData.result.data.organization_setting.enable_mentorship,
             enablechecklist:

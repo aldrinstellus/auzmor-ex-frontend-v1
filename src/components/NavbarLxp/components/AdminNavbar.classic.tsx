@@ -15,6 +15,7 @@ import AccountCard from './AccountCard';
 import useAuth from 'hooks/useAuth';
 import SubscriptionBanner from 'components/AppShell/components/SubscriptionBanner';
 import IconButton from 'components/IconButton';
+import useRole from 'hooks/useRole';
 
 interface INavbarLxpProps {}
 
@@ -23,6 +24,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { user } = useAuth();
+  const { isSuperAdmin } = useRole();
 
   const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(
     user?.subscription?.type === 'TRIAL' &&
@@ -200,11 +202,11 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           id: 'branches',
           label: t('learn.branches'),
           onClick: () => window.location.replace(`${getLearnUrl('/branches')}`),
-          show: true,
+          show: !!user?.organization?.setting?.enableBranches && isSuperAdmin,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-black hover:!text-black leading-4',
         },
-      ],
+      ].filter((option) => option.show),
     },
     {
       id: 'analytics',
