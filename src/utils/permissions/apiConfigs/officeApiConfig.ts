@@ -142,6 +142,7 @@ export const apiConfigOffice = {
 
   //posts
   [ApiEnum.MarkAsAnnouncement]: { [Default]: queries.updatePost },
+  [ApiEnum.RemoveAnnouncement]: { [Default]: queries.updatePost },
   [ApiEnum.GetPost]: { [Default]: queries.useGetPost },
   [ApiEnum.CreatePost]: { [Default]: queries.createPost },
   [ApiEnum.UpdatePost]: { [Default]: queries.updatePost },

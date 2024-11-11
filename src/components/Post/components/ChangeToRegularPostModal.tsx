@@ -27,10 +27,10 @@ const ChangeToRegularPostModal: FC<AppProps> = ({ open, closeModal, data }) => {
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
 
-  const updatePost = getApi(ApiEnum.UpdatePost);
+  const removeAnnouncement = getApi(ApiEnum.RemoveAnnouncement);
   const removeAnnouncementMutation = useMutation({
     mutationKey: ['removeAnnouncementMutation', data.id],
-    mutationFn: (payload: any) => updatePost(payload.id || '', payload),
+    mutationFn: (payload: any) => removeAnnouncement(payload.id || '', payload),
     onMutate: (variables) => {
       const previousPost = getPost(variables.id);
       updateFeed(

@@ -120,6 +120,7 @@ export const apiConfigLxp = {
 
   //posts
   [ApiEnum.MarkAsAnnouncement]: { [Default]: queries.markAsAnnouncement },
+  [ApiEnum.RemoveAnnouncement]: { [Default]: queries.removeAnnouncement },
   [ApiEnum.GetPost]: {
     [Default]: queries.useGetPost,
     [Learner]: queries.useGetLearnerPost,

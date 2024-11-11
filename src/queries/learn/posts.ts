@@ -25,6 +25,10 @@ export const markAsAnnouncement = async (id: string, payload: IPostPayload) => {
   });
   return data;
 };
+export const removeAnnouncement = async (id: string) => {
+  const data = await apiService.delete(`/feed/${id}/mark_as_announcement`);
+  return data;
+};
 
 export const updatePost = async (id: string, payload: IPostPayload) => {
   const fileIds = payload.files
