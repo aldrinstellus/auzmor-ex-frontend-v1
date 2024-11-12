@@ -23,7 +23,7 @@ const AppShell: FC<IAppShellProps> = ({ children }) => {
   const { user } = useAuth();
 
   const wraperStyle = clsx({
-    'flex w-full justify-center h-[calc(100%-64px)]': true,
+    'flex w-full justify-center': true,
     'px-14 pt-6': !isOrgChartMounted,
   });
   const containerStyle = clsx({

@@ -160,7 +160,7 @@ const Users: FC<IUsersProps> = () => {
   return showOrgChart ? (
     <OrgChart setShowOrgChart={setShowOrgChart} />
   ) : (
-    <Card className="p-8 px-7 w-full h-full">
+    <Card className="pt-8 px-7 w-full mb-6">
       <Tabs
         tabs={tabs}
         title={isLxp ? 'My Teams' : 'People Hub'}
