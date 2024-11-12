@@ -105,6 +105,15 @@ export const announcementRead = async (postId: string) => {
   return data;
 };
 
+export const sendAcknowledgementReminders = async ({
+  postId,
+}: {
+  postId: string;
+}) => {
+  const data = await apiService.post(`/feed/${postId}/reminder`);
+  return data;
+};
+
 export const getPollVotes = async ({
   pageParam = null,
   queryKey,

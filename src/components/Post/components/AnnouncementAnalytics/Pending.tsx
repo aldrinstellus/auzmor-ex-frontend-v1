@@ -27,10 +27,12 @@ const Pending: FC<AppProps> = ({ postId, closeModal }) => {
   const post = useFeedStore((state) => state.getPost)(postId);
   const { getApi } = usePermissions();
 
-  const createNewJob = getApi(ApiEnum.CreateJob);
+  const sendAcknowledgementReminders = getApi(
+    ApiEnum.SendAcknowledgementReminders,
+  );
   const reminderMutation = useMutation(
     () =>
-      createNewJob({
+      sendAcknowledgementReminders({
         type: 'ACKNOWLEDGEMENT_REMINDER',
         postId: post.id,
       }),

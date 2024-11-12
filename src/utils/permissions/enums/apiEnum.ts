@@ -131,6 +131,7 @@ export enum ApiEnum {
 
   AcknowledgeAnnouncement = 'ACKNOWLEDGE_ANNOUNCEMENT',
   GetPostAcknowledgements = 'GET_POST_ACKNOWLEDGEMENTS',
+  SendAcknowledgementReminders = 'SEND_ACKNOWLEDGEMENT_REMINDERS',
   DownloadPostAcknowledgements = 'DOWNLOAD_POST_ACKNOWLEDGEMENTS',
 
   GetPostPollVotes = 'GET_POST_POLL_VOTES',

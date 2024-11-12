@@ -139,6 +139,9 @@ export const apiConfigLxp = {
   [ApiEnum.GetPostAcknowledgements]: {
     [Default]: queries.useInfiniteAcknowledgements,
   },
+  [ApiEnum.SendAcknowledgementReminders]: {
+    [Default]: queries.sendAcknowledgementReminders,
+  },
   [ApiEnum.DownloadPostAcknowledgements]: {
     [Default]: queries.downloadAcknowledgementReport,
   },

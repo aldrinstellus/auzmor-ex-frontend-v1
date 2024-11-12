@@ -152,6 +152,7 @@ export const apiConfigOffice = {
   [ApiEnum.GetPostAcknowledgements]: {
     [Default]: queries.useInfiniteAcknowledgements,
   },
+  [ApiEnum.SendAcknowledgementReminders]: { [Default]: queries.createNewJob },
   [ApiEnum.DownloadPostAcknowledgements]: {
     [Default]: queries.downloadAcknowledgementReport,
   },
