@@ -113,7 +113,9 @@ const MyTeamWidget: FC<IMyTeamWidgetProps> = ({ className = '' }) => {
                       dataTestId="my-teams-cta"
                       onClick={() =>
                         isLxp && isAdmin
-                          ? window.location.replace(getLearnUrl('/teams'))
+                          ? window.location.replace(
+                              getLearnUrl('/peoples?tab=teams'),
+                            )
                           : navigate('/teams?tab=myTeams')
                       }
                     />
