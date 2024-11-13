@@ -101,7 +101,9 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
     }
     getPreviewLink(getUrlWithProtocol(url)).then((response: any) => {
       if (!getValues('title') && response?.title) {
-        setValue('title', response.title);
+        setValue('title', response.title.slice(0, 20), {
+          shouldValidate: true,
+        });
       }
     });
   }, [url, setValue]);
