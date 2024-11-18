@@ -38,101 +38,51 @@ import Divider from 'components/Divider';
 import FeedFilter, {
   filterKeyMap,
 } from 'components/ActivityFeed/components/FeedFilters';
-import AppLauncher from 'components/AppLauncher';
-import LinksWidget, { LinksWidgetProps } from 'components/LinksWidget';
-import ChannelRequestWidget, {
-  ChannelRequestWidgetProps,
-} from 'components/ChannelRequestWidget';
-import MembersWidget, {
-  MembersWidgetProps,
-} from 'pages/ChannelDetail/components/MembersWidget';
-import AdminsWidget from 'pages/ChannelDetail/components/AdminsWidget';
+import { LinksWidgetProps } from 'components/LinksWidget';
+import { ChannelRequestWidgetProps } from 'components/ChannelRequestWidget';
+import { MembersWidgetProps } from 'pages/ChannelDetail/components/MembersWidget';
 import { IChannel } from 'stores/channelStore';
 import useAuth from 'hooks/useAuth';
-import Recommendation from 'components/Recommendation';
-import ChannelsWidget from 'components/ChannelsWidget';
-import MyTeamWidget, { IMyTeamWidgetProps } from 'components/MyTeamWidget';
-import ProgressTrackerWidget from 'components/ProgressTrackerWidget';
-import CelebrationWidget, {
-  ICelebrationWidgetProps,
-} from 'components/CelebrationWidget';
-import EventWidget, { IEventWidgetProps } from 'components/EventWidget';
-import AnnouncementCard, {
-  IAnnouncementCardProps,
-} from 'components/AnnouncementWidget';
-import UserCard from 'components/UserWidget';
+import { IMyTeamWidgetProps } from 'components/MyTeamWidget';
+import { ICelebrationWidgetProps } from 'components/CelebrationWidget';
+import { IEventWidgetProps } from 'components/EventWidget';
+import { IAnnouncementCardProps } from 'components/AnnouncementWidget';
 import Welcome from 'pages/ChannelDetail/components/Home/Welcome';
 import FinishSetup from 'pages/ChannelDetail/components/Home/FinishSetup';
 import Congrats from 'pages/ChannelDetail/components/Home/Congrats';
-import { IS_PROD } from 'utils/constants';
-import EvaluationRequestWidget, {
-  IEvaluationRequestWidgetProps,
-} from 'components/EvaluationRequestWidget';
+import { IEvaluationRequestWidgetProps } from 'components/EvaluationRequestWidget';
 import { CreatePostFlow } from 'contexts/CreatePostContext';
 import useProduct from 'hooks/useProduct';
 import AnnouncementFeedHeader from './components/AnnouncementFeedHeader';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
+import { ComponentEnum } from 'utils/permissions/enums/componentEnum';
 
 const EmptyWidget = () => <></>;
-
-export enum WidgetEnum {
-  AppLauncher = 'APP_LAUNCHER',
-  Links = 'LINKS',
-  ChannelRequest = 'CHANNEL_REQUEST',
-  ChannelMember = 'CHANNEL_MEMBER',
-  ChannelAdmin = 'CHANNEL_ADMIN',
-  UserCard = 'USER_CARD',
-  Channels = 'CHANNELS',
-  MyTeam = 'MY_TEAM',
-  ProgressTracker = 'PROGRESS_TRACKER',
-  CelebrationBirthday = 'CELEBRATION_BIRTHDAY',
-  CelebrationAnniversary = 'CELEBRATION_ANNIVERSARY',
-  Event = 'EVENT',
-  AnnouncementCard = 'ANNOUNCEMENT_CARD',
-  EvaluationRequestWidget = 'EVALUATION_REQUEST_WIDGET',
-}
-
-export const widgetMapping = {
-  [WidgetEnum.AppLauncher]: AppLauncher,
-  [WidgetEnum.Links]: LinksWidget,
-  [WidgetEnum.ChannelRequest]: IS_PROD ? EmptyWidget : ChannelRequestWidget,
-  [WidgetEnum.ChannelMember]: IS_PROD ? EmptyWidget : MembersWidget,
-  [WidgetEnum.ChannelAdmin]: IS_PROD ? EmptyWidget : AdminsWidget,
-  [WidgetEnum.UserCard]: UserCard,
-  [WidgetEnum.Channels]: IS_PROD ? EmptyWidget : ChannelsWidget,
-  [WidgetEnum.MyTeam]: MyTeamWidget,
-  [WidgetEnum.ProgressTracker]: ProgressTrackerWidget,
-  [WidgetEnum.CelebrationBirthday]: CelebrationWidget,
-  [WidgetEnum.CelebrationAnniversary]: CelebrationWidget,
-  [WidgetEnum.Event]: EventWidget,
-  [WidgetEnum.AnnouncementCard]: AnnouncementCard,
-  [WidgetEnum.EvaluationRequestWidget]: EvaluationRequestWidget,
-};
 
 interface IFeedProps {
   showCreatePostCard?: boolean;
   showFeedFilterBar?: boolean;
   emptyFeedComponent?: ReactNode | null;
   isReadOnlyPost?: boolean;
-  leftWidgets: WidgetEnum[];
-  rightWidgets: WidgetEnum[];
+  leftWidgets: ComponentEnum[];
+  rightWidgets: ComponentEnum[];
   mode?: FeedModeEnum;
   widgetProps?: {
-    [WidgetEnum.AppLauncher]?: null;
-    [WidgetEnum.Links]?: LinksWidgetProps;
-    [WidgetEnum.ChannelRequest]?: ChannelRequestWidgetProps;
-    [WidgetEnum.ChannelMember]?: MembersWidgetProps;
-    [WidgetEnum.ChannelAdmin]?: null;
-    [WidgetEnum.UserCard]?: null;
-    [WidgetEnum.Channels]?: null;
-    [WidgetEnum.MyTeam]?: IMyTeamWidgetProps;
-    [WidgetEnum.ProgressTracker]?: null;
-    [WidgetEnum.CelebrationBirthday]?: ICelebrationWidgetProps;
-    [WidgetEnum.CelebrationAnniversary]?: ICelebrationWidgetProps;
-    [WidgetEnum.Event]?: IEventWidgetProps;
-    [WidgetEnum.AnnouncementCard]?: IAnnouncementCardProps;
-    [WidgetEnum.EvaluationRequestWidget]?: IEvaluationRequestWidgetProps;
+    [ComponentEnum.AppLauncherWidget]?: null;
+    [ComponentEnum.ChannelLinksWidget]?: LinksWidgetProps;
+    [ComponentEnum.ChannelRequestWidget]?: ChannelRequestWidgetProps;
+    [ComponentEnum.ChannelMembersWidget]?: MembersWidgetProps;
+    [ComponentEnum.ChannelAdminsWidget]?: null;
+    [ComponentEnum.UserCardWidget]?: null;
+    [ComponentEnum.ChannelsWidget]?: null;
+    [ComponentEnum.TeamsWidget]?: IMyTeamWidgetProps;
+    [ComponentEnum.ProgressTrackerWidget]?: null;
+    [ComponentEnum.BirthdayCelebrationWidget]?: ICelebrationWidgetProps;
+    [ComponentEnum.AnniversaryCelebrationWidget]?: ICelebrationWidgetProps;
+    [ComponentEnum.EventWidget]?: IEventWidgetProps;
+    [ComponentEnum.AnnouncementWidget]?: IAnnouncementCardProps;
+    [ComponentEnum.EvaluationRequestWidget]?: IEvaluationRequestWidgetProps;
   };
   modeProps?: {
     [FeedModeEnum.Default]?: {
@@ -179,7 +129,7 @@ const Feed: FC<IFeedProps> = ({
   const [searchParams] = useSearchParams();
   const currentDate = new Date().toISOString();
   const { isLxp } = useProduct();
-  const { getApi } = usePermissions();
+  const { getApi, getComponent } = usePermissions();
   const [appliedFeedFilters, setAppliedFeedFilters] = useState<IPostFilters>({
     [PostFilterKeys.PostType]: [],
     [PostFilterKeys.PostPreference]: [],
@@ -732,35 +682,36 @@ const Feed: FC<IFeedProps> = ({
     }
   }, [hashtag, feedIds, bookmarks, scheduled]);
 
-  const getWidgets = (widgetList: WidgetEnum[]) => {
+  const getWidgets = (widgetList: ComponentEnum[]) => {
     let Widget: any = null;
-
-    if (isLxp && !isLearner) {
-      widgetList = widgetList.filter(
-        (widget) =>
-          widget !== WidgetEnum.Event && widget !== WidgetEnum.ProgressTracker,
-      );
-    }
 
     if (!isLargeScreen) {
       widgetList = [...widgetList, ...rightWidgets];
     }
     return widgetList.map((widgetenum) => {
-      Widget = widgetMapping[widgetenum];
-      if (widgetProps && widgetProps[widgetenum]) {
-        if (widgetenum === WidgetEnum.AnnouncementCard) {
+      Widget = getComponent(widgetenum) || EmptyWidget;
+      if (widgetProps) {
+        const props = widgetProps[widgetenum as keyof typeof widgetProps] || {};
+        if (widgetenum === ComponentEnum.AnnouncementWidget) {
           return (
             <Widget
-              {...widgetProps[widgetenum]}
+              {...props}
               key={widgetenum}
+              className="last:sticky last:top-4"
               openModal={openModal}
               setCustomActiveFlow={setCustomActiveFlow}
             />
           );
         }
-        return <Widget {...widgetProps[widgetenum]} key={widgetenum} />;
+        return (
+          <Widget
+            {...props}
+            key={widgetenum}
+            className="last:sticky last:top-4"
+          />
+        );
       }
-      return <Widget key={widgetenum} />;
+      return <Widget key={widgetenum} className="last:sticky last:top-4" />;
     });
   };
 
@@ -826,6 +777,9 @@ const Feed: FC<IFeedProps> = ({
       );
     }
   };
+
+  const Recommendation =
+    getComponent(ComponentEnum.RecommendationWidget) || EmptyWidget;
 
   const getListItem = (id: string, index: number) => {
     return (

@@ -1,4 +1,3 @@
-import AnnouncementCard from 'components/AnnouncementWidget';
 import PageLoader from 'components/PageLoader';
 import Post from 'components/Post';
 import UserCard from 'components/UserWidget';
@@ -10,12 +9,13 @@ import { FC } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useFeedStore } from 'stores/feedStore';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { ComponentEnum } from 'utils/permissions/enums/componentEnum';
 
 const PostPage: FC = () => {
   usePageTitle('postDetails');
   const isLargeScreen = useMediaQuery('(min-width: 1300px)');
   const { id } = useParams();
-  const { getApi } = usePermissions();
+  const { getApi, getComponent } = usePermissions();
   const [searchParams] = useSearchParams();
   const commentId = searchParams.get('commentId') || undefined;
   if (!id) {
@@ -32,9 +32,10 @@ const PostPage: FC = () => {
     return <PageNotFound statusCode={404} message={'Post not Found'} />;
   }
 
+  const AnnouncementWidget = getComponent(ComponentEnum.AnnouncementWidget);
   const post = getPost(id);
 
-  const getRightWidgets = () => <AnnouncementCard postId={post.id} />;
+  const getRightWidgets = () => <AnnouncementWidget postId={post.id} />;
   return post ? (
     <>
       <div className="mb-12 space-x-8 flex w-full">

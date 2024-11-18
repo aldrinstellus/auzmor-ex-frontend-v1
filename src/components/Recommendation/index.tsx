@@ -1,10 +1,7 @@
 import Button, { Size } from 'components/Button';
 import Card from 'components/Card';
 import LearnCard from 'components/LearnCard';
-import { useShouldRender } from 'hooks/useShouldRender';
 import React, { FC } from 'react';
-
-const ID = 'Recommendation';
 
 interface IRecommendationProps {
   title: string;
@@ -19,10 +16,6 @@ const Recommendation: FC<IRecommendationProps> = ({
   isLoading,
   onCLick,
 }) => {
-  const shouldRender = useShouldRender(ID);
-  if (!shouldRender) {
-    return <></>;
-  }
   return (
     <Card className="flex flex-col gap-4 px-4 pt-4 relative h-[366px]">
       <div className="flex items-center justify-between">

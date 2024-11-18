@@ -1,7 +1,6 @@
 import clsx from 'clsx';
 import Button, { Variant } from 'components/Button';
 import LearnCard from 'components/LearnCard';
-import { useShouldRender } from 'hooks/useShouldRender';
 import React, { FC, useMemo } from 'react';
 import { getLearnUrl } from 'utils/misc';
 import EmptyState from './EmptyState';
@@ -14,19 +13,12 @@ interface IProgressTrackerWidgetProps {
   className?: string;
 }
 
-const ID = 'ProgressTrackerWidget';
-
 const ProgressTrackerWidget: FC<IProgressTrackerWidgetProps> = ({
   className = '',
 }) => {
   const { t } = useTranslation('learnWidget', { keyPrefix: 'progressTracker' });
-  const shouldRender = useShouldRender(ID);
   const { getApi } = usePermissions();
   const { isLxp } = useProduct();
-
-  if (!shouldRender) {
-    return <></>;
-  }
 
   const useProgressTracker = getApi(ApiEnum.GetProgressTracker);
   const { data, isLoading } = useProgressTracker({ enabled: isLxp });
