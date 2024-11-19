@@ -242,14 +242,14 @@ const PeopleCard: FC<IPeopleCardProps> = ({
 
   return (
     <div
-      className="cursor-pointer w-fit"
+      className="cursor-pointer w-fit flex"
       data-testid="people-card"
       {...eventHandlers}
     >
       <Card
         shadowOnHover
         className={`relative w-[190px] ${
-          isLxp ? 'w-[189px] ' : 'h-[244px] w-[233px]'
+          isLxp ? 'w-[224px] ' : 'h-[244px] w-[233px]'
         } border-solid border rounded-9xl border-neutral-200 bg-white focus-within:shadow-xl`}
       >
         <UserProfileDropdown

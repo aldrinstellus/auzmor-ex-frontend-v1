@@ -6,15 +6,6 @@ import { enumToTitleCase } from 'utils/misc';
 import { IRadioListOption } from 'components/RadioGroup';
 import moment from 'moment';
 
-export enum ChannelTypeEnum {
-  MyChannels = 'MY_CHANNELS',
-  Managed = 'MANAGED',
-  DiscoverNewChannels = 'DISCOVER_NEW_CHANNELS',
-  Starred = 'STARRED',
-  Requested = 'REQUESTED',
-  Archived = 'ARCHIVED',
-}
-
 interface IChannelTypeProps {
   control: Control<IFilterForm, any>;
   watch: UseFormWatch<IFilterForm>;

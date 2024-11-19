@@ -108,7 +108,11 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
             0 &&
           filters?.channelType === ChannelTypeEnum.MyChannels
         ) {
-          setFilters({ channelType: ChannelTypeEnum.DiscoverNewChannels });
+          setFilters({
+            channelType: isAdmin
+              ? ChannelTypeEnum.AllChannels
+              : ChannelTypeEnum.DiscoverNewChannels,
+          });
         }
       },
       refetchOnMount: 'always',
@@ -183,18 +187,32 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
         )}`,
         dataTestId: 'managed',
       },
-      {
-        label: t('filterCTA.discoverNewChannels'),
-        isActive: filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
-        onClick: onFilterButtonClick(ChannelTypeEnum.DiscoverNewChannels),
-        labelClassName: `text-sm ${getLableClassName(
-          filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
-        )}`,
-        className: `${getClassName(
-          filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
-        )}`,
-        dataTestId: 'discover-new-channels-filter',
-      },
+      isAdmin
+        ? {
+            label: t('filterCTA.allChannels'),
+            isActive: filters?.channelType === ChannelTypeEnum.AllChannels,
+            onClick: onFilterButtonClick(ChannelTypeEnum.AllChannels),
+            labelClassName: `text-sm ${getLableClassName(
+              filters?.channelType === ChannelTypeEnum.AllChannels,
+            )}`,
+            className: `${getClassName(
+              filters?.channelType === ChannelTypeEnum.AllChannels,
+            )}`,
+            dataTestId: 'all-channels-filter',
+          }
+        : {
+            label: t('filterCTA.discoverNewChannels'),
+            isActive:
+              filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
+            onClick: onFilterButtonClick(ChannelTypeEnum.DiscoverNewChannels),
+            labelClassName: `text-sm ${getLableClassName(
+              filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
+            )}`,
+            className: `${getClassName(
+              filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
+            )}`,
+            dataTestId: 'discover-new-channels-filter',
+          },
       {
         label: t('filterCTA.starred'),
         isActive: filters?.channelType === ChannelTypeEnum.Starred,
