@@ -1,324 +1,282 @@
-import React, { FC, Fragment } from 'react';
+import React, { FC, Fragment, useEffect, useState } from 'react';
 import Card from 'components/Card';
-import Button, { Variant as ButtonVariant } from 'components/Button';
-import { useForm } from 'react-hook-form';
-import Layout, { FieldType } from 'components/Form';
-import { useTranslation } from 'react-i18next';
-import FolderNavigator from './components/FolderNavigator';
-import Divider from 'components/Divider';
-import { IntegrationOptionsEnum } from 'interfaces';
-import Spinner from 'components/Spinner';
-import FilterMenuDocument from './components/FilterMenu/FilterMenuDocument';
-import Icon from 'components/Icon';
-import { useMutation } from '@tanstack/react-query';
+import Button, { Variant as ButtonVariant, Size } from 'components/Button';
 import useModal from 'hooks/useModal';
-import Modal from 'components/Modal';
-import Header from 'components/ModalHeader';
-import { useDocumentPath } from 'hooks/useDocumentPath';
-import { failureToastConfig } from 'components/Toast/variants/FailureToast';
-import { successToastConfig } from 'components/Toast/variants/SuccessToast';
-import useURLParams from 'hooks/useURLParams';
-import DocumentSearch from './DocumentSearch';
-import { useAppliedFiltersForDoc } from 'stores/appliedFiltersForDoc';
-import { useVault } from '@apideck/vault-react';
-import useAuth from 'hooks/useAuth';
-import { usePermissions } from 'hooks/usePermissions';
+import NoDataFound from 'components/NoDataFound';
+import Divider from 'components/Divider';
+import EntitySelectModal from './components/EntitySelectModal';
+import AddFolderModal from './components/AddFolderModal';
+import DataList from 'components/DataGrid';
+import { ColumnDef } from '@tanstack/react-table';
+import Layout, { FieldType } from 'components/Form';
+import { useForm } from 'react-hook-form';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { useDataGrid } from 'hooks/useDataGrid';
+import Icon from 'components/Icon';
+import PopupMenu from 'components/PopupMenu';
+import { usePermissions } from 'hooks/usePermissions';
+import { useParams } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 
-export enum FilePickerObjectType {
-  FILE = 'FILE',
-  FOLDER = 'FOLDER',
-  DRIVE = 'DRIVE',
+export enum DocIntegrationEnum {
+  Sharepoint = 'SHAREPOINT',
+  GoogleDrive = 'GOOGLE_DRIVE',
+}
+
+interface IForm {
+  selectAll: boolean;
 }
 
 interface IDocumentProps {}
 
 const Document: FC<IDocumentProps> = ({}) => {
+  const [isOpen, openModal, closeModal] = useModal();
+  const [isAddModalOpen, openAddModal, closeAddModal] = useModal();
+  const { control } = useForm<IForm>();
+  const [totalRows, setTotalRows] = useState<number>(0);
   const { getApi } = usePermissions();
-  const { t } = useTranslation('common');
-  const [isOpen, openModal, closeModal] = useModal(false, true);
-  const { getCurrentFolder } = useDocumentPath();
-  const { filters } = useAppliedFiltersForDoc();
-  const { searchParams } = useURLParams();
-  const { open } = useVault();
-  const { user } = useAuth();
+  const { channelId } = useParams();
 
-  const searchQuery = searchParams.get('search') || undefined;
-  const isFilterApplied =
-    !!filters?.docTypeCheckbox?.length ||
-    !!filters?.docPeopleCheckbox?.length ||
-    !!filters?.docModifiedRadio;
+  const integrationType: DocIntegrationEnum = DocIntegrationEnum.Sharepoint;
+  const isConnectionMade = true;
+  const isBaseFolderSet = true;
 
-  const showSearchResults = searchQuery || isFilterApplied;
+  const updateConnection = getApi(ApiEnum.UpdateConnection);
+  const updateConnectionMutation = useMutation({
+    mutationKey: ['update-channel-connection', channelId],
+    mutationFn: updateConnection,
+  });
 
-  // Mutations
-  // const resyncMutation = useMutation({
-  //   mutationKey: ['resync'],
-  //   mutationFn: resync,
-  // });
-  const connectStorage = getApi(ApiEnum.ConnectStorage);
-  const updateStorage = getApi(ApiEnum.UpdateStorage);
-  const configStorageMutation = useMutation({
-    mutationKey: ['configure-storage'],
-    mutationFn: (configName: string) => connectStorage(configName),
-    onSuccess: (data: any, variables) => {
-      open({
-        token: data.result.data.linkToken,
-        unifiedApi: 'file-storage',
-        serviceId: variables,
-        onReady: () => console.log('ready'),
-        onClose: () => console.log('onClose'),
-        onConnectionChange: () => {
-          updateStorage(
-            { isAuthorized: true, id: data.result.data.id },
-            refetch,
-          );
-        },
-      });
+  const allOptions = [
+    {
+      label: 'Remove from starred',
+      onClick: () => {},
+      dataTestId: 'folder-menu',
+      enabled: true,
+      className: '!px-6 !py-2',
+    },
+    {
+      label: 'Download',
+      onClick: () => {},
+      dataTestId: 'folder-menu',
+      enabled: true,
+      className: '!px-6 !py-2',
+    },
+  ];
+
+  const columns = React.useMemo<ColumnDef<any>[]>(
+    () => [
+      {
+        id: 'select',
+        header: ({ table }) => (
+          <Layout
+            fields={[
+              {
+                type: FieldType.Checkbox,
+                name: `selectAll`,
+                inputClassName: '!w-4 !h-4 text-white',
+                control,
+                dataTestId: `select-all`,
+                checked: table.getIsAllRowsSelected(),
+                indeterminate: table.getIsSomeRowsSelected(),
+                onChange: table.getToggleAllRowsSelectedHandler(),
+              },
+            ]}
+            className={`items-center group-hover/row:flex ${
+              table.getIsAllRowsSelected() ? 'flex' : 'hidden'
+            }`}
+          />
+        ),
+        cell: ({ row }) => (
+          <Layout
+            fields={[
+              {
+                type: FieldType.Checkbox,
+                name: `selectAll`,
+                inputClassName: '!w-4 !h-4 text-white',
+                control,
+                dataTestId: `select-all`,
+                checked: row.getIsSelected(),
+                indeterminate: row.getIsSomeSelected(),
+                onChange: row.getToggleSelectedHandler(),
+              },
+            ]}
+            className={`items-center group-hover/row:flex ${
+              row.getIsSelected() ? 'flex' : 'hidden'
+            }`}
+          />
+        ),
+        size: 16,
+      },
+      {
+        accessorKey: 'name',
+        header: () => (
+          <div className="font-bold text-neutral-500">
+            File Name ({totalRows})
+          </div>
+        ),
+        cell: (info) => (
+          <div className="flex gap-2 font-medium text-neutral-900 leading-6">
+            {info.getValue() as string}
+          </div>
+        ),
+        thClassName: 'flex-1',
+        tdClassName: 'flex-1',
+      },
+      {
+        accessorKey: 'owner',
+        header: () => <div className="font-bold text-neutral-500">Owner</div>,
+        cell: (info) => info.getValue(),
+      },
+      {
+        accessorKey: 'lastUpdated',
+        header: () => (
+          <div className="font-bold text-neutral-500">Last Updated</div>
+        ),
+        cell: (info) => info.getValue(),
+      },
+      {
+        accessorKey: 'more',
+        header: () => '',
+        cell: () => (
+          <PopupMenu
+            triggerNode={
+              <div
+                className="cursor-pointer relative"
+                data-testid="feed-post-ellipsis"
+                title="more"
+              >
+                <Icon name="moreV2Filled" tabIndex={0} size={16} />
+              </div>
+            }
+            menuItems={allOptions}
+            className="right-0 top-full border-1 border-neutral-200 focus-visible:outline-none w-44"
+          />
+        ),
+        size: 16,
+        tdClassName: 'items-center relative',
+      },
+    ],
+    [totalRows],
+  );
+
+  const datalistProps = useDataGrid({
+    apiEnum: ApiEnum.GetDirectories,
+    isInfiniteQuery: false,
+    q: {},
+    dataGridProps: {
+      columns,
+      isRowSelectionEnabled: true,
+      onRowClick: (e, table, virtualRow) => {
+        table.setRowSelection((param) => {
+          return {
+            ...param,
+            [virtualRow.index]: !!!param[virtualRow.index],
+          };
+        });
+      },
     },
   });
 
-  const createFolder = getApi(ApiEnum.CreateStorageFolder);
-  const createFolderMutation = useMutation({
-    mutationKey: ['create-folder'],
-    mutationFn: (payload: { folderId: string; name: string }) =>
-      createFolder(payload),
-  });
+  useEffect(() => {
+    setTotalRows((datalistProps?.flatData || []).length);
+  }, [datalistProps.flatData]);
 
-  //Queries
-  const useConnectedStatus = getApi(ApiEnum.GetStorageConnectionStatus);
-  const {
-    data: syncStatus,
-    isLoading,
-    refetch,
-  } = useConnectedStatus(user?.email || '');
-  const isSynced = !!syncStatus?.data?.result?.data;
-  const filterForm = useForm<{
-    search: string;
-    documentType?: {
-      label: string;
-      value: string;
-      dataTestId: string;
-    };
-    folderName?: string;
-    showFiles?: boolean;
-    showFolders?: boolean;
-  }>({
-    mode: 'onChange',
-    defaultValues: {
-      search: '',
-      folderName: 'Untitled folder',
-      showFiles: true,
-      showFolders: true,
-    },
-  });
-  const [showFiles, showFolders] = filterForm.watch([
-    'showFiles',
-    'showFolders',
-  ]);
-
-  const handleCreateFolder = () =>
-    createFolderMutation.mutate(
-      {
-        folderId: getCurrentFolder().id,
-        name: filterForm.getValues('folderName') || 'Undifined folder',
-      },
-      {
-        onError: () =>
-          failureToastConfig({ content: 'Opps... Somthing went wrong.' }),
-        onSuccess: () =>
-          successToastConfig({ content: 'Folder created successfully' }),
-        onSettled: () => {
-          closeModal();
-        },
-      },
-    );
-
-  //Components
-  const ConnectionCard: FC = () => {
-    const Integrations = [
-      {
-        icon: 'google',
-        label: 'Google Drive',
-        integrationValue: IntegrationOptionsEnum.GoogleDrive,
-      },
-      {
-        icon: 'sharePoint',
-        label: 'Share Point',
-        integrationValue: IntegrationOptionsEnum.Sharepoint,
-      },
-    ];
-    return (
-      <div className="flex flex-col w-full items-center justify-center gap-4">
-        <p className="text-xl text-neutral-900 font-semibold">
-          Enable integrations to view your files
-        </p>
+  const NoConnection = () => (
+    <Fragment>
+      <NoDataFound
+        illustration={isConnectionMade ? 'noChannelFound' : 'noResultAlt'}
+        hideClearBtn
+        hideText
+      />
+      <div className="flex flex-col gap-4 justify-between">
+        {isConnectionMade ? (
+          <p className="w-full text-2xl font-semibold text-neutral-900 text-center">
+            Activate folder
+          </p>
+        ) : (
+          <p className="w-full text-2xl font-semibold text-neutral-900 text-center">
+            Integration not enabled for this organization
+          </p>
+        )}
         <Divider />
-        <p className="text-base text-neutral-900">
-          To view your files here, you need to enable google drive integration.
-        </p>
-        <div className="flex px-2 py-3 border border-dashed rounded-9xl border-primary-400 w-full justify-center items-center flex-col gap-2">
-          {Integrations.map((each) => {
-            return (
-              <Button
-                variant={ButtonVariant.Secondary}
-                leftIcon={each.icon}
-                label={each.label}
-                key={each.integrationValue}
-                className="w-64"
-                onClick={() =>
-                  configStorageMutation.mutate(each.integrationValue)
-                }
-              />
-            );
-          })}
-        </div>
+        {isConnectionMade ? (
+          <p className="text-center text-lg font-medium text-neutral-900">
+            Activate your preferred folder/site from google drive or sharepoint
+            to create, share and collaborate on files and folders in this
+            channel.
+          </p>
+        ) : (
+          <p className="text-center text-lg font-medium text-neutral-900">
+            To view your files in EX, you need to enable google drive or share
+            point integration.
+          </p>
+        )}
       </div>
-    );
-  };
+      {isConnectionMade ? (
+        <div className="flex gap-6 w-full justify-center">
+          <Button
+            label="Select existing"
+            variant={ButtonVariant.Secondary}
+            size={Size.Small}
+            onClick={openModal}
+          />
+          {integrationType !== DocIntegrationEnum.Sharepoint && (
+            <Button
+              label="Add new"
+              leftIcon="plus"
+              size={Size.Small}
+              onClick={openAddModal}
+            />
+          )}
+        </div>
+      ) : (
+        <div className="flex gap-6 w-full justify-center">
+          <Button
+            label="Connect"
+            size={Size.Small}
+            onClick={openModal}
+            variant={ButtonVariant.Primary}
+          />
+        </div>
+      )}
+    </Fragment>
+  );
 
   return (
     <Fragment>
       <Card className="flex flex-col gap-6 p-8 pb-16 w-full justify-center bg-white">
         <div className="flex justify-between">
           <p className="font-bold text-2xl text-neutral-900">Documents</p>
-          {isSynced && !isLoading && (
-            <Button
-              label="New folder"
-              leftIcon="add"
-              leftIconClassName="text-white hover:!text-white"
-              iconColor="text-white"
-              leftIconHover={false}
-              leftIconHoverColor="text-white"
-              loading={configStorageMutation.isLoading}
-              onClick={openModal}
-            />
-          )}
         </div>
-        {isLoading ? (
-          <div className="flex justify-center items-center w-full p-16">
-            <Spinner />
-          </div>
-        ) : !isSynced ? (
-          <ConnectionCard />
-        ) : (
-          <Fragment>
-            <FilterMenuDocument
-              filterForm={filterForm}
-              searchPlaceholder={t('Search documents')}
-              dataTestIdFilter="document-filter-icon"
-              dataTestIdSort="document-sort-icon"
-              dataTestIdSearch="document-search"
-            >
-              <div className="flex items-center gap-8">
-                <Layout
-                  fields={[
-                    {
-                      type: FieldType.SingleSelect,
-                      name: 'documentType',
-                      control: filterForm.control,
-                      options: [
-                        {
-                          label: 'PDF',
-                          value: 'pdf',
-                          dataTestId: 'doc-type-pdf',
-                        },
-                        {
-                          label: 'Excel',
-                          value: 'excel',
-                          dataTestId: 'doc-type-excel',
-                        },
-                        {
-                          label: 'PPT',
-                          value: 'ppt',
-                          dataTestId: 'doc-type-ppt',
-                        },
-                        {
-                          label: 'Word',
-                          value: 'word',
-                          dataTestId: 'doc-type-word',
-                        },
-                        {
-                          label: 'Other',
-                          value: 'other',
-                          dataTestId: 'doc-type-other',
-                        },
-                      ],
-                      placeholder: 'Document Type',
-                      dataTestId: 'doc-type-dropdown',
-                      height: 32,
-                      showSearch: false,
-                      className: 'w-44',
-                    },
-                  ]}
-                />
-                <div className="flex overflow-hidden rounded-14xl border border-neutral-300 bg-neutral-100 h-8 items-center">
-                  <p
-                    className="flex w-24 text-center border-r border-neutral-300 justify-center cursor-pointer items-center gap-2"
-                    onClick={() =>
-                      filterForm.setValue('showFiles', !!!showFiles)
-                    }
-                  >
-                    Files
-                    {showFiles && (
-                      <Icon name="tickCircle" size={16} hover={false} />
-                    )}
-                  </p>
-                  <p
-                    className="flex w-24 text-center justify-center cursor-pointer items-center gap-2"
-                    onClick={() =>
-                      filterForm.setValue('showFolders', !!!showFolders)
-                    }
-                  >
-                    Folders
-                    {showFolders && (
-                      <Icon name="tickCircle" size={16} hover={false} />
-                    )}
-                  </p>
-                </div>
-              </div>
-            </FilterMenuDocument>
-            {showSearchResults && <DocumentSearch searchQuery={searchQuery} />}
-            {!showSearchResults && (
-              <FolderNavigator
-                showFiles={!!showFiles}
-                showFolders={!!showFolders}
-              />
-            )}
-          </Fragment>
-        )}
+        {isBaseFolderSet && <DataList {...datalistProps} />}
+        {!isBaseFolderSet && <NoConnection />}
       </Card>
       {isOpen && (
-        <Modal open={isOpen}>
-          <Header title="New folder" onClose={closeModal} />
-          <Layout
-            fields={[
-              {
-                type: FieldType.Input,
-                control: filterForm.control,
-                name: 'folderName',
-                className: 'px-5 py-3',
-                placeholder: 'Enter folder name',
-                dataTestId: 'new-folder-name',
-                disabled: false,
-                cleareable: true,
-              },
-            ]}
-          />
-          <div className="flex gap-4 justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
-            <Button
-              label="Cancel"
-              variant={ButtonVariant.Secondary}
-              onClick={closeModal}
-            />
-            <Button
-              label="Create"
-              variant={ButtonVariant.Primary}
-              onClick={handleCreateFolder}
-              loading={createFolderMutation.isLoading}
-            />
-          </div>
-        </Modal>
+        <EntitySelectModal
+          isOpen={isOpen}
+          closeModal={closeModal}
+          onSelect={(entity: any) =>
+            updateConnectionMutation.mutate({
+              channelId: channelId,
+              folderId: entity[0].id,
+              name: entity[0].name,
+              orgProviderId: 17,
+            } as any)
+          }
+          integrationType={integrationType}
+        />
+      )}
+      {isAddModalOpen && (
+        <AddFolderModal
+          isOpen={isAddModalOpen}
+          closeModal={closeAddModal}
+          onSelect={(folderName) => {
+            console.log(folderName);
+            openModal();
+            closeAddModal();
+          }}
+        />
       )}
     </Fragment>
   );

@@ -207,4 +207,8 @@ export enum ApiEnum {
   GetOrganizationChart = 'GET_ORGANIZATION_CHART',
   GetOrganizationChartApi = 'GET_ORGANIZATION_CHART_API',
   ResendInvitation = 'RESEND_INVITATION',
+
+  //Documents
+  GetDirectories = 'GET_DIRECTORIES',
+  UpdateConnection = 'UPDATE_CONNECTION',
 }

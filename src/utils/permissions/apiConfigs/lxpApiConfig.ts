@@ -196,4 +196,8 @@ export const apiConfigLxp = {
   [ApiEnum.GetUser]: { [Default]: queries.useSingleUser },
   [ApiEnum.GetUserApi]: { [Default]: queries.getUser },
   [ApiEnum.GetMembers]: { [Default]: queries.useInfiniteMembers },
+
+  //documents
+  [ApiEnum.GetDirectories]: { [Default]: queries.useDirectories },
+  [ApiEnum.UpdateConnection]: { [Default]: queries.updateConnection },
 };
