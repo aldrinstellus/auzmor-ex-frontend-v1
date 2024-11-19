@@ -14,7 +14,6 @@ import { FC, memo, useMemo } from 'react';
 import { isEmpty } from 'lodash';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
-import { useShouldRender } from 'hooks/useShouldRender';
 import { CreatePostFlow } from 'contexts/CreatePostContext';
 import useRole from 'hooks/useRole';
 import useNavigate from 'hooks/useNavigation';
@@ -25,8 +24,6 @@ import Truncate from 'components/Truncate';
 import useProduct from 'hooks/useProduct';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
-
-const ID = 'AnnouncementWidget';
 
 export interface IAnnouncementCardProps {
   postId?: string;
@@ -44,10 +41,6 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
   const { getApi } = usePermissions();
   const { t: tp } = useTranslation('profile');
   const { t } = useTranslation('announcement');
-  const shouldRender = useShouldRender(ID);
-  if (!shouldRender) {
-    return <></>;
-  }
   const { isLxp } = useProduct();
   const queryClient = useQueryClient();
   const { user } = useAuth();

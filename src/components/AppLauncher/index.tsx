@@ -17,20 +17,13 @@ import { useAppStore } from 'stores/appStore';
 
 import { isFiltersEmpty } from 'utils/misc';
 import { useTranslation } from 'react-i18next';
-import { useShouldRender } from 'hooks/useShouldRender';
 import useNavigate from 'hooks/useNavigation';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
 import useProduct from 'hooks/useProduct';
 
-const ID = 'AppLauncher';
-
 const AppLauncher = () => {
   const { t } = useTranslation('appLauncher');
-  const shouldRender = useShouldRender(ID);
-  if (!shouldRender) {
-    return <></>;
-  }
   const { getApi } = usePermissions();
   const navigate = useNavigate();
   const { isAdmin, isLearner } = useRole();

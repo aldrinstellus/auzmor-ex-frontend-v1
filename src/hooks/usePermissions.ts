@@ -1,6 +1,12 @@
-import { apiConfigLxp, apiConfigOffice } from 'utils/permissions';
+import {
+  apiConfigLxp,
+  apiConfigOffice,
+  componentConfigLxp,
+  componentConfigOffice,
+} from 'utils/permissions';
 import { getProduct, ProductEnum } from 'utils/apiService';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { ComponentEnum } from 'utils/permissions/enums/componentEnum';
 import useAuth from './useAuth';
 import { UserRole } from 'interfaces';
 
@@ -37,5 +43,23 @@ export const usePermissions = () => {
     return defaultResponse;
   };
 
-  return { getApi };
+  const componentConfig = (
+    product === ProductEnum.Lxp ? componentConfigLxp : componentConfigOffice
+  ) as any;
+
+  const getComponent = (componentEnum: ComponentEnum) => {
+    const defaultResponse = null;
+    try {
+      if (role && !!componentConfig[componentEnum][role]) {
+        return componentConfig[componentEnum][role];
+      } else if (!!componentConfig[componentEnum]!['DEFAULT']) {
+        return componentConfig[componentEnum]!['DEFAULT'];
+      }
+    } catch (_) {
+      return defaultResponse;
+    }
+    return defaultResponse;
+  };
+
+  return { getApi, getComponent };
 };

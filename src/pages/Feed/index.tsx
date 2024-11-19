@@ -1,11 +1,10 @@
 import { FC } from 'react';
 import { usePageTitle } from 'hooks/usePageTitle';
-import Feed, { WidgetEnum } from 'components/Feed';
+import Feed from 'components/Feed';
 import { useLocation } from 'react-router-dom';
-import useMediaQuery from 'hooks/useMediaQuery';
 import { CELEBRATION_TYPE } from 'components/CelebrationWidget';
 import { FeedModeEnum } from 'stores/feedStore';
-import useProduct from 'hooks/useProduct';
+import { ComponentEnum } from 'utils/permissions/enums/componentEnum';
 
 interface IHomeFeedProps {}
 
@@ -39,8 +38,6 @@ const HomeFeed: FC<IHomeFeedProps> = () => {
   const announcements =
     pathname === '/announcements' || pathname == '/user/announcements';
 
-  const { isOffice } = useProduct();
-
   // Set page title
   if (scheduled) {
     usePageTitle('scheduledPosts');
@@ -52,44 +49,30 @@ const HomeFeed: FC<IHomeFeedProps> = () => {
     usePageTitle('feed');
   }
 
-  const isLargeScreen = useMediaQuery('(min-width: 1300px)');
-
   return (
     <Feed
       mode={FeedModeEnum.Default}
       leftWidgets={[
-        WidgetEnum.UserCard,
-        WidgetEnum.AppLauncher,
-        WidgetEnum.Channels,
-        WidgetEnum.MyTeam,
+        ComponentEnum.UserCardWidget,
+        ComponentEnum.AppLauncherWidget,
+        ComponentEnum.ChannelsWidget,
+        ComponentEnum.TeamsWidget,
       ]}
       rightWidgets={[
-        WidgetEnum.ProgressTracker,
-        WidgetEnum.CelebrationBirthday,
-        WidgetEnum.CelebrationAnniversary,
-        WidgetEnum.Event,
-        WidgetEnum.AnnouncementCard,
-        WidgetEnum.ChannelRequest,
-        WidgetEnum.EvaluationRequestWidget,
+        ComponentEnum.ProgressTrackerWidget,
+        ComponentEnum.BirthdayCelebrationWidget,
+        ComponentEnum.AnniversaryCelebrationWidget,
+        ComponentEnum.EventWidget,
+        ComponentEnum.AnnouncementWidget,
+        ComponentEnum.ChannelRequestWidget,
+        ComponentEnum.EvaluationRequestWidget,
       ]}
       widgetProps={{
-        [WidgetEnum.MyTeam]: {
-          className: isLargeScreen ? 'sticky top-4' : '',
-        },
-        [WidgetEnum.CelebrationBirthday]: {
+        [ComponentEnum.BirthdayCelebrationWidget]: {
           type: CELEBRATION_TYPE.Birthday,
         },
-        [WidgetEnum.CelebrationAnniversary]: {
+        [ComponentEnum.AnniversaryCelebrationWidget]: {
           type: CELEBRATION_TYPE.WorkAnniversary,
-        },
-        [WidgetEnum.Event]: {
-          className: 'sticky top-4',
-        },
-        [WidgetEnum.AnnouncementCard]: {
-          className: isOffice ? 'sticky top-4' : ' ',
-        },
-        [WidgetEnum.EvaluationRequestWidget]: {
-          className: 'sticky top-4',
         },
       }}
       modeProps={{ [FeedModeEnum.Default]: {} }}

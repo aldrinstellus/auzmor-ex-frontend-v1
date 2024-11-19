@@ -13,11 +13,8 @@ import { AuthContext } from 'contexts/AuthContext';
 import { isFiltersEmpty } from 'utils/misc';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
-import { useShouldRender } from 'hooks/useShouldRender';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
-
-const ID = 'CelebrationWidget';
 
 export enum CELEBRATION_TYPE {
   Birthday = 'BIRTHDAY',
@@ -34,10 +31,6 @@ const CelebrationWidget: FC<ICelebrationWidgetProps> = ({
   className = '',
 }) => {
   const { t } = useTranslation('celebrationWidget');
-  const shouldRender = useShouldRender(ID);
-  if (!shouldRender) {
-    return <></>;
-  }
   const { getApi } = usePermissions();
   const { user } = useContext(AuthContext);
   const { currentTimezone } = useCurrentTimezone();

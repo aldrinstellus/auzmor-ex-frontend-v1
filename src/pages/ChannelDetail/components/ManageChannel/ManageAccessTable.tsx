@@ -24,6 +24,8 @@ import useAuth from 'hooks/useAuth';
 import { useInView } from 'react-intersection-observer';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
+import useProduct from 'hooks/useProduct';
+import useRole from 'hooks/useRole';
 
 type AppProps = {
   isLoading?: boolean;
@@ -42,6 +44,8 @@ const ManageAccessTable: FC<AppProps> = ({
   const { t } = useTranslation('channelDetail', { keyPrefix: 'manageAccess' });
   const { channelId = '' } = useParams();
   const channel = useChannelStore((state) => state.channels)[channelId];
+  const { isLxp } = useProduct();
+  const { isAdmin } = useRole();
   const { getApi } = usePermissions();
   const { ref, inView } = useInView();
   useEffect(() => {
@@ -127,7 +131,8 @@ const ManageAccessTable: FC<AppProps> = ({
                       disabled={user?.userId === currentUser?.id} // disable popup menu for current user
                       triggerNode={
                         <>
-                          {user?.userId === currentUser?.id ? (
+                          {!(isLxp && isAdmin) &&
+                          user?.userId === currentUser?.id ? (
                             <div className=" pl-4 !text-sm !font-medium capitalize w-28 text-center">
                               {user?.role?.toLowerCase()}
                             </div>
@@ -138,9 +143,11 @@ const ManageAccessTable: FC<AppProps> = ({
                               label={user?.role?.toLowerCase() || 'Admin'}
                               rightIcon={'arrowDown'}
                               disabled={
-                                user.role === CHANNEL_ROLE.Admin &&
-                                (user?.globalRole === 'PRIMARY_ADMIN' ||
-                                  user?.globalRole === 'ADMIN')
+                                isLxp
+                                  ? false
+                                  : user.role === CHANNEL_ROLE.Admin &&
+                                    (user?.globalRole === 'PRIMARY_ADMIN' ||
+                                      user?.globalRole === 'ADMIN')
                               }
                             />
                           )}
