@@ -2,9 +2,10 @@ import Card from 'components/Card';
 import Button, { Size, Variant } from 'components/Button';
 import Icon from 'components/Icon';
 import SkeletonLoader from './components/SkeletonLoader';
-
 import EmptyState from './components/EmptyState';
-import { FC, memo, useState } from 'react';
+
+import clsx from 'clsx';
+import { FC, memo, useMemo, useState } from 'react';
 import useModal from 'hooks/useModal';
 import EditLinksModal from './components/EditLinksModal';
 import { useTranslation } from 'react-i18next';
@@ -17,8 +18,10 @@ import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export type LinksWidgetProps = {
   canEdit: boolean;
+  className?: string;
 };
-const LinksWidget: FC<LinksWidgetProps> = ({ canEdit }) => {
+
+const LinksWidget: FC<LinksWidgetProps> = ({ canEdit, className = '' }) => {
   const { channelId = '' } = useParams();
   const { getApi } = usePermissions();
   const [open, openCollpase, closeCollapse] = useModal(true, false);
@@ -51,8 +54,13 @@ const LinksWidget: FC<LinksWidgetProps> = ({ canEdit }) => {
 
   const maxListSize = 4;
 
+  const style = useMemo(
+    () => clsx({ 'py-6 flex flex-col rounded-9xl': true, [className]: true }),
+    [className],
+  );
+
   return (
-    <Card className="py-6 flex flex-col rounded-9xl" shadowOnHover>
+    <Card className={style} shadowOnHover>
       <div
         className="px-4 flex items-center justify-between cursor-pointer"
         data-testid="links-widget"
