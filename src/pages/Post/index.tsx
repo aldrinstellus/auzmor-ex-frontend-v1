@@ -35,7 +35,8 @@ const PostPage: FC = () => {
   const AnnouncementWidget = getComponent(ComponentEnum.AnnouncementWidget);
   const post = getPost(id);
 
-  const getRightWidgets = () => <AnnouncementWidget postId={post.id} />;
+  const getRightWidgets = () =>
+    AnnouncementWidget ? <AnnouncementWidget postId={post.id} /> : <></>;
   return post ? (
     <>
       <div className="mb-12 space-x-8 flex w-full">
