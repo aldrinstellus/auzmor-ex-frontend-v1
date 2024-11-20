@@ -127,6 +127,13 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
     ) as { id: string }[]) || [];
 
   useEffect(() => {
+    if (isAdmin) {
+      setFilters({
+        visibility: ChannelVisibilityEnum.All,
+        channelType: ChannelTypeEnum.AllChannels,
+      });
+      return;
+    }
     if (
       channelIds.length === 0 &&
       filters?.channelType === ChannelTypeEnum.MyChannels
@@ -142,6 +149,7 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
       });
     }
   }, []);
+
   const onFilterButtonClick = (type: ChannelTypeEnum) => {
     return () => {
       updateFilter('channelType', type);
@@ -174,6 +182,20 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
           filters?.channelType === ChannelTypeEnum.MyChannels,
         )}`,
         dataTestId: 'my-channels-filter',
+        isHidden: isAdmin,
+      },
+      {
+        label: t('filterCTA.allChannels'),
+        isActive: filters?.channelType === ChannelTypeEnum.AllChannels,
+        onClick: onFilterButtonClick(ChannelTypeEnum.AllChannels),
+        labelClassName: `text-sm ${getLableClassName(
+          filters?.channelType === ChannelTypeEnum.AllChannels,
+        )}`,
+        className: `${getClassName(
+          filters?.channelType === ChannelTypeEnum.AllChannels,
+        )}`,
+        dataTestId: 'all-channels-filter',
+        isHidden: !isAdmin,
       },
       {
         label: t('filterCTA.managed'),
@@ -186,33 +208,21 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
           filters?.channelType === ChannelTypeEnum.Managed,
         )}`,
         dataTestId: 'managed',
+        isHidden: false,
       },
-      isAdmin
-        ? {
-            label: t('filterCTA.allChannels'),
-            isActive: filters?.channelType === ChannelTypeEnum.AllChannels,
-            onClick: onFilterButtonClick(ChannelTypeEnum.AllChannels),
-            labelClassName: `text-sm ${getLableClassName(
-              filters?.channelType === ChannelTypeEnum.AllChannels,
-            )}`,
-            className: `${getClassName(
-              filters?.channelType === ChannelTypeEnum.AllChannels,
-            )}`,
-            dataTestId: 'all-channels-filter',
-          }
-        : {
-            label: t('filterCTA.discoverNewChannels'),
-            isActive:
-              filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
-            onClick: onFilterButtonClick(ChannelTypeEnum.DiscoverNewChannels),
-            labelClassName: `text-sm ${getLableClassName(
-              filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
-            )}`,
-            className: `${getClassName(
-              filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
-            )}`,
-            dataTestId: 'discover-new-channels-filter',
-          },
+      {
+        label: t('filterCTA.discoverNewChannels'),
+        isActive: filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
+        onClick: onFilterButtonClick(ChannelTypeEnum.DiscoverNewChannels),
+        labelClassName: `text-sm ${getLableClassName(
+          filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
+        )}`,
+        className: `${getClassName(
+          filters?.channelType === ChannelTypeEnum.DiscoverNewChannels,
+        )}`,
+        dataTestId: 'discover-new-channels-filter',
+        isHidden: isAdmin,
+      },
       {
         label: t('filterCTA.starred'),
         isActive: filters?.channelType === ChannelTypeEnum.Starred,
@@ -224,6 +234,7 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
           filters?.channelType === ChannelTypeEnum.Starred,
         )}`,
         dataTestId: 'starred-filter',
+        isHidden: isAdmin,
       },
       {
         label: t('filterCTA.requested'),
@@ -236,8 +247,9 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
           filters?.channelType === ChannelTypeEnum.Requested,
         )}`,
         dataTestId: 'requested-filter',
+        isHidden: isAdmin,
       },
-    ];
+    ].filter((item) => !item.isHidden);
   }, [filters]);
 
   const emptyFilters = _.every(

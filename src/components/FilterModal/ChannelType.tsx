@@ -98,6 +98,15 @@ const ChannelType: FC<IChannelTypeProps> = ({ control, watch }) => {
     if (option.data.value === ChannelTypeEnum.DiscoverNewChannels && isAdmin) {
       return false;
     }
+    if (option.data.value === ChannelTypeEnum.MyChannels && isAdmin) {
+      return false;
+    }
+    if (option.data.value === ChannelTypeEnum.Starred && isAdmin) {
+      return false;
+    }
+    if (option.data.value === ChannelTypeEnum.Requested && isAdmin) {
+      return false;
+    }
     return enumToTitleCase(option.data.value)
       .toLowerCase()
       .includes(debouncedChannelTypeSearchValue.toLowerCase());
