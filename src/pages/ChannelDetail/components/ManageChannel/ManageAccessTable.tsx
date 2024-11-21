@@ -128,7 +128,9 @@ const ManageAccessTable: FC<AppProps> = ({
                 <TableCell>
                   <div className="relative">
                     <PopupMenu
-                      disabled={user?.userId === currentUser?.id} // disable popup menu for current user
+                      disabled={
+                        !(isLxp && isAdmin) && user?.userId === currentUser?.id
+                      } // disable popup menu for current user
                       triggerNode={
                         <>
                           {!(isLxp && isAdmin) &&
