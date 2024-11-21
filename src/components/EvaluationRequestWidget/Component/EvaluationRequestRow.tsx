@@ -35,7 +35,10 @@ const EvaluationRequestRow: FC<EvaluationRequestRowProps> = ({
   return (
     <Card className={style}>
       <div className="flex rounded justify-between items-center ">
-        <Truncate className={'text-sm font-bold'} text={data?.module} />
+        <Truncate
+          className={'text-sm font-bold'}
+          text={data?.source?.source_name || data?.module}
+        />
         <Tooltip tooltipContent={t('startEvaluationTooltip')}>
           <Icon
             onClick={() => {
