@@ -15,7 +15,6 @@ export interface ITabsProps {
   activeTabIndex?: number;
   tabContentClassName?: string;
   className?: string;
-  itemSpacing?: number;
   showUnderline?: boolean;
   tabSwitcherClassName?: string;
   disableAnimation?: boolean;
@@ -28,7 +27,6 @@ const Tabs: FC<ITabsProps> = ({
   title,
   tabContentClassName = 'px-6',
   className = 'w-full flex justify-start border-b-1 border border-neutral-200 px-8',
-  itemSpacing = 4,
   showUnderline = true,
   tabSwitcherClassName = '',
   disableAnimation = false,
@@ -84,13 +82,13 @@ const Tabs: FC<ITabsProps> = ({
           <ul className={className}>
             {tabs.map((tab, index) => (
               <li
-                className={`flex py-4 relative outline-none ${tabSwitcherClassName} ${
+                className={`flex py-4 relative outline-none gap-4 ${tabSwitcherClassName} ${
                   !tab.disabled
                     ? isActive(index)
                       ? 'cursor-default'
                       : 'cursor-pointer hover:!text-neutral-900 group'
                     : 'cursor-not-allowed'
-                } ${index !== tabs.length - 1 && `mr-${itemSpacing}`}
+                }
             `}
                 onClick={() => handleTabSelect(tab, index)}
                 onKeyUp={(e) =>

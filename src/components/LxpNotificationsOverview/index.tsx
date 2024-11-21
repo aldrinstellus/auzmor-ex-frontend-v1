@@ -51,7 +51,7 @@ const LxpNotificationsOverview: FC = () => {
       id: 0,
       tabLabel: (isActive: boolean) => (
         <p
-          className={`font-bold text-sm  w-[53px] text-center ${
+          className={`font-semibold text-[13px] w-[53px] text-center ${
             isActive
               ? 'text-neutral-900'
               : 'text-neutral-500 group-hover:text-neutral-900 group-focus:text-neutral-900'
@@ -67,7 +67,7 @@ const LxpNotificationsOverview: FC = () => {
       id: 1,
       tabLabel: (isActive: boolean) => (
         <p
-          className={`font-bold text-sm  w-[53px] text-center ${
+          className={`font-bold text-[13px] w-[53px] text-center ${
             isActive
               ? 'text-neutral-900'
               : 'text-neutral-500 group-hover:text-neutral-900 group-focus:text-neutral-900'
@@ -121,10 +121,10 @@ const LxpNotificationsOverview: FC = () => {
       ref={viewAllRef}
       triggerNodeClassName="outline-none"
     >
-      <Card className=" rounded absolute w-[455px]   right-0 top-4 border border-neutral-200 ">
+      <Card className="fixed w-[390px] min-h-[100px] max-h-[482px] right-0 border border-neutral-200 !rounded-[10px]">
         {/* Header */}
         <div className="px-4 py-2 flex items-center justify-between">
-          <p className="text-gray-900 font-extrabold text-base">
+          <p className="text-gray-900 font-extrabold text-[13px]">
             {t('notifications')}
           </p>
           {/* Mark all as read */}
@@ -138,7 +138,7 @@ const LxpNotificationsOverview: FC = () => {
                 e.code === 'Enter' ? markReadMutation.mutate(category) : ''
               }
               data-testid="notifications-mark-all-read"
-              className="text-primary-500 cursor-pointer"
+              className="text-primary-500 cursor-pointer text-xs"
             >
               {t('markAsRead')}
             </p>
@@ -150,7 +150,7 @@ const LxpNotificationsOverview: FC = () => {
                 )
               }
               data-testid="notification-setting"
-              className="text-primary-500  cursor-pointer"
+              className="text-primary-500  cursor-pointer text-xs"
             >
               {t('settings')}{' '}
             </p>
@@ -161,9 +161,9 @@ const LxpNotificationsOverview: FC = () => {
         <Tabs
           tabs={notifTabs}
           tabContentClassName=""
+          tabSwitcherClassName="!py-1 text-[13px]"
           underlineOffset={2}
-          className="flex justify-start gap-x-1 mb-2 px-4 border-b-1 border-neutral-200 w-full "
-          itemSpacing={4}
+          className="flex justify-start gap-x-1 px-2 border-b-1 border-neutral-200 w-full h-10"
           onTabChange={(index) => setActiveTabIndex(index)}
         />
       </Card>

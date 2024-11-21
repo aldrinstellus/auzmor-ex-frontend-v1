@@ -616,9 +616,8 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               tabs={tabs}
               tabSwitcherClassName="!p-1 "
               showUnderline={false}
-              itemSpacing={1}
               tabContentClassName="mt-8 mb-32"
-              className="w-full flex mx-8"
+              className="w-full flex mx-8 gap-1"
               onTabChange={handleTabChange}
               activeTabIndex={getActiveTabIndex()}
             />

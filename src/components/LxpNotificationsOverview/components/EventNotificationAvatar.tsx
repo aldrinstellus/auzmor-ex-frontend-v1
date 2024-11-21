@@ -40,6 +40,7 @@ const EventNotificationAvatar: React.FC<EventNotificationAvatarProps> = ({
         <div className="w-[50px] h-[50px] rounded-full flex items-center justify-center">
           <Icon
             name={getIconForAction(actionType, target1Type) || ''}
+            size={50}
             className="w-[50px] h-[50px] min-w-[50px] min-h-[50px]"
           />
         </div>

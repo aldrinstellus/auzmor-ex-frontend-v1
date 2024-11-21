@@ -21,7 +21,12 @@ const NotificationTitle = ({
   };
 
   return (
-    <div className={`${linkTo ? 'cursor-pointer' : ''}`} onClick={handleClick}>
+    <p
+      className={`!leading-[18px] !text-[13px] ${
+        linkTo ? 'cursor-pointer' : ''
+      }`}
+      onClick={handleClick}
+    >
       <NotificationText as="p">
         <Trans
           i18nKey={i18nKey}
@@ -30,7 +35,7 @@ const NotificationTitle = ({
           components={components}
         />
       </NotificationText>
-    </div>
+    </p>
   );
 };
 

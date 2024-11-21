@@ -40,7 +40,7 @@ const Avatar: FC<AvatarProps> = ({
   image = '',
   size = 48,
   showActiveIndicator = false,
-  bgColor = '#262626',
+  bgColor,
   indicatorIcon = null,
   loading = false,
   dataTestId = '',
@@ -55,7 +55,11 @@ const Avatar: FC<AvatarProps> = ({
   const branding = useBrandingStore((state) => state.branding);
 
   if (isLxp) {
-    bgColor = user?.profileColor || branding.primaryColor;
+    bgColor = bgColor || user?.profileColor || branding.primaryColor;
+  } else {
+    if (!bgColor) {
+      bgColor = '#262626';
+    }
   }
 
   const containerStyles = useMemo(
