@@ -1,5 +1,5 @@
 export enum LxpRoleEnum {
-  PrimaryAdmin = 'PRIMARYADMIN',
+  PrimaryAdmin = 'PRIMARY_ADMIN',
   Admin = 'ADMIN',
   Manager = 'MANAGER',
   Learner = 'LEARNER',

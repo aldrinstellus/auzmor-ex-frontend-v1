@@ -10,6 +10,7 @@ import Button, {
 } from 'components/Button';
 import Card from 'components/Card';
 import {
+  CHANNEL_ROLE,
   ChannelVisibilityEnum,
   IChannel,
   useChannelStore,
@@ -25,6 +26,9 @@ import ChannelBanner from './ChannelBanner';
 import ChannelLogo from './ChannelLogo';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import useProduct from 'hooks/useProduct';
+import useRole from 'hooks/useRole';
+import useAuth from 'hooks/useAuth';
 
 interface IChannelCardProps {
   channel: IChannel;
@@ -32,19 +36,30 @@ interface IChannelCardProps {
 
 const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
   const { t } = useTranslation('channels');
+  const { t: tc } = useTranslation('channelDetail');
   const updateChannel = useChannelStore((state) => state.updateChannel);
   const navigate = useNavigate();
   const { getApi } = usePermissions();
+  const { isLxp } = useProduct();
+  const { isAdmin } = useRole();
+  const { user } = useAuth();
 
   const showRequestBtn =
+    !(isLxp && isAdmin) &&
     channel.settings?.visibility === ChannelVisibilityEnum.Private &&
     !!!channel.member &&
     !!!channel.joinRequest;
+  const showInviteYourselfBtn =
+    isLxp &&
+    isAdmin &&
+    channel.settings?.visibility === ChannelVisibilityEnum.Private &&
+    !!!channel.member;
   const showJoinChannelBtn =
     channel.settings?.visibility === ChannelVisibilityEnum.Public &&
     !!!channel.member &&
     !!!channel.joinRequest;
   const showWithdrawBtn =
+    !(isLxp && isAdmin) &&
     channel.settings?.visibility === ChannelVisibilityEnum.Private &&
     !!!channel.member &&
     !!channel.joinRequest;
@@ -52,6 +67,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
     visibilty: channel?.settings?.visibility,
     channelName: channel?.name,
   });
+
   // Join public/private channel request mutation
   const joinChannelRequest = getApi(ApiEnum.CreateJoinChannelRequest);
   const joinChannelMutation = useMutation({
@@ -76,6 +92,27 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
     },
   });
 
+  // Join as Admin
+  const inviteYourSelf = getApi(ApiEnum.AddChannelMembers);
+  const inviteYourselfMutation = useMutation({
+    mutationKey: ['add-channel-members', channel.id],
+    mutationFn: () =>
+      inviteYourSelf(channel.id, {
+        users: [{ id: user!.id, role: CHANNEL_ROLE.Admin }],
+      }),
+    onError: () => {
+      failureToastConfig({
+        content: tc('joinAsAdmin.failure'),
+      });
+    },
+    onSuccess: () => {
+      successToastConfig({
+        content: tc('joinAsAdmin.success'),
+      });
+      queryClient.invalidateQueries(['channel']);
+    },
+  });
+
   // Withdraw join request
   const deleteJoinChannelRequest = getApi(ApiEnum.DeleteJoinChannelRequest);
   const withdrawJoinChannelRequest = useMutation({
@@ -95,6 +132,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
       });
     },
   });
+
   return (
     <div
       className="w-full cursor-pointer outline-none group/channel-card"
@@ -107,7 +145,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
     >
       <Card
         shadowOnHover
-        className="flex flex-col gap-2 relative group-focus-within/channel-card:shadow-xl"
+        className="h-full flex flex-col gap-2 relative group-focus-within/channel-card:shadow-xl"
       >
         <div className="w-full h-[80px] bg-slate-500 rounded-t-9xl">
           <ChannelBanner channel={channel} />
@@ -136,6 +174,18 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
             text={channel?.description || defaulChannelDescription}
             className="text-xxs text-neutral-500 h-7 max-w-[208px]"
           />
+          {showInviteYourselfBtn && (
+            <Button
+              label={t('publicChannel.joinRequestCTA')}
+              size={ButtonSize.ExtraSmall}
+              variant={ButtonVariant.Secondary}
+              className="mt-2 font-semibold"
+              onClick={(e) => {
+                e.stopPropagation();
+                inviteYourselfMutation.mutate();
+              }}
+            />
+          )}
           {showRequestBtn && (
             <Button
               label={t('privateChannel.joinRequestCTA')}
