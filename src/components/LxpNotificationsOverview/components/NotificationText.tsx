@@ -2,8 +2,8 @@ import Text from 'components/Text/Text';
 
 const NotificationText = ({ bold = false, children }: any) => {
   const baseClasses = 'text-[13px] tracking-wide';
-  const textColor = bold ? 'text-gray-900' : 'text-gray-600';
-  const fontWeight = bold ? 'font-black' : 'font-normal';
+  const textColor = bold ? 'text-neutral-900 break-all' : 'text-neutral-500';
+  const fontWeight = bold ? 'font-semibold' : 'font-normal';
 
   return (
     <Text

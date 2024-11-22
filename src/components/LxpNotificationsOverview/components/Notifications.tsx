@@ -89,7 +89,7 @@ const Notifications = forwardRef(
         {!isError && notificationData?.length ? (
           <div
             id="notification-body"
-            className="flex flex-col h-[394px] overflow-y-auto mt-1 gap-y-2 "
+            className="flex flex-col h-[394px] overflow-y-auto mt-1 gap-2 "
           >
             {notificationData.map((notification: any, index: number) => (
               <React.Fragment key={notification.id}>
