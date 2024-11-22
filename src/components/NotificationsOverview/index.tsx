@@ -134,7 +134,7 @@ const NotificationsOverview: FC = () => {
         <Tabs
           tabs={notifTabs}
           tabContentClassName=""
-          className="flex justify-start gap-x-1 px-4 border-b-1 border-neutral-200 w-full mb-2"
+          className="flex justify-start gap-1 px-4 border-b-1 border-neutral-200 w-full"
         />
         <Divider />
         <NavLink

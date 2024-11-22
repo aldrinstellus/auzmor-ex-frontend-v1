@@ -153,6 +153,7 @@ const AudienceModal: FC<IAudienceModalProps> = ({
               ]
             );
           })}
+        className="px-6"
       />
     </Modal>
   );
