@@ -1,7 +1,7 @@
 import Text from 'components/Text/Text';
 
 const NotificationText = ({ bold = false, children }: any) => {
-  const baseClasses = 'text-sm tracking-wide';
+  const baseClasses = 'text-[13px] tracking-wide';
   const textColor = bold ? 'text-gray-900' : 'text-gray-600';
   const fontWeight = bold ? 'font-black' : 'font-normal';
 

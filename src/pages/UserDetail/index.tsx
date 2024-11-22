@@ -165,10 +165,9 @@ const UserDetail: FC<IUserDetailProps> = () => {
         <div className="w-1/2 px-3">
           <Tabs
             tabs={tabs}
-            className="w-fit flex justify-start bg-neutral-50 rounded-8xl border-solid border-1 border-neutral-200"
+            className="w-fit flex justify-start bg-neutral-50 rounded-8xl border-solid border-1 border-neutral-200 gap-0"
             tabSwitcherClassName="!p-1"
             showUnderline={false}
-            itemSpacing={0}
             tabContentClassName="mt-5"
           />
         </div>

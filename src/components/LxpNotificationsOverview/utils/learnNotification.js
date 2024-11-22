@@ -6,6 +6,7 @@ import camelCase from 'lodash/camelCase';
 import pluralize from 'pluralize';
 import hasIn from 'lodash/hasIn';
 import i18n from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 import {
   NOTIFICATION_ACTION_TYPES,
@@ -17,12 +18,14 @@ import {
   TASK_CONFIG_ROLES,
   TASK_CREATION_SCOPE,
   TASK_TYPE,
+  TASK_CATEGORIES,
 } from './constants';
 import moment from 'moment';
 import NotificationTitle from '../components/NotificationTitle';
 import NotificationText from '../components/NotificationText';
 
 import { convertKeysToCamelCase } from 'utils/misc';
+import useAuth from 'hooks/useAuth';
 
 export const isLearnerRoute = () => {
   const path = window.location.pathname.toLowerCase();
@@ -363,6 +366,8 @@ export const getNotificationTitle = (
   target2Type,
   additionalInfo,
 ) => {
+  const { user } = useAuth();
+  const { t } = useTranslation('learnNotifications');
   if (additionalInfo) {
     additionalInfo = convertKeysToCamelCase(additionalInfo);
   }
@@ -542,7 +547,11 @@ export const getNotificationTitle = (
         i18nKey="notifications.reportGenerated"
         values={{
           reportName: deletedTargetName,
-          trainingType: i18n.t(`reportsType.${camelCase(target2Type)}`),
+          trainingType: t(`reportsType.${camelCase(target2Type)}`),
+          oc:
+            additionalInfo && additionalInfo.isObservationChecklist
+              ? ` (${i18n.t('task:observationChecklist.title')})`
+              : '',
         }}
         linkTo={
           isLearn
@@ -1040,14 +1049,14 @@ export const getNotificationTitle = (
       />
     );
   }
-  // if (NOTIFICATION_ACTION_TYPES.EcommerceCurrencyChanged === actionType) {
-  //   return (
-  //     <NotificationTitle
-  //       i18nKey="notifications.currencyChanged"
-  //       values={{ currency: CURRENCY_NAMES.additionalInfo.currency }}
-  //     />
-  //   );
-  // }
+  if (NOTIFICATION_ACTION_TYPES.EcommerceCurrencyChanged === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.currencyChanged"
+        values={{ currency: CURRENCY_NAMES.additionalInfo.currency }}
+      />
+    );
+  }
   if (NOTIFICATION_ACTION_TYPES.EventAssigned === actionType) {
     return (
       <NotificationTitle
@@ -1584,6 +1593,97 @@ export const getNotificationTitle = (
       />
     );
   }
+  if (
+    NOTIFICATION_ACTION_TYPES.NotificationLPEventSeatFillingFast === actionType
+  ) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.notificationLPEventSeatFillingFast"
+        values={{ eventName: deletedTargetName }}
+        linkTo={getSourceRoute(isLearn, target1Type, targetId1)}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.LearnerCourseOverdue === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.learnerCourseOverdue"
+        values={{ courseName: deletedTargetName }}
+        linkTo={getSourceRoute(isLearn, target1Type, targetId1)}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.CourseOverdueByXDays === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.courseOverdueByXDays"
+        values={{ courseName: deletedTargetName, days: periods }}
+        linkTo={getSourceRoute(isLearn, target1Type, targetId1)}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.LearnerLearningPathOverdue === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.learnerLearningPathOverdue"
+        values={{ pathName: deletedTargetName }}
+        linkTo={getSourceRoute(isLearn, target1Type, targetId1)}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.LearningPathOverdueByXDays === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.learningPathOverdueByXDays"
+        values={{ pathName: deletedTargetName, days: periods }}
+        linkTo={getSourceRoute(isLearn, target1Type, targetId1)}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (
+    NOTIFICATION_ACTION_TYPES.NotificationLPEventCapacityExhausted ===
+    actionType
+  ) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.notificationLPEventCapacityExhausted"
+        values={{ eventName: deletedTargetName }}
+        linkTo={getSourceRoute(isLearn, target1Type, targetId1)}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (
+    NOTIFICATION_ACTION_TYPES.NotificationOnUnavailableMandatoryTraining ===
+    actionType
+  ) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.notificationOnUnavailableMandatoryTraining"
+        values={{ pathName: deletedTargetName }}
+        linkTo={getSourceRoute(isLearn, target1Type, targetId1)}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (
+    NOTIFICATION_ACTION_TYPES.NotificationOnUnavailableOptionalTraining ===
+    actionType
+  ) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.notificationOnUnavailableOptionalTraining"
+        values={{ pathName: deletedTargetName }}
+        linkTo={getSourceRoute(isLearn, target1Type, targetId1)}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
 
   // Feedback
   if (NOTIFICATION_ACTION_TYPES.FeedbackSubmitted === actionType) {
@@ -1963,7 +2063,16 @@ export const getNotificationTitle = (
       return (
         <NotificationTitle
           i18nKey="notifications.taskAssignedAsAssignee"
-          values={{ actor: name, task: deletedTargetName }}
+          values={{
+            actor: name,
+            task: deletedTargetName,
+            oc:
+              additionalInfo &&
+              additionalInfo.metadata &&
+              additionalInfo.metadata.isObservationChecklist
+                ? ` (${i18n.t('task:observationChecklist.title')})`
+                : '',
+          }}
           linkTo={`${
             isLearn ? '/user' : ''
           }/tasks/${targetId1}/assignee/detail`}
@@ -1975,7 +2084,16 @@ export const getNotificationTitle = (
       return (
         <NotificationTitle
           i18nKey="notifications.taskAssignedAsViewer"
-          values={{ actor: name, task: deletedTargetName }}
+          values={{
+            actor: name,
+            task: deletedTargetName,
+            oc:
+              additionalInfo &&
+              additionalInfo.metadata &&
+              additionalInfo.metadata.isObservationChecklist
+                ? ` (${i18n.t('task:observationChecklist.title')})`
+                : '',
+          }}
           linkTo={viewerRedirectUrl}
           components={[<NotificationText bold viewInline />]}
         />
@@ -1985,7 +2103,16 @@ export const getNotificationTitle = (
       return (
         <NotificationTitle
           i18nKey="notifications.taskAssignedAsReviewer"
-          values={{ actor: name, task: deletedTargetName }}
+          values={{
+            actor: name,
+            task: deletedTargetName,
+            oc:
+              additionalInfo &&
+              additionalInfo.metadata &&
+              additionalInfo.metadata.isObservationChecklist
+                ? ` (${i18n.t('task:observationChecklist.title')})`
+                : '',
+          }}
           linkTo={reviewerRedirectUrl}
           components={[<NotificationText bold viewInline />]}
         />
@@ -2006,8 +2133,15 @@ export const getNotificationTitle = (
           values={{
             actor: name,
             taskType: isSubTask
-              ? i18n.t('notifications.subTask')
-              : i18n.t('notifications.task'),
+              ? t('notifications.subTask')
+              : t('notifications.task'),
+            oc:
+              !isSubTask &&
+              additionalInfo &&
+              additionalInfo.metadata &&
+              additionalInfo.metadata.isObservationChecklist
+                ? ` (${i18n.t('task:observationChecklist.title')})`
+                : '',
             taskTypeName: deletedTargetName,
             parent: isSubTask ? additionalInfo.parent.title : '',
           }}
@@ -2028,8 +2162,15 @@ export const getNotificationTitle = (
           values={{
             actor: name,
             taskType: isSubTask
-              ? i18n.t('notifications.subTask')
-              : i18n.t('notifications.task'),
+              ? t('notifications.subTask')
+              : t('notifications.task'),
+            oc:
+              !isSubTask &&
+              additionalInfo &&
+              additionalInfo.metadata &&
+              additionalInfo.metadata.isObservationChecklist
+                ? ` (${i18n.t('task:observationChecklist.title')})`
+                : '',
             taskTypeName: deletedTargetName,
             parent: isSubTask ? ` (${additionalInfo.parent.title})` : '',
           }}
@@ -2058,8 +2199,15 @@ export const getNotificationTitle = (
           values={{
             actor: name,
             taskType: isSubTask
-              ? i18n.t('notifications.subTask')
-              : i18n.t('notifications.task'),
+              ? t('notifications.subTask')
+              : t('notifications.task'),
+            oc:
+              !isSubTask &&
+              additionalInfo &&
+              additionalInfo.metadata &&
+              additionalInfo.metadata.isObservationChecklist
+                ? ` (${i18n.t('task:observationChecklist.title')})`
+                : '',
             taskTypeName: deletedTargetName,
             parent: isSubTask ? ` (${additionalInfo.parent.title})` : '',
             status: i18n.t(getTaskStatus(additionalInfo.metadata.status).name),
@@ -2092,8 +2240,15 @@ export const getNotificationTitle = (
           i18nKey="notifications.taskCompletedAssignee"
           values={{
             taskType: isSubTask
-              ? i18n.t('notifications.subTask')
-              : i18n.t('notifications.task'),
+              ? t('notifications.subTask')
+              : t('notifications.task'),
+            oc:
+              !isSubTask &&
+              additionalInfo &&
+              additionalInfo.metadata &&
+              additionalInfo.metadata.isObservationChecklist
+                ? ` (${i18n.t('task:observationChecklist.title')})`
+                : '',
             taskTypeName: deletedTargetName,
             parent: isSubTask ? ` (${additionalInfo.parent.title})` : '',
           }}
@@ -2113,8 +2268,15 @@ export const getNotificationTitle = (
         values={{
           actor: firstName,
           taskType: isSubTask
-            ? i18n.t('notifications.subTask')
-            : i18n.t('notifications.task'),
+            ? t('notifications.subTask')
+            : t('notifications.task'),
+          oc:
+            !isSubTask &&
+            additionalInfo &&
+            additionalInfo.metadata &&
+            additionalInfo.metadata.isObservationChecklist
+              ? ` (${i18n.t('task:observationChecklist.title')})`
+              : '',
           taskTypeName: deletedTargetName,
           parent: isSubTask ? ` (${additionalInfo.parent.title})` : '',
         }}
@@ -2132,8 +2294,15 @@ export const getNotificationTitle = (
         values={{
           actor: name,
           taskType: isSubTask
-            ? i18n.t('notifications.subTask')
-            : i18n.t('notifications.task'),
+            ? t('notifications.subTask')
+            : t('notifications.task'),
+          oc:
+            !isSubTask &&
+            additionalInfo &&
+            additionalInfo.metadata &&
+            additionalInfo.metadata.isObservationChecklist
+              ? ` (${i18n.t('task:observationChecklist.title')})`
+              : '',
           taskTypeName: deletedTargetName,
           parent: isSubTask ? ` (${additionalInfo.parent.title})` : '',
         }}
@@ -2145,37 +2314,51 @@ export const getNotificationTitle = (
   if (NOTIFICATION_ACTION_TYPES.TasksNotificationOnOverdue === actionType) {
     const isSubTask =
       additionalInfo && additionalInfo.parent && additionalInfo.parent.title;
-    // if (userId === user.id) {
-    //   return (
-    //     <NotificationTitle
-    //       i18nKey="notifications.taskOverdueForYou"
-    //       values={{
-    //         taskType: isSubTask
-    //           ? i18n.t('notifications.subTaskCap')
-    //           : i18n.t('notifications.taskCap'),
-    //         taskTypeName: deletedTargetName,
-    //         parent: isSubTask ? ` (${additionalInfo.parent.title})` : '',
-    //       }}
-    //       linkTo={getTasksRoute(
-    //         isLearn,
-    //         target1Type,
-    //         targetId1,
-    //         additionalInfo,
-    //       )}
-    //       components={[<NotificationText bold viewInline />]}
-    //     />
-    //   );
-    // }
+    if (userId === user.id) {
+      return (
+        <NotificationTitle
+          i18nKey="notifications.taskOverdueForYou"
+          values={{
+            taskType: isSubTask
+              ? t('notifications.subTaskCap')
+              : t('notifications.taskCap'),
+            taskTypeName: deletedTargetName,
+            parent: isSubTask ? ` (${additionalInfo.parent.title})` : '',
+            oc:
+              !isSubTask &&
+              additionalInfo &&
+              additionalInfo.metadata &&
+              additionalInfo.metadata.isObservationChecklist
+                ? ` (${i18n.t('task:observationChecklist.title')})`
+                : '',
+          }}
+          linkTo={getTasksRoute(
+            isLearn,
+            target1Type,
+            targetId1,
+            additionalInfo,
+          )}
+          components={[<NotificationText bold viewInline />]}
+        />
+      );
+    }
     return (
       <NotificationTitle
         i18nKey="notifications.taskOverdueForUser"
         values={{
           assigneeName: name,
           taskType: isSubTask
-            ? i18n.t('notifications.subTaskCap')
-            : i18n.t('notifications.taskCap'),
+            ? t('notifications.subTaskCap')
+            : t('notifications.taskCap'),
           taskTypeName: deletedTargetName,
           parent: isSubTask ? ` (${additionalInfo.parent.title})` : '',
+          oc:
+            !isSubTask &&
+            additionalInfo &&
+            additionalInfo.metadata &&
+            additionalInfo.metadata.isObservationChecklist
+              ? ` (${i18n.t('task:observationChecklist.title')})`
+              : '',
         }}
         linkTo={getTasksRoute(isLearn, target1Type, targetId1, additionalInfo)}
         components={[<NotificationText bold viewInline />]}
@@ -2191,8 +2374,15 @@ export const getNotificationTitle = (
         values={{
           actor: name,
           taskType: isSubTask
-            ? i18n.t('notifications.subTask')
-            : i18n.t('notifications.task'),
+            ? t('notifications.subTask')
+            : t('notifications.task'),
+          oc:
+            !isSubTask &&
+            additionalInfo &&
+            additionalInfo.metadata &&
+            additionalInfo.metadata.isObservationChecklist
+              ? ` (${i18n.t('task:observationChecklist.title')})`
+              : '',
           taskTypeName: deletedTargetName,
           parent: isSubTask ? ` (${additionalInfo.parent.title})` : '',
         }}
@@ -2213,8 +2403,15 @@ export const getNotificationTitle = (
         values={{
           actor: name,
           taskType: isSubTask
-            ? i18n.t('notifications.subTask')
-            : i18n.t('notifications.task'),
+            ? t('notifications.subTask')
+            : t('notifications.task'),
+          oc:
+            !isSubTask &&
+            additionalInfo &&
+            additionalInfo.metadata &&
+            additionalInfo.metadata.isObservationChecklist
+              ? ` (${i18n.t('task:observationChecklist.title')})`
+              : '',
           taskTypeName: deletedTargetName,
           parent: isSubTask ? ` (${additionalInfo.parent.title})` : '',
         }}
@@ -2235,8 +2432,15 @@ export const getNotificationTitle = (
         values={{
           actor: name,
           taskType: isSubTask
-            ? i18n.t('notifications.subTask')
-            : i18n.t('notifications.task'),
+            ? t('notifications.subTask')
+            : t('notifications.task'),
+          oc:
+            !isSubTask &&
+            additionalInfo &&
+            additionalInfo.metadata &&
+            additionalInfo.metadata.isObservationChecklist
+              ? ` (${i18n.t('task:observationChecklist.title')})`
+              : '',
           taskTypeName: deletedTargetName,
           parent: isSubTask ? ` (${additionalInfo.parent.title})` : '',
         }}
@@ -2263,6 +2467,119 @@ export const getNotificationTitle = (
         components={[<NotificationText bold viewInline />]}
       />
     );
+  }
+  if (NOTIFICATION_ACTION_TYPES.TaskNotificationOnEdit === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.taskEdited"
+        values={{
+          task: deletedTargetName,
+          actor: name,
+          oc:
+            additionalInfo &&
+            additionalInfo.metadata &&
+            additionalInfo.metadata.isObservationChecklist
+              ? ` (${i18n.t('task:observationChecklist.title')})`
+              : '',
+        }}
+        linkTo={`/tasks/${targetId1}/edit`}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.TaskNotificationOnDelete === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.taskDeleted"
+        values={{
+          task: deletedTargetName,
+          actor: name,
+          oc:
+            additionalInfo &&
+            additionalInfo.metadata &&
+            additionalInfo.metadata.isObservationChecklist
+              ? ` (${i18n.t('task:observationChecklist.title')})`
+              : '',
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+
+  if (NOTIFICATION_ACTION_TYPES.TaskReassign === actionType) {
+    const {
+      metadata: { role = TASK_CONFIG_ROLES.assignee },
+      source: { scope },
+    } = additionalInfo;
+    const viewerRedirectUrl = `${isLearn ? '/user' : ''}/tasks/${targetId1}${
+      scope === TASK_CREATION_SCOPE.global
+        ? '/viewer/insights'
+        : '/viewer/detail'
+    }`;
+    const reviewerRedirectUrl = `${isLearn ? '/user' : ''}/tasks/${targetId1}${
+      scope === TASK_CREATION_SCOPE.global
+        ? '/reviewer/insights'
+        : '/reviewer/detail'
+    }`;
+    if (role === TASK_CONFIG_ROLES.assignee) {
+      return (
+        <NotificationTitle
+          i18nKey="notifications.taskReassign"
+          values={{
+            actor: name,
+            task: deletedTargetName,
+            oc:
+              additionalInfo &&
+              additionalInfo.metadata &&
+              additionalInfo.metadata.isObservationChecklist
+                ? ` (${i18n.t('task:observationChecklist.title')})`
+                : '',
+          }}
+          linkTo={`${
+            isLearn ? '/user' : ''
+          }/tasks/${targetId1}/assignee/detail`}
+          components={[<NotificationText bold viewInline />]}
+        />
+      );
+    }
+    if (role === TASK_CONFIG_ROLES.viewer) {
+      return (
+        <NotificationTitle
+          i18nKey="notifications.taskReassign"
+          values={{
+            actor: name,
+            task: deletedTargetName,
+            oc:
+              additionalInfo &&
+              additionalInfo.metadata &&
+              additionalInfo.metadata.isObservationChecklist
+                ? ` (${i18n.t('task:observationChecklist.title')})`
+                : '',
+          }}
+          linkTo={viewerRedirectUrl}
+          components={[<NotificationText bold viewInline />]}
+        />
+      );
+    }
+    if (role === TASK_CONFIG_ROLES.reviewer) {
+      return (
+        <NotificationTitle
+          i18nKey="notifications.taskReassign"
+          values={{
+            actor: name,
+            task: deletedTargetName,
+            oc:
+              additionalInfo &&
+              additionalInfo.metadata &&
+              additionalInfo.metadata.isObservationChecklist
+                ? ` (${i18n.t('task:observationChecklist.title')})`
+                : '',
+          }}
+          linkTo={reviewerRedirectUrl}
+          components={[<NotificationText bold viewInline />]}
+        />
+      );
+    }
   }
   if (NOTIFICATION_ACTION_TYPES.AssignAsReportingManager === actionType) {
     return (
@@ -2326,6 +2643,958 @@ export const getNotificationTitle = (
         i18nKey="notifications.removedReportingManager"
         linkTo="/user/settings"
         values={{ userName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+
+  // Tasks/OC - Added in 3.9
+  if (
+    NOTIFICATION_ACTION_TYPES.TasksNotificationOnSubtaskAddedAssignee ===
+    actionType
+  ) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.subtaskAddedForUser"
+        values={{
+          // task: deletedTargetName,
+          actor: name,
+          oc:
+            additionalInfo &&
+            additionalInfo.metadata &&
+            additionalInfo.metadata.isObservationChecklist
+              ? ` (${i18n.t('task:observationChecklist.title')})`
+              : '',
+        }}
+        linkTo={getTasksRoute(isLearn, target1Type, targetId1, additionalInfo)}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (
+    NOTIFICATION_ACTION_TYPES.TasksNotificationOnSubtaskUpdatedAssignee ===
+    actionType
+  ) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.subtaskUpdatedForUser"
+        values={{
+          actor: name,
+          // task: deletedTargetName,
+          oc:
+            additionalInfo &&
+            additionalInfo.metadata &&
+            additionalInfo.metadata.isObservationChecklist
+              ? ` (${i18n.t('task:observationChecklist.title')})`
+              : '',
+        }}
+        linkTo={getTasksRoute(isLearn, target1Type, targetId1, additionalInfo)}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (
+    NOTIFICATION_ACTION_TYPES.TasksNotificationOnSubtaskAdded === actionType
+  ) {
+    const { metadata } = additionalInfo;
+    const { assignee } = metadata;
+    const { firstName } = assignee;
+
+    return (
+      <NotificationTitle
+        i18nKey="notifications.subtaskAddedForAssignee"
+        values={{
+          actor: name,
+          // task: deletedTargetName,
+          assigneeName: firstName,
+          oc:
+            additionalInfo &&
+            additionalInfo.metadata &&
+            additionalInfo.metadata.isObservationChecklist
+              ? ` (${i18n.t('task:observationChecklist.title')})`
+              : '',
+        }}
+        linkTo={getTasksRoute(isLearn, target1Type, targetId1, additionalInfo)}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (
+    NOTIFICATION_ACTION_TYPES.TasksNotificationOnSubtaskUpdate === actionType
+  ) {
+    const { metadata } = additionalInfo;
+    const { assignee } = metadata;
+    const { firstName } = assignee;
+
+    return (
+      <NotificationTitle
+        i18nKey="notifications.subtaskUpdatedForAssignee"
+        values={{
+          actor: name,
+          // task: deletedTargetName,
+          assigneeName: firstName,
+          oc:
+            additionalInfo &&
+            additionalInfo.metadata &&
+            additionalInfo.metadata.isObservationChecklist
+              ? ` (${i18n.t('task:observationChecklist.title')})`
+              : '',
+        }}
+        linkTo={getTasksRoute(isLearn, target1Type, targetId1, additionalInfo)}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (
+    NOTIFICATION_ACTION_TYPES.TasksNotificationOnReviwerSubmitResponse ===
+    actionType
+  ) {
+    const { metadata } = additionalInfo;
+    const { assignee } = metadata;
+    const { firstName } = assignee;
+    const isSubTask = target1Type === TASK_CATEGORIES.subtask;
+    return (
+      <NotificationTitle
+        i18nKey="notifications.taskCompletedForAssignee"
+        values={{
+          actor: name,
+          taskType: isSubTask
+            ? t('notifications.subTask')
+            : t('notifications.task'),
+          assigneeName: firstName,
+          oc:
+            additionalInfo &&
+            additionalInfo.metadata &&
+            additionalInfo.metadata.isObservationChecklist
+              ? ` (${i18n.t('task:observationChecklist.title')})`
+              : '',
+        }}
+        linkTo={getTasksRoute(isLearn, target1Type, targetId1, additionalInfo)}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (
+    NOTIFICATION_ACTION_TYPES.TasksNotificationOnReviewerSubmitResponseAssignee ===
+    actionType
+  ) {
+    const isSubTask = target1Type === TASK_CATEGORIES.subtask;
+
+    return (
+      <NotificationTitle
+        i18nKey="notifications.taskCompletedForUser"
+        values={{
+          actor: name,
+          taskType: isSubTask
+            ? t('notifications.subTask')
+            : t('notifications.task'),
+          oc:
+            additionalInfo &&
+            additionalInfo.metadata &&
+            additionalInfo.metadata.isObservationChecklist
+              ? ` (${i18n.t('task:observationChecklist.title')})`
+              : '',
+        }}
+        linkTo={getTasksRoute(isLearn, target1Type, targetId1, additionalInfo)}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+
+  // Mentorship
+
+  // Admin notifications
+  if (NOTIFICATION_ACTION_TYPES.ProgramEnrollment === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.programEnrollment"
+        linkTo={
+          target1Type === 'MenteeProgram'
+            ? `/programs/${additionalInfo.program.id}/mentees/${actorId}/detail`
+            : `/programs/${additionalInfo.program.id}/mentors/${actorId}/detail`
+        }
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.NominationRequest === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.nominationRequest"
+        linkTo={`/mentorship/admin?tab=requests&type=nominations&requestId=${additionalInfo.metadata.requestId}`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorChangeRequestAdmin === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorChangeRequestAdmin"
+        linkTo={`/mentorship/admin?tab=requests&type=pairing&requestId=${additionalInfo.metadata.requestId}`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorCancelChangeRequest === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorCancelChangeRequest"
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorExitProgram === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorExitProgram"
+        linkTo={`/programs/${additionalInfo.program.id}?tab=ENROLLMENTS`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+
+  // Mentee notifications
+  if (NOTIFICATION_ACTION_TYPES.InviteMenteeToProgram === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.inviteMenteeToProgram"
+        linkTo={`${isLearn ? '/user' : ''}/mentee/programs/${targetId1}/detail`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MenteeJoinRequestApproval === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.menteeJoinRequestApproval"
+        linkTo={`${isLearn ? '/user' : ''}/mentee/programs/${targetId1}/detail`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.ProgramJoinRequestRejection === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.programJoinRequestRejection"
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.PairingRequestApprovalMentee === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.pairingRequestApprovalMentee"
+        linkTo={`${isLearn ? '/user' : ''}/mentee/programs/${targetId1}/detail`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.AdminPairingRequestRejection === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.adminPairingRequestRejection"
+        linkTo={`${
+          isLearn ? '/user' : ''
+        }/mentee/programs/${targetId1}/detail?showRejectedRequest=true`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorPairingRequestRejection === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorPairingRequestRejection"
+        linkTo={`${
+          isLearn ? '/user' : ''
+        }/mentee/programs/${targetId1}/detail?showRejectedRequest=true`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.NominationsApproval === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.nominationsApproval"
+        linkTo={`${isLearn ? '/user' : ''}/mentee/programs/${targetId1}/detail`}
+        values={{ programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.NominationsRejected === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.nominationsRejected"
+        linkTo={`${isLearn ? '/user' : ''}/mentee/programs/${targetId1}/detail`}
+        values={{ programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorMeetingRequestApproval === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorMeetingRequestApproval"
+        linkTo={`${isLearn ? '/user' : ''}/mentee/programs/${
+          additionalInfo.source.id
+        }/detail?meetingId=${targetId1}`}
+        values={{
+          mentorName: name,
+          meetingTitle: deletedTargetName,
+          programName: additionalInfo.parent.title,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorSchedulesMeeting === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorSchedulesMeeting"
+        linkTo={`${isLearn ? '/user' : ''}/mentee/programs/${
+          additionalInfo.source.id
+        }/detail?meetingId=${targetId1}`}
+        values={{
+          actor: name,
+          meetingTitle: deletedTargetName,
+          programName: additionalInfo.parent.title,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorReschedulesMeeting === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorReschedulesMeeting"
+        linkTo={`${isLearn ? '/user' : ''}/mentee/programs/${
+          additionalInfo.source.id
+        }/detail?meetingId=${targetId1}`}
+        values={{
+          actor: name,
+          meetingTitle: deletedTargetName,
+          programName: additionalInfo.parent.title,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorAddingMeetingNotes === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorAddingMeetingNotes"
+        linkTo={`${isLearn ? '/user' : ''}/mentee/programs/${
+          additionalInfo.source.id
+        }/detail?meetingId=${targetId1}&showMentorMeetingNotes=true&milestoneId=${
+          additionalInfo.metadata.milestoneId
+        }`}
+        values={{
+          meetingTitle: deletedTargetName,
+          actor: name,
+          programName: additionalInfo.parent.title,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorFeedback === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorFeedback"
+        linkTo={`${isLearn ? '/user' : ''}/mentee/programs/${targetId1}/detail`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorFeedbackPending === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorFeedbackPending"
+        linkTo={`${
+          isLearn ? '/user' : ''
+        }/mentee/programs/${targetId1}/detail?openMentorFeedback=true`}
+        values={{ mentorName: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorChangeRejection === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorChangeRejection"
+        linkTo={`${isLearn ? '/user' : ''}/mentee/programs/${targetId1}/detail`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorChangeApproved === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorChangeApproved"
+        linkTo={`${isLearn ? '/user' : ''}/mentee/programs/${targetId1}/detail`}
+        values={{ programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorUpdateProgramContent === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorUpdateProgramContent"
+        linkTo={`${isLearn ? '/user' : ''}/mentee/programs/${targetId1}/detail`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorAssignment === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorAssignment"
+        linkTo={`${isLearn ? '/user' : ''}/mentee/programs/${targetId1}/detail`}
+        values={{
+          mentorName: additionalInfo.metadata.mentor.fullName,
+          programName: deletedTargetName,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+
+  // Mentor notifications
+  if (NOTIFICATION_ACTION_TYPES.KickoffMeetingRequest === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.kickoffMeetingRequest"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${
+          additionalInfo.parent.id
+        }/mentees/${actorId}/detail?meetingId=${targetId1}&milestoneId=${
+          additionalInfo.metadata.milestoneId
+        }`}
+        values={{ actor: name, programName: additionalInfo.parent.title }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.CreateGoalMentor === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.createGoalMentor"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${
+          additionalInfo.program.id
+        }/mentees/${actorId}/detail?evaluateGoals=true`}
+        values={{
+          programName: deletedTargetName,
+          menteeName: additionalInfo.metadata.mentee.fullName,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.PreProgramFeedbackMentor === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.preProgramFeedbackMentor"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${
+          additionalInfo.program.id
+        }/mentees/${actorId}/detail`}
+        values={{
+          programName: deletedTargetName,
+          menteeName: additionalInfo.metadata.mentee.fullName,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MenteeAddingMeetingNotes === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.menteeAddingMeetingNotes"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${
+          additionalInfo.parent.id
+        }/mentees/${actorId}/detail?meetingId=${targetId1}&showMenteeMeetingNotes=true&milestoneId=${
+          additionalInfo.metadata.milestoneId
+        }`}
+        values={{
+          meetingTitle: deletedTargetName,
+          actor: name,
+          programName: additionalInfo.parent.title,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MenteeFeedback === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.menteeFeedback"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${
+          additionalInfo.program.id
+        }/mentees/${actorId}/detail?openMenteeFeedback=true`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MilestoneCompletion === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.milestoneCompletion"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${
+          additionalInfo.program.id
+        }/mentees/${actorId}/detail`}
+        values={{
+          actor: name,
+          milestoneTitle: deletedTargetName,
+          programName: additionalInfo.program.title,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.ProgramTrainingCompletion === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.programTrainingCompletion"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${
+          additionalInfo.program.id
+        }/mentees/${actorId}/detail`}
+        values={{
+          actor: name,
+          trainingTitle: deletedTargetName,
+          programName: additionalInfo.program.title,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.PairingRequestApprovalMentor === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.pairingRequestApprovalMentor"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${
+          additionalInfo.program.id
+        }/mentees/${additionalInfo.metadata.mentee.id}/detail`}
+        values={{
+          actor: additionalInfo.metadata.mentee.fullName,
+          programName: deletedTargetName,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.UpdateAdminProgram === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.updateAdminProgram"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${targetId1}/detail`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorJoinRequestApproval === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorJoinRequestApproval"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${targetId1}/detail`}
+        values={{ programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorChangeApprovedMentor === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorChangeApprovedMentor"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${
+          additionalInfo.program.id
+        }/mentees/${actorId}/detail`}
+        values={{
+          programName: deletedTargetName,
+          menteeName: additionalInfo.metadata.mentee.fullName,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.InviteMentorToProgram === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.inviteMentorToProgram"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${targetId1}/detail`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MenteeSchedulesMeeting === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.menteeSchedulesMeeting"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${
+          additionalInfo.parent.id
+        }/mentees/${actorId}/detail?meetingId=${targetId1}`}
+        values={{
+          actor: name,
+          programName: additionalInfo.parent.title,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MenteeReschedulesMeeting === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.menteeReschedulesMeeting"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${
+          additionalInfo.parent.id
+        }/mentees/${actorId}/detail?meetingId=${targetId1}`}
+        values={{
+          actor: name,
+          meetingTitle: deletedTargetName,
+          programName: additionalInfo.parent.title,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.OverdueMilestone === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.overdueMilestone"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${
+          additionalInfo.program.id
+        }/mentees/${actorId}/detail`}
+        values={{
+          menteeName: name,
+          milestoneName: deletedTargetName,
+          programName: additionalInfo.program.title,
+          days: periods,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MenteeFeedbackPending === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.menteeFeedbackPending"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${
+          additionalInfo.program.id
+        }/mentees/${actorId}/detail?openMenteeFeedback=true`}
+        values={{ menteeName: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.ProgramCompletion === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.programCompletion"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${
+          additionalInfo.program.id
+        }/mentees/${actorId}/detail`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MenteeExitProgram === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.menteeExitProgram"
+        linkTo={`${
+          isLearn ? '/user' : ''
+        }/mentor/programs/${targetId1}/detail?tab=MENTEES`}
+        values={{ menteeName: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MenteesAssignment === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.menteesAssignment"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/programs/${targetId1}/detail`}
+        values={{
+          menteeName: additionalInfo.metadata.mentee.fullName,
+          programName: deletedTargetName,
+          count: additionalInfo.metadata.menteesCount,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+
+  if (NOTIFICATION_ACTION_TYPES.MentorReceivedPairingRequest === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorReceivedPairingRequest"
+        linkTo={`${isLearn ? '/user' : ''}/mentor/dashboard?pairingRequestId=${
+          additionalInfo.metadata.requestId
+        }`}
+        values={{
+          menteeName: additionalInfo.metadata.mentee.fullName,
+          programName: deletedTargetName,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+
+  // Reporting Manager notifications
+  if (NOTIFICATION_ACTION_TYPES.ReporteeProgramEnrollment === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.reporteeProgramEnrollment"
+        linkTo={
+          target1Type === 'MenteeProgram'
+            ? `/programs/${additionalInfo.program.id}/mentees/${additionalInfo.metadata.mentee.id}/detail`
+            : `/programs/${additionalInfo.program.id}/mentors/${additionalInfo.metadata.mentee.id}/detail`
+        }
+        values={{ actor: name }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (
+    NOTIFICATION_ACTION_TYPES.MeetingScheduledReportingManager === actionType
+  ) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.meetingScheduledReportingManager"
+        linkTo={`/mentorship/admin?tab=meetings&meetingId=${targetId1}`}
+        values={{
+          meetingTitle: deletedTargetName,
+          menteeName: additionalInfo.metadata.mentee.fullName,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (
+    NOTIFICATION_ACTION_TYPES.MeetingRescheduledReportingManager === actionType
+  ) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.meetingRescheduledReportingManager"
+        linkTo={`/mentorship/admin?tab=meetings&meetingId=${targetId1}`}
+        values={{
+          meetingTitle: deletedTargetName,
+          menteeName: additionalInfo.metadata.mentee.fullName,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.ReporteeAddingMeetingNotes === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.reporteeAddingMeetingNotes"
+        linkTo={`/programs/${additionalInfo.parent.id}/mentees/${actorId}/detail?meetingId=${targetId1}&showMenteeMeetingNotes=true&milestoneId=${additionalInfo.metadata.milestoneId}`}
+        values={{
+          actor: name,
+          meetingTitle: deletedTargetName,
+          programName: additionalInfo.parent.title,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorFeedbackReportingManager === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorFeedbackReportingManager"
+        linkTo={`/programs/${additionalInfo.program.id}/mentees/${actorId}/detail`}
+        values={{
+          actor: additionalInfo.metadata.mentee.fullName,
+          mentorName: name,
+          programName: deletedTargetName,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (
+    NOTIFICATION_ACTION_TYPES.PreProgramFeedbackReportingManager === actionType
+  ) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.preProgramFeedbackReportingManager"
+        linkTo={`/programs/${additionalInfo.program.id}/mentees/${actorId}/detail`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (
+    NOTIFICATION_ACTION_TYPES.NominationApprovedReportingManager === actionType
+  ) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.nominationApprovedReportingManager"
+        linkTo={`/programs/${additionalInfo.program.id}/mentees/${actorId}/detail`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.CreateGoalReportingManager === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.createGoalReportingManager"
+        linkTo={`/programs/${additionalInfo.program.id}/mentees/${actorId}/detail`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.ReporteeMeetingRequestApproval === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.reporteeMeetingRequestApproval"
+        linkTo={`/mentorship/admin?tab=meetings&meetingId=${targetId1}`}
+        values={{
+          actor: additionalInfo.metadata.mentee.fullName,
+          mentorName: name,
+          meetingTitle: deletedTargetName,
+          programName: additionalInfo.parent.title,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.ReporteeProgramCompletion === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.reporteeProgramCompletion"
+        linkTo={`/programs/${additionalInfo.program.id}/mentees/${actorId}/detail`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.OverdueReportees === actionType) {
+    const singleUser = additionalInfo.count === 1;
+    const twoUsers = additionalInfo.count === 2;
+    const multipleUsers = additionalInfo.count > 2;
+    return (
+      <NotificationTitle
+        i18nKey={
+          singleUser
+            ? 'notifications.overdueReportees'
+            : twoUsers
+            ? 'notifications.twoOverdueReportees'
+            : 'notifications.multipleOverdueReportees'
+        }
+        values={{
+          actorName:
+            twoUsers || multipleUsers
+              ? additionalInfo.sourceNames[0]
+              : deletedTargetName,
+          count: twoUsers ? additionalInfo.count - 1 : additionalInfo.count - 2,
+          ...((twoUsers || multipleUsers) && {
+            actor2Name: additionalInfo.sourceNames[1],
+          }),
+        }}
+        linkTo="/insights?showOverdueUsersSection=true"
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+
+  // Team manager notifications
+  if (NOTIFICATION_ACTION_TYPES.TeamMemberProgramEnrollment === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.teamMemberProgramEnrollment"
+        linkTo={
+          target1Type === 'MenteeProgram'
+            ? `/programs/${additionalInfo.program.id}/mentees/${additionalInfo.metadata.mentee.id}/detail`
+            : `/programs/${additionalInfo.program.id}/mentors/${additionalInfo.metadata.mentee.id}/detail`
+        }
+        values={{ actor: name }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.MentorFeedbackTeamMember === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.mentorFeedbackTeamMember"
+        linkTo={`/programs/${additionalInfo.program.id}/mentees/${actorId}/detail`}
+        values={{
+          actor: additionalInfo.metadata.mentee.fullName,
+          mentorName: name,
+          programName: deletedTargetName,
+        }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.ProgramCompletionTeamManager === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.programCompletionTeamManager"
+        linkTo={`/programs/${additionalInfo.program.id}/mentees/${actorId}/detail`}
+        values={{ actor: name, programName: deletedTargetName }}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.OverdueTeamMembers === actionType) {
+    const singleUser = additionalInfo.count === 1;
+    const twoUsers = additionalInfo.count === 2;
+    const multipleUsers = additionalInfo.count > 2;
+    return (
+      <NotificationTitle
+        i18nKey={
+          singleUser
+            ? 'notifications.overdueTeamMembers'
+            : twoUsers
+            ? 'notifications.twoOverdueTeamMembers'
+            : 'notifications.multipleOverdueTeamMembers'
+        }
+        values={{
+          teamName: deletedTargetName,
+          actorName:
+            twoUsers || multipleUsers
+              ? additionalInfo.sourceNames[0]
+              : deletedTargetName,
+          count: twoUsers ? additionalInfo.count - 1 : additionalInfo.count - 2,
+          ...((twoUsers || multipleUsers) && {
+            actor2Name: additionalInfo.sourceNames[1],
+          }),
+        }}
+        linkTo={`/teams/${targetId1}?tab=insights&trainingType=elearning`}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+
+  // Stakeholder notification
+  if (NOTIFICATION_ACTION_TYPES.NominationApprovedStakeholder === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.nominationApprovedStakeholder"
+        linkTo={`${
+          isLearn ? '/user' : ''
+        }/mentorship/overview?stakeholderFeedback=${targetId1}`}
+        values={{ actor: name, role: additionalInfo.metadata.nominationRole }}
         components={[<NotificationText bold viewInline />]}
       />
     );
@@ -2676,6 +3945,204 @@ export const getNotificationTitle = (
         i18nKey="notifications.reassignPath"
         values={{ pathName: deletedTargetName }}
         linkTo={getSourceRoute(isLearn, target1Type, targetId1)}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+
+  // LXP Notifications
+  // 1.when mention on feed-post -> Actor Name mention on post
+  if (
+    NOTIFICATION_ACTION_TYPES.LxpMentionOnFeed === actionType &&
+    target1Type === 'COMMENT'
+  ) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpuserMentionedOnComment"
+        values={{ actor: name }}
+        isLxpRoute
+        isLearner={isLearn}
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+          actionType,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  // 2.when mention on feed-comment -> Actor Name mention on comment
+  if (
+    NOTIFICATION_ACTION_TYPES.LxpMentionOnFeed === actionType &&
+    target1Type === 'POST'
+  ) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpuserMentionedOnPost"
+        values={{ actor: name }}
+        isLxpRoute
+        isLearner={isLearn}
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  // 3.Lxp user base shoutOut
+  if (NOTIFICATION_ACTION_TYPES.ShoutOut === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpShoutOut"
+        values={{ actor: name }}
+        isLxpRoute
+        isLearner={isLearn}
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+
+  // 4. system generated lxp Announcement Please acknowledge our recent announcement.
+  if (NOTIFICATION_ACTION_TYPES.LxpAnnouncementReminderOnFeed === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpAnnouncementReminder"
+        isLxpRoute
+        isLearner={isLearn}
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  // 5.  Lxp user base shoutOut
+  if (NOTIFICATION_ACTION_TYPES.LxpCommentOnPost === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpCommentOnPost"
+        values={{ actor: name }}
+        isLxpRoute
+        isLearner={isLearn}
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+
+  // 6.  schedule post . your post is scheduled .
+  if (NOTIFICATION_ACTION_TYPES.LxpPostScheduled === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpPostScheduled"
+        isLxpRoute
+        isLearner={isLearn}
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  // 7.  schedule pre Publish post . your post going live in 1 hour ...
+  if (NOTIFICATION_ACTION_TYPES.LxpPostSchedulePrePublish === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpSchedulePrePublishPost"
+        isLxpRoute
+        isLearner={isLearn}
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  // 8. schedule post Publish post . your post is live now ...
+  if (NOTIFICATION_ACTION_TYPES.LxpPostSchedulePostPublish === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpSchedulePostPublishPost"
+        isLxpRoute
+        isLearner={isLearn}
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  // 9 . replied on comment
+  if (NOTIFICATION_ACTION_TYPES.LxpRepliedOnFeedComment === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpRepliedOnComment"
+        values={{ actor: name }}
+        isLxpRoute
+        isLearner={isLearn}
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+          actionType,
+        )}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.LxpRepliedOnFeedComment === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.LxpPostScheduled"
+        values={{ actor: name }}
+        isLxpRoute
+        isLearner={isLearn}
+        linkTo={getSocialSourceRoute(
+          isLearn,
+          target1Type,
+          targetId1,
+          userId,
+          additionalInfo,
+          actionType,
+        )}
         components={[<NotificationText bold viewInline />]}
       />
     );
