@@ -35,10 +35,19 @@ const EvaluationRequestRow: FC<EvaluationRequestRowProps> = ({
   return (
     <Card className={style}>
       <div className="flex rounded justify-between items-center ">
-        <Truncate
-          className={'text-sm font-bold'}
-          text={data?.source?.source_name || data?.module}
-        />
+        <div className="flex gap-1 items-center">
+          <Tooltip tooltipContent={data?.module}>
+            <Icon
+              name={data?.module === 'Event' ? 'calendarTwo' : 'teacher'}
+              size={16}
+              color="text-primary-500"
+            />
+          </Tooltip>
+          <Truncate
+            className={'text-sm font-bold'}
+            text={data?.source?.source_name || data?.module}
+          />
+        </div>
         <Tooltip tooltipContent={t('startEvaluationTooltip')}>
           <Icon
             onClick={() => {
@@ -46,6 +55,8 @@ const EvaluationRequestRow: FC<EvaluationRequestRowProps> = ({
                 `${getLearnUrl()}/evaluations/${data?.id}?status=PENDING`,
               );
             }}
+            size={20}
+            color="text-secondary-400"
             dataTestId="pending-evaluation"
             name="documentView"
           />

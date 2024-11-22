@@ -24,6 +24,7 @@ import useNavigate from 'hooks/useNavigation';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import useProduct from 'hooks/useProduct';
+import { CHANNEL_ROLE, useChannelStore } from 'stores/channelStore';
 
 export interface IFeedPostMenuProps {
   data: IPost;
@@ -31,11 +32,14 @@ export interface IFeedPostMenuProps {
 }
 
 const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
+  const { t } = useTranslation('post', { keyPrefix: 'feedPostMenu' });
   const { getApi } = usePermissions();
   const { user } = useAuth();
-  const { isMember } = useRole();
+  const { isOffice } = useProduct();
+  const { isMember, isAdmin } = useRole();
   const location = useLocation();
   const navigate = useNavigate();
+
   const feedRef = useRef(useFeedStore.getState().feed);
   const [confirm, showConfirm, closeConfirm] = useModal();
   const [analytics, showAnalytics, closeAnalytics] = useModal();
@@ -50,14 +54,14 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
 
   const queryClient = useQueryClient();
   const setFeed = useFeedStore((state) => state.setFeed);
-  const { isAdmin } = useRole();
   const currentDate = new Date().toISOString();
 
   const isPostPage = location.pathname.startsWith('/posts/');
   const isChannelPage = location.pathname.includes('/channels/');
   const { channelId = '' } = useParams();
-  const { t } = useTranslation('post', { keyPrefix: 'feedPostMenu' });
-  const { isOffice } = useProduct();
+  const getChannel = useChannelStore((action) => action.getChannel);
+  const channelData = channelId ? getChannel(channelId) : null;
+  const isChannelAdmin = channelData?.member?.role === CHANNEL_ROLE.Admin;
 
   const deletePost = getApi(ApiEnum.DeletePost);
   const deletePostMutation = useMutation({
@@ -217,7 +221,10 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
       labelClassName: '!text-red-500',
       dataTestId: 'post-ellipsis-delete-post',
       permissions: ['DELETE_MY_POSTS', 'DELETE_POSTS'],
-      enabled: isAdmin || data.createdBy?.userId === user?.id,
+      enabled:
+        isAdmin ||
+        (isChannelPage && isChannelAdmin) ||
+        data.createdBy?.userId === user?.id,
     },
   ];
   const handleDelete = () => {
