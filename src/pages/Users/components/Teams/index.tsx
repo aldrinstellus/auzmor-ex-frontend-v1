@@ -108,6 +108,7 @@ const Team: FC<ITeamProps> = ({
     parseParams,
   } = useURLParams();
   const { t } = useTranslation('profile', { keyPrefix: 'teams' });
+  const { t: tc } = useTranslation('components');
 
   const { user } = useAuth();
   const { isAdmin } = useRole();
@@ -152,6 +153,7 @@ const Team: FC<ITeamProps> = ({
       startFetching,
       q: isFiltersEmpty({
         q: debouncedSearchValue,
+        limit: 30,
         sort: sortByFilter,
         userId: tab === TeamTab.MyTeams ? user?.id : undefined,
         categoryIds:
@@ -297,9 +299,28 @@ const Team: FC<ITeamProps> = ({
           <Sort
             controlled
             setFilter={handleSetSortFilter}
-            filterKey={{ createdAt: 'createdAt', aToZ: 'name' }}
+            sortOptions={
+              isLxp
+                ? [
+                    {
+                      label: tc('Sort.teamName'),
+                      key: 'name',
+                      dataTestId: 'sortBy-teamname',
+                    },
+                    {
+                      label: tc('Sort.creationDate'),
+                      key: 'created_at',
+                      dataTestId: 'sortby-createdat',
+                    },
+                    {
+                      label: tc('Sort.updatedDate'),
+                      key: 'updated_at',
+                      dataTestId: 'sortby-updatedat',
+                    },
+                  ]
+                : undefined
+            }
             selectedValue={sortByFilter}
-            filterValue={{ asc: 'ASC', desc: 'DESC' }}
             dataTestId="teams-sort"
             entity="TEAM"
           />
