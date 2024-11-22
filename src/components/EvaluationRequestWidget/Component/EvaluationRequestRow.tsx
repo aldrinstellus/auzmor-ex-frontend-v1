@@ -67,6 +67,7 @@ const EvaluationRequestRow: FC<EvaluationRequestRowProps> = ({
         <Avatar
           name={data?.user?.full_name}
           image={data?.user?.image_url}
+          bgColor={data?.user?.profile_color}
           size={32}
           className="border-2 border-white"
           onClick={() => {}}
@@ -90,7 +91,7 @@ const EvaluationRequestRow: FC<EvaluationRequestRowProps> = ({
               </span>
             </div>
             <span className="text-xs text-neutral-500">
-              {moment(data?.review_started_at).format(t('dateFormat'))}
+              {moment.utc(data?.submitted_at).format(t('dateFormat'))}
             </span>
           </div>
         </div>
