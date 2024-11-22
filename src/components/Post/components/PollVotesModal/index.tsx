@@ -56,6 +56,7 @@ const PollVotesModal: FC<IPollVotesModalProps> = ({
               ),
             })),
           ]}
+          className="px-6"
         />
       ) : (
         <div className="flex flex-col w-full justify-center items-center gap-4 p-8">
