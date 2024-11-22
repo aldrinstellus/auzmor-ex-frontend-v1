@@ -140,7 +140,13 @@
   "Sort": {
     "aToZ": "A to Z",
     "zToA": "Z to A",
-    "dateAdded": "Date added",
+    "dateAdded": "Date Added",
+    "addedDate": "Added Date",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "teamName": "Team Name",
+    "creationDate": "Creation Date",
+    "updatedDate": "Updated Date",
     "sortBy": "Sort by",
     "clearSort": "Clear sort",
     "sort": "sort"

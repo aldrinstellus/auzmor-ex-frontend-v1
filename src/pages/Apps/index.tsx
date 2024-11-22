@@ -369,9 +369,7 @@ const Apps: FC<IAppsProps> = () => {
             <Sort
               controlled
               setFilter={handleSetSortFilter}
-              filterKey={{ createdAt: 'createdAt', aToZ: 'name' }}
               selectedValue={sortByFilter}
-              filterValue={{ asc: 'ASC', desc: 'DESC' }}
               dataTestId="teams-sort"
               entity="apps-filters"
             />

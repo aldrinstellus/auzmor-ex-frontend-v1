@@ -70,6 +70,7 @@ const People: FC<IPeopleProps> = ({
   teamId,
 }) => {
   const { t } = useTranslation('profile', { keyPrefix: 'people' });
+  const { t: tc } = useTranslation('components');
   const {
     searchParams,
     updateParam,
@@ -423,9 +424,28 @@ const People: FC<IPeopleProps> = ({
             <Sort
               controlled
               setFilter={handleSetSortFilter}
-              filterKey={{ createdAt: 'createdAt', aToZ: 'name' }}
+              sortOptions={
+                isLxp && isTeamPeople
+                  ? [
+                      {
+                        label: tc('Sort.firstName'),
+                        key: 'first_name',
+                        dataTestId: 'sortBy-firstname',
+                      },
+                      {
+                        label: tc('Sort.lastName'),
+                        key: 'last_name',
+                        dataTestId: 'sortby-lastname',
+                      },
+                      {
+                        label: tc('Sort.addedDate'),
+                        key: 'team_member_added_at',
+                        dataTestId: 'sortby-addedat',
+                      },
+                    ]
+                  : undefined
+              }
               selectedValue={filterSortBy}
-              filterValue={{ asc: 'ASC', desc: 'DESC' }}
               entity={isTeamPeople ? EntitySearchModalType.Team : 'USER'}
               dataTestId="people-sort"
             />
