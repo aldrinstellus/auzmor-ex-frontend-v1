@@ -5,7 +5,6 @@ import Card from 'components/Card';
 import { formatDate } from 'components/CelebrationWidget/utils';
 import Icon from 'components/Icon';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
-import { useShouldRender } from 'hooks/useShouldRender';
 import React, { FC, useMemo } from 'react';
 import { getLearnUrl } from 'utils/misc';
 import { getTimeDifference } from 'utils/time';
@@ -20,17 +19,11 @@ import { usePermissions } from 'hooks/usePermissions';
 export interface IEventWidgetProps {
   className?: string;
 }
-const ID = 'EventWidget';
 
 const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
   const { currentTimezone } = useCurrentTimezone();
-  const shouldRender = useShouldRender(ID);
   const { t } = useTranslation('learnWidget', { keyPrefix: 'eventWidget' });
   const { getApi } = usePermissions();
-
-  if (!shouldRender) {
-    return <></>;
-  }
 
   let isLive = true;
   const style = useMemo(

@@ -118,7 +118,7 @@ const EventNotificationCard = forwardRef<
             />
           </div>
           <div
-            className="pl-4 flex flex-col"
+            className="pl-[15px] flex flex-col"
             data-testid="title"
             onClick={() => {
               !isRead && onMarkAsRead(id);

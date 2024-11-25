@@ -35,7 +35,19 @@ const EvaluationRequestRow: FC<EvaluationRequestRowProps> = ({
   return (
     <Card className={style}>
       <div className="flex rounded justify-between items-center ">
-        <Truncate className={'text-sm font-bold'} text={data?.module} />
+        <div className="flex gap-1 items-center">
+          <Tooltip tooltipContent={data?.module}>
+            <Icon
+              name={data?.module === 'Event' ? 'calendarTwo' : 'teacher'}
+              size={16}
+              color="text-primary-500"
+            />
+          </Tooltip>
+          <Truncate
+            className={'text-sm font-bold'}
+            text={data?.source?.source_name || data?.module}
+          />
+        </div>
         <Tooltip tooltipContent={t('startEvaluationTooltip')}>
           <Icon
             onClick={() => {
@@ -43,6 +55,8 @@ const EvaluationRequestRow: FC<EvaluationRequestRowProps> = ({
                 `${getLearnUrl()}/evaluations/${data?.id}?status=PENDING`,
               );
             }}
+            size={20}
+            color="text-secondary-400"
             dataTestId="pending-evaluation"
             name="documentView"
           />
@@ -53,6 +67,7 @@ const EvaluationRequestRow: FC<EvaluationRequestRowProps> = ({
         <Avatar
           name={data?.user?.full_name}
           image={data?.user?.image_url}
+          bgColor={data?.user?.profile_color}
           size={32}
           className="border-2 border-white"
           onClick={() => {}}
@@ -76,7 +91,7 @@ const EvaluationRequestRow: FC<EvaluationRequestRowProps> = ({
               </span>
             </div>
             <span className="text-xs text-neutral-500">
-              {moment(data?.review_started_at).format(t('dateFormat'))}
+              {moment.utc(data?.submitted_at).format(t('dateFormat'))}
             </span>
           </div>
         </div>

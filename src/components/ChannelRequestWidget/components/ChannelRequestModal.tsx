@@ -28,7 +28,7 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
     keyPrefix: 'channelRequestWidget',
   });
   const { getApi } = usePermissions();
-  const useInfiniteChannelsRequest = getApi(ApiEnum.GetChannelMembers);
+  const useInfiniteChannelsRequest = getApi(ApiEnum.GetJoinChannelRequests);
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isLoading } =
     useInfiniteChannelsRequest(
       channelId,

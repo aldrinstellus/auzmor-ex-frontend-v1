@@ -193,6 +193,7 @@ const ReactionModal: FC<IReactionModalProps> = ({
               reactionCounts[a.tabContent.props.activeTab]
             );
           })}
+        className="px-6"
       />
     </Modal>
   );

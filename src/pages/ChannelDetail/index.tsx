@@ -101,6 +101,7 @@ const ChannelDetail: FC<AppProps> = ({
           return (
             <PrivateChannelBanner
               channel={channelData}
+              permissions={permissions}
               isRequested={showWithdrawBtn}
             />
           );
@@ -112,6 +113,7 @@ const ChannelDetail: FC<AppProps> = ({
           return (
             <PrivateChannelBanner
               channel={channelData}
+              permissions={permissions}
               isRequested={showWithdrawBtn}
             />
           );
@@ -123,6 +125,7 @@ const ChannelDetail: FC<AppProps> = ({
           return (
             <PrivateChannelBanner
               channel={channelData}
+              permissions={permissions}
               isRequested={showWithdrawBtn}
             />
           );
@@ -134,6 +137,7 @@ const ChannelDetail: FC<AppProps> = ({
           return (
             <PrivateChannelBanner
               channel={channelData}
+              permissions={permissions}
               isRequested={showWithdrawBtn}
             />
           );
@@ -145,6 +149,7 @@ const ChannelDetail: FC<AppProps> = ({
           return (
             <PrivateChannelBanner
               channel={channelData}
+              permissions={permissions}
               isRequested={showWithdrawBtn}
             />
           );

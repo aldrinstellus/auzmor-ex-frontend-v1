@@ -1,6 +1,7 @@
 import {
   NavigateFunction,
   NavigateOptions,
+  Path,
   To,
   useLocation,
   useNavigate as useNavigation,
@@ -19,7 +20,10 @@ const useNavigate = () => {
 
     let newPath = to;
     if (isLearner) {
-      newPath = `/user${to}`;
+      newPath =
+        typeof to === 'string'
+          ? `/user${to}`
+          : { ...(newPath as Partial<Path>), pathname: `/user${to.pathname}` };
     }
     return navigation(newPath, options);
   };

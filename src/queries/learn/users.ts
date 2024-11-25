@@ -238,16 +238,15 @@ export const useInfiniteUsers = ({
   return useInfiniteQuery({
     queryKey: ['users', q],
     queryFn: getAllUser,
-    getNextPageParam: (lastPage: any) => {
+    getNextPageParam: (lastPage: any, pages: any) => {
       const pageDataLen = lastPage?.data?.result?.data?.length;
-      const pageLimit = lastPage?.data?.result?.paging?.limit;
-      if (pageDataLen < pageLimit) {
+      const pageLimit = lastPage?.data?.result?.limit;
+      const totalCount = lastPage?.data?.result?.total_records;
+      const fetchedCount = pageLimit * pages?.length;
+      if (pageDataLen < pageLimit || fetchedCount >= totalCount) {
         return null;
       }
-      return lastPage?.data?.result?.paging?.next;
-    },
-    getPreviousPageParam: (currentPage: any) => {
-      return currentPage?.data?.result?.paging?.prev;
+      return pages?.length + 1;
     },
     staleTime: 5 * 60 * 1000,
     enabled: startFetching,

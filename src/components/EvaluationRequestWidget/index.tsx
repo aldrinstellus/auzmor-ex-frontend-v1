@@ -1,6 +1,5 @@
 import clsx from 'clsx';
 import Button, { Variant } from 'components/Button';
-import { useShouldRender } from 'hooks/useShouldRender';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getLearnUrl } from 'utils/misc';
@@ -11,19 +10,12 @@ import Skeleton from 'react-loading-skeleton';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
 
-const ID = 'EvaluationRequestWidget';
-
 export interface IEvaluationRequestWidgetProps {
   className?: string;
 }
 
 const EvaluationRequestWidget = ({ className = '' }) => {
-  const shouldRender = useShouldRender(ID);
   const { getApi } = usePermissions();
-
-  if (!shouldRender) {
-    return <></>;
-  }
 
   const { t } = useTranslation('learnWidget', {
     keyPrefix: 'evaluationRequestWidget',

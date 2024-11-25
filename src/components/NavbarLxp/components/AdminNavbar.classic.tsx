@@ -107,7 +107,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
         {
           id: 'courses',
           label: t('learn.courses'),
-          onClick: () => window.location.replace(`${getLearnUrl('/courses')}`),
+          onClick: () => window.location.assign(`${getLearnUrl('/courses')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-black hover:!text-black leading-4',
@@ -115,7 +115,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
         {
           id: 'paths',
           label: t('learn.paths'),
-          onClick: () => window.location.replace(`${getLearnUrl('/paths')}`),
+          onClick: () => window.location.assign(`${getLearnUrl('/paths')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-black hover:!text-black leading-4',
@@ -123,7 +123,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
         {
           id: 'events',
           label: t('learn.events'),
-          onClick: () => window.location.replace(`${getLearnUrl('/events')}`),
+          onClick: () => window.location.assign(`${getLearnUrl('/events')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-black hover:!text-black leading-4',
@@ -132,7 +132,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           id: 'external',
           label: t('learn.external'),
           onClick: () =>
-            window.location.replace(`${getLearnUrl('/external-trainings')}`),
+            window.location.assign(`${getLearnUrl('/external-trainings')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-black hover:!text-black leading-4',
@@ -148,7 +148,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
         {
           id: 'tasks',
           label: t('learn.tasks'),
-          onClick: () => window.location.replace(`${getLearnUrl('/tasks')}`),
+          onClick: () => window.location.assign(`${getLearnUrl('/tasks')}`),
           show: !!user?.organization?.setting?.enablechecklist,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-black hover:!text-black leading-4',
@@ -157,7 +157,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           id: 'mentorship',
           label: t('learn.mentorship'),
           onClick: () =>
-            window.location.replace(`${getLearnUrl('/mentorship/overview')}`),
+            window.location.assign(`${getLearnUrl('/mentorship/admin')}`),
           show: !!user?.organization?.setting?.enableMentorship,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-black hover:!text-black leading-4',
@@ -165,7 +165,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
         {
           id: 'forums',
           label: t('learn.forums'),
-          onClick: () => window.location.replace(`${getLearnUrl('/forums')}`),
+          onClick: () => window.location.assign(`${getLearnUrl('/forums')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-black hover:!text-black leading-4',
@@ -182,7 +182,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           id: 'people',
           label: t('learn.people'),
           onClick: () =>
-            window.location.replace(
+            window.location.assign(
               `${getLearnUrl('/peoples?tab=individuals')}`,
             ),
           show: true,
@@ -193,7 +193,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           id: 'teams',
           label: t('learn.teams'),
           onClick: () =>
-            window.location.replace(`${getLearnUrl('/peoples?tab=teams')}`),
+            window.location.assign(`${getLearnUrl('/peoples?tab=teams')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-black hover:!text-black leading-4',
@@ -201,7 +201,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
         {
           id: 'branches',
           label: t('learn.branches'),
-          onClick: () => window.location.replace(`${getLearnUrl('/branches')}`),
+          onClick: () => window.location.assign(`${getLearnUrl('/branches')}`),
           show: !!user?.organization?.setting?.enableBranches && isSuperAdmin,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-black hover:!text-black leading-4',
@@ -217,7 +217,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
         {
           id: 'insights',
           label: t('learn.insights'),
-          onClick: () => window.location.replace(`${getLearnUrl('/insights')}`),
+          onClick: () => window.location.assign(`${getLearnUrl('/insights')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-black hover:!text-black leading-4',
@@ -225,7 +225,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
         {
           id: 'reports',
           label: t('learn.reports'),
-          onClick: () => window.location.replace(`${getLearnUrl('/reports')}`),
+          onClick: () => window.location.assign(`${getLearnUrl('/reports')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-black hover:!text-black leading-4',
@@ -241,7 +241,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
         {
           id: 'orders',
           label: t('learn.orders'),
-          onClick: () => window.location.replace(`${getLearnUrl('/orders')}`),
+          onClick: () => window.location.assign(`${getLearnUrl('/orders')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-black hover:!text-black leading-4',
@@ -249,7 +249,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
         {
           id: 'coupons',
           label: t('learn.coupons'),
-          onClick: () => window.location.replace(`${getLearnUrl('/coupons')}`),
+          onClick: () => window.location.assign(`${getLearnUrl('/coupons')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-black hover:!text-black leading-4',
@@ -305,7 +305,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           <div className="flex items-center gap-2">
             <Logo
               className="cursor-pointer min-h-[40px] max-h-[40px] max-w-full align-middle relative mr-1 border-none"
-              onClick={() => window.location.replace(getLearnUrl())}
+              onClick={() => window.location.assign(getLearnUrl())}
             />
             {backBtn.show && (
               <div className="text-neutral-900 text-base font-bold">

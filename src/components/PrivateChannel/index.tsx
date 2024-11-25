@@ -17,20 +17,28 @@ import {
 import queryClient from 'utils/queryClient';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { ChannelPermissionEnum } from 'pages/ChannelDetail/components/utils/channelPermission';
+import useAuth from 'hooks/useAuth';
+import useProduct from 'hooks/useProduct';
 
 const CHIPS_COUNT = 7;
 
 interface IChannelBannerProps {
   isRequested?: boolean;
+  permissions: ChannelPermissionEnum[];
   channel: IChannel;
 }
 
 const PrivateChannelBanner: FC<IChannelBannerProps> = ({
   channel,
+  permissions,
   isRequested = false,
 }) => {
   const updateChannel = useChannelStore((action) => action.updateChannel);
   const { t } = useTranslation('channels');
+  const { t: tc } = useTranslation('channelDetail');
+  const { user } = useAuth();
+  const { isLxp } = useProduct();
   const { getApi } = usePermissions();
   const useInfiniteChannelMembers = getApi(ApiEnum.GetChannelMembers);
   const { data } = useInfiniteChannelMembers({
@@ -74,6 +82,27 @@ const PrivateChannelBanner: FC<IChannelBannerProps> = ({
     },
   });
 
+  // Join as Admin
+  const inviteYourSelf = getApi(ApiEnum.AddChannelMembers);
+  const inviteYourselfMutation = useMutation({
+    mutationKey: ['add-channel-members', channel.id],
+    mutationFn: () =>
+      inviteYourSelf(channel.id, {
+        users: [{ id: user!.id, role: CHANNEL_ROLE.Admin }],
+      }),
+    onError: () => {
+      failureToastConfig({
+        content: tc('joinAsAdmin.failure'),
+      });
+    },
+    onSuccess: () => {
+      successToastConfig({
+        content: tc('joinAsAdmin.success'),
+      });
+      queryClient.invalidateQueries(['channel']);
+    },
+  });
+
   // Withdraw join request
   const deleteJoinChannelRequest = getApi(ApiEnum.DeleteJoinChannelRequest);
   const withdrawJoinChannelRequest = useMutation({
@@ -104,27 +133,39 @@ const PrivateChannelBanner: FC<IChannelBannerProps> = ({
         >
           {t('privateChannel.bannerHeader')}
         </div>
-        <Button
-          label={
-            isRequested
-              ? t('privateChannel.withdrawRequestCTA')
-              : t('privateChannel.joinRequestCTA')
-          }
-          variant={isRequested ? Variant.Danger : Variant.Primary}
-          onClick={
-            isRequested
-              ? () =>
-                  withdrawJoinChannelRequest.mutate(channel.joinRequest!.id!)
-              : () => joinChannelMutation.mutate(channel.id)
-          }
-          loading={
-            joinChannelMutation.isLoading ||
-            withdrawJoinChannelRequest.isLoading
-          }
-          data-testid={
-            isRequested ? 'channel-withdraw-request' : 'channel-request-to-join'
-          }
-        />
+        {isLxp && permissions.includes(ChannelPermissionEnum.CanInviteSelf) ? (
+          <Button
+            label={t('publicChannel.joinRequestCTA')}
+            variant={Variant.Primary}
+            onClick={() => inviteYourselfMutation.mutate()}
+            loading={inviteYourselfMutation.isLoading}
+            data-testid="channel-invite-your-self"
+          />
+        ) : (
+          <Button
+            label={
+              isRequested
+                ? t('privateChannel.withdrawRequestCTA')
+                : t('privateChannel.joinRequestCTA')
+            }
+            variant={isRequested ? Variant.Danger : Variant.Primary}
+            onClick={
+              isRequested
+                ? () =>
+                    withdrawJoinChannelRequest.mutate(channel.joinRequest!.id!)
+                : () => joinChannelMutation.mutate(channel.id)
+            }
+            loading={
+              joinChannelMutation.isLoading ||
+              withdrawJoinChannelRequest.isLoading
+            }
+            data-testid={
+              isRequested
+                ? 'channel-withdraw-request'
+                : 'channel-request-to-join'
+            }
+          />
+        )}
         <div
           className="text-neutral-500 mt-[80px] underline  mb-4 text-sm font-semibold"
           data-testid={'channel-admin-list'}

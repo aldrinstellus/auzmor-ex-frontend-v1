@@ -42,6 +42,7 @@ import useNavigate from 'hooks/useNavigation';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { ChannelPermissionEnum } from './utils/channelPermission';
+import useProduct from 'hooks/useProduct';
 
 type ProfileSectionProps = {
   permissions: ChannelPermissionEnum[];
@@ -62,6 +63,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   const { getApi } = usePermissions();
   const { channelId = '' } = useParams();
   const { user } = useAuth();
+  const { isLxp } = useProduct();
   const { t } = useTranslation('channelDetail');
   const { t: tc } = useTranslation('channels');
   const [isEditModalOpen, openEditModal, closeEditModal] = useModal();
@@ -101,11 +103,19 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
     : file?.coverImage && getBlobUrl(file?.coverImage);
 
   const showRequestBtn =
-    isChannelPrivate && !isChannelJoined && !!!channelData?.joinRequest;
+    isChannelPrivate &&
+    !isChannelJoined &&
+    !!!channelData?.joinRequest &&
+    !(isLxp && permissions.includes(ChannelPermissionEnum.CanInviteSelf));
+
   const showJoinChannelBtn =
     isChannelPublic && !isChannelJoined && !!!channelData.joinRequest;
+
   const showWithdrawBtn =
-    isChannelPrivate && !isChannelJoined && !!channelData?.joinRequest;
+    isChannelPrivate &&
+    !isChannelJoined &&
+    !!channelData?.joinRequest &&
+    !(isLxp && permissions.includes(ChannelPermissionEnum.CanInviteSelf));
 
   const inviteYourSelf = getApi(ApiEnum.AddChannelMembers);
   const inviteYourselfMutation = useMutation({
@@ -559,10 +569,10 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
           <div className="flex gap-4">
             {permissions.includes(ChannelPermissionEnum.CanInviteSelf) && (
               <Button
-                label={t('joinAsAdmin.label')}
+                label={isLxp ? t('join') : t('joinAsAdmin.label')}
                 dataTestId="invite-your-self-channel-cta"
-                className="min-w-max !bg-transparent text-white"
-                variant={Variant.Secondary}
+                className={isLxp ? '' : 'min-w-max !bg-transparent text-white'}
+                variant={isLxp ? Variant.Primary : Variant.Secondary}
                 loading={inviteYourselfMutation.isLoading}
                 onClick={() => inviteYourselfMutation.mutate()}
               />
@@ -606,9 +616,8 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               tabs={tabs}
               tabSwitcherClassName="!p-1 "
               showUnderline={false}
-              itemSpacing={1}
               tabContentClassName="mt-8 mb-32"
-              className="w-full flex mx-8"
+              className="w-full flex mx-8 gap-1"
               onTabChange={handleTabChange}
               activeTabIndex={getActiveTabIndex()}
             />

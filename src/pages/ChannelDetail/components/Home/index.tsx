@@ -1,10 +1,11 @@
 import { IChannel } from 'stores/channelStore';
 import { FC } from 'react';
-import Feed, { WidgetEnum } from 'components/Feed';
+import Feed from 'components/Feed';
 import { ChannelRequestWidgetModeEnum } from 'components/ChannelRequestWidget/components/ChannelWidgetUser';
 import { FeedModeEnum } from 'stores/feedStore';
 import { useChannelRole } from 'hooks/useChannelRole';
 import { ChannelPermissionEnum } from '../utils/channelPermission';
+import { ComponentEnum } from 'utils/permissions/enums/componentEnum';
 
 type HomeProps = {
   channelData: IChannel;
@@ -30,18 +31,18 @@ const Home: FC<HomeProps> = ({ channelData, permissions }) => {
       isReadOnlyPost={permissions.includes(
         ChannelPermissionEnum.CanViewContentOnly,
       )}
-      leftWidgets={[WidgetEnum.Links]}
+      leftWidgets={[ComponentEnum.ChannelLinksWidget]}
       rightWidgets={[
-        WidgetEnum.ChannelRequest,
-        WidgetEnum.ChannelMember,
-        WidgetEnum.ChannelAdmin,
+        ComponentEnum.ChannelRequestWidget,
+        ComponentEnum.ChannelMembersWidget,
+        ComponentEnum.ChannelAdminsWidget,
       ]}
       widgetProps={{
-        [WidgetEnum.Links]: {
+        [ComponentEnum.ChannelLinksWidget]: {
           canEdit: permissions.includes(ChannelPermissionEnum.CanEditSettings),
         },
-        [WidgetEnum.ChannelMember]: { channelData, permissions },
-        [WidgetEnum.ChannelRequest]: {
+        [ComponentEnum.ChannelMembersWidget]: { channelData, permissions },
+        [ComponentEnum.ChannelRequestWidget]: {
           mode: ChannelRequestWidgetModeEnum.Channel,
           permissions,
         },

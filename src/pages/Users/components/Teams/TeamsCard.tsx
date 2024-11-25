@@ -46,7 +46,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
   const { isMember } = useRole();
   const { isLxp } = useProduct();
   return (
-    <div className="cursor-pointer" data-testid="" {...eventHandlers}>
+    <div className="cursor-pointer w-full" data-testid="" {...eventHandlers}>
       <Card
         shadowOnHover
         className={`relative ${

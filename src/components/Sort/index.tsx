@@ -4,44 +4,33 @@ import PopupMenu from 'components/PopupMenu';
 import useModal from 'hooks/useModal';
 import { useTranslation } from 'react-i18next';
 
-interface ISortByOption {
-  asc: string;
-  desc: string;
-}
-
 interface MenuItem {
-  icon: string;
+  icon?: string;
   label: string;
-  onClick: () => void;
-  isActive: boolean;
+  key: string;
   dataTestId: string;
-  permissions: string[];
 }
 
 export interface ISortProps {
   setFilter: (filter: string) => void;
-  filterKey: Record<string, any>;
-  filterValue: ISortByOption;
   title?: ReactElement;
   footer?: ReactElement;
   entity: string;
-  permission?: string[];
   selectedValue?: string;
   controlled?: boolean;
   dataTestId?: string;
+  sortOptions?: MenuItem[];
 }
 
 const Sort: FC<ISortProps> = ({
   setFilter,
-  filterKey,
-  filterValue,
   title,
   footer,
   entity,
-  permission = [],
   selectedValue = '',
   controlled,
   dataTestId,
+  sortOptions,
 }) => {
   const [open, openMenu, closeMenu] = useModal();
   const sortRef = useRef<HTMLDivElement>(null);
@@ -67,32 +56,34 @@ const Sort: FC<ISortProps> = ({
     setFilter(filterValue);
   };
 
-  const menuItems: MenuItem[] = [
+  const defaultSortOptions = [
     {
       icon: 'sortByAcs',
       label: t('aToZ'),
-      onClick: () => handleClick(`${filterKey.aToZ}:${filterValue.asc}`),
-      isActive: selectedValue === `${filterKey.aToZ}:${filterValue.asc}`,
-      dataTestId: `${entity}-sortBy-asc`,
-      permissions: [''],
+      key: 'name:ASC',
+      dataTestId: 'sortBy-asc',
     },
     {
       icon: 'sortByDesc',
       label: t('zToA'),
-      onClick: () => handleClick(`${filterKey.aToZ}:${filterValue.desc}`),
-      isActive: selectedValue === `${filterKey.aToZ}:${filterValue.desc}`,
-      dataTestId: `${entity}-sortBy-desc`,
-      permissions: permission,
+      key: 'name:DESC',
+      dataTestId: 'sortBy-desc',
     },
     {
       icon: 'calendar',
       label: t('dateAdded'),
-      onClick: () => handleClick(`${filterKey.createdAt}:${filterValue.desc}`),
-      dataTestId: `${entity}-sortby-dateadded`,
-      isActive: selectedValue === `${filterKey.createdAt}:${filterValue.desc}`,
-      permissions: permission,
+      key: 'createdAt:DESC',
+      dataTestId: 'sortby-dateadded',
     },
   ];
+
+  const menuItems = (sortOptions || defaultSortOptions).map((item: any) => ({
+    icon: item.icon,
+    label: item.label,
+    onClick: () => handleClick(item.key),
+    isActive: selectedValue === item.key,
+    dataTestId: `${entity}-${item.dataTestId}`,
+  }));
 
   const renderTitle = () =>
     title || (

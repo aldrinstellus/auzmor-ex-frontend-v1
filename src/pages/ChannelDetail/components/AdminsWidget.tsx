@@ -3,15 +3,16 @@ import Button, { Size, Variant } from 'components/Button';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
 import useNavigate from 'hooks/useNavigation';
+import clsx from 'clsx';
 import { usePermissions } from 'hooks/usePermissions';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { CHANNEL_ROLE } from 'stores/channelStore';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { getProfileImage } from 'utils/misc';
 
-const AdminsWidget = () => {
+const AdminsWidget = ({ className = '' }) => {
   const navigate = useNavigate();
   const { channelId } = useParams();
   const [show, setShow] = useState(true);
@@ -39,11 +40,16 @@ const AdminsWidget = () => {
       })
       .filter(Boolean) || [];
 
+  const style = useMemo(
+    () => clsx({ 'py-6 rounded-9xl': true, [className]: true }),
+    [className],
+  );
+
   if (admins?.length == 0) return null;
   const toggleModal = () => setShow((t) => !t);
 
   return (
-    <Card className="py-6 rounded-9xl" shadowOnHover>
+    <Card className={style} shadowOnHover>
       <div className="px-6">
         <div
           className="flex items-center justify-between cursor-pointer"

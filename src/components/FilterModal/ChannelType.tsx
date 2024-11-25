@@ -8,6 +8,7 @@ import { useDebounce } from 'hooks/useDebounce';
 import useRole from 'hooks/useRole';
 
 export enum ChannelTypeEnum {
+  AllChannels = 'ALL_CHANNELS',
   MyChannels = 'MY_CHANNELS',
   Managed = 'MANAGED',
   DiscoverNewChannels = 'DISCOVER_NEW_CHANNELS',
@@ -23,6 +24,12 @@ interface IChannelTypeProps {
 }
 
 export const channelTypeOptions: IRadioListOption[] = [
+  {
+    data: {
+      value: ChannelTypeEnum.AllChannels,
+    },
+    dataTestId: `channel-type-${ChannelTypeEnum.AllChannels.toLowerCase()}`,
+  },
   {
     data: {
       value: ChannelTypeEnum.MyChannels,
@@ -83,6 +90,21 @@ const ChannelType: FC<IChannelTypeProps> = ({ control, watch }) => {
 
   const filteredChannelTypeOptions = channelTypeOptions.filter((option) => {
     if (option.data.value === ChannelTypeEnum.Archived && !isAdmin) {
+      return false;
+    }
+    if (option.data.value === ChannelTypeEnum.AllChannels && !isAdmin) {
+      return false;
+    }
+    if (option.data.value === ChannelTypeEnum.DiscoverNewChannels && isAdmin) {
+      return false;
+    }
+    if (option.data.value === ChannelTypeEnum.MyChannels && isAdmin) {
+      return false;
+    }
+    if (option.data.value === ChannelTypeEnum.Starred && isAdmin) {
+      return false;
+    }
+    if (option.data.value === ChannelTypeEnum.Requested && isAdmin) {
       return false;
     }
     return enumToTitleCase(option.data.value)

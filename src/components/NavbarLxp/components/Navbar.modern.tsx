@@ -94,7 +94,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
         {
           id: 'myLearning',
           label: t('learn.myLearning'),
-          onClick: () => window.location.replace(`${getLearnUrl('/user')}`),
+          onClick: () => window.location.assign(`${getLearnUrl('/user')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
@@ -103,7 +103,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           id: 'allTrainings',
           label: t('learn.allTrainings'),
           onClick: () =>
-            window.location.replace(`${getLearnUrl('/user/trainings')}`),
+            window.location.assign(`${getLearnUrl('/user/trainings')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
@@ -121,7 +121,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           id: 'tasks',
           label: t('learn.tasks'),
           onClick: () =>
-            window.location.replace(`${getLearnUrl('/user/tasks')}`),
+            window.location.assign(`${getLearnUrl('/user/tasks')}`),
           show: !!user?.organization?.setting?.enablechecklist,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
@@ -130,7 +130,9 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           id: 'mentorship',
           label: t('learn.mentorship'),
           onClick: () =>
-            window.location.replace(`${getLearnUrl('/mentorship/overview')}`),
+            window.location.assign(
+              `${getLearnUrl('/user/mentorship/overview')}`,
+            ),
           show: !!user?.organization?.setting?.enableMentorship,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
@@ -139,7 +141,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           id: 'forums',
           label: t('learn.forums'),
           onClick: () =>
-            window.location.replace(`${getLearnUrl('/user/forums')}`),
+            window.location.assign(`${getLearnUrl('/user/forums')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
