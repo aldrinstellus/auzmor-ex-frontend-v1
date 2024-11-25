@@ -43,8 +43,7 @@ const getFiles = async (q: {
     .catch((_e) => {
       return dummyFiles;
     });
-  console.log(response);
-  return response;
+  return (response as any)?.data?.result?.data;
 };
 
 // To get status of documents tab of respected channels

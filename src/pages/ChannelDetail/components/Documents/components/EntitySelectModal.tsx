@@ -17,7 +17,7 @@ import { getInitials } from 'utils/misc';
 interface IEntitySelectModalProps {
   isOpen: boolean;
   closeModal: () => void;
-  onSelect: (entity: any) => void;
+  onSelect: (entity: any, callback: () => void) => void;
   integrationType?: DocIntegrationEnum;
   headerText?: string;
   q?: Record<string, any>;
@@ -43,6 +43,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
   const [totalRows, setTotalRows] = useState<number>(0);
   const [entitySearch, folderId] = watch(['entitySearch', 'folderId']);
   const debouncedSearchValue = useDebounce(entitySearch || '', 500);
+  const [onSelectLoading, setOnSelectLoading] = useState(false);
 
   const integrationHeadingMapping = {
     [DocIntegrationEnum.GoogleDrive]: {
@@ -87,7 +88,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
         size: 302,
       },
       {
-        accessorKey: 'lastUpdated',
+        accessorKey: 'lastUpdatedAt',
         header: () => (
           <div className="font-bold text-neutral-500">Last Updated</div>
         ),
@@ -179,15 +180,24 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
           label={integrationHeadingMapping[integrationType].btnLabel}
           variant={ButtonVariant.Primary}
           onClick={() => {
-            console.log('clicked');
+            setOnSelectLoading(true);
             onSelect(
               Object.keys(
                 (dataGridProps.tableRef?.current as Table<any>).getState()
                   .rowSelection,
               ).map((i) => dataGridProps.flatData[i]),
+              () => {
+                setOnSelectLoading(false);
+                closeModal();
+              },
             );
           }}
-          disabled={dataGridProps.isLoading || !dataGridProps.isRowSelected}
+          loading={dataGridProps.isLoading || onSelectLoading}
+          disabled={
+            dataGridProps.isLoading ||
+            !dataGridProps.isRowSelected ||
+            onSelectLoading
+          }
           size={Size.Small}
         />
       </div>

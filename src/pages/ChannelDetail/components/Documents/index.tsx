@@ -22,6 +22,8 @@ import { ChannelPermissionEnum } from '../utils/channelPermission';
 import { Doc as DocType } from 'interfaces';
 import Doc from './components/Doc';
 import FilterMenuDocument from './components/FilterMenuDocument';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
@@ -281,7 +283,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         <div className="flex justify-between">
           <p className="font-bold text-2xl text-neutral-900">Documents</p>
         </div>
-        {isBaseFolderSet ? (
+        {true ? (
           <Fragment>
             <FilterMenuDocument />
             <DataGrid {...dataGridProps} />
@@ -294,13 +296,27 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         <EntitySelectModal
           isOpen={isOpen}
           closeModal={closeModal}
-          onSelect={(entity: any) =>
-            updateConnectionMutation.mutate({
-              channelId: channelId,
-              folderId: entity[0].id,
-              name: entity[0].name,
-              orgProviderId: availableAccount?.orgProviderId,
-            } as any)
+          onSelect={(entity: any, callback: () => void) =>
+            updateConnectionMutation.mutate(
+              {
+                channelId: channelId,
+                folderId: entity[0].id,
+                name: entity[0].name,
+                orgProviderId: availableAccount?.orgProviderId,
+              } as any,
+              {
+                onSettled: callback,
+                onSuccess: () => {
+                  successToastConfig({
+                    content: `${entity[0].name} connected successfully`,
+                  });
+                },
+                onError: () =>
+                  failureToastConfig({
+                    content: 'Fail to connect, Try again!',
+                  }),
+              },
+            )
           }
           q={{ orgProviderId: availableAccount?.orgProviderId }}
           integrationType={integrationType}
