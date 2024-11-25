@@ -89,7 +89,7 @@ const Notifications = forwardRef(
         {!isError && notificationData?.length ? (
           <div
             id="notification-body"
-            className="flex flex-col h-[394px] overflow-y-auto mt-1 gap-2 "
+            className="flex flex-col h-[394px] overflow-y-auto mt-[10px] gap-2 "
           >
             {notificationData.map((notification: any, index: number) => (
               <React.Fragment key={notification.id}>
@@ -119,7 +119,7 @@ const Notifications = forwardRef(
                   onMarkAsRead={handleMarkAsRead}
                 />
                 {index < notificationData.length - 1 && (
-                  <Divider className="bg-neutral-200" />
+                  <Divider className="!bg-neutral-200 my-[10px] flex-shrink-0" />
                 )}
               </React.Fragment>
             ))}
@@ -135,7 +135,7 @@ const Notifications = forwardRef(
             <div className="flex">
               <img
                 src={NoNotification}
-                alt="Apps Not Found"
+                alt="Notifications Not Found"
                 height={140}
                 width={165}
               />
