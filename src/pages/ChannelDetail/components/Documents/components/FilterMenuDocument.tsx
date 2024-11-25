@@ -116,9 +116,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
               setFilter={(sortValue) => {
                 setFilters({ sort: sortValue });
               }}
-              filterKey={{ createdAt: 'createdAt', aToZ: 'name' }}
               selectedValue={filters ? filters.sort : ''}
-              filterValue={{ asc: 'ASC', desc: 'DESC' }}
               entity={'CHANNEL'}
               dataTestId={dataTestIdSort}
             />

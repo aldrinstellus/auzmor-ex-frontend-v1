@@ -47,11 +47,18 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const { channelId } = useParams();
 
   const useChannelDocumentStatus = getApi(ApiEnum.GetChannelDocumentStatus);
-  const { data: statusResponse, isLoading } = useChannelDocumentStatus({
+  const {
+    data: statusResponse,
+    isLoading,
+    refetch,
+  } = useChannelDocumentStatus({
     channelId,
   });
+  // buypassBaseFolder is temporary state while select api start working
+  const [buypassBaseFolder, setBypassBaseFolder] = useState(false);
 
-  const isBaseFolderSet = statusResponse?.status === 'ACTIVE';
+  const isBaseFolderSet =
+    buypassBaseFolder || statusResponse?.status === 'ACTIVE';
   const isConnectionMade =
     isBaseFolderSet ||
     (statusResponse?.status === 'INACTIVE' &&
@@ -283,7 +290,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         <div className="flex justify-between">
           <p className="font-bold text-2xl text-neutral-900">Documents</p>
         </div>
-        {true ? (
+        {isBaseFolderSet ? (
           <Fragment>
             <FilterMenuDocument />
             <DataGrid {...dataGridProps} />
@@ -310,11 +317,14 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                   successToastConfig({
                     content: `${entity[0].name} connected successfully`,
                   });
+                  refetch();
                 },
-                onError: () =>
+                onError: () => {
                   failureToastConfig({
                     content: 'Fail to connect, Try again!',
-                  }),
+                  });
+                  setBypassBaseFolder(true);
+                },
               },
             )
           }
