@@ -36,6 +36,11 @@ export interface IDataGridProps<T> {
     row: Row<T>,
     isDoubleClick?: boolean,
   ) => void;
+  onGridItemClick?: (
+    e: React.MouseEvent<HTMLElement, MouseEvent>,
+    item: T,
+    isDoubleClick?: boolean,
+  ) => void;
   rowSelection?: RowSelectionState;
   setRowSelection?: Dispatch<SetStateAction<RowSelectionState>>;
   className?: string;
@@ -56,6 +61,7 @@ const DataGrid = <T extends object>({
   tableContainerRef,
   isRowSelectionEnabled,
   onRowClick = () => {},
+  onGridItemClick = () => {},
   rowSelection,
   setRowSelection,
   className,
@@ -99,7 +105,7 @@ const DataGrid = <T extends object>({
       clsx({ flex: true, [cell?.column?.columnDef?.tdClassName || '']: true });
     const trHeaderClassName = () =>
       clsx({ 'flex w-full px-5 py-3 bg-neutral-100 gap-2 group/row': true });
-    const getTrDataClassName = (row: Row<any>) =>
+    const getTrDataClassName = (row: Row<T>) =>
       clsx({
         'flex absolute w-full hover:bg-primary-100 px-5 py-3 gap-2 cursor-default border-b-1 select-none group/row':
           true,
@@ -130,8 +136,8 @@ const DataGrid = <T extends object>({
 
     const handleClick = (
       e: React.MouseEvent<HTMLTableRowElement, MouseEvent>,
-      table: Table<any>,
-      row: Row<any>,
+      table: Table<T>,
+      row: Row<T>,
     ) => {
       if (clickTimeout) {
         // If a timeout is already set, clear it and trigger double-click
@@ -143,7 +149,7 @@ const DataGrid = <T extends object>({
         const timeout = setTimeout(() => {
           onRowClick(e, table, row, false);
           setClickTimeout(null);
-        }, 100); // 100ms delay to distinguish single and double-click
+        }, 200); // 200ms delay to distinguish single and double-click
         setClickTimeout(timeout);
       }
     };
@@ -163,7 +169,7 @@ const DataGrid = <T extends object>({
           <thead className="grid sticky top-0 z-10">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className={trHeaderClassName()}>
-                {headerGroup.headers.map((header: Header<any, unknown>) => {
+                {headerGroup.headers.map((header: Header<T, unknown>) => {
                   return (
                     <th
                       key={header.id}
@@ -197,7 +203,7 @@ const DataGrid = <T extends object>({
             {rowVirtualizer
               .getVirtualItems()
               .map((virtualRow: any, rowIndex: number) => {
-                const row = rows[virtualRow.index] as Row<any>;
+                const row = rows[virtualRow.index] as Row<T>;
                 return (
                   <tr
                     data-index={virtualRow.index} //needed for dynamic row height measurement
@@ -241,10 +247,36 @@ const DataGrid = <T extends object>({
     );
   }
 
+  const handleClick = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+    item: T,
+  ) => {
+    if (clickTimeout) {
+      // If a timeout is already set, clear it and trigger double-click
+      clearTimeout(clickTimeout);
+      setClickTimeout(null);
+      onGridItemClick(e, item, true);
+    } else {
+      // Set a timeout for single click detection
+      const timeout = setTimeout(() => {
+        onGridItemClick(e, item, false);
+        setClickTimeout(null);
+      }, 200); // 200ms delay to distinguish single and double-click
+      setClickTimeout(timeout);
+    }
+  };
+
   return (
     <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
       {flatData.map((item: T, index: number) => {
-        return gridItemRenderer(item, index);
+        return (
+          <div
+            key={`grid-item-index-${index}`}
+            onClick={(e) => handleClick(e, item)}
+          >
+            {gridItemRenderer(item, index)}
+          </div>
+        );
       })}
     </div>
   );

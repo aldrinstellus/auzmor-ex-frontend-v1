@@ -1,4 +1,4 @@
-import React, { FC, Fragment, useEffect, useState } from 'react';
+import React, { FC, Fragment, useContext, useEffect, useState } from 'react';
 import Card from 'components/Card';
 import Button, { Variant as ButtonVariant, Size } from 'components/Button';
 import useModal from 'hooks/useModal';
@@ -20,10 +20,12 @@ import { useMutation } from '@tanstack/react-query';
 import Spinner from 'components/Spinner';
 import { ChannelPermissionEnum } from '../utils/channelPermission';
 import { Doc as DocType } from 'interfaces';
-import Doc from './components/Doc';
+import Doc, { getIconFromMime } from './components/Doc';
 import FilterMenuDocument from './components/FilterMenuDocument';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import BreadCrumb from 'components/BreadCrumb';
+import { DocumentPathContext } from 'contexts/DocumentPathContext';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
@@ -45,6 +47,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const [totalRows, setTotalRows] = useState<number>(0);
   const { getApi } = usePermissions();
   const { channelId } = useParams();
+  const { items, appendItem, sliceItems } = useContext(DocumentPathContext);
 
   const useChannelDocumentStatus = getApi(ApiEnum.GetChannelDocumentStatus);
   const {
@@ -55,7 +58,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     channelId,
   });
   // buypassBaseFolder is temporary state while select api start working
-  const [buypassBaseFolder, setBypassBaseFolder] = useState(false);
+  const [buypassBaseFolder, setBypassBaseFolder] = useState(true);
 
   const isBaseFolderSet =
     buypassBaseFolder || statusResponse?.status === 'ACTIVE';
@@ -142,6 +145,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         ),
         cell: (info) => (
           <div className="flex gap-2 font-medium text-neutral-900 leading-6">
+            <Icon
+              name={
+                info?.row?.original?.isFolder
+                  ? 'dir'
+                  : getIconFromMime(info.row.original.mimeType)
+              }
+            />
             {info.getValue() as string}
           </div>
         ),
@@ -193,12 +203,21 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const dataGridProps = useDataGrid<DocType>({
     apiEnum: ApiEnum.GetFiles,
     isInfiniteQuery: false,
-    q: {},
+    q: {
+      folderId: items.length === 1 ? undefined : items[items.length - 1].id,
+    },
     isEnabled: !isLoading,
     dataGridProps: {
       columns,
       isRowSelectionEnabled: true,
-      onRowClick: (e, table, virtualRow) => {
+      onRowClick: (e, table, virtualRow, isDoubleClick) => {
+        if (virtualRow.original.isFolder && isDoubleClick) {
+          appendItem({
+            id: virtualRow.original.id,
+            label: virtualRow?.original?.name,
+          });
+          return;
+        }
         table.setRowSelection((param) => {
           return {
             ...param,
@@ -206,7 +225,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           };
         });
       },
-      view: 'GRID',
+      onGridItemClick: (e, item, isDoubleClick) => {
+        if (item.isFolder && isDoubleClick) {
+          appendItem({ id: item.id, label: item?.name });
+        }
+      },
+      view: 'LIST',
       gridItemRenderer: (item: DocType) => <Doc doc={item} />,
     },
   });
@@ -288,7 +312,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     <Fragment>
       <Card className="flex flex-col gap-6 p-8 pb-16 w-full justify-center bg-white">
         <div className="flex justify-between">
-          <p className="font-bold text-2xl text-neutral-900">Documents</p>
+          <BreadCrumb
+            items={items}
+            onItemClick={(item) => sliceItems(item.id)}
+          />
         </div>
         {isBaseFolderSet ? (
           <Fragment>

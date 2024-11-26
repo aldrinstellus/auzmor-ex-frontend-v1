@@ -1,27 +1,27 @@
 import React, { FC, ReactNode, createContext, useState } from 'react';
 
-export type FolderNameType = {
+export type Item = {
   id: string;
   label: string;
 };
 
 interface IDocumentPathContextState {
-  path: FolderNameType[];
+  items: Item[];
 }
 interface IDocumentPathContextAction {
-  setPath: (path: FolderNameType[]) => void;
-  appendFolder: (folder: FolderNameType) => void;
-  slicePath: (folderId: string) => void;
-  getCurrentFolder: () => FolderNameType;
+  setItems: (items: Item[]) => void;
+  appendItem: (folder: Item) => void;
+  sliceItems: (folderId: string) => void;
+  getCurrentItem: () => Item;
 }
 export const DocumentPathContext = createContext<
   IDocumentPathContextState & IDocumentPathContextAction
 >({
-  path: [{ id: 'root', label: 'Documents' }],
-  setPath: () => {},
-  appendFolder: () => {},
-  slicePath: () => {},
-  getCurrentFolder: () => ({ id: 'root', label: 'Documents' }),
+  items: [{ id: 'root', label: 'Documents' }],
+  setItems: () => {},
+  appendItem: () => {},
+  sliceItems: () => {},
+  getCurrentItem: () => ({ id: 'root', label: 'Documents' }),
 });
 
 interface IDocumentPathProviderProps {
@@ -29,36 +29,36 @@ interface IDocumentPathProviderProps {
 }
 
 const DocumentPathProvider: FC<IDocumentPathProviderProps> = ({ children }) => {
-  const [path, setPath] = useState<FolderNameType[]>([
+  const [items, setItems] = useState<Item[]>([
     { id: 'root', label: 'Documents' },
   ]);
 
-  const appendFolder = (folder: FolderNameType) => {
-    setPath([...path, folder]);
+  const appendItem = (folder: Item) => {
+    setItems([...items, folder]);
   };
 
-  const slicePath = (folderId: string) => {
-    const sliceIndex = path.findIndex((folder) => folder.id === folderId) + 1;
+  const sliceItems = (folderId: string) => {
+    const sliceIndex = items.findIndex((folder) => folder.id === folderId) + 1;
 
     if (sliceIndex > 0) {
-      setPath([...path.slice(0, sliceIndex)]);
+      setItems([...items.slice(0, sliceIndex)]);
     }
   };
 
-  const getCurrentFolder = () => {
-    if (path.length === 1 && path[0].id === 'root') {
+  const getCurrentItem = () => {
+    if (items.length === 1 && items[0].id === 'root') {
       return { id: 'null', label: 'Documents' };
     }
-    return path[path.length - 1];
+    return items[items.length - 1];
   };
   return (
     <DocumentPathContext.Provider
       value={{
-        path,
-        setPath,
-        appendFolder,
-        slicePath,
-        getCurrentFolder,
+        items,
+        setItems,
+        appendItem,
+        sliceItems,
+        getCurrentItem,
       }}
     >
       {children}
