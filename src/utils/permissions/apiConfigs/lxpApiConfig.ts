@@ -41,6 +41,9 @@ export const apiConfigLxp = {
       : queries.useInfiniteChannels,
     [Learner]: queries.useInfiniteChannelsLearner,
   },
+  [ApiEnum.GetMyChannels]: {
+    [Default]: queries.useInfiniteChannelsLearner,
+  },
   [ApiEnum.GetChannel]: { [Default]: queries.useChannelDetails },
   [ApiEnum.CreateChannel]: { [Default]: queries.createChannel },
   [ApiEnum.UpdateChannel]: { [Default]: queries.updateChannel },
@@ -192,6 +195,7 @@ export const apiConfigLxp = {
 
   //teams
   [ApiEnum.GetTeams]: { [Default]: queries.useInfiniteTeams },
+  [ApiEnum.GetMyTeams]: { [Default]: queries.useInfiniteMyTeams },
   [ApiEnum.GetTeam]: { [Default]: queries.useSingleTeam },
   [ApiEnum.GetTeamMembers]: { [Default]: queries.useInfiniteTeamMembers },
 

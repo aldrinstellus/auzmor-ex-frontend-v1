@@ -16,16 +16,19 @@ import useProduct from 'hooks/useProduct';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
 
+type ApiCallFunction = (queryParams: any) => any;
 interface ITeamsBodyProps {
   entityRenderer?: (data: ITeam) => ReactNode;
   selectedTeamIds?: string[];
   dataTestId?: string;
+  fetchTeams?: ApiCallFunction;
 }
 
 const TeamsBody: FC<ITeamsBodyProps> = ({
   entityRenderer,
   selectedTeamIds = [],
   dataTestId,
+  fetchTeams,
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { form } = useEntitySearchFormStore();
@@ -65,20 +68,22 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
     [],
   );
 
-  // fetch teams datar
+  // fetch teams data
   const debouncedSearchValue = useDebounce(teamSearch || '', 500);
   const useInfiniteTeams = getApi(ApiEnum.GetTeams);
+  const queryParams = {
+    q: isFiltersEmpty({
+      q: debouncedSearchValue,
+      categoryIds:
+        selectedCategories && selectedCategories.length
+          ? selectedCategories.join(',')
+          : undefined,
+      userId: isLimitGlobalPosting ? user?.id : undefined,
+    }),
+  };
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteTeams({
-      q: isFiltersEmpty({
-        q: debouncedSearchValue,
-        categoryIds:
-          selectedCategories && selectedCategories.length
-            ? selectedCategories.join(',')
-            : undefined,
-        userId: isLimitGlobalPosting ? user?.id : undefined,
-      }),
-    });
+    fetchTeams ? fetchTeams(queryParams) : useInfiniteTeams(queryParams);
+
   const teamsData = data?.pages
     .flatMap((page: any) => {
       return page?.data?.result?.data.map((team: ITeam) => team);

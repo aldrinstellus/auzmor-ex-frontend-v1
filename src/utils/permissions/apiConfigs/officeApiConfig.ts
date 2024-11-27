@@ -31,6 +31,9 @@ export const apiConfigOffice = {
   [ApiEnum.GetChannels]: {
     [Default]: queries.useInfiniteChannels,
   },
+  [ApiEnum.GetMyChannels]: {
+    [Default]: queries.useInfiniteChannels,
+  },
   [ApiEnum.GetChannel]: { [Default]: queries.useChannelDetails },
   [ApiEnum.CreateChannel]: { [Default]: queries.createChannel },
   [ApiEnum.UpdateChannel]: { [Default]: queries.updateChannel },
@@ -209,6 +212,7 @@ export const apiConfigOffice = {
 
   //teams
   [ApiEnum.GetTeams]: { [Default]: queries.useInfiniteTeams },
+  [ApiEnum.GetMyTeams]: { [Default]: queries.useInfiniteTeams },
   [ApiEnum.GetTeam]: { [Default]: queries.useSingleTeam },
   [ApiEnum.GetTeamMembers]: { [Default]: queries.useInfiniteTeamMembers },
   [ApiEnum.CreateTeam]: { [Default]: queries.createTeams },

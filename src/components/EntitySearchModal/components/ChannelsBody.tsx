@@ -15,16 +15,19 @@ import NoDataFound from 'components/NoDataFound';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
+type ApiCallFunction = (queryParams: any) => any;
 interface IChannelsBodyProps {
   entityRenderer?: (data: IChannel) => ReactNode;
   selectedChannelIds?: string[];
   dataTestId?: string;
+  fetchChannels?: ApiCallFunction;
 }
 
 const ChannelsBody: FC<IChannelsBodyProps> = ({
   entityRenderer,
   selectedChannelIds = [],
   dataTestId,
+  fetchChannels,
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { form } = useEntitySearchFormStore();
@@ -50,15 +53,16 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
 
   const debouncedSearchValue = useDebounce(channelSearch || '', 500);
   const useInfiniteChannels = getApi(ApiEnum.GetChannels);
+  const queryParams = isFiltersEmpty({
+    limit: 30,
+    q: debouncedSearchValue,
+    visibility: privacy?.value,
+    categoryIds: selectedCategories.length ? selectedCategories : undefined,
+  });
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteChannels(
-      isFiltersEmpty({
-        limit: 30,
-        q: debouncedSearchValue,
-        visibility: privacy?.value,
-        categoryIds: selectedCategories.length ? selectedCategories : undefined,
-      }),
-    );
+    fetchChannels
+      ? fetchChannels(queryParams)
+      : useInfiniteChannels(queryParams);
 
   const channelsData = data?.pages
     .flatMap((page: any) => page?.data?.result?.data)

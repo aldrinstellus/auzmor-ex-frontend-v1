@@ -25,6 +25,7 @@ export enum ApiEnum {
 
   //channels
   GetChannels = 'GET_CHANNELS',
+  GetMyChannels = 'GET_MY_CHANNELS',
   GetChannel = 'GET_CHANNEL',
   CreateChannel = 'CREATE_CHANNEL',
   UpdateChannel = 'UPDATE_CHANNEL',
@@ -176,6 +177,7 @@ export enum ApiEnum {
 
   //teams
   GetTeams = 'GET_TEAMS',
+  GetMyTeams = 'GET_MY_TEAMS',
   GetTeam = 'GET_TEAM',
   GetTeamMembers = 'GET_TEAM_MEMBERS',
   CreateTeam = 'CREATE_TEAM',

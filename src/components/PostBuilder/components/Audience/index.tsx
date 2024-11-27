@@ -2,7 +2,7 @@ import Header from 'components/ModalHeader';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import { FC, useCallback, useContext, useEffect, useState } from 'react';
 import Footer from './Footer';
-import AudienceSelector from 'components/AudienceSelector';
+import AudienceSelector, { AudienceType } from 'components/AudienceSelector';
 import { useForm } from 'react-hook-form';
 import { IAudienceForm } from 'components/EntitySearchModal';
 import { AudienceEntityType, IAudience, IGetUser } from 'interfaces';
@@ -184,6 +184,7 @@ const Audience: FC<IAudienceProps> = ({ closeModal, dataTestId }) => {
           closeBtnDataTestId={`${dataTestId}-close`}
         />
         <AudienceSelector
+          audienceType={AudienceType.PostAudience}
           audienceFlow={audienceFlow}
           setAudienceFlow={setAudienceFlow}
           isEveryoneSelected={isEveryoneSelected}

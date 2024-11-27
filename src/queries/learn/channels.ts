@@ -341,7 +341,7 @@ export const useInfiniteChannelsLearner = (
   const { channels, setChannels } = useChannelStore();
   return {
     ...useInfiniteQuery({
-      queryKey: ['channel', q],
+      queryKey: ['channel', q, 'learner'],
       queryFn: (context) => getAllChannels(context, setChannels, '/learner'),
       getNextPageParam: (lastPage: any) => {
         const pageDataLen = lastPage?.data?.result?.data?.length;

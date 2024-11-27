@@ -150,6 +150,31 @@ export const useInfiniteTeams = ({
   });
 };
 
+export const useInfiniteMyTeams = ({
+  startFetching = true,
+  q,
+}: {
+  startFetching?: boolean;
+  q?: Record<string, any>;
+}) => {
+  return useInfiniteQuery({
+    queryKey: ['teams', { ...q, userId: 'me' }, 'me'],
+    queryFn: getAllTeams,
+    getNextPageParam: (lastPage: any, pages: any) => {
+      const pageDataLen = lastPage?.data?.result?.data?.length;
+      const pageLimit = lastPage?.data?.result?.limit;
+      const totalCount = lastPage?.data?.result?.total_records;
+      const fetchedCount = pageLimit * pages?.length;
+      if (pageDataLen < pageLimit || fetchedCount >= totalCount) {
+        return null;
+      }
+      return pages?.length + 1;
+    },
+    staleTime: 5 * 60 * 1000,
+    enabled: startFetching,
+  });
+};
+
 export const useInfiniteTeamMembers = ({
   teamId,
   q,

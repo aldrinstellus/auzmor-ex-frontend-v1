@@ -1,6 +1,6 @@
 import Header from 'components/ModalHeader';
 import { FC, useEffect, useState } from 'react';
-import AudienceSelector from 'components/AudienceSelector';
+import AudienceSelector, { AudienceType } from 'components/AudienceSelector';
 import { useForm } from 'react-hook-form';
 import { IAudienceForm } from 'components/EntitySearchModal';
 import { AudienceEntityType, IAudience } from 'interfaces';
@@ -153,6 +153,7 @@ const Audience: FC<IAudienceProps> = ({
           closeBtnDataTestId="schedule-post-modal-close"
         />
         <AudienceSelector
+          audienceType={AudienceType.AppAudience}
           audienceFlow={audienceFlow}
           setAudienceFlow={setAudienceFlow}
           isEveryoneSelected={isEveryoneSelected}
