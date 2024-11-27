@@ -577,7 +577,8 @@ export const getUserCardTooltipProps = (user: any, fallbackValue: string) => {
   return {
     id: user?.id || user?.userId || '',
     fullName: user?.fullName || user?.userName || user?.name || fallbackValue,
-    workEmail: user?.email || user?.workEmail || fallbackValue,
+    workEmail:
+      user?.email || user?.workEmail || user?.primaryEmail || fallbackValue,
     email: user?.email || user?.workEmail || fallbackValue,
     workLocation: workLocation,
     designation: designation,

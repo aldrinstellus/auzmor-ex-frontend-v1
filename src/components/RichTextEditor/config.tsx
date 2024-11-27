@@ -50,9 +50,9 @@ const mentionEntityFetch = async (character: string, searchTerm: string) => {
   if (character === '@' && !isContainWhiteSpace) {
     const getAllUser =
       getProduct() === ProductEnum.Lxp
-        ? apiService.get('/mentions/auto_suggest', {
-            identifier: '@',
+        ? apiService.get('/users/list', {
             q: searchTerm || '',
+            status: [UserStatus.Active],
           })
         : apiService.get('/users', {
             q: searchTerm,

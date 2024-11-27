@@ -45,6 +45,7 @@ export const mapUser = (user: Record<string, any>) => {
     firstName: user?.first_name,
     lastName: user?.last_name,
     profileImage: { original: user?.image_url },
+    profileColor: user?.profile_color,
     workEmail: user?.email,
     id: user?.id?.toString(),
   };
@@ -53,11 +54,11 @@ export const mapUser = (user: Record<string, any>) => {
 export const mapMentionsUser = (user: Record<string, any>) => {
   return {
     ...user,
-    preferredName: user?.name,
+    preferredName: user?.display_name,
     fullName: user?.full_name || user?.name,
-    profileImage: { original: user?.additional_info?.image_url },
+    profileImage: { original: user?.image_url },
     workEmail: user?.email,
-    designation: user?.additional_info?.designation,
+    designation: user?.designation,
     id: user?.id?.toString(),
   };
 };
@@ -136,18 +137,12 @@ export const getAllUser = async ({
   queryKey,
 }: QueryFunctionContext<[string, any | undefined], any>) => {
   let response = null;
-  const defaultParams = {
-    identifier: '@',
-    q: '',
-  };
-  if (pageParam === null) {
-    response = await apiService.get('/mentions/auto_suggest', {
-      ...defaultParams,
-      ...queryKey[1],
-    });
-  } else {
-    response = await apiService.get(pageParam);
-  }
+  const params = queryKey[1];
+  if (pageParam) params['page'] = pageParam;
+  response = await apiService.get('/users/list', {
+    ...params,
+  });
+
   const mappedResponse = {
     ...response,
     data: {
@@ -243,6 +238,7 @@ export const useInfiniteUsers = ({
       const pageLimit = lastPage?.data?.result?.limit;
       const totalCount = lastPage?.data?.result?.total_records;
       const fetchedCount = pageLimit * pages?.length;
+      console.log({ pageDataLen, pageLimit, totalCount, fetchedCount });
       if (pageDataLen < pageLimit || fetchedCount >= totalCount) {
         return null;
       }
