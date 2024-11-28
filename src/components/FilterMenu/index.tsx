@@ -149,7 +149,7 @@ const FilterMenu: FC<IFilterMenu> = ({
       teams: [],
       byPeople: [],
       visibility: [],
-      channeType: [],
+      channelType: [],
       channels: [],
     });
   };
