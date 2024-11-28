@@ -241,10 +241,11 @@ export const getJoinChannelRequests = async (
     any
   >,
   channelId?: string,
+  apiPrefix = '',
 ) => {
   let response = null;
   const reqPath = channelId
-    ? `channels/${channelId}/join-requests`
+    ? `${apiPrefix}/channels/${channelId}/join-requests`
     : `channels/join-requests`;
   try {
     if (!!!context.pageParam) {
@@ -437,6 +438,33 @@ export const useInfiniteChannelsRequest = (
     ...useInfiniteQuery({
       queryKey: ['channel-requests', q, channelId],
       queryFn: (context) => getJoinChannelRequests(context, channelId),
+      getNextPageParam: (lastPage: any) => {
+        const pageDataLen = lastPage?.data?.result?.data?.length;
+        const pageLimit = lastPage?.data?.result?.paging?.limit;
+        if (pageDataLen < pageLimit) {
+          return null;
+        }
+        return lastPage?.data?.result?.paging?.next;
+      },
+      getPreviousPageParam: (currentPage: any) => {
+        return currentPage?.data?.result?.paging?.prev;
+      },
+      staleTime: 5 * 60 * 1000,
+      enabled: enabled,
+    }),
+  };
+};
+
+export const useInfiniteChannelsRequestLearner = (
+  channelId?: string,
+  q?: Record<string, any>,
+  enabled?: boolean,
+) => {
+  return {
+    ...useInfiniteQuery({
+      queryKey: ['channel-requests', q, channelId, 'learner'],
+      queryFn: (context) =>
+        getJoinChannelRequests(context, channelId, '/learner'),
       getNextPageParam: (lastPage: any) => {
         const pageDataLen = lastPage?.data?.result?.data?.length;
         const pageLimit = lastPage?.data?.result?.paging?.limit;

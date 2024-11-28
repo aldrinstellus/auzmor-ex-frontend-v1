@@ -66,6 +66,7 @@ export const apiConfigLxp = {
 
   [ApiEnum.GetJoinChannelRequests]: {
     [Default]: queries.useInfiniteChannelsRequest,
+    [Learner]: queries.useInfiniteChannelsRequestLearner,
   },
   [ApiEnum.CreateJoinChannelRequest]: { [Default]: queries.joinChannelRequest },
   [ApiEnum.ApproveJoinChannelRequest]: {
