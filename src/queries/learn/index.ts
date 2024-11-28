@@ -18,4 +18,4 @@ export * from './support';
 export * from './teams';
 export * from './trainings';
 export * from './users';
-export * from './documents';
+export * from './channelDocuments';

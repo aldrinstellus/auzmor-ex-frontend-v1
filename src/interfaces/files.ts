@@ -15,14 +15,23 @@ export type Directory = { id: string; name: 'string' };
 
 export type Doc = {
   id: string;
-  remoteId: string;
   name: string;
   size: string;
   mimeType: string;
-  fileThumbnailUrl: string;
-  modifiedAt: string;
-  downloadable: boolean;
+  parentId: string | null;
+  externalId: string;
+  externalUrl: string;
   isFolder: boolean;
+  downloadable: boolean;
+  fileType: string;
+  ownerName: string;
+  ownerImage?: string;
+  path: string;
+  externalCreatedAt: string;
+  externalUpdatedAt: string;
+  syncedAt: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type GetDirectoriesResponse = {

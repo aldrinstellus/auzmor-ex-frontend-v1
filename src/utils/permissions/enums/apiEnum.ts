@@ -211,9 +211,9 @@ export enum ApiEnum {
   GetOrganizationChartApi = 'GET_ORGANIZATION_CHART_API',
   ResendInvitation = 'RESEND_INVITATION',
 
-  //Documents
-  GetDirectories = 'GET_DIRECTORIES',
-  UpdateConnection = 'UPDATE_CONNECTION',
-  GetFiles = 'GET_FILES',
+  //channel-documents
+  GetChannelDirectories = 'GET_CHANNEL_DIRECTORIES',
+  UpdateChannelDocumentConnection = 'UPDATE_CHANNEL_DOCUMENT_CONNECTION',
+  GetChannelFiles = 'GET_CHANNEL_FILES',
   GetChannelDocumentStatus = 'GET_CHANNEL_DOCUMENT_STATUS',
 }

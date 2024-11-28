@@ -20,12 +20,16 @@ interface IFilterMenu {
   children?: ReactNode;
   dataTestIdSort?: string;
   dataTestIdFilter?: string;
+  view: 'LIST' | 'GRID';
+  changeView: (view: 'LIST' | 'GRID') => void;
 }
 
 const FilterMenuDocument: FC<IFilterMenu> = ({
   children,
   dataTestIdSort,
   dataTestIdFilter,
+  view,
+  changeView,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const { filters, setFilters } = useAppliedFiltersForDoc();
@@ -79,25 +83,40 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
     !!filters?.docPeopleCheckbox?.length ||
     !!filters?.docModifiedRadio;
 
+  const menuItems = [
+    {
+      icon: 'list',
+      label: 'List',
+      onClick: () => changeView('LIST'),
+    },
+    {
+      icon: 'grid',
+      label: 'Grid',
+      onClick: () => changeView('GRID'),
+    },
+  ];
+
   return (
     <>
       <div className="flex flex-col gap-6">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center h-9">
           <div>{children}</div>
           <div className="flex space-x-2 justify-center items-center relative">
-            <PopupMenu
-              triggerNode={
-                <IconButton
-                  icon="grid"
-                  variant={IconVariant.Secondary}
-                  size={IconSize.Medium}
-                  borderAround
-                  className="bg-white !p-[10px]"
-                  dataTestId={dataTestIdFilter}
-                />
-              }
-              menuItems={[]}
-            />
+            <div className="flex relative">
+              <PopupMenu
+                triggerNode={
+                  <IconButton
+                    icon={view === 'GRID' ? 'grid' : 'list'}
+                    variant={IconVariant.Secondary}
+                    size={IconSize.Medium}
+                    borderAround
+                    className="bg-white !p-[10px]"
+                  />
+                }
+                menuItems={menuItems}
+                className="mt-1 top-full right-0 border-1 border-neutral-200 focus-visible:outline-none"
+              />
+            </div>
             <div className="relative flex">
               <IconButton
                 onClick={openFilterModal}

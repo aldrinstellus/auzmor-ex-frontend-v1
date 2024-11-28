@@ -5,6 +5,7 @@ import Truncate from 'components/Truncate';
 import React, { FC, useMemo } from 'react';
 import { Doc as DocType } from 'interfaces';
 import Avatar from 'components/Avatar';
+import { humanizeTime } from 'utils/time';
 
 interface IDocProps {
   doc: DocType;
@@ -72,19 +73,22 @@ const Doc: FC<IDocProps> = ({ doc }) => {
         </div>
         <div className="flex flex-col gap-1">
           <Truncate
-            text="Invoice Details"
+            text={doc.name}
             className="text-xs font-medium leading-[18px] w-[200px]"
           />
           <div className="flex items-center gap-1">
             <div className="flex items-center gap-0.5">
-              <Avatar size={16} />
+              <Avatar size={16} image={doc?.ownerImage} name={doc.ownerName} />
               <span className="text-[8px] text-neutral-500 font-medium">
-                Jesse Leos
+                {doc.ownerName}
               </span>
             </div>
             <div className="flex w-[3px] h-[3px] bg-neutral-300"></div>
             <span className="text-[8px] text-neutral-500 font-medium">
-              Updated 5 mins ago
+              Updated{' '}
+              {doc.externalUpdatedAt
+                ? humanizeTime(doc.externalUpdatedAt)
+                : 'while ago'}
             </span>
           </div>
         </div>

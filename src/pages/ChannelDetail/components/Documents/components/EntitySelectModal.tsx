@@ -100,9 +100,9 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
   );
 
   const dataGridProps = useDataGrid({
-    apiEnum: ApiEnum.GetDirectories,
+    apiEnum: ApiEnum.GetChannelDirectories,
     isInfiniteQuery: false,
-    q: {
+    payload: {
       channelId: channelId,
       params: {
         q: debouncedSearchValue,

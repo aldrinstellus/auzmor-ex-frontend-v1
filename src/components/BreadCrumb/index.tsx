@@ -25,7 +25,6 @@ const BreadCrumb: FC<IBreadCrumbProps> = ({
     }
   }, [items]);
 
-  console.log(popupItemIndex);
   return (
     <div className="flex items-center gap-2 w-[700px]" ref={ref}>
       {popupItemIndex > 0 && (

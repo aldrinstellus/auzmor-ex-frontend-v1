@@ -1,4 +1,11 @@
-import React, { FC, Fragment, useContext, useEffect, useState } from 'react';
+import React, {
+  FC,
+  Fragment,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import Card from 'components/Card';
 import Button, { Variant as ButtonVariant, Size } from 'components/Button';
 import useModal from 'hooks/useModal';
@@ -26,6 +33,9 @@ import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import BreadCrumb from 'components/BreadCrumb';
 import { DocumentPathContext } from 'contexts/DocumentPathContext';
+import RecentlyAddedEntities from './components/RecentlyAddedEntities';
+import ActionMenu from './components/ActionMenu';
+import Avatar from 'components/Avatar';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
@@ -48,6 +58,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const { getApi } = usePermissions();
   const { channelId } = useParams();
   const { items, appendItem, sliceItems } = useContext(DocumentPathContext);
+  const [view, setView] = useState<'LIST' | 'GRID'>('LIST');
 
   const useChannelDocumentStatus = getApi(ApiEnum.GetChannelDocumentStatus);
   const {
@@ -57,11 +68,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   } = useChannelDocumentStatus({
     channelId,
   });
-  // buypassBaseFolder is temporary state while select api start working
-  const [buypassBaseFolder, setBypassBaseFolder] = useState(true);
 
-  const isBaseFolderSet =
-    buypassBaseFolder || statusResponse?.status === 'ACTIVE';
+  const isBaseFolderSet = statusResponse?.status === 'ACTIVE';
   const isConnectionMade =
     isBaseFolderSet ||
     (statusResponse?.status === 'INACTIVE' &&
@@ -69,7 +77,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const integrationType: DocIntegrationEnum = DocIntegrationEnum.Sharepoint;
   const availableAccount = statusResponse?.availableAccounts[0];
 
-  const updateConnection = getApi(ApiEnum.UpdateConnection);
+  const updateConnection = getApi(ApiEnum.UpdateChannelDocumentConnection);
   const updateConnectionMutation = useMutation({
     mutationKey: ['update-channel-connection', channelId],
     mutationFn: updateConnection,
@@ -92,7 +100,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     },
   ];
 
-  const columns = React.useMemo<ColumnDef<DocType>[]>(
+  const columnsListView = React.useMemo<ColumnDef<DocType>[]>(
     () => [
       {
         id: 'select',
@@ -159,9 +167,19 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         tdClassName: 'flex-1',
       },
       {
-        accessorKey: 'owner',
+        accessorKey: 'ownerName',
         header: () => <div className="font-bold text-neutral-500">Owner</div>,
-        cell: (info) => info.getValue(),
+        cell: (info) => (
+          <div className="flex gap-2 items-center">
+            <Avatar
+              image={info.row.original?.ownerImage}
+              name={info.row.original?.ownerName}
+              size={24}
+            />
+            <span className="truncate">{info.row.original?.ownerName}</span>
+          </div>
+        ),
+        size: 256,
       },
       {
         accessorKey: 'modifiedAt',
@@ -200,22 +218,37 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     [totalRows],
   );
 
+  const columnsGridView = React.useMemo<ColumnDef<DocType>[]>(
+    () => [
+      {
+        accessorKey: 'name',
+        cell: (info) => <Doc doc={info.row.original} />,
+      },
+    ],
+    [],
+  );
+
   const dataGridProps = useDataGrid<DocType>({
-    apiEnum: ApiEnum.GetFiles,
+    apiEnum: ApiEnum.GetChannelFiles,
     isInfiniteQuery: false,
-    q: {
-      folderId: items.length === 1 ? undefined : items[items.length - 1].id,
+    payload: {
+      channelId,
+      params: {
+        folderId: items.length === 1 ? undefined : items[items.length - 1].id,
+      },
     },
     isEnabled: !isLoading,
     dataGridProps: {
-      columns,
+      columns: view === 'LIST' ? columnsListView : columnsGridView,
       isRowSelectionEnabled: true,
+      view,
       onRowClick: (e, table, virtualRow, isDoubleClick) => {
         if (virtualRow.original.isFolder && isDoubleClick) {
           appendItem({
             id: virtualRow.original.id,
             label: virtualRow?.original?.name,
           });
+          table.setRowSelection({});
           return;
         }
         table.setRowSelection((param) => {
@@ -225,13 +258,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           };
         });
       },
-      onGridItemClick: (e, item, isDoubleClick) => {
-        if (item.isFolder && isDoubleClick) {
-          appendItem({ id: item.id, label: item?.name });
-        }
-      },
-      view: 'LIST',
-      gridItemRenderer: (item: DocType) => <Doc doc={item} />,
     },
   });
 
@@ -303,6 +329,16 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       <NoDataFound hideClearBtn labelHeader="No documents found" />
     );
 
+  const selectedItems = useMemo(() => {
+    const items: any = [];
+    Object.keys(dataGridProps.rowSelection).forEach((index) => {
+      if (!!dataGridProps.rowSelection[index]) {
+        items.push(dataGridProps.flatData[index]);
+      }
+    });
+    return items;
+  }, [dataGridProps.rowSelection]);
+
   return isLoading ? (
     <Card className="flex flex-col gap-6 p-8 pb-16 w-full justify-center bg-white overflow-hidden">
       <p className="font-bold text-2xl text-neutral-900">Documents</p>
@@ -319,7 +355,22 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         </div>
         {isBaseFolderSet ? (
           <Fragment>
-            <FilterMenuDocument />
+            <RecentlyAddedEntities />
+            {dataGridProps.isRowSelected ? (
+              <ActionMenu
+                selectedItems={selectedItems}
+                view={view}
+                changeView={(view) => setView(view)}
+                onDeselect={() => {
+                  dataGridProps.setRowSelection({});
+                }}
+              />
+            ) : (
+              <FilterMenuDocument
+                view={view}
+                changeView={(view) => setView(view)}
+              />
+            )}
             <DataGrid {...dataGridProps} />
           </Fragment>
         ) : (
@@ -350,7 +401,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                   failureToastConfig({
                     content: 'Fail to connect, Try again!',
                   });
-                  setBypassBaseFolder(true);
                 },
               },
             )

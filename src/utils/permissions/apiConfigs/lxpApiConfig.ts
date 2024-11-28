@@ -174,19 +174,6 @@ export const apiConfigLxp = {
   [ApiEnum.CreateReaction]: { [Default]: queries.createReaction },
   [ApiEnum.DeleteReaction]: { [Default]: queries.deleteReaction },
 
-  //storage
-  [ApiEnum.ConnectStorage]: { [Default]: queries.getLinkToken },
-  [ApiEnum.UpdateStorage]: { [Default]: queries.patchConfig },
-  [ApiEnum.GetStorageFiles]: { [Default]: queries.useFiles },
-  [ApiEnum.GetStorageFolders]: { [Default]: queries.useFolders },
-  [ApiEnum.SearchStorage]: { [Default]: queries.useDocument },
-  [ApiEnum.CreateStorageFolder]: { [Default]: queries.createFolder },
-  [ApiEnum.DownloadStorageFile]: { [Default]: queries.download },
-  [ApiEnum.GetStorageUsers]: { [Default]: queries.useGetStorageUser },
-  [ApiEnum.GetStorageConnectionStatus]: {
-    [Default]: queries.useConnectedStatus,
-  },
-
   //submissions
   [ApiEnum.GetEvaluations]: { [Default]: queries.useGetEvaluation },
 
@@ -211,10 +198,12 @@ export const apiConfigLxp = {
   [ApiEnum.GetUserApi]: { [Default]: queries.getUser },
   [ApiEnum.GetMembers]: { [Default]: queries.useInfiniteMembers },
 
-  //documents
-  [ApiEnum.GetDirectories]: { [Default]: queries.useDirectories },
-  [ApiEnum.UpdateConnection]: { [Default]: queries.updateConnection },
-  [ApiEnum.GetFiles]: { [Default]: queries.useFiles },
+  //channel-documents
+  [ApiEnum.GetChannelDirectories]: { [Default]: queries.useChannelDirectories },
+  [ApiEnum.UpdateChannelDocumentConnection]: {
+    [Default]: queries.updateChannelDocumentConnection,
+  },
+  [ApiEnum.GetChannelFiles]: { [Default]: queries.useChannelFiles },
   [ApiEnum.GetChannelDocumentStatus]: {
     [Default]: queries.useChannelDocumentStatus,
   },
