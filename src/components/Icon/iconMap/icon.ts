@@ -190,6 +190,7 @@ import ArrowDown3 from '../components/ArrowDown3';
 import { ExclamationSVG } from 'components/LearnIcons';
 import DirIcon from '../components/Dir';
 import GridIcon from '../components/Grid';
+import ListIcon from '../components/List';
 
 export const icon = {
   add: Add,
@@ -303,6 +304,7 @@ export const icon = {
   linearLeftArrow: LinearLeftArrow,
   linearRightArrow: LinearRightArrow,
   link: Link,
+  list: ListIcon,
   location: LocationIcon,
   lock: LockIcon,
   'lock-open': LockOpenIcon,

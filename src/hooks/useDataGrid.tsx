@@ -21,10 +21,16 @@ export const useDataGrid = <T extends object>({
   const { getApi } = usePermissions();
   const tableContainerRef = useRef<HTMLDivElement>(null);
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  const [isRowSelected, setIsRowSelected] = useState(false);
+  const [isRowSelected, setIsRowSelected] = useState<boolean>(false);
   const tableRef = useRef<any>(null);
   const { apiEnum, payload, isInfiniteQuery, isEnabled } = rest;
   const { columns } = rest.dataGridProps;
+
+  useEffect(() => {
+    setIsRowSelected(
+      Object.keys(rowSelection).some((index) => !!rowSelection[index]),
+    );
+  }, [rowSelection]);
 
   const generateLoadingRows = () => {
     // Extract keys from the columns array to define the structure of each row
@@ -38,10 +44,6 @@ export const useDataGrid = <T extends object>({
   };
 
   const loadingData = generateLoadingRows();
-
-  useEffect(() => {
-    setIsRowSelected(!!tableRef?.current?.getIsSomeRowsSelected());
-  }, [rowSelection]);
 
   if (isInfiniteQuery) {
     const useInfiniteQuery = getApi(apiEnum);

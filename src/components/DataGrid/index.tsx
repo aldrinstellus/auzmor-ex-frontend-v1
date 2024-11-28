@@ -94,6 +94,26 @@ const DataGrid = <T extends object>({
     tableRef.current = table;
   }
 
+  const { rows } = table.getRowModel();
+
+  const rowVirtualizer = useVirtualizer({
+    count: rows.length,
+    estimateSize: () => 60, //estimate row height for accurate scrollbar dragging
+    getScrollElement: () => tableContainerRef?.current,
+    measureElement:
+      typeof window !== 'undefined' &&
+      navigator.userAgent.indexOf('Firefox') === -1
+        ? (element: {
+            getBoundingClientRect: () => {
+              (): any;
+              new (): any;
+              height: any;
+            };
+          }) => element?.getBoundingClientRect().height
+        : undefined,
+    overscan: 5,
+  });
+
   if (view === 'LIST') {
     // Styles
     const getThClassName = (header: any) =>
@@ -113,26 +133,6 @@ const DataGrid = <T extends object>({
         'cursor-pointer': row.getCanSelect(),
         [trDataClassName]: true,
       });
-
-    const { rows } = table.getRowModel();
-
-    const rowVirtualizer = useVirtualizer({
-      count: rows.length,
-      estimateSize: () => 60, //estimate row height for accurate scrollbar dragging
-      getScrollElement: () => tableContainerRef?.current,
-      measureElement:
-        typeof window !== 'undefined' &&
-        navigator.userAgent.indexOf('Firefox') === -1
-          ? (element: {
-              getBoundingClientRect: () => {
-                (): any;
-                new (): any;
-                height: any;
-              };
-            }) => element?.getBoundingClientRect().height
-          : undefined,
-      overscan: 5,
-    });
 
     const handleClick = (
       e: React.MouseEvent<HTMLTableRowElement, MouseEvent>,
