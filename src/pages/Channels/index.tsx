@@ -69,6 +69,20 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
     }
   }, [inView]);
 
+  useEffect(() => {
+    if (!filters?.channelType || filters?.channelType?.length === 0) {
+      updateFilter(
+        'channelType',
+        isAdmin && !IS_PROD_OR_STAGING
+          ? ChannelTypeEnum.AllChannels
+          : ChannelTypeEnum.MyChannels,
+      );
+    }
+    if (!filters?.visibility || filters?.visibility?.length === 0) {
+      updateFilter('visibility', ChannelVisibilityEnum.All);
+    }
+  }, [filters]);
+
   const { watch, resetField } = filterForm;
 
   const searchValue = watch('search');
