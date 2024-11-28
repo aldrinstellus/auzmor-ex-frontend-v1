@@ -15,6 +15,8 @@ import TimeChip from './Component/TimeChip';
 import { useTranslation } from 'react-i18next';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
+import useAuth from 'hooks/useAuth';
+import { FRONTEND_VIEWS } from 'interfaces';
 
 export interface IEventWidgetProps {
   className?: string;
@@ -24,6 +26,7 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
   const { currentTimezone } = useCurrentTimezone();
   const { t } = useTranslation('learnWidget', { keyPrefix: 'eventWidget' });
   const { getApi } = usePermissions();
+  const { user } = useAuth();
 
   let isLive = true;
   const style = useMemo(
@@ -81,11 +84,18 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
           className="border-0 !bg-transparent !px-0 !py-1 group"
           labelClassName=" text-primary-500 hover:text-primary-600  group-focus:text-primary-500"
           onClick={() => {
-            window.location.assign(
-              `${getLearnUrl()}/user/trainings?type=events&tab=${
-                isLive ? 'ONGOING' : 'UPCOMING'
-              }`,
-            );
+            if (user?.preferences?.learnerViewType === FRONTEND_VIEWS.modern)
+              window.location.assign(
+                `${getLearnUrl()}/user/trainings?type=events&tab=${
+                  isLive ? 'ONGOING' : 'UPCOMING'
+                }`,
+              );
+            else
+              window.location.assign(
+                `${getLearnUrl()}/user/events/${
+                  isLive ? 'ongoing' : 'upcoming'
+                }`,
+              );
           }}
         />
       </div>
