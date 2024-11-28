@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from './usePermissions';
 import { IDataGridProps } from 'components/DataGrid';
@@ -10,6 +10,7 @@ type DataGridType<T> = {
   payload?: Record<string, any>;
   isInfiniteQuery?: boolean;
   loadingRowCount?: number;
+  loadingGrid?: ReactNode;
   isEnabled?: boolean;
   dataGridProps: IDataGridProps<T>;
 };
@@ -23,8 +24,8 @@ export const useDataGrid = <T extends object>({
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [isRowSelected, setIsRowSelected] = useState<boolean>(false);
   const tableRef = useRef<any>(null);
-  const { apiEnum, payload, isInfiniteQuery, isEnabled } = rest;
-  const { columns } = rest.dataGridProps;
+  const { apiEnum, payload, isInfiniteQuery, isEnabled, loadingGrid } = rest;
+  const { columns, view } = rest.dataGridProps;
 
   useEffect(() => {
     setIsRowSelected(
@@ -112,12 +113,15 @@ export const useDataGrid = <T extends object>({
               ({
                 ...column,
                 header: () => null,
-                cell: () => (
-                  <Skeleton
-                    containerClassName="w-full !h-3 !rounded-15xl !max-w-[280px] relative"
-                    className="!absolute !w-full top-0 left-0 h-3 !rounded-15xl"
-                  />
-                ),
+                cell: () =>
+                  view === 'LIST' ? (
+                    <Skeleton
+                      containerClassName="w-full !h-3 !rounded-15xl !max-w-[280px] relative"
+                      className="!absolute !w-full top-0 left-0 h-3 !rounded-15xl"
+                    />
+                  ) : (
+                    loadingGrid
+                  ),
               } as ColumnDef<T>),
           )
         : columns,

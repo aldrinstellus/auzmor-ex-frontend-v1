@@ -58,7 +58,7 @@ const Doc: FC<IDocProps> = ({ doc }) => {
   const style = useMemo(
     () =>
       clsx({
-        'flex flex-col gap-2 px-3 py-2 rounded-9xl border border-neutral-200 min-w-[223px]':
+        'flex flex-col gap-2 px-3 py-2 rounded-9xl border border-neutral-200 min-w-[223px] cursor-pointer':
           true,
       }),
     [],

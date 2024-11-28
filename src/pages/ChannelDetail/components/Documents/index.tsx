@@ -36,6 +36,7 @@ import { DocumentPathContext } from 'contexts/DocumentPathContext';
 import RecentlyAddedEntities from './components/RecentlyAddedEntities';
 import ActionMenu from './components/ActionMenu';
 import Avatar from 'components/Avatar';
+import Skeleton from 'react-loading-skeleton';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
@@ -58,7 +59,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const { getApi } = usePermissions();
   const { channelId } = useParams();
   const { items, appendItem, sliceItems } = useContext(DocumentPathContext);
-  const [view, setView] = useState<'LIST' | 'GRID'>('LIST');
+  const [view, setView] = useState<'LIST' | 'GRID'>('GRID');
 
   const useChannelDocumentStatus = getApi(ApiEnum.GetChannelDocumentStatus);
   const {
@@ -115,7 +116,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 dataTestId: `select-all`,
                 checked: table.getIsAllRowsSelected(),
                 indeterminate: table.getIsSomeRowsSelected(),
-                onChange: table.getToggleAllRowsSelectedHandler(),
+                onChange: (e: any) => {
+                  e.stopPropagation();
+                  table.getToggleAllRowsSelectedHandler();
+                },
               },
             ]}
             className={`items-center group-hover/row:flex ${
@@ -134,7 +138,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 dataTestId: `select-all`,
                 checked: row.getIsSelected(),
                 indeterminate: row.getIsSomeSelected(),
-                onChange: row.getToggleSelectedHandler(),
+                onChange: (e: any) => {
+                  e.stopPropagation();
+                  row.getToggleSelectedHandler();
+                },
               },
             ]}
             className={`items-center group-hover/row:flex ${
@@ -238,6 +245,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       },
     },
     isEnabled: !isLoading,
+    loadingGrid: (
+      <Skeleton
+        containerClassName="!rounded-15xl !w-[213px] !h-[147px] relative"
+        className="!absolute !w-full top-0 left-0 h-full !rounded-15xl"
+      />
+    ),
     dataGridProps: {
       columns: view === 'LIST' ? columnsListView : columnsGridView,
       isRowSelectionEnabled: true,
@@ -258,6 +271,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           };
         });
       },
+      noDataFound: (
+        <NoDataFound
+          labelHeader="No documents found"
+          clearBtnLabel="Upload now"
+        />
+      ),
     },
   });
 
