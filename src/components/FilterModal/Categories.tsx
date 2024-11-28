@@ -27,7 +27,11 @@ const Categories: FC<ICategoriesProps> = ({
   setValue,
   type,
 }) => {
-  const { ref, inView } = useInView();
+  const rootId = 'category-filter-body';
+  const { ref, inView } = useInView({
+    root: document.getElementById(rootId),
+    rootMargin: '20%',
+  });
   const { getApi } = usePermissions();
   useEffect(() => {
     if (inView) {
@@ -94,7 +98,7 @@ const Categories: FC<ICategoriesProps> = ({
   return (
     <div className="px-2 py-4">
       <Layout fields={searchField} />
-      <div className="max-h-[330px] min-h-[330px] overflow-y-auto">
+      <div className="max-h-[330px] min-h-[330px] overflow-y-auto" id={rootId}>
         {!!categoryCheckbox?.length && (
           <ul className="flex mt-2 mb-3 flex-wrap">
             {categoryCheckbox.map((category: ICheckboxListOption) => (
