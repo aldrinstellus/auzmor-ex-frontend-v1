@@ -100,7 +100,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     },
   ];
 
-  const columns = React.useMemo<ColumnDef<DocType>[]>(
+  const columnsListView = React.useMemo<ColumnDef<DocType>[]>(
     () => [
       {
         id: 'select',
@@ -218,6 +218,16 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     [totalRows],
   );
 
+  const columnsGridView = React.useMemo<ColumnDef<DocType>[]>(
+    () => [
+      {
+        accessorKey: 'name',
+        cell: (info) => <Doc doc={info.row.original} />,
+      },
+    ],
+    [],
+  );
+
   const dataGridProps = useDataGrid<DocType>({
     apiEnum: ApiEnum.GetChannelFiles,
     isInfiniteQuery: false,
@@ -229,7 +239,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     },
     isEnabled: !isLoading,
     dataGridProps: {
-      columns,
+      columns: view === 'LIST' ? columnsListView : columnsGridView,
       isRowSelectionEnabled: true,
       view,
       onRowClick: (e, table, virtualRow, isDoubleClick) => {
@@ -248,12 +258,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           };
         });
       },
-      onGridItemClick: (e, item, isDoubleClick) => {
-        if (item.isFolder && isDoubleClick) {
-          appendItem({ id: item.id, label: item?.name });
-        }
-      },
-      gridItemRenderer: (item: DocType) => <Doc doc={item} />,
     },
   });
 
