@@ -59,7 +59,12 @@ const PopupMenu: FC<IPopupMenuProps> = ({
   }, []);
   return (
     <Menu>
-      <Menu.Button as="menu" disabled={disabled} className={'menu-trigger'}>
+      <Menu.Button
+        as="menu"
+        disabled={disabled}
+        className={'menu-trigger'}
+        onClick={(e) => e.stopPropagation()}
+      >
         {triggerNode}
       </Menu.Button>
       {(controlled ? isOpen : true) && (

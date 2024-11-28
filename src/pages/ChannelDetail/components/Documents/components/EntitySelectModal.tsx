@@ -13,6 +13,7 @@ import Layout, { FieldType } from 'components/Form';
 import { useForm } from 'react-hook-form';
 import { useDebounce } from 'hooks/useDebounce';
 import { getInitials } from 'utils/misc';
+import NoDataFound from 'components/NoDataFound';
 
 interface IEntitySelectModalProps {
   isOpen: boolean;
@@ -132,6 +133,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
         }
       },
       height: 312,
+      noDataFound: <NoDataFound hideClearBtn />,
     },
   });
 

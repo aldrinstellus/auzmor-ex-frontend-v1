@@ -44,11 +44,13 @@ export interface IDataGridProps<T> {
   height?: number | 'auto';
   trDataClassName?: string;
   view?: 'LIST' | 'GRID';
+  noDataFound: JSX.Element;
 }
 
 const DataGrid = <T extends object>({
   flatData = [],
   columns,
+  isLoading,
   isFetchingNextPage,
   fetchNextPage,
   hasNextPage,
@@ -62,6 +64,7 @@ const DataGrid = <T extends object>({
   height = 'auto',
   trDataClassName = '',
   view = 'LIST',
+  noDataFound,
 }: IDataGridProps<T>) => {
   const { ref, inView } = useInView();
   const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null);
@@ -146,7 +149,9 @@ const DataGrid = <T extends object>({
   };
 
   if (view === 'GRID') {
-    return (
+    return flatData.length === 0 && !isLoading ? (
+      noDataFound
+    ) : (
       <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
         {rows.map((row: Row<T>) => {
           return row.getVisibleCells().map((cell) => {
@@ -173,7 +178,9 @@ const DataGrid = <T extends object>({
     );
   }
 
-  return (
+  return flatData.length === 0 && !isLoading ? (
+    noDataFound
+  ) : (
     <div
       className={className}
       ref={tableContainerRef}
@@ -233,7 +240,10 @@ const DataGrid = <T extends object>({
                     transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
                     zIndex: rows.length - rowIndex,
                   }}
-                  onClick={(e) => handleClick(e, table, row)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleClick(e, table, row);
+                  }}
                 >
                   {row.getVisibleCells().map((cell) => {
                     return (
