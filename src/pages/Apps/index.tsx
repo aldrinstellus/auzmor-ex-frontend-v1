@@ -32,7 +32,6 @@ import { usePageTitle } from 'hooks/usePageTitle';
 import { isTrim } from 'pages/ChannelDetail/components/utils';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
-import { IS_PROD_OR_STAGING } from 'utils/constants';
 import { useLocation } from 'react-router-dom';
 import PageLoader from 'components/PageLoader';
 import useAuth from 'hooks/useAuth';
@@ -323,7 +322,7 @@ const Apps: FC<IAppsProps> = () => {
         ) : null}
         <div className="flex justify-between pb-4">
           <div className="flex items-center gap-x-4">
-            {!(isLxp && isAdmin && !IS_PROD_OR_STAGING) && (
+            {!(isLxp && isAdmin) && (
               <Button
                 variant={ButtonVariant.Secondary}
                 label={t('my-apps')}

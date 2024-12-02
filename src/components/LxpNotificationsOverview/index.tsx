@@ -13,7 +13,6 @@ import { getLearnUrl } from 'utils/misc';
 import { useTranslation } from 'react-i18next';
 import Notifications from './components/Notifications';
 import useRole from 'hooks/useRole';
-import { IS_PROD_OR_STAGING } from '../../utils/constants';
 
 const LxpNotificationsOverview: FC = () => {
   const { isAdmin } = useRole();
@@ -27,9 +26,7 @@ const LxpNotificationsOverview: FC = () => {
 
   const viewAllRef = useRef<HTMLButtonElement>(null);
   const queryClient = useQueryClient();
-  const [activeTabIndex, setActiveTabIndex] = useState(
-    IS_PROD_OR_STAGING ? 1 : 0,
-  );
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
 
   const markAllNotificationsAsRead = getApi(ApiEnum.MarkAllNotificationsAsRead);
 
@@ -88,10 +85,9 @@ const LxpNotificationsOverview: FC = () => {
   const notificationField = isAdmin
     ? 'notification_count'
     : 'notification_learners_count';
-  const notificationCount = IS_PROD_OR_STAGING
-    ? notificationCountData?.lxp_notifications_count
-    : notificationCountData?.[notificationField] +
-      notificationCountData?.lxp_notifications_count;
+  const notificationCount =
+    notificationCountData?.[notificationField] +
+    notificationCountData?.lxp_notifications_count;
   return (
     <Popover
       triggerNode={
@@ -162,18 +158,14 @@ const LxpNotificationsOverview: FC = () => {
         </div>
         {/* Content */}
         <Divider />
-        {IS_PROD_OR_STAGING ? (
-          <Notifications isSocial={true} ref={viewAllRef} />
-        ) : (
-          <Tabs
-            tabs={notifTabs}
-            tabContentClassName=""
-            tabSwitcherClassName="!py-1 text-[13px]"
-            underlineOffset={2}
-            className="flex justify-start gap-x-1 px-2 border-b-1 border-neutral-200 w-full h-10"
-            onTabChange={(index) => setActiveTabIndex(index)}
-          />
-        )}
+        <Tabs
+          tabs={notifTabs}
+          tabContentClassName=""
+          tabSwitcherClassName="!py-1 text-[13px]"
+          underlineOffset={2}
+          className="flex justify-start gap-x-1 px-2 border-b-1 border-neutral-200 w-full h-10"
+          onTabChange={(index) => setActiveTabIndex(index)}
+        />
       </Card>
     </Popover>
   );

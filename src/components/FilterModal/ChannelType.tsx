@@ -6,7 +6,6 @@ import { enumToTitleCase } from 'utils/misc';
 import { IRadioListOption } from 'components/RadioGroup';
 import { useDebounce } from 'hooks/useDebounce';
 import useRole from 'hooks/useRole';
-import { IS_PROD_OR_STAGING } from 'utils/constants';
 
 export enum ChannelTypeEnum {
   AllChannels = 'ALL_CHANNELS',
@@ -93,14 +92,8 @@ const ChannelType: FC<IChannelTypeProps> = ({ control, watch }) => {
     if (option.data.value === ChannelTypeEnum.Archived && !isAdmin) {
       return false;
     }
-    if (
-      option.data.value === ChannelTypeEnum.AllChannels &&
-      (!isAdmin || IS_PROD_OR_STAGING)
-    ) {
+    if (option.data.value === ChannelTypeEnum.AllChannels && !isAdmin) {
       return false;
-    }
-    if (IS_PROD_OR_STAGING) {
-      return true;
     }
     if (option.data.value === ChannelTypeEnum.DiscoverNewChannels && isAdmin) {
       return false;

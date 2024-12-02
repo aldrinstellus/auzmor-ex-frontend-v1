@@ -6,7 +6,6 @@ import Spinner from 'components/Spinner';
 import useRole from 'hooks/useRole';
 import { FC, useEffect } from 'react';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
-import { IS_PROD } from 'utils/constants';
 import { useTranslation } from 'react-i18next';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
@@ -104,7 +103,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
       title: t('channels'),
       subTitle: t('channelsSubtitle'),
       onClick: () => setAudienceFlow(AudienceFlow.ChannelSelect),
-      isHidden: IS_PROD || user?.organization.type === 'LMS',
+      isHidden: !isLxp || user?.organization.type === 'LMS',
       isSelected:
         channels &&
         Object.keys(channels).some(

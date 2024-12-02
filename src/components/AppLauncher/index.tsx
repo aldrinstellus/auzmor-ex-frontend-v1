@@ -21,7 +21,6 @@ import useNavigate from 'hooks/useNavigation';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
 import useProduct from 'hooks/useProduct';
-import { IS_PROD_OR_STAGING } from 'utils/constants';
 
 const AppLauncher = () => {
   const { t } = useTranslation('appLauncher');
@@ -129,13 +128,9 @@ const AppLauncher = () => {
                   dataTestId="app-launcher-view-all"
                   onClick={() => {
                     if (isLxp) {
-                      navigate(
-                        isAdmin && !IS_PROD_OR_STAGING
-                          ? '/apps'
-                          : '/apps?myApp=true',
-                      );
-                    } else {
                       navigate(isAdmin ? '/apps' : '/apps?myApp=true');
+                    } else {
+                      navigate('/apps?myApp=true');
                     }
                   }}
                 />

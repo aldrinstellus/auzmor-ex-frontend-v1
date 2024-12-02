@@ -74,7 +74,7 @@ const Navbar = () => {
       dataTestId: 'channels-page',
       iconSize: 24,
       isActive: location.pathname.includes('/channels'),
-      hidden: IS_PROD, // hide for office and lxp
+      hidden: IS_PROD,
     },
   ].filter((each) => !!!each?.hidden);
 

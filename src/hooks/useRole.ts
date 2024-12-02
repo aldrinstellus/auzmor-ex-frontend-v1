@@ -2,7 +2,6 @@ import useAuth from './useAuth';
 import { useLocation } from 'react-router-dom';
 import useProduct from './useProduct';
 import { UserRole } from 'interfaces';
-import { IS_PROD_OR_STAGING } from 'utils/constants';
 
 interface IRoleProps {
   exact?: boolean;
@@ -31,7 +30,7 @@ const useRole = (
   // Used for lxp only
   const isLearner = pathname.split('/')[1] === 'user';
 
-  if (isLxp && isLearner && !IS_PROD_OR_STAGING) {
+  if (isLxp && isLearner) {
     isAdminOrSuperAdmin = false;
     isOwnerOrAdmin = isAdminOrSuperAdmin || user?.id === userId;
     isAdmin = false;

@@ -9,7 +9,6 @@ import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { ComponentEnum } from 'utils/permissions/enums/componentEnum';
 import useAuth from './useAuth';
 import { UserRole } from 'interfaces';
-import { IS_PROD_OR_STAGING } from 'utils/constants';
 
 export const usePermissions = () => {
   const orgRole = useAuth().user?.role;
@@ -25,7 +24,7 @@ export const usePermissions = () => {
     return role;
   };
 
-  const apiRole = IS_PROD_OR_STAGING ? orgRole : getRole(orgRole as any);
+  const apiRole = getRole(orgRole as any);
   const apiConfig = (
     product === ProductEnum.Lxp ? apiConfigLxp : apiConfigOffice
   ) as any;
@@ -44,11 +43,7 @@ export const usePermissions = () => {
     return defaultResponse;
   };
 
-  const componentRole =
-    product === ProductEnum.Lxp && IS_PROD_OR_STAGING
-      ? UserRole.Learner
-      : apiRole;
-
+  const componentRole = apiRole;
   const componentConfig = (
     product === ProductEnum.Lxp ? componentConfigLxp : componentConfigOffice
   ) as any;

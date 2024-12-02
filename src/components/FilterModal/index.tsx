@@ -35,7 +35,6 @@ import ByPeople, { ByPeopleEnum } from './ByPeople';
 import ChannelRequestStatus from './ChannelRequestStatus';
 import { titleCase } from 'utils/misc';
 import Channels from './Channels';
-import { IS_PROD } from 'utils/constants';
 import useRole from 'hooks/useRole';
 
 export interface IFilterForm {
@@ -306,9 +305,9 @@ const FilterModal: FC<IFilterModalProps> = ({
     'doc-people-filters': [FilterModalVariant.Document],
     'doc-type-filters': [FilterModalVariant.Document],
     'doc-modified-filters': [FilterModalVariant.Document],
-    'visibility-filters': IS_PROD ? [] : [FilterModalVariant.ChannelsListing],
-    'channel-type-filters': IS_PROD ? [] : [FilterModalVariant.ChannelsListing],
-    'channel-roles-filters': IS_PROD ? [] : [FilterModalVariant.ChannelMember],
+    'visibility-filters': [FilterModalVariant.ChannelsListing],
+    'channel-type-filters': [FilterModalVariant.ChannelsListing],
+    'channel-roles-filters': [FilterModalVariant.ChannelMember],
     'locations-filters': [
       FilterModalVariant.Orgchart,
       FilterModalVariant.People,
@@ -321,37 +320,27 @@ const FilterModal: FC<IFilterModalProps> = ({
       FilterModalVariant.Team,
       FilterModalVariant.App,
       FilterModalVariant.LxpApp,
-      ...(IS_PROD ? [] : [FilterModalVariant.ChannelsListing]),
+      FilterModalVariant.ChannelsListing,
     ],
     'channel-filters': [],
     'team-filters': [
       FilterModalVariant.App,
+      FilterModalVariant.ChannelMember,
+      FilterModalVariant.ChannelRequest,
+      FilterModalVariant.ChannelsMangeAcess,
       ...(isLearner ? [] : [FilterModalVariant.LxpApp]),
-      ...(IS_PROD
-        ? []
-        : [
-            FilterModalVariant.ChannelMember,
-            FilterModalVariant.ChannelRequest,
-            FilterModalVariant.ChannelsMangeAcess,
-          ]),
     ],
     'status-filters': [
       FilterModalVariant.People,
       FilterModalVariant.Orgchart,
-      ...(IS_PROD
-        ? []
-        : [
-            FilterModalVariant.ChannelMember,
-            FilterModalVariant.ChannelsMangeAcess,
-          ]),
+      FilterModalVariant.ChannelMember,
+      FilterModalVariant.ChannelsMangeAcess,
     ],
-    'by-people-filter': IS_PROD
-      ? []
-      : [
-          FilterModalVariant.ChannelMember,
-          FilterModalVariant.ChannelRequest,
-          FilterModalVariant.ChannelsMangeAcess,
-        ],
+    'by-people-filter': [
+      FilterModalVariant.ChannelMember,
+      FilterModalVariant.ChannelRequest,
+      FilterModalVariant.ChannelsMangeAcess,
+    ],
     'channel-request-status': [],
   };
 
