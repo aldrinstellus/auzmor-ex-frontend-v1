@@ -11,6 +11,8 @@ import { useDataGrid } from 'hooks/useDataGrid';
 import { ColumnDef } from '@tanstack/table-core';
 import NoDataFound from 'components/NoDataFound';
 import Skeleton from 'react-loading-skeleton';
+import FilePreviewModal from './FilePreviewModal';
+import useModal from 'hooks/useModal';
 // import moment from 'moment';
 
 interface IRecentlyAddedEntitiesProps {}
@@ -18,6 +20,8 @@ interface IRecentlyAddedEntitiesProps {}
 const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({}) => {
   const { items, appendItem } = useContext(DocumentPathContext);
   const { channelId } = useParams();
+  const [filePreview, openFilePreview, closeFilePreview, filePreviewProps] =
+    useModal();
 
   const columns = React.useMemo<ColumnDef<Doc>[]>(
     () => [
@@ -81,6 +85,9 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({}) => {
             id: virtualRow.original.id,
             label: virtualRow?.original?.name,
           });
+        } else if (!!!virtualRow.original.isFolder && isDoubleClick) {
+          openFilePreview(virtualRow.original);
+          return;
         }
       },
       noDataFound: <NoDataFound hideClearBtn />,
@@ -100,6 +107,13 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({}) => {
           flatData={dataGridProps.flatData.slice(0, 5)}
         />
       </div>
+      {filePreview && (
+        <FilePreviewModal
+          file={(filePreviewProps as Doc) || {}}
+          open={filePreview}
+          closeModal={closeFilePreview}
+        />
+      )}
     </div>
   );
 };
