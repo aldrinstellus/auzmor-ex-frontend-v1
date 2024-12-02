@@ -33,6 +33,9 @@ import { isTrim } from 'pages/ChannelDetail/components/utils';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
 import { IS_PROD_OR_STAGING } from 'utils/constants';
+import { useLocation } from 'react-router-dom';
+import PageLoader from 'components/PageLoader';
+import useAuth from 'hooks/useAuth';
 
 interface IAppsProps {}
 interface IAppSearchForm {
@@ -92,10 +95,27 @@ const Apps: FC<IAppsProps> = () => {
   });
   const { isLxp } = useProduct();
   const { getApi } = usePermissions();
+  const { user } = useAuth();
   const { apps, featuredApps } = useAppStore();
   const { isAdmin } = useRole();
   const [selectedQuickCategory, setSelectedQuickCategory] =
     useState<string>('');
+  const { pathname } = useLocation();
+
+  // Redirect Non Admins to /user/apps for LMS
+  if (
+    isLxp &&
+    user?.organization.type === 'LMS' &&
+    pathname === '/apps' &&
+    !isAdmin
+  ) {
+    window.location.assign('/user/apps');
+    return (
+      <div className="w-full h-screen">
+        <PageLoader />
+      </div>
+    );
+  }
 
   // Add apps modal
   const [open, openModal, closeModal] = useModal(false, false);
