@@ -57,7 +57,7 @@ const AppShell: FC<IAppShellProps> = ({ children }) => {
         <div className={wraperStyle}>
           <div className={containerStyle}>
             {children}
-            <BackgroundJob />
+            {false && <BackgroundJob />}
           </div>
         </div>
         {showJobProgress && <JobProgress />}
