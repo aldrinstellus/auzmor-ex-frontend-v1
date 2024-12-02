@@ -32,6 +32,7 @@ export type Doc = {
   syncedAt: string;
   createdAt: string;
   updatedAt: string;
+  fileThumbnailUrl: string;
 };
 
 export type GetDirectoriesResponse = {

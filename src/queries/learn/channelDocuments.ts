@@ -47,7 +47,6 @@ const getChannelFiles = async (payload: {
     .catch((_e) => {
       return dummyFiles;
     });
-  // const response = dummyFiles;
   return (response as any)?.data?.result?.data;
 };
 
@@ -61,6 +60,16 @@ const getChannelDocumentStatus = async (payload: {
     payload.params,
   );
   return response.data.result;
+};
+
+// Get preview url for document
+const getChannelFilePreview = async (payload: {
+  channelId: string;
+  fileId: string;
+}) => {
+  return await apiService.get(
+    `/channels/${payload.channelId}/file/${payload.fileId}/preview`,
+  );
 };
 
 /** Hooks */
@@ -105,6 +114,21 @@ export const useChannelDocumentStatus = (
     queryFn: () => getChannelDocumentStatus(payload),
     refetchOnMount: true,
     staleTime: 0,
+    ...options,
+  });
+};
+
+// Get preview url for document
+export const useChannelFilePreview = (
+  payload: {
+    channelId: string;
+    fileId: string;
+  },
+  options: Record<string, any>,
+) => {
+  return useQuery({
+    queryKey: ['get-channel-file-preview', payload],
+    queryFn: () => getChannelFilePreview(payload),
     ...options,
   });
 };

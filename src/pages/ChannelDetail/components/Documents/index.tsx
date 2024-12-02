@@ -37,6 +37,7 @@ import RecentlyAddedEntities from './components/RecentlyAddedEntities';
 import ActionMenu from './components/ActionMenu';
 import Avatar from 'components/Avatar';
 import Skeleton from 'react-loading-skeleton';
+import FilePreviewModal from './components/FilePreviewModal';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
@@ -60,6 +61,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const { channelId } = useParams();
   const { items, appendItem, sliceItems } = useContext(DocumentPathContext);
   const [view, setView] = useState<'LIST' | 'GRID'>('GRID');
+  const [filePreview, openFilePreview, closeFilePreview, filePreviewProps] =
+    useModal();
 
   const useChannelDocumentStatus = getApi(ApiEnum.GetChannelDocumentStatus);
   const {
@@ -257,19 +260,26 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       view,
       onRowClick: (e, table, virtualRow, isDoubleClick) => {
         if (virtualRow.original.isFolder && isDoubleClick) {
+          // If double click on folder then navigate to that folder
           appendItem({
             id: virtualRow.original.id,
             label: virtualRow?.original?.name,
           });
           table.setRowSelection({});
           return;
+        } else if (!!!virtualRow.original.isFolder && isDoubleClick) {
+          openFilePreview(virtualRow.original);
+          return;
         }
-        table.setRowSelection((param) => {
-          return {
-            ...param,
-            [virtualRow.index]: !!!param[virtualRow.index],
-          };
-        });
+        if (!isDoubleClick) {
+          // If single click select file / folder
+          table.setRowSelection((param) => {
+            return {
+              ...param,
+              [virtualRow.index]: !!!param[virtualRow.index],
+            };
+          });
+        }
       },
       noDataFound: (
         <NoDataFound
@@ -437,6 +447,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             openModal();
             closeAddModal();
           }}
+        />
+      )}
+      {filePreview && (
+        <FilePreviewModal
+          file={(filePreviewProps as DocType) || {}}
+          open={filePreview}
+          closeModal={closeFilePreview}
         />
       )}
     </Fragment>

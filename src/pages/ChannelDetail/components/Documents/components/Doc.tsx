@@ -50,15 +50,10 @@ export const getIconFromMime = (mimeType?: string) => {
 };
 
 const Doc: FC<IDocProps> = ({ doc }) => {
-  // const [filePreview, openFilePreview, closeFilePreview] = useModal(
-  //   false,
-  //   true,
-  // );
-
   const style = useMemo(
     () =>
       clsx({
-        'flex flex-col gap-2 px-3 py-2 rounded-9xl border border-neutral-200 min-w-[223px] cursor-pointer':
+        'flex flex-col gap-2 px-3 py-2 rounded-9xl border border-neutral-200 min-w-[223px] cursor-pointer [&>*]:select-none':
           true,
       }),
     [],
@@ -93,13 +88,6 @@ const Doc: FC<IDocProps> = ({ doc }) => {
           </div>
         </div>
       </Card>
-      {/* {filePreview && (
-        <FilePreviewModal
-          file={file}
-          open={filePreview}
-          closeModal={closeFilePreview}
-        />
-      )} */}
     </>
   );
 };
