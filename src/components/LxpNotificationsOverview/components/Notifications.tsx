@@ -97,7 +97,8 @@ const Notifications = forwardRef(
                   ref={viewAllRef}
                   source={
                     NOTIFICATION_ACTION_TYPES.SystemGenerated.includes(
-                      notification.additional_info.action.type,
+                      notification?.action_type ||
+                        notification?.additional_info?.action?.type,
                     )
                       ? 'system'
                       : 'user'
@@ -105,7 +106,10 @@ const Notifications = forwardRef(
                   periods={notification.periods}
                   isRead={notification.is_read}
                   id={notification.id}
-                  actionType={notification.additional_info.action.type}
+                  actionType={
+                    notification?.action_type ||
+                    notification?.additional_info?.action?.type
+                  }
                   actor={notification.actor}
                   createdAt={notification.created_at}
                   deletedTargetName={notification.deleted_target_name}
