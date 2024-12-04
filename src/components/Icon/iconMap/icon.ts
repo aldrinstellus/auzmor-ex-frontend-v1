@@ -191,6 +191,8 @@ import { ExclamationSVG } from 'components/LearnIcons';
 import DirIcon from '../components/Dir';
 import GridIcon from '../components/Grid';
 import ListIcon from '../components/List';
+import FileUploadIcon from '../components/FileUpload';
+import FolderUploadIcon from '../components/FolderUpload';
 
 export const icon = {
   add: Add,
@@ -265,6 +267,7 @@ export const icon = {
   feed: FeedIcon,
   femaleIcon: FemaleIcon,
   file: FileIcon,
+  fileUpload: FileUploadIcon,
   filter: FilterIcon,
   filterLinear: FilterLinear,
   flashIcon: FlashIcon,
@@ -272,6 +275,7 @@ export const icon = {
   folder: FolderIcon,
   folderConnection: FolderConnectionIcon,
   folderOpen: FolderOpen,
+  folderUpload: FolderUploadIcon,
   forbidden: Forbidden,
   form: FormIcon,
   fullScreen: FullScreenIcon,

@@ -28,8 +28,12 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({}) => {
       {
         accessorKey: 'name',
         cell: (info) => (
-          <div className="flex w-[233px] p-2 gap-1 border border-neutral-200 rounded-9xl hover:border-yellow-300 cursor-pointer">
-            <div className="flex w-8 h-8 items-center justify-center border rounded-full shadow-md border-neutral-200">
+          <div className="flex w-[233px] items-center p-2 gap-1 border border-neutral-200 rounded-9xl hover:border-yellow-300 cursor-pointer">
+            <div
+              className={`flex w-8 h-8 items-center justify-center rounded-full shadow-md ${
+                !!!info?.row?.original?.isFolder && 'border border-neutral-200'
+              }`}
+            >
               <Icon
                 name={
                   info.row.original.isFolder
@@ -40,10 +44,10 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({}) => {
               />
             </div>
             <div className="flex flex-col gap-1">
-              <div className="text-xs font-medium leading-[18px] text-neutral-900">
+              <div className="text-xs font-medium text-neutral-900">
                 {info.row.original?.name}
               </div>
-              <div className="text-[8px] font-medium text-neutral-500 leading-3">
+              <div className="text-xxs font-medium text-neutral-500">
                 added{' '}
                 {info.row.original.externalCreatedAt
                   ? humanizeTime(info.row.original.externalCreatedAt)

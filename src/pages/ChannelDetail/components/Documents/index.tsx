@@ -1,6 +1,7 @@
 import React, {
   FC,
   Fragment,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -14,13 +15,13 @@ import Divider from 'components/Divider';
 import EntitySelectModal from './components/EntitySelectModal';
 import AddFolderModal from './components/AddFolderModal';
 import DataGrid from 'components/DataGrid';
-import { ColumnDef } from '@tanstack/react-table';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
 import Layout, { FieldType } from 'components/Form';
 import { useForm } from 'react-hook-form';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { useDataGrid } from 'hooks/useDataGrid';
 import Icon from 'components/Icon';
-import PopupMenu from 'components/PopupMenu';
+import PopupMenu, { IMenuItem } from 'components/PopupMenu';
 import { usePermissions } from 'hooks/usePermissions';
 import { useParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
@@ -38,6 +39,7 @@ import ActionMenu from './components/ActionMenu';
 import Avatar from 'components/Avatar';
 import Skeleton from 'react-loading-skeleton';
 import FilePreviewModal from './components/FilePreviewModal';
+import moment from 'moment';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
@@ -46,6 +48,7 @@ export enum DocIntegrationEnum {
 
 interface IForm {
   selectAll: boolean;
+  documentSearch: string;
 }
 
 interface IDocumentProps {
@@ -87,22 +90,28 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     mutationFn: updateConnection,
   });
 
-  const allOptions = [
-    {
-      label: 'Remove from starred',
-      onClick: () => {},
-      dataTestId: 'folder-menu',
-      enabled: true,
-      className: '!px-6 !py-2',
-    },
-    {
-      label: 'Download',
-      onClick: () => {},
-      dataTestId: 'folder-menu',
-      enabled: true,
-      className: '!px-6 !py-2',
-    },
-  ];
+  const getAllOptions = useCallback((info: CellContext<DocType, unknown>) => {
+    return [
+      {
+        label: 'Remove from starred',
+        onClick: (e: Event) => {
+          e.stopPropagation();
+        },
+        dataTestId: 'folder-menu',
+        className: '!px-6 !py-2',
+        isHidden: true,
+      },
+      {
+        label: 'Download',
+        onClick: (e: Event) => {
+          e.stopPropagation();
+        },
+        dataTestId: 'folder-menu',
+        className: '!px-6 !py-2',
+        isHidden: !info?.row?.original?.downloadable,
+      },
+    ].filter((option) => !option?.isHidden) as any as IMenuItem[];
+  }, []);
 
   const columnsListView = React.useMemo<ColumnDef<DocType>[]>(
     () => [
@@ -198,7 +207,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         ),
         cell: (info) => (
           <div className="flex gap-2 font-medium text-neutral-900 leading-6">
-            {info.getValue() as string}
+            {moment(info.getValue() as string).format('MMMM DD,YYYY') as string}
           </div>
         ),
         size: 200,
@@ -206,7 +215,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       {
         accessorKey: 'more',
         header: () => '',
-        cell: () => (
+        cell: (info) => (
           <PopupMenu
             triggerNode={
               <div
@@ -217,7 +226,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 <Icon name="moreV2Filled" tabIndex={0} size={16} />
               </div>
             }
-            menuItems={allOptions}
+            menuItems={getAllOptions(info)}
             className="right-0 top-full border-1 border-neutral-200 focus-visible:outline-none w-44"
           />
         ),
@@ -381,10 +390,84 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             items={items}
             onItemClick={(item) => sliceItems(item.id)}
           />
+          <div className="flex gap-2 items-center">
+            <Layout
+              fields={[
+                {
+                  type: FieldType.Input,
+                  control,
+                  name: 'documentSearch',
+                  placeholder: 'Search documents',
+                  inputClassName: 'text-sm !py-2 h-10',
+                  leftIcon: 'search',
+                  className: 'w-[480px] h-10',
+                },
+              ]}
+            />
+            {permissions.includes(
+              ChannelPermissionEnum.CanCreateNewChannelDoc,
+            ) && (
+              <div className="relative">
+                <PopupMenu
+                  triggerNode={
+                    <Button
+                      label="New"
+                      leftIcon="add"
+                      className="px-4 py-2 gap-1 h-10"
+                      leftIconClassName="text-white focus:text-white group-focus:text-white"
+                      leftIconHoverColor="text-white"
+                      size={Size.Small}
+                    />
+                  }
+                  menuItems={[
+                    {
+                      renderNode: (
+                        <div className="bg-blue-50 px-6 text-xs font-medium text-neutral-500 py-2">
+                          Add new
+                        </div>
+                      ),
+                      isBanner: true,
+                    },
+                    {
+                      label: (
+                        <div className="flex gap-2 items-center text-xs">
+                          <Icon name={'dir'} size={16} /> Folder
+                        </div>
+                      ),
+                    },
+                    {
+                      renderNode: (
+                        <div className="bg-blue-50 px-6 text-xs font-medium text-neutral-500 py-2">
+                          Upload new
+                        </div>
+                      ),
+                      isBanner: true,
+                    },
+                    {
+                      label: (
+                        <div className="flex gap-2.5 items-center text-xs">
+                          <Icon name={'fileUpload'} size={16} /> File
+                        </div>
+                      ),
+                    },
+                    {
+                      label: (
+                        <div className="flex gap-2.5 items-center text-xs">
+                          <Icon name={'folderUpload'} size={16} /> Folder
+                        </div>
+                      ),
+                    },
+                  ]}
+                  className="right-0 mt-2 top-full border-1 border-neutral-200 focus-visible:outline-none w-[247px]"
+                />
+              </div>
+            )}
+          </div>
         </div>
         {isBaseFolderSet ? (
           <Fragment>
             <RecentlyAddedEntities />
+            <p className="text-base font-bold text-neutral-900">All files</p>
             {dataGridProps.isRowSelected ? (
               <ActionMenu
                 selectedItems={selectedItems}

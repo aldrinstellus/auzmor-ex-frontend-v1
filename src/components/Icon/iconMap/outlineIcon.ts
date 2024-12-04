@@ -108,6 +108,8 @@ import SvgMessageQuestionOutline from '../components/MessageQuestion/MessageQues
 import SvgTeacherOutline from '../components/Teacher/TeacherOutline';
 import SvgVideoSquareOutline from '../components/VideoSquare/VideoSquareOutline';
 import SvgGridOutline from '../components/Grid/GridOutline';
+import SvgFileUploadOutline from '../components/FileUpload/FileUploadOutline';
+import SvgFolderUploadOutline from '../components/FolderUpload/FolderUploadOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -152,8 +154,10 @@ export const outlineIcon = {
   eyeOutline: SvgEyeOutline,
   eyeSlashOutline: SvgEyeSlashOutline,
   feedOutline: SvgFeedOutline,
+  fileUploadOutline: SvgFileUploadOutline,
   filterLinearOutline: SvgFilterLinearOutline,
   focusOutline: SvgFocusOutline,
+  folderUpload: SvgFolderUploadOutline,
   fullScreenOutline: SvgFullScreenOutline,
   funnyOutline: SvgFunnyOutline,
   galleryOutline: SvgGalleryOutline,
