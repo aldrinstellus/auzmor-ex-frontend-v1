@@ -11,6 +11,7 @@ export enum ChannelPermissionEnum {
   CanManageChannelRequests = 'CAN_MANAGE_CHANNEL_REQUESTS',
 
   CanConnectChannelDoc = 'CAN_CONNECT_CHANNEL_DOC',
+  CanCreateNewChannelDoc = 'CAN_CREATE_NEW_CHANNEL_DOC',
 
   CanArchive = 'CAN_ARCHIVE',
   CanAccessHomeTab = 'CAN_ACCESS_HOME_TAB',
@@ -54,6 +55,7 @@ export const getChannelPermissions: (
             ChannelPermissionEnum.CanAccessDocumentsTab,
             ChannelPermissionEnum.CanAccessSettingsTab,
             ChannelPermissionEnum.CanConnectChannelDoc,
+            ChannelPermissionEnum.CanCreateNewChannelDoc,
           ];
         } else {
           if (channelRole === CHANNEL_ROLE.Member) {
@@ -71,6 +73,7 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanAccessDocumentsTab,
               ChannelPermissionEnum.CanAccessSettingsTab,
               ChannelPermissionEnum.CanConnectChannelDoc,
+              ChannelPermissionEnum.CanCreateNewChannelDoc,
             ];
           } else if (channelRole === CHANNEL_ROLE.Admin) {
             // 3 -> LXP -> Admin view - > Public channel -> Joined -> Channel Role -> Channel Admin
@@ -87,6 +90,7 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanAccessDocumentsTab,
               ChannelPermissionEnum.CanAccessSettingsTab,
               ChannelPermissionEnum.CanConnectChannelDoc,
+              ChannelPermissionEnum.CanCreateNewChannelDoc,
             ];
           }
         }
@@ -106,6 +110,7 @@ export const getChannelPermissions: (
             ChannelPermissionEnum.CanAccessDocumentsTab,
             ChannelPermissionEnum.CanAccessSettingsTab,
             ChannelPermissionEnum.CanConnectChannelDoc,
+            ChannelPermissionEnum.CanCreateNewChannelDoc,
           ];
         } else {
           if (channelRole === CHANNEL_ROLE.Member) {
@@ -124,6 +129,7 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanAccessDocumentsTab,
               ChannelPermissionEnum.CanAccessSettingsTab,
               ChannelPermissionEnum.CanConnectChannelDoc,
+              ChannelPermissionEnum.CanCreateNewChannelDoc,
             ];
           } else if (channelRole === CHANNEL_ROLE.Admin) {
             // 6 -> LXP -> Admin view - > Private channel -> Joined -> Channel Role -> Channel Admin
@@ -141,6 +147,7 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanAccessDocumentsTab,
               ChannelPermissionEnum.CanAccessSettingsTab,
               ChannelPermissionEnum.CanConnectChannelDoc,
+              ChannelPermissionEnum.CanCreateNewChannelDoc,
             ];
           }
         }
@@ -180,6 +187,7 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanAccessHomeTab,
               ChannelPermissionEnum.CanAccessSettingsTab,
               ChannelPermissionEnum.CanConnectChannelDoc,
+              ChannelPermissionEnum.CanCreateNewChannelDoc,
             ];
           }
         }
@@ -213,6 +221,7 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanAccessHomeTab,
               ChannelPermissionEnum.CanAccessSettingsTab,
               ChannelPermissionEnum.CanConnectChannelDoc,
+              ChannelPermissionEnum.CanCreateNewChannelDoc,
             ];
           }
         }
@@ -248,6 +257,7 @@ export const getChannelPermissions: (
             ChannelPermissionEnum.CanAccessHomeTab,
             ChannelPermissionEnum.CanAccessSettingsTab,
             ChannelPermissionEnum.CanConnectChannelDoc,
+            ChannelPermissionEnum.CanCreateNewChannelDoc,
           ];
         }
       }
@@ -284,6 +294,7 @@ export const getChannelPermissions: (
             ChannelPermissionEnum.CanAccessHomeTab,
             ChannelPermissionEnum.CanAccessSettingsTab,
             ChannelPermissionEnum.CanConnectChannelDoc,
+            ChannelPermissionEnum.CanCreateNewChannelDoc,
           ];
         }
       }

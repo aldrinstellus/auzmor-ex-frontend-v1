@@ -4,11 +4,15 @@ import IconButton, {
   Size as IconSize,
 } from 'components/IconButton';
 import useModal from 'hooks/useModal';
-import { FC, ReactNode, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 import useURLParams from 'hooks/useURLParams';
-import { useAppliedFiltersForDoc } from 'stores/appliedFiltersForDoc';
 import Sort from 'components/Sort';
 import PopupMenu from 'components/PopupMenu';
+import Layout, { FieldType } from 'components/Form';
+import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
+import { useForm } from 'react-hook-form';
+import Icon from 'components/Icon';
+import { getIconFromMime } from './Doc';
 
 export enum FilterKey {
   departments = 'departments',
@@ -17,7 +21,6 @@ export enum FilterKey {
 }
 
 interface IFilterMenu {
-  children?: ReactNode;
   dataTestIdSort?: string;
   dataTestIdFilter?: string;
   view: 'LIST' | 'GRID';
@@ -25,14 +28,14 @@ interface IFilterMenu {
 }
 
 const FilterMenuDocument: FC<IFilterMenu> = ({
-  children,
   dataTestIdSort,
   dataTestIdFilter,
   view,
   changeView,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
-  const { filters, setFilters } = useAppliedFiltersForDoc();
+  const { filters, setFilters } = useAppliedFiltersStore();
+  const { control } = useForm();
 
   const { updateParam, serializeFilter, deleteParam } = useURLParams();
 
@@ -53,36 +56,6 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
     }
   }, [filters]);
 
-  // const handleRemoveFilters = (key: FilterKey, id: any) => {
-  //   if (filters) {
-  //     const updatedFilter = filters[key]!.filter((item: any) => item.id !== id);
-  //     const serializedFilters = serializeFilter(updatedFilter);
-  //     if (updatedFilter.length === 0) {
-  //       deleteParam(key);
-  //     } else {
-  //       updateParam(key, serializedFilters);
-  //     }
-  //     setFilters({ ...filters, [key]: updatedFilter });
-  //   }
-  // };
-
-  // const clearFilters = () => {
-  //   deleteParam('documentTypeCheckbox');
-  //   deleteParam('documentPeopleCheckbox');
-  //   deleteParam('documentModifiedCheckbox');
-  //   setFilters({
-  //     ...filters,
-  //     documentTypeCheckbox: [],
-  //     documentPeopleCheckbox: [],
-  //     documentModifiedCheckbox: [],
-  //   });
-  // };
-
-  const isFilterApplied =
-    !!filters?.docTypeCheckbox?.length ||
-    !!filters?.docPeopleCheckbox?.length ||
-    !!filters?.docModifiedRadio;
-
   const menuItems = [
     {
       icon: 'list',
@@ -100,7 +73,38 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
     <>
       <div className="flex flex-col gap-6">
         <div className="flex justify-between items-center h-9">
-          <div>{children}</div>
+          <div>
+            <Layout
+              fields={[
+                {
+                  type: FieldType.SingleSelect,
+                  name: 'Type',
+                  control,
+                  options: [
+                    {
+                      value: 'file',
+                      render: () => (
+                        <div className="flex gap-2">
+                          <Icon name={getIconFromMime()} /> File
+                        </div>
+                      ),
+                    },
+                    {
+                      value: 'folder',
+                      render: () => (
+                        <div className="flex gap-2">
+                          <Icon name="dir" /> Folder
+                        </div>
+                      ),
+                    },
+                  ],
+                  placeholder: 'Type',
+                  showSearch: false,
+                  className: 'h-[36px]',
+                },
+              ]}
+            />
+          </div>
           <div className="flex space-x-2 justify-center items-center relative">
             <div className="flex relative">
               <PopupMenu
@@ -127,9 +131,9 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
                 className="bg-white !p-[10px]"
                 dataTestId={dataTestIdFilter}
               />
-              {isFilterApplied && (
+              {/* {isFilterApplied && (
                 <div className="absolute w-2 h-2 rounded-full bg-red-500 top-0.5 right-0" />
-              )}
+              )} */}
             </div>
             <Sort
               setFilter={(sortValue) => {
@@ -146,11 +150,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
         <FilterModal
           open={showFilterModal}
           closeModal={closeFilterModal}
-          appliedFilters={{
-            docTypeCheckbox: filters?.docTypeCheckbox || [],
-            docPeopleCheckbox: filters?.docPeopleCheckbox || [],
-            docModifiedRadio: filters?.docModifiedRadio || [],
-          }}
+          appliedFilters={{}}
           onApply={(appliedFilters) => {
             setFilters(appliedFilters);
             closeFilterModal();

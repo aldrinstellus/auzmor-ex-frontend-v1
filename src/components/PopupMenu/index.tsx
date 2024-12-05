@@ -26,6 +26,7 @@ export interface IMenuItem {
   permissions?: string[];
   className?: string;
   isActive?: boolean;
+  isBanner?: boolean;
 }
 
 export interface IPopupMenuProps {
@@ -73,35 +74,39 @@ const PopupMenu: FC<IPopupMenuProps> = ({
           className={`bg-white rounded-9xl shadow-lg absolute z-[99999] overflow-hidden focus-visible:outline-none ${className}`}
         >
           {title && title}
-          {menuItems.map((menuItem: IMenuItem, idx: number) => (
-            <Fragment key={`menu-item-${idx}-fragment`}>
-              {!menuItem.disabled && (
-                <Menu.Item
-                  key={`menu-item-${idx}`}
-                  as="button"
-                  onClick={menuItem?.onClick}
-                  className="w-full"
-                >
-                  {({ active }) => {
-                    if (menuItem.renderNode) {
-                      const menuItemWithDataTestId = cloneElement(
-                        menuItem.renderNode,
-                        { 'data-testid': menuItem.dataTestId },
+          {menuItems.map((menuItem: IMenuItem, idx: number) =>
+            menuItem.isBanner ? (
+              menuItem?.renderNode || null
+            ) : (
+              <Fragment key={`menu-item-${idx}-fragment`}>
+                {!menuItem.disabled && (
+                  <Menu.Item
+                    key={`menu-item-${idx}`}
+                    as="button"
+                    onClick={menuItem?.onClick}
+                    className="w-full"
+                  >
+                    {({ active }) => {
+                      if (menuItem.renderNode) {
+                        const menuItemWithDataTestId = cloneElement(
+                          menuItem.renderNode,
+                          { 'data-testid': menuItem.dataTestId },
+                        );
+                        return menuItemWithDataTestId;
+                      }
+                      return (
+                        <PopupMenuItem
+                          menuItem={menuItem}
+                          border={idx !== menuItems?.length - 1}
+                          isActive={menuItem.isActive || active}
+                        />
                       );
-                      return menuItemWithDataTestId;
-                    }
-                    return (
-                      <PopupMenuItem
-                        menuItem={menuItem}
-                        border={idx !== menuItems?.length - 1}
-                        isActive={menuItem.isActive || active}
-                      />
-                    );
-                  }}
-                </Menu.Item>
-              )}
-            </Fragment>
-          ))}
+                    }}
+                  </Menu.Item>
+                )}
+              </Fragment>
+            ),
+          )}
           {footer && footer}
         </Menu.Items>
       )}

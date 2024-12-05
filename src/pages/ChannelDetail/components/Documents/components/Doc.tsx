@@ -53,7 +53,7 @@ const Doc: FC<IDocProps> = ({ doc }) => {
   const style = useMemo(
     () =>
       clsx({
-        'flex flex-col gap-2 px-3 py-2 rounded-9xl border border-neutral-200 min-w-[223px] cursor-pointer [&>*]:select-none':
+        'flex flex-col gap-2 p-3 rounded-9xl border border-neutral-200 min-w-[223px] cursor-pointer [&>*]:select-none shadow-none':
           true,
       }),
     [],
@@ -61,34 +61,32 @@ const Doc: FC<IDocProps> = ({ doc }) => {
 
   const iconName = doc.isFolder ? 'dir' : getIconFromMime(doc.mimeType);
   return (
-    <>
-      <Card className={style}>
-        <div className="flex justify-center items-center py-[15px] border border-neutral-200">
-          <Icon name={iconName} size={70} />
-        </div>
-        <div className="flex flex-col gap-1">
-          <Truncate
-            text={doc.name}
-            className="text-xs font-medium leading-[18px] w-[200px]"
-          />
-          <div className="flex items-center gap-1">
-            <div className="flex items-center gap-0.5">
-              <Avatar size={16} image={doc?.ownerImage} name={doc.ownerName} />
-              <span className="text-[8px] text-neutral-500 font-medium">
-                {doc.ownerName}
-              </span>
-            </div>
-            <div className="flex w-[3px] h-[3px] bg-neutral-300"></div>
-            <span className="text-[8px] text-neutral-500 font-medium">
-              Updated{' '}
-              {doc.externalUpdatedAt
-                ? humanizeTime(doc.externalUpdatedAt)
-                : 'while ago'}
+    <Card className={style}>
+      <div className="flex justify-center items-center py-[15px] bg-neutral-100 rounded-md">
+        <Icon name={iconName} size={70} />
+      </div>
+      <div className="flex flex-col gap-1">
+        <Truncate
+          text={doc.name}
+          className="text-xs font-medium leading-[18px] w-[200px] text-neutral-900"
+        />
+        <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
+            <Avatar size={16} image={doc?.ownerImage} name={doc.ownerName} />
+            <span className="text-xxs text-neutral-500 font-medium">
+              {doc.ownerName}
             </span>
           </div>
+          <div className="flex w-[3px] h-[3px] bg-neutral-300"></div>
+          <span className="text-xxs text-neutral-500 font-medium">
+            Updated{' '}
+            {doc.externalUpdatedAt
+              ? humanizeTime(doc.externalUpdatedAt)
+              : 'while ago'}
+          </span>
         </div>
-      </Card>
-    </>
+      </div>
+    </Card>
   );
 };
 
