@@ -84,9 +84,13 @@ const PrivacyRow: FC<AppProps> = ({ data, canEdit }) => {
       labelRenderer: (option: IRadioListOption) => {
         return (
           <>
-            <div className="text-sm ml-2 text-black font-normal">
-              {option.data.value}
-              <li className="text-gray-500">{option.data.label}</li>
+            <div className="text-sm ml-2 mt-2 flex flex-col gap-2 text-black font-normal">
+              <span className="capitalize">
+                {option.data.value.toLowerCase()}
+              </span>
+              <span className="text-gray-500 leading-4">
+                {option.data.label}
+              </span>
             </div>
           </>
         );
@@ -102,7 +106,7 @@ const PrivacyRow: FC<AppProps> = ({ data, canEdit }) => {
         bgColor: '!bg-orange-50',
       }}
       isEditButton={false}
-      label={t('label')}
+      label={<div className="my-6">{t('label')}</div>}
       isEditMode={true}
       value={data?.settings?.visibility}
       dataTestId=""
@@ -114,7 +118,7 @@ const PrivacyRow: FC<AppProps> = ({ data, canEdit }) => {
           </form>
         </div>
       }
-      className="!py-4"
+      className="!pt-2"
     />
   );
 };

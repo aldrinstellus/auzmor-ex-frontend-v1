@@ -72,7 +72,7 @@ const InfoRow = forwardRef(
           [className]: true,
         })}
       >
-        <div className="flex items-center">
+        <div className="flex items-start">
           <div className="flex items-center w-[200px]">
             <IconWrapper
               type={Type.Square}

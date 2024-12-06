@@ -150,7 +150,11 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
         <div className="w-full h-[80px] bg-slate-500 rounded-t-9xl">
           <ChannelBanner channel={channel} />
         </div>
-        <div className="p-3 flex flex-col gap-1">
+        <div
+          className={`p-3 flex flex-col gap-1 ${
+            isLxp && isAdmin ? 'min-h-[138px]' : ''
+          }`}
+        >
           <div className="flex w-full items-center">
             <Truncate
               text={channel.name}
