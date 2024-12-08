@@ -290,7 +290,6 @@ export const useChannelDocUpload = (channelId: string) => {
     await apiService.get(`/channels/${channelId}/file/uploadUrl`, payload);
 
   const uploadToSharepoint = async (res: IUploadUrlResponse, file: File) => {
-    const promises: any[] = [];
     const uploadUrl = res.uploadURL;
     const chunkSize = 5 * 1024 * 1024; // 5 MB
     const totalBytes = file.size;
@@ -304,49 +303,17 @@ export const useChannelDocUpload = (channelId: string) => {
         'Content-Range': `bytes ${startByte}-${endByte}/${totalBytes}`,
       };
 
-      promises.push(
-        fetch(uploadUrl, {
-          method: 'PUT',
-          headers,
-          body: chunk,
-        }),
-      );
-      offset += chunk.size;
-    }
-    if (promises.length > 0) {
-      const promiseResponse = await Promise.allSettled(promises);
-      const eTags: { partnumber: any; etag: any }[] = [];
-      promiseResponse.forEach((eachPromise) => {
-        if (eachPromise.status === 'fulfilled') {
-          const partnumber = parseInt(
-            (
-              new URL((eachPromise as any).value.config.url) as any
-            ).searchParams.get('partNumber'),
-          ) as any;
-          const etag = (eachPromise as any).value.headers.etag;
-          eTags.push({ partnumber, etag: etag.replaceAll('"', '').toString() });
-        }
+      const response = await fetch(uploadUrl, {
+        method: 'PUT',
+        headers,
+        body: chunk,
       });
-      return { id: res.uploadURL, etags: eTags } as IUploadToSharepointResposne;
+      const responseJson = await response.json();
+      console.log(responseJson);
+      offset += chunk.size;
     }
   };
 
-  const postETags = async (
-    id?: string,
-    etags?: IETag[],
-    coverImageUrl?: string,
-  ) => await apiService.patch(`/files/${id}`, { etags: etags, coverImageUrl });
-
-  function getChunk(partNumber: number, file: any) {
-    const beginchunk = (partNumber - 1) * chunksize;
-    let endchunk = partNumber * chunksize;
-
-    if (endchunk > file.size) {
-      endchunk = file.size;
-    }
-
-    return file.slice(beginchunk, endchunk);
-  }
   const uploadMedia = async (
     fileList: { parentFolderId: string; file: File }[],
   ) => {
@@ -374,16 +341,12 @@ export const useChannelDocUpload = (channelId: string) => {
       promisesRes.forEach(
         (promiseRes: PromiseSettledResult<IUploadUrlResponse>) => {
           if (promiseRes.status === 'fulfilled') {
-            // console.log('uploading to gcp...');
-            // console.log((promiseRes.value as any).result.data);
-            uploadToSharepointPromises.push(
-              uploadToSharepoint(
-                (promiseRes.value as any).data.result as IUploadUrlResponse,
-                fileList.find(
-                  ({ file }) =>
-                    file.name === (promiseRes.value as any).data.result.name,
-                )!.file,
-              ),
+            uploadToSharepoint(
+              (promiseRes.value as any).data.result as IUploadUrlResponse,
+              fileList.find(
+                ({ file }) =>
+                  file.name === (promiseRes.value as any).data.result.name,
+              )!.file,
             );
             setError('');
           } else {
@@ -409,44 +372,6 @@ export const useChannelDocUpload = (channelId: string) => {
       return uploadedFiles;
     }
 
-    if (uploadToSharepointPromises.length > 0) {
-      const promisesRes = await Promise.allSettled(uploadToSharepointPromises);
-      promisesRes.forEach(
-        (
-          promiseRes: PromiseSettledResult<
-            IUploadToSharepointResposne | undefined
-          >,
-        ) => {
-          if (promiseRes.status === 'fulfilled') {
-            // console.log('uploading etags...');
-            uploadETagPromises.push(
-              postETags(promiseRes.value?.id, promiseRes.value?.etags),
-            );
-          } else {
-            console.log(promiseRes);
-            console.log('upload to sharepoint failed');
-          }
-        },
-      );
-    } else {
-      if (uploadStatus !== UploadStatus.Error) {
-        setUploadStatus(UploadStatus.Finished);
-      }
-      return uploadedFiles;
-    }
-
-    if (uploadETagPromises.length > 0) {
-      const promisesRes = await Promise.allSettled(uploadETagPromises);
-      promisesRes.forEach((promiseRes: PromiseSettledResult<IMedia>) => {
-        if (promiseRes.status === 'fulfilled') {
-          uploadedFiles.push((promiseRes.value as any).result.data);
-        } else {
-          console.log(promiseRes);
-          console.log('etag upload failed');
-        }
-      });
-    }
-    setUploadStatus(UploadStatus.Finished);
     return uploadedFiles;
   };
 

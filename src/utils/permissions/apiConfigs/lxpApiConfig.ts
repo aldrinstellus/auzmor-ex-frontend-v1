@@ -202,4 +202,7 @@ export const apiConfigLxp = {
   [ApiEnum.CreateChannelDocFolder]: {
     [Default]: queries.createChannelDocFolder,
   },
+  [ApiEnum.GetChannelDocOwners]: {
+    [Default]: queries.useChannelDocOwners,
+  },
 };

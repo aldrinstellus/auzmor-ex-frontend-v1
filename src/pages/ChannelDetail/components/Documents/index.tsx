@@ -73,6 +73,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const { filters } = useAppliedFiltersStore();
   const docType = watch('docType');
 
+  // Api call: Check connection status
   const useChannelDocumentStatus = getApi(ApiEnum.GetChannelDocumentStatus);
   const {
     data: statusResponse,
@@ -82,12 +83,21 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     channelId,
   });
 
+  // Api call: Create folder mutation
   const createChannelDocFolder = getApi(ApiEnum.CreateChannelDocFolder);
   const _createFolderMutation = useMutation({
     mutationKey: ['create-channel-doc-folder'],
     mutationFn: createChannelDocFolder,
   });
 
+  // Api call: Connect site / folder
+  const updateConnection = getApi(ApiEnum.UpdateChannelDocumentConnection);
+  const updateConnectionMutation = useMutation({
+    mutationKey: ['update-channel-connection', channelId],
+    mutationFn: updateConnection,
+  });
+
+  // State management flags
   const isBaseFolderSet = statusResponse?.status === 'ACTIVE';
   const isConnectionMade =
     isBaseFolderSet ||
@@ -96,12 +106,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const integrationType: DocIntegrationEnum = DocIntegrationEnum.Sharepoint;
   const availableAccount = statusResponse?.availableAccounts[0];
 
-  const updateConnection = getApi(ApiEnum.UpdateChannelDocumentConnection);
-  const updateConnectionMutation = useMutation({
-    mutationKey: ['update-channel-connection', channelId],
-    mutationFn: updateConnection,
-  });
-
+  // A function that decides what options to show on each row of documents
   const getAllOptions = useCallback((info: CellContext<DocType, unknown>) => {
     return [
       {
@@ -125,6 +130,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     ].filter((option) => !option?.isHidden) as any as IMenuItem[];
   }, []);
 
+  // Columns configuration for Datagrid component for List view
   const columnsListView = React.useMemo<ColumnDef<DocType>[]>(
     () => [
       {
@@ -249,6 +255,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     [totalRows],
   );
 
+  // Columns configuration for Datagrid component for Grid view
   const columnsGridView = React.useMemo<ColumnDef<DocType>[]>(
     () => [
       {
@@ -259,6 +266,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     [],
   );
 
+  // Get props for Datagrid component
   const dataGridProps = useDataGrid<DocType>({
     apiEnum: ApiEnum.GetChannelFiles,
     isInfiniteQuery: false,
@@ -269,6 +277,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         sort: filters?.sort ? filters?.sort.split(':')[0] : undefined,
         order: filters?.sort ? filters?.sort.split(':')[1] : undefined,
         isFolder: docType ? !!(docType.value === 'folder') : undefined,
+        owners: (filters?.docOwnerCheckbox || []).map(
+          (owner: any) => owner.name,
+        ),
+        type: (filters?.docTypeCheckbox || []).map(
+          (type: any) => type.paramKey,
+        ),
       },
     },
     isEnabled: !isLoading,
@@ -314,10 +328,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     },
   });
 
+  // Hook to update total count of rows listed
   useEffect(() => {
     setTotalRows((dataGridProps?.flatData || []).length);
   }, [dataGridProps.flatData]);
 
+  // Component to render before connection.
   const NoConnection = () =>
     permissions.includes(ChannelPermissionEnum.CanConnectChannelDoc) ? (
       <Fragment>
@@ -382,6 +398,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       <NoDataFound hideClearBtn labelHeader="No documents found" />
     );
 
+  // Selected items to be used for action menu
   const selectedItems = useMemo(() => {
     const items: any = [];
     Object.keys(dataGridProps.rowSelection).forEach((index) => {

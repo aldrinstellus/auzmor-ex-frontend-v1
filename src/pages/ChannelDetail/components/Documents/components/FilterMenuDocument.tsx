@@ -14,6 +14,7 @@ import { Control, UseFormWatch } from 'react-hook-form';
 import Icon from 'components/Icon';
 import { getIconFromMime } from './Doc';
 import { IForm } from '..';
+import moment from 'moment';
 
 export enum FilterKey {
   departments = 'departments',
@@ -41,11 +42,22 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const { filters, setFilters, updateFilter, clearFilters } =
     useAppliedFiltersStore();
-  const { searchParams, updateParam, serializeFilter, deleteParam } =
-    useURLParams();
+  const {
+    searchParams,
+    updateParam,
+    serializeFilter,
+    deleteParam,
+    parseParams,
+  } = useURLParams();
   const docType = watch('docType');
 
+  const isFilterApplied =
+    !!filters?.docTypeCheckbox?.length ||
+    !!filters?.docOwnerCheckbox?.length ||
+    !!filters?.docModifiedRadio;
+
   useEffect(() => {
+    console.log(filters);
     if (filters) {
       Object.keys(filters).forEach((key: string) => {
         if (!!filters[key] && filters[key].length === 0) {
@@ -67,8 +79,10 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
   }, [filters]);
 
   useEffect(() => {
-    // Read valid sort options from url on mount
-    const sort = searchParams.get('sort');
+    const sort = searchParams.get('sort') || undefined;
+    const docOwnerCheckbox = parseParams('docOwnerCheckbox') || [];
+    const docTypeCheckbox = parseParams('docTypeCheckbox') || [];
+    const docModifiedRadio = searchParams.get('docModifiedRadio') || undefined;
     const validSortValues = [
       'file_type:asc',
       'name:asc',
@@ -76,13 +90,31 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
       'modifiedAt:asc',
       'size:desc',
     ];
-    if (sort && validSortValues.includes(sort)) {
-      setFilters({ ...(filters || {}), sort });
-    } else {
+
+    const docFilters = {
+      docOwnerCheckbox,
+      docTypeCheckbox,
+      docModifiedRadio,
+      sort,
+    };
+
+    if (!sort || !validSortValues.includes(sort)) {
       deleteParam('sort');
     }
 
-    // Read valid filter options from url on mount
+    if (!!!docOwnerCheckbox.length) {
+      deleteParam('docOwnerCheckbox');
+    }
+
+    if (!!!docTypeCheckbox.length) {
+      deleteParam('docTypeCheckbox');
+    }
+
+    if (!!!docModifiedRadio) {
+      deleteParam('docModifiedRadio');
+    }
+
+    setFilters(docFilters);
 
     return clearFilters;
   }, []);
@@ -165,7 +197,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
                   suffixIcon: !!docType && <></>,
                   isClearable: !!docType,
                   clearIcon: <Icon name="close" size={16} />,
-                  placeholder: 'Select',
+                  placeholder: 'Type',
                   showSearch: false,
                   selectClassName:
                     '[&>span.ant-select-clear]:!opacity-100 [&>span.ant-select-clear]:!w-4 [&>span.ant-select-clear]:!h-4 [&>span.ant-select-clear]:!-mt-2 [&>div.ant-select-selector]:!h-9 [&>div.ant-select-selection-placeholder]:!h-9 [&_input]:!h-9 [&_input]:!p-0 [&_span.ant-select-selection-placeholder]:!pl-0',
@@ -199,9 +231,9 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
                 className="bg-white !p-[10px]"
                 dataTestId={dataTestIdFilter}
               />
-              {/* {isFilterApplied && (
+              {isFilterApplied && (
                 <div className="absolute w-2 h-2 rounded-full bg-red-500 top-0.5 right-0" />
-              )} */}
+              )}
             </div>
             <Sort
               controlled
@@ -215,9 +247,110 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
             />
           </div>
         </div>
-        {filters?.sort && (
+        {(filters?.sort || isFilterApplied) && (
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-4">
+              {isFilterApplied && (
+                <div className="flex items-center gap-2">
+                  <span className="text-neutral-500">Filter by</span>
+                  {!!(filters.docOwnerCheckbox || []).length && (
+                    <div
+                      onClick={() => updateFilter('docOwnerCheckbox', [])}
+                      className="flex items-center px-3 py-1 border border-neutral-200 rounded-7xl gap-1 cursor-pointer hover:border-primary-600 group h-8"
+                    >
+                      <span className="text-neutral-500 font-medium">
+                        Owner{' '}
+                        {filters.docOwnerCheckbox.length === 1 && (
+                          <span className="text-primary-500 font-bold">
+                            {filters.docOwnerCheckbox[0].name}
+                          </span>
+                        )}
+                        {filters.docOwnerCheckbox.length === 2 && (
+                          <span>
+                            <span className="text-primary-500 font-bold">
+                              {filters.docOwnerCheckbox[0].name}
+                            </span>{' '}
+                            and{' '}
+                            <span className="text-primary-500 font-bold">
+                              {filters.docOwnerCheckbox[1].name}
+                            </span>
+                          </span>
+                        )}
+                        {filters.docOwnerCheckbox.length > 2 && (
+                          <span>
+                            <span className="text-primary-500 font-bold">
+                              {filters.docOwnerCheckbox[0].name},
+                              {filters.docOwnerCheckbox[1].name}
+                            </span>
+                            and{' '}
+                            <span className="text-primary-500 font-bold">
+                              + {filters.docOwnerCheckbox.length - 2} others
+                            </span>
+                          </span>
+                        )}
+                      </span>
+                      <Icon name="close" size={16} />
+                    </div>
+                  )}
+                  {!!(filters.docTypeCheckbox || []).length && (
+                    <div
+                      onClick={() => updateFilter('docTypeCheckbox', [])}
+                      className="flex items-center px-3 py-1 border border-neutral-200 rounded-7xl gap-1 cursor-pointer hover:border-primary-600 group h-8"
+                    >
+                      <span className="text-neutral-500 font-medium">
+                        Type{' '}
+                        {filters.docTypeCheckbox.length === 1 && (
+                          <span className="text-primary-500 font-bold">
+                            {filters.docTypeCheckbox[0].label}
+                          </span>
+                        )}
+                        {filters.docTypeCheckbox.length === 2 && (
+                          <span>
+                            <span className="text-primary-500 font-bold">
+                              {filters.docTypeCheckbox[0].label}
+                            </span>{' '}
+                            and{' '}
+                            <span className="text-primary-500 font-bold">
+                              {filters.docTypeCheckbox[1].label}
+                            </span>
+                          </span>
+                        )}
+                        {filters.docTypeCheckbox.length > 2 && (
+                          <span>
+                            <span className="text-primary-500 font-bold">
+                              {filters.docTypeCheckbox[0].label},
+                              {filters.docTypeCheckbox[1].label}
+                            </span>
+                            and{' '}
+                            <span className="text-primary-500 font-bold">
+                              + {filters.docTypeCheckbox.length - 2} more
+                            </span>
+                          </span>
+                        )}
+                      </span>
+                      <Icon name="close" size={16} />
+                    </div>
+                  )}
+                  {!!filters?.docModifiedRadio && (
+                    <div
+                      onClick={() =>
+                        updateFilter('docModifiedRadio', undefined)
+                      }
+                      className="flex items-center px-3 py-1 border border-neutral-200 rounded-7xl gap-1 cursor-pointer hover:border-primary-600 group h-8"
+                    >
+                      <span className="text-neutral-500 font-medium">
+                        Modified on{' '}
+                        <span className="text-primary-500 font-bold">
+                          {moment(filters.docModifiedRadio).format(
+                            'MMMM DD, YYYY',
+                          )}
+                        </span>
+                      </span>
+                      <Icon name="close" size={16} />
+                    </div>
+                  )}
+                </div>
+              )}
               {filters?.sort && (
                 <div className="flex items-center gap-2">
                   <span className="text-neutral-500">Sort by</span>
@@ -251,16 +384,20 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
         <FilterModal
           open={showFilterModal}
           closeModal={closeFilterModal}
-          appliedFilters={{}}
+          appliedFilters={{
+            docOwnerCheckbox: filters?.docOwnerCheckbox,
+            docTypeCheckbox: filters?.docTypeCheckbox,
+            docModifiedRadio: filters?.docModifiedRadio,
+          }}
           onApply={(appliedFilters) => {
             setFilters(appliedFilters);
             closeFilterModal();
           }}
           onClear={() => {
             setFilters({
-              docPeopleCheckbox: [],
+              docOwnerCheckbox: [],
               docTypeCheckbox: [],
-              docModifiedRadio: [],
+              docModifiedRadio: undefined,
             });
             closeFilterModal();
           }}
