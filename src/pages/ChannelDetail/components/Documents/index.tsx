@@ -418,6 +418,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     <Fragment>
       <input
         type="file"
+        className="hidden"
         multiple={true}
         onChange={(e) => {
           const files = Array.prototype.slice

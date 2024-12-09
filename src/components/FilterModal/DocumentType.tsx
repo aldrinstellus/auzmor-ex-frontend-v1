@@ -72,76 +72,76 @@ export const documentOptions: ICheckboxListOption[] = [
     },
     datatestId: `document-${IDocType.FORM}`,
   },
-  {
-    data: {
-      id: 'text',
-      value: ['txt'],
-      label: 'Text',
-      icon: 'txt',
-      paramKey: 'Text',
-    },
-    datatestId: `document-${IDocType.TXT}`,
-  },
-  {
-    data: {
-      id: 'image',
-      value: ['jpg', 'jpeg', 'png', 'gif', 'bmp'],
-      label: 'Image',
-      icon: 'img',
-      paramKey: 'Image',
-    },
-    datatestId: `document-${IDocType.IMAGE}`,
-  },
-  {
-    data: {
-      id: 'video',
-      value: ['mp4', '3gp', 'mkv', 'avi'],
-      label: 'Video',
-      icon: 'video',
-      paramKey: 'Video',
-    },
-    datatestId: `document-${IDocType.VIDEO}`,
-  },
-  {
-    data: {
-      id: 'audio',
-      value: ['mp3', 'wav', 'flac'],
-      label: 'Audio',
-      icon: 'audio',
-      paramKey: 'Audio',
-    },
-    datatestId: `document-${IDocType.AUDIO}`,
-  },
-  {
-    data: {
-      id: 'archive',
-      value: ['zip', 'rar', '7z', 'tar', 'gz'],
-      label: 'Archive',
-      icon: 'archive',
-      paramKey: 'Archive',
-    },
-    datatestId: `document-${IDocType.ARCHIVE}`,
-  },
-  {
-    data: {
-      id: 'csv',
-      value: ['csv'],
-      label: 'CSV',
-      icon: 'csv',
-      paramKey: 'CSV',
-    },
-    datatestId: `document-${IDocType.CSV}`,
-  },
-  {
-    data: {
-      id: 'json',
-      value: ['json'],
-      label: 'JSON',
-      icon: 'json',
-      paramKey: 'JSON',
-    },
-    datatestId: `document-${IDocType.JSON}`,
-  },
+  // {
+  //   data: {
+  //     id: 'text',
+  //     value: ['txt'],
+  //     label: 'Text',
+  //     icon: 'txt',
+  //     paramKey: 'Text',
+  //   },
+  //   datatestId: `document-${IDocType.TXT}`,
+  // },
+  // {
+  //   data: {
+  //     id: 'image',
+  //     value: ['jpg', 'jpeg', 'png', 'gif', 'bmp'],
+  //     label: 'Image',
+  //     icon: 'img',
+  //     paramKey: 'Image',
+  //   },
+  //   datatestId: `document-${IDocType.IMAGE}`,
+  // },
+  // {
+  //   data: {
+  //     id: 'video',
+  //     value: ['mp4', '3gp', 'mkv', 'avi'],
+  //     label: 'Video',
+  //     icon: 'video',
+  //     paramKey: 'Video',
+  //   },
+  //   datatestId: `document-${IDocType.VIDEO}`,
+  // },
+  // {
+  //   data: {
+  //     id: 'audio',
+  //     value: ['mp3', 'wav', 'flac'],
+  //     label: 'Audio',
+  //     icon: 'audio',
+  //     paramKey: 'Audio',
+  //   },
+  //   datatestId: `document-${IDocType.AUDIO}`,
+  // },
+  // {
+  //   data: {
+  //     id: 'archive',
+  //     value: ['zip', 'rar', '7z', 'tar', 'gz'],
+  //     label: 'Archive',
+  //     icon: 'archive',
+  //     paramKey: 'Archive',
+  //   },
+  //   datatestId: `document-${IDocType.ARCHIVE}`,
+  // },
+  // {
+  //   data: {
+  //     id: 'csv',
+  //     value: ['csv'],
+  //     label: 'CSV',
+  //     icon: 'csv',
+  //     paramKey: 'CSV',
+  //   },
+  //   datatestId: `document-${IDocType.CSV}`,
+  // },
+  // {
+  //   data: {
+  //     id: 'json',
+  //     value: ['json'],
+  //     label: 'JSON',
+  //     icon: 'json',
+  //     paramKey: 'JSON',
+  //   },
+  //   datatestId: `document-${IDocType.JSON}`,
+  // },
 ];
 
 const DocumentType: FC<IVisibilityProps> = ({ control }) => {
