@@ -31,6 +31,7 @@ import _ from 'lodash';
 import useProduct from 'hooks/useProduct';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
+import { isEmpty } from 'lodash';
 
 interface IChannelsProps {
   isInfinite?: boolean;
@@ -66,20 +67,6 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
       fetchNextPage();
     }
   }, [inView]);
-
-  useEffect(() => {
-    if (!filters?.channelType || filters?.channelType?.length === 0) {
-      updateFilter(
-        'channelType',
-        isAdmin && isLxp
-          ? ChannelTypeEnum.AllChannels
-          : ChannelTypeEnum.MyChannels,
-      );
-    }
-    if (!filters?.visibility || filters?.visibility?.length === 0) {
-      updateFilter('visibility', ChannelVisibilityEnum.All);
-    }
-  }, [filters]);
 
   const { watch, resetField } = filterForm;
 
@@ -141,28 +128,27 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
     ) as { id: string }[]) || [];
 
   useEffect(() => {
-    if (isAdmin && isLxp) {
-      setFilters({
-        visibility: ChannelVisibilityEnum.All,
-        channelType: ChannelTypeEnum.AllChannels,
-      });
-      return;
+    if (isEmpty(filters?.channelType)) {
+      if (isAdmin && isLxp) {
+        setFilters({
+          visibility: ChannelVisibilityEnum.All,
+          channelType: ChannelTypeEnum.AllChannels,
+        });
+        return;
+      }
+      if (channelIds.length === 0) {
+        setFilters({
+          visibility: ChannelVisibilityEnum.All,
+          channelType: ChannelTypeEnum.DiscoverNewChannels,
+        });
+      } else {
+        setFilters({
+          visibility: ChannelVisibilityEnum.All,
+          channelType: ChannelTypeEnum.MyChannels,
+        });
+      }
     }
-    if (
-      channelIds.length === 0 &&
-      filters?.channelType === ChannelTypeEnum.MyChannels
-    ) {
-      setFilters({
-        visibility: ChannelVisibilityEnum.All,
-        channelType: ChannelTypeEnum.DiscoverNewChannels,
-      });
-    } else {
-      setFilters({
-        visibility: ChannelVisibilityEnum.All,
-        channelType: ChannelTypeEnum.MyChannels,
-      });
-    }
-  }, []);
+  }, [filters]);
 
   const onFilterButtonClick = (type: ChannelTypeEnum) => {
     return () => {
