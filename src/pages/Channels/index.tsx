@@ -102,20 +102,6 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
       ),
     }),
     {
-      onSuccess: (data: any) => {
-        if (
-          data.pages.flatMap((page: any) => page.data.result.data).length ===
-            0 &&
-          filters?.channelType === ChannelTypeEnum.MyChannels
-        ) {
-          setFilters({
-            channelType:
-              isAdmin && isLxp
-                ? ChannelTypeEnum.AllChannels
-                : ChannelTypeEnum.DiscoverNewChannels,
-          });
-        }
-      },
       refetchOnMount: 'always',
     },
   );
@@ -128,7 +114,7 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
     ) as { id: string }[]) || [];
 
   useEffect(() => {
-    if (isEmpty(filters?.channelType)) {
+    if (isEmpty(filters?.channelType) && !isLoading) {
       if (isAdmin && isLxp) {
         setFilters({
           visibility: ChannelVisibilityEnum.All,
@@ -148,7 +134,7 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
         });
       }
     }
-  }, [filters]);
+  }, [filters, isLoading]);
 
   const onFilterButtonClick = (type: ChannelTypeEnum) => {
     return () => {
