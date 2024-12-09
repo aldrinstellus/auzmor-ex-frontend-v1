@@ -125,7 +125,7 @@ const ManageAccess: React.FC<AppProps> = ({ channelData }) => {
 
   return (
     <div>
-      <Card className="p-8 flex flex-col gap-6 pb-40  ">
+      <Card className="p-8 flex flex-col gap-6">
         <div className="flex justify-between items-center">
           <p className="text-2xl font-bold text-neutral-900">{t('title')}</p>
           <Button
