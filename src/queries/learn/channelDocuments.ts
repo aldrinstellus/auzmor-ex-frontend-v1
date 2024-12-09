@@ -72,6 +72,34 @@ const getChannelFilePreview = async (payload: {
   );
 };
 
+// Create folder in channel documents
+export const createChannelDocFolder = async ({
+  channelId,
+  remoteFolderId,
+  name,
+}: {
+  channelId: string;
+  remoteFolderId: string;
+  name: string;
+}) => {
+  return await apiService.post(`/channels/${channelId}/folder`, {
+    remoteFolderId,
+    name,
+  });
+};
+
+// Get Channel doc owner list
+export const getChannelDocOwners = async ({
+  channelId,
+}: {
+  channelId: string;
+}) => {
+  const response = await apiService.get(
+    `/channels/${channelId}/document/owners`,
+  );
+  return response?.data?.result?.data?.owners;
+};
+
 /** Hooks */
 
 // To list out all rirectories / sites
@@ -130,5 +158,13 @@ export const useChannelFilePreview = (
     queryKey: ['get-channel-file-preview', payload],
     queryFn: () => getChannelFilePreview(payload),
     ...options,
+  });
+};
+
+// Get channel doc owners
+export const useChannelDocOwners = (channelId: string) => {
+  return useQuery({
+    queryKey: ['channel-doc-owners', channelId],
+    queryFn: () => getChannelDocOwners({ channelId }),
   });
 };

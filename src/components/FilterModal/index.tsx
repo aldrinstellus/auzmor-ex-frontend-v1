@@ -27,7 +27,7 @@ import {
 import Visibility from './Visibility';
 import ChannelType, { ChannelTypeEnum } from './ChannelType';
 import { useTranslation } from 'react-i18next';
-import DocumentPeople from './DocumentPeople';
+import DocumentOwner from './DocumentOwner';
 import DocumentType from './DocumentType';
 import DocumentModified from './DocumentModifed';
 import Roles from './Roles';
@@ -47,7 +47,7 @@ export interface IFilterForm {
   channelCheckbox: ICheckboxListOption[];
   categoryCheckbox: ICheckboxListOption[];
   documentTypeCheckbox: any;
-  documentPeopleCheckbox: any;
+  documentOwnerCheckbox: any;
   documentModifiedRadio: any;
   teamCheckbox: ICheckboxListOption[];
   roleCheckbox: ICheckboxListOption[];
@@ -112,7 +112,7 @@ export interface IAppliedFilters {
   visibility?: ChannelVisibilityEnum;
   channelType?: ChannelTypeEnum;
   docTypeCheckbox?: IDocType[];
-  docPeopleCheckbox?: any;
+  docOwnerCheckbox?: any;
   docModifiedRadio?: any;
   byPeople?: IBypeople[];
   channels?: IChannelFilter[];
@@ -146,7 +146,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     channelType: ChannelTypeEnum.MyChannels,
     visibility: ChannelVisibilityEnum.All,
     docTypeCheckbox: [],
-    docPeopleCheckbox: [],
+    docOwnerCheckbox: [],
     docModifiedRadio: [],
     roles: [],
     byPeople: [],
@@ -227,13 +227,13 @@ const FilterModal: FC<IFilterModalProps> = ({
           dataTestId: `doc-${docs.name}`,
         }),
       ),
-      documentPeopleCheckbox: (appliedFilters.docPeopleCheckbox || [])?.map(
+      documentOwnerCheckbox: (appliedFilters.docOwnerCheckbox || [])?.map(
         (docs: any) => ({
           data: docs,
           dataTestId: `doc-${docs.name}`,
         }),
       ),
-      documentModifiedRadio: appliedFilters.docModifiedRadio || [],
+      documentModifiedRadio: appliedFilters.docModifiedRadio || undefined,
       channelRequestStatusCheckbox: defaultChannelRequestStatus,
     },
   });
@@ -247,7 +247,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     statusCheckbox,
     roleCheckbox,
     documentTypeCheckbox,
-    documentPeopleCheckbox,
+    documentOwnerCheckbox,
     byPeopleCheckbox,
     channelRequestStatusCheckbox,
   ] = watch([
@@ -259,7 +259,7 @@ const FilterModal: FC<IFilterModalProps> = ({
     'statusCheckbox',
     'roleCheckbox',
     'documentTypeCheckbox',
-    'documentPeopleCheckbox',
+    'documentOwnerCheckbox',
     'byPeopleCheckbox',
     'channelRequestStatusCheckbox',
   ]);
@@ -286,7 +286,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       docTypeCheckbox: formData.documentTypeCheckbox.map(
         (docType: any) => docType.data,
       ),
-      docPeopleCheckbox: formData.documentPeopleCheckbox.map(
+      docOwnerCheckbox: formData.documentOwnerCheckbox.map(
         (docType: any) => docType.data,
       ),
       docModifiedRadio: formData.documentModifiedRadio,
@@ -302,7 +302,7 @@ const FilterModal: FC<IFilterModalProps> = ({
   };
 
   const filterOptionMappings = {
-    'doc-people-filters': [FilterModalVariant.Document],
+    'doc-owner-filters': [FilterModalVariant.Document],
     'doc-type-filters': [FilterModalVariant.Document],
     'doc-modified-filters': [FilterModalVariant.Document],
     'visibility-filters': [FilterModalVariant.ChannelsListing],
@@ -348,19 +348,19 @@ const FilterModal: FC<IFilterModalProps> = ({
     {
       label: () => (
         <div className="flex items-center">
-          <div>{t('people')}</div>
-          {!!documentPeopleCheckbox.length && (
+          <div>Owner</div>
+          {!!documentOwnerCheckbox.length && (
             <div className="w-4 h-4 rounded-full bg-red-500 text-white flex items-center justify-center ml-1 text-xxs font-bold">
-              {documentPeopleCheckbox.length}
+              {documentOwnerCheckbox.length}
             </div>
           )}
         </div>
       ),
-      key: 'doc-people-filters',
+      key: 'doc-owner-filters',
       component: () => (
-        <DocumentPeople control={control} watch={watch} setValue={setValue} />
+        <DocumentOwner control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: !filterOptionMappings['doc-people-filters'].includes(variant),
+      isHidden: !filterOptionMappings['doc-owner-filters'].includes(variant),
       dataTestId: 'filterby-doc-people',
     },
     {

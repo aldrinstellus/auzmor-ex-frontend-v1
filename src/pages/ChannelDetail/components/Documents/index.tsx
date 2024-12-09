@@ -40,15 +40,18 @@ import Avatar from 'components/Avatar';
 import Skeleton from 'react-loading-skeleton';
 import FilePreviewModal from './components/FilePreviewModal';
 import moment from 'moment';
+import { useChannelDocUpload } from 'hooks/useUpload';
+import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
   GoogleDrive = 'GOOGLE_DRIVE',
 }
 
-interface IForm {
+export interface IForm {
   selectAll: boolean;
   documentSearch: string;
+  docType?: Record<string, any>;
 }
 
 interface IDocumentProps {
@@ -58,15 +61,19 @@ interface IDocumentProps {
 const Document: FC<IDocumentProps> = ({ permissions }) => {
   const [isOpen, openModal, closeModal] = useModal();
   const [isAddModalOpen, openAddModal, closeAddModal] = useModal();
-  const { control } = useForm<IForm>();
+  const { control, watch } = useForm<IForm>();
   const [totalRows, setTotalRows] = useState<number>(0);
   const { getApi } = usePermissions();
-  const { channelId } = useParams();
+  const { channelId = '' } = useParams();
   const { items, appendItem, sliceItems } = useContext(DocumentPathContext);
   const [view, setView] = useState<'LIST' | 'GRID'>('GRID');
   const [filePreview, openFilePreview, closeFilePreview, filePreviewProps] =
     useModal();
+  const { uploadMedia } = useChannelDocUpload(channelId);
+  const { filters } = useAppliedFiltersStore();
+  const docType = watch('docType');
 
+  // Api call: Check connection status
   const useChannelDocumentStatus = getApi(ApiEnum.GetChannelDocumentStatus);
   const {
     data: statusResponse,
@@ -76,6 +83,21 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     channelId,
   });
 
+  // Api call: Create folder mutation
+  const createChannelDocFolder = getApi(ApiEnum.CreateChannelDocFolder);
+  const _createFolderMutation = useMutation({
+    mutationKey: ['create-channel-doc-folder'],
+    mutationFn: createChannelDocFolder,
+  });
+
+  // Api call: Connect site / folder
+  const updateConnection = getApi(ApiEnum.UpdateChannelDocumentConnection);
+  const updateConnectionMutation = useMutation({
+    mutationKey: ['update-channel-connection', channelId],
+    mutationFn: updateConnection,
+  });
+
+  // State management flags
   const isBaseFolderSet = statusResponse?.status === 'ACTIVE';
   const isConnectionMade =
     isBaseFolderSet ||
@@ -84,12 +106,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const integrationType: DocIntegrationEnum = DocIntegrationEnum.Sharepoint;
   const availableAccount = statusResponse?.availableAccounts[0];
 
-  const updateConnection = getApi(ApiEnum.UpdateChannelDocumentConnection);
-  const updateConnectionMutation = useMutation({
-    mutationKey: ['update-channel-connection', channelId],
-    mutationFn: updateConnection,
-  });
-
+  // A function that decides what options to show on each row of documents
   const getAllOptions = useCallback((info: CellContext<DocType, unknown>) => {
     return [
       {
@@ -113,6 +130,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     ].filter((option) => !option?.isHidden) as any as IMenuItem[];
   }, []);
 
+  // Columns configuration for Datagrid component for List view
   const columnsListView = React.useMemo<ColumnDef<DocType>[]>(
     () => [
       {
@@ -237,6 +255,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     [totalRows],
   );
 
+  // Columns configuration for Datagrid component for Grid view
   const columnsGridView = React.useMemo<ColumnDef<DocType>[]>(
     () => [
       {
@@ -247,6 +266,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     [],
   );
 
+  // Get props for Datagrid component
   const dataGridProps = useDataGrid<DocType>({
     apiEnum: ApiEnum.GetChannelFiles,
     isInfiniteQuery: false,
@@ -254,6 +274,15 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       channelId,
       params: {
         folderId: items.length === 1 ? undefined : items[items.length - 1].id,
+        sort: filters?.sort ? filters?.sort.split(':')[0] : undefined,
+        order: filters?.sort ? filters?.sort.split(':')[1] : undefined,
+        isFolder: docType ? !!(docType.value === 'folder') : undefined,
+        owners: (filters?.docOwnerCheckbox || []).map(
+          (owner: any) => owner.name,
+        ),
+        type: (filters?.docTypeCheckbox || []).map(
+          (type: any) => type.paramKey,
+        ),
       },
     },
     isEnabled: !isLoading,
@@ -299,10 +328,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     },
   });
 
+  // Hook to update total count of rows listed
   useEffect(() => {
     setTotalRows((dataGridProps?.flatData || []).length);
   }, [dataGridProps.flatData]);
 
+  // Component to render before connection.
   const NoConnection = () =>
     permissions.includes(ChannelPermissionEnum.CanConnectChannelDoc) ? (
       <Fragment>
@@ -367,6 +398,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       <NoDataFound hideClearBtn labelHeader="No documents found" />
     );
 
+  // Selected items to be used for action menu
   const selectedItems = useMemo(() => {
     const items: any = [];
     Object.keys(dataGridProps.rowSelection).forEach((index) => {
@@ -384,6 +416,17 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     </Card>
   ) : (
     <Fragment>
+      <input
+        type="file"
+        className="hidden"
+        multiple={true}
+        onChange={(e) => {
+          const files = Array.prototype.slice
+            .call(e.target.files)
+            .map((file: File) => ({ file, parentFolderId: '' }));
+          uploadMedia(files);
+        }}
+      />
       <Card className="flex flex-col gap-6 p-8 pb-16 w-full justify-center bg-white">
         <div className="flex justify-between">
           <BreadCrumb
@@ -434,6 +477,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                           <Icon name={'dir'} size={16} /> Folder
                         </div>
                       ),
+                      onClick: () => {
+                        // createFolderMutation.mutate({
+                        //   channelId: channelId,
+                        //   remoteFolderId: '',
+                        //   name: 'NewFolder123',
+                        // } as any);
+                      },
                     },
                     {
                       renderNode: (
@@ -479,6 +529,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               />
             ) : (
               <FilterMenuDocument
+                control={control}
+                watch={watch}
                 view={view}
                 changeView={(view) => setView(view)}
               />

@@ -2,62 +2,56 @@ import Layout, { FieldType } from 'components/Form';
 import { FC, useMemo } from 'react';
 import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { IFilterForm } from '.';
-import { titleCase } from 'utils/misc';
-import { ICheckboxListOption } from 'components/CheckboxList';
 import ItemSkeleton from './ItemSkeleton';
-import { useDebounce } from 'hooks/useDebounce';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
-
+import { useParams } from 'react-router-dom';
+import { ICheckboxListOption } from 'components/CheckboxList';
+import { titleCase } from 'utils/misc';
 interface IVisibilityProps {
   control: Control<IFilterForm, any>;
   watch: UseFormWatch<IFilterForm>;
   setValue: UseFormSetValue<IFilterForm>;
 }
 
-const DocumentPeople: FC<IVisibilityProps> = ({ control, watch }) => {
+const DocumentOwner: FC<IVisibilityProps> = ({ control }) => {
   const { getApi } = usePermissions();
-  const [docUserSearch] = watch(['docUserSearch']);
+  const { channelId = '' } = useParams();
+  const useChannelDocOwners = getApi(ApiEnum.GetChannelDocOwners);
+  const { data: owners, isLoading } = useChannelDocOwners(channelId);
 
-  // fetch team from search input
-  const debouncedTeamSearchValue = useDebounce(docUserSearch || '', 300);
-  const useGetStorageUsers = getApi(ApiEnum.GetStorageUsers);
-  const { data: documentUser, isLoading } = useGetStorageUsers({
-    q: debouncedTeamSearchValue,
-  });
-  const docUsers = documentUser?.data?.result?.data || [];
-
+  const searchField = [
+    {
+      type: FieldType.Input,
+      control,
+      name: 'docOwnerSearch',
+      placeholder: 'Search',
+      isClearable: true,
+      leftIcon: 'search',
+      dataTestId: `doc-owner-search`,
+    },
+  ];
+  console.log(owners);
   const documentFields = useMemo(
     () => [
       {
         type: FieldType.CheckboxList,
-        name: 'documentPeopleCheckbox',
+        name: 'documentOwnerCheckbox',
         control,
-        options: docUsers?.map((user: any) => ({
-          data: user,
-          datatestId: `department-`,
+        options: owners?.map((owner: any) => ({
+          data: { ...owner, id: owner.name },
+          datatestId: `department-owner`,
         })),
         labelRenderer: (option: ICheckboxListOption) => (
           <div className="ml-2.5 cursor-pointer text-xs">
-            {titleCase(option.data.name)}
+            {titleCase(option?.data?.name || '')}
           </div>
         ),
         rowClassName: 'px-6 py-3 border-b border-neutral-200',
       },
     ],
-    [docUsers],
+    [owners],
   );
-  const searchField = [
-    {
-      type: FieldType.Input,
-      control,
-      name: 'docUserSearch',
-      placeholder: 'Search',
-      isClearable: true,
-      leftIcon: 'search',
-      dataTestId: `doc-user-search`,
-    },
-  ];
 
   return (
     <div className="px-2 py-4">
@@ -82,4 +76,4 @@ const DocumentPeople: FC<IVisibilityProps> = ({ control, watch }) => {
   );
 };
 
-export default DocumentPeople;
+export default DocumentOwner;

@@ -263,3 +263,121 @@ export const useUpload = () => {
     removeCoverImage,
   };
 };
+
+export interface IUploadUrlPayload {
+  fileName: string;
+  parentFolderId: string;
+}
+export interface IUploadUrlResponse {
+  status: string;
+  name: string;
+  uploadURL: string;
+}
+
+interface IUploadToSharepointResposne {
+  id?: string;
+  etags?: IETag[];
+}
+
+export const useChannelDocUpload = (channelId: string) => {
+  const [uploadStatus, setUploadStatus] = useState<UploadStatus>(
+    UploadStatus.YetToStart,
+  );
+  const [error, setError] = useState('');
+  const chunksize = 5 * 1024 * 1024; // 5 MB
+
+  const getUploadUrl = async (payload: IUploadUrlPayload) =>
+    await apiService.get(`/channels/${channelId}/file/uploadUrl`, payload);
+
+  const uploadToSharepoint = async (res: IUploadUrlResponse, file: File) => {
+    const uploadUrl = res.uploadURL;
+    const chunkSize = 5 * 1024 * 1024; // 5 MB
+    const totalBytes = file.size;
+    let offset = 0;
+    while (offset < totalBytes) {
+      const chunk = file.slice(offset, offset + chunkSize);
+      const startByte = offset;
+      const endByte = offset + chunk.size - 1;
+
+      const headers = {
+        'Content-Range': `bytes ${startByte}-${endByte}/${totalBytes}`,
+      };
+
+      const response = await fetch(uploadUrl, {
+        method: 'PUT',
+        headers,
+        body: chunk,
+      });
+      const responseJson = await response.json();
+      console.log(responseJson);
+      offset += chunk.size;
+    }
+  };
+
+  const uploadMedia = async (
+    fileList: { parentFolderId: string; file: File }[],
+  ) => {
+    // TODO Add error state when upload fails.
+    const uploadedFiles: IMedia[] = [];
+    const uploadUrlPromises: Promise<IUploadUrlResponse>[] = [];
+    const uploadToSharepointPromises: Promise<
+      IUploadToSharepointResposne | undefined
+    >[] = [];
+    const uploadETagPromises: Promise<any>[] = [];
+    setUploadStatus(UploadStatus.Uploading);
+    const files: IUploadUrlPayload[] = [];
+    fileList.forEach(({ file, parentFolderId }) => {
+      files.push({
+        fileName: file?.name,
+        parentFolderId,
+      });
+    });
+    files.forEach((file: IUploadUrlPayload, _index: number) => {
+      uploadUrlPromises.push(getUploadUrl(file) as Promise<any>);
+    });
+
+    if (uploadUrlPromises.length > 0) {
+      const promisesRes = await Promise.allSettled(uploadUrlPromises);
+      promisesRes.forEach(
+        (promiseRes: PromiseSettledResult<IUploadUrlResponse>) => {
+          if (promiseRes.status === 'fulfilled') {
+            uploadToSharepoint(
+              (promiseRes.value as any).data.result as IUploadUrlResponse,
+              fileList.find(
+                ({ file }) =>
+                  file.name === (promiseRes.value as any).data.result.name,
+              )!.file,
+            );
+            setError('');
+          } else {
+            const reason =
+              promiseRes?.reason?.response?.data?.errors?.[0]?.message ||
+              'Something went wrong';
+            if (reason.includes('File type')) {
+              setError('File type not supported. Upload a supported file type');
+            } else {
+              setError(
+                promiseRes?.reason?.response?.data?.errors?.[0]?.message ||
+                  'Something went wrong',
+              );
+            }
+
+            console.log('create file failed');
+            // setUploadStatus(UploadStatus.Error);
+          }
+        },
+      );
+    } else {
+      setUploadStatus(UploadStatus.Finished);
+      return uploadedFiles;
+    }
+
+    return uploadedFiles;
+  };
+
+  return {
+    error,
+    uploadMedia,
+    uploadStatus,
+  };
+};

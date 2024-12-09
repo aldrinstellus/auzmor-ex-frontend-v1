@@ -62,7 +62,7 @@ const ActionMenu: FC<IActionMenuProps> = ({
             leftIconClassName="!text-neutral-500 group-hover:!text-primary-500"
           />
         )}
-        <Button
+        {/* <Button
           label="Add to starred"
           variant={Variant.Secondary}
           leftIcon="starOutline"
@@ -71,7 +71,7 @@ const ActionMenu: FC<IActionMenuProps> = ({
           className="!border-none !text-neutral-700 gap-1 !p-0"
           labelClassName="!font-semibold text-base group-hover:!text-primary-500"
           leftIconClassName="!text-neutral-500 group-hover:!text-primary-500"
-        />
+        /> */}
         {showRename && (
           <Button
             label="Rename"

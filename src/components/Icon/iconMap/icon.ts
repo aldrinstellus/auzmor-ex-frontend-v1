@@ -193,6 +193,7 @@ import GridIcon from '../components/Grid';
 import ListIcon from '../components/List';
 import FileUploadIcon from '../components/FileUpload';
 import FolderUploadIcon from '../components/FolderUpload';
+import VuesaxIcon from '../components/Vuesax';
 
 export const icon = {
   add: Add,
@@ -386,6 +387,7 @@ export const icon = {
   videoPlay: VideoPlayIcon,
   videoSlash: VideoSlash,
   videoSquare: VideoSquareIcon,
+  vuesax: VuesaxIcon,
   warningCircle: WarningCircleIcon,
   website: WebsiteIcon,
   xls: XlsIcon,
