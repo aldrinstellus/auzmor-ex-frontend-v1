@@ -57,6 +57,12 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
     {
       id: 'home',
       label: t('learn.home'),
+      to: `${getLearnUrl('/user')}`,
+      show: true,
+    },
+    {
+      id: 'feed',
+      label: t('learn.feed'),
       to: '/user/feed',
       show: true,
       isActive: pathname.startsWith('/user/feed'),
@@ -67,12 +73,6 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       to: '/user/channels',
       show: true,
       isActive: pathname.startsWith('/user/channels'),
-    },
-    {
-      id: 'myLearning',
-      label: t('learn.myLearning'),
-      to: `${getLearnUrl('/user')}`,
-      show: true,
     },
     {
       id: 'courses',
@@ -108,7 +108,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       id: 'forums',
       label: t('learn.forums'),
       to: `${getLearnUrl('/user/forums')}`,
-      show: true,
+      show: !!user?.organization?.setting?.enableSocialLearning,
     },
   ];
 

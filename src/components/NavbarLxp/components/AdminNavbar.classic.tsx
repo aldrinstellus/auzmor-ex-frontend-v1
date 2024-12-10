@@ -68,8 +68,8 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       options: [],
     },
     {
-      id: 'engage',
-      label: t('learn.engage'),
+      id: 'engagement',
+      label: t('learn.engagement'),
       to: '',
       show: true,
       isActive: true,
@@ -96,7 +96,15 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
             '!font-bold !text-primary-500 hover:!text-primary-500'
           }`,
         },
-      ],
+        {
+          id: 'forums',
+          label: t('learn.forums'),
+          onClick: () => window.location.assign(`${getLearnUrl('/forums')}`),
+          show: !!user?.organization?.setting?.enableSocialLearning,
+          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
+          labelClassName: '!text-black hover:!text-black leading-4',
+        },
+      ].filter((option) => option.show),
     },
     {
       id: 'training',
@@ -140,19 +148,11 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       ],
     },
     {
-      id: 'learningCenter',
-      label: t('learn.learningCenter'),
+      id: 'development',
+      label: t('learn.development'),
       to: '',
       show: true,
       options: [
-        {
-          id: 'tasks',
-          label: t('learn.tasks'),
-          onClick: () => window.location.assign(`${getLearnUrl('/tasks')}`),
-          show: !!user?.organization?.setting?.enablechecklist,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
-        },
         {
           id: 'mentorship',
           label: t('learn.mentorship'),
@@ -163,10 +163,10 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           labelClassName: '!text-black hover:!text-black leading-4',
         },
         {
-          id: 'forums',
-          label: t('learn.forums'),
-          onClick: () => window.location.assign(`${getLearnUrl('/forums')}`),
-          show: true,
+          id: 'tasks',
+          label: t('learn.tasks'),
+          onClick: () => window.location.assign(`${getLearnUrl('/tasks')}`),
+          show: !!user?.organization?.setting?.enablechecklist,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-black hover:!text-black leading-4',
         },
@@ -265,14 +265,14 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
 
   const getNavItemStyle = (id: string) => {
     switch (id) {
-      case 'engage':
+      case 'engagement':
         return clsx({
           'gap-1 font-lato items-center font-lato my-[5px] text-[15px] px-2.5 py-1 transition ease duration-150 text-primary-500 group-hover/item:bg-neutral-100 group-hover/item:text-black font-semibold cursor-pointer rounded-xl flex group':
             true,
         });
       case 'home':
       case 'training':
-      case 'learningCenter':
+      case 'development':
       case 'company':
       case 'analytics':
       case 'ecommerce':

@@ -67,52 +67,64 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
     {
       id: 'home',
       label: t('learn.home'),
-      to: '/user/feed',
-      icon: pathname.startsWith('/user/feed') ? 'homeFilled' : 'home',
+      to: getLearnUrl('/user'),
+      icon: 'home',
       show: true,
       options: [],
-      isActive: pathname.startsWith('/user/feed'),
+      isActive: false,
     },
     {
-      id: 'channels',
-      label: t('learn.channels'),
-      to: '/user/channels',
-      show: true,
-      icon: pathname.startsWith('/user/channels')
-        ? 'exploreFilled'
-        : 'exploreOutline',
-      options: [],
-      isActive: pathname.startsWith('/user/channels'),
-    },
-    {
-      id: 'training',
-      label: t('learn.training'),
+      id: 'engage',
+      label: t('learn.engage'),
       to: '',
       show: true,
-      icon: 'training',
+      icon: 'exploreFilled',
       options: [
         {
-          id: 'myLearning',
-          label: t('learn.myLearning'),
-          onClick: () => window.location.assign(`${getLearnUrl('/user')}`),
+          id: 'feed',
+          label: t('learn.feed'),
+          onClick: () => window.location.assign('/user/feed'),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
+          labelClassName: `!text-neutral-500 group-hover:!text-black leading-4 ${
+            pathname.startsWith('/user/feed') && '!font-bold !text-primary-500'
+          }`,
         },
         {
-          id: 'allTrainings',
-          label: t('learn.allTrainings'),
-          onClick: () =>
-            window.location.assign(`${getLearnUrl('/user/trainings')}`),
+          id: 'channels',
+          label: t('learn.channels'),
+          onClick: () => window.location.assign('/user/channels'),
           show: true,
+          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
+          labelClassName: `!text-neutral-500 group-hover:!text-black leading-4 ${
+            pathname.startsWith('/user/channels') &&
+            '!font-bold !text-primary-500'
+          }`,
+        },
+        {
+          id: 'forums',
+          label: t('learn.forums'),
+          onClick: () =>
+            window.location.assign(`${getLearnUrl('/user/forums')}`),
+          show: !!user?.organization?.setting?.enableSocialLearning,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
         },
-      ],
+      ].filter((option) => option.show),
+      isActive: true,
     },
     {
-      id: 'learningCenter',
-      label: t('learn.learningCenter'),
+      id: 'train',
+      label: t('learn.train'),
+      to: getLearnUrl('/user/trainings'),
+      show: true,
+      icon: 'training',
+      options: [],
+      isActive: false,
+    },
+    {
+      id: 'develop',
+      label: t('learn.develop'),
       to: '',
       show: true,
       icon: 'learningCenter',
@@ -137,15 +149,6 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
         },
-        {
-          id: 'forums',
-          label: t('learn.forums'),
-          onClick: () =>
-            window.location.assign(`${getLearnUrl('/user/forums')}`),
-          show: true,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
-        },
       ].filter((option) => option.show),
     },
   ];
@@ -153,15 +156,15 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
   const getNavItemStyle = (id: string) => {
     switch (id) {
       case 'home':
-      case 'channels':
-      case 'training':
-      case 'learningCenter':
+      case 'engage':
+      case 'train':
+      case 'develop':
         return clsx({
           'modern-nav-item flex gap-2 items-center text-sm text-neutral-500 px-[13px] py-[9px] transition ease duration-150 group-hover/item:bg-neutral-100 hover:bg-neutral-100 font-medium rounded-xl cursor-pointer group':
             true,
           'text-primary-500':
-            (!!pathname.startsWith('/user/feed') && id === 'home') ||
-            (!!pathname.startsWith('/user/channels') && id === 'channels'),
+            (!!pathname.startsWith('/user/feed') && id === 'engage') ||
+            (!!pathname.startsWith('/user/channels') && id === 'engage'),
         });
       case 'backBtn':
         return clsx({
@@ -213,14 +216,22 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
                                 name={item.icon}
                                 size={18}
                                 dataTestId={`${item.id}-collapse`}
-                                className="group-hover/item:!text-neutral-500"
+                                className={
+                                  item?.isActive
+                                    ? 'text-primary-500 group-hover/item:!text-primary-500'
+                                    : 'group-hover/item:!text-neutral-500'
+                                }
                               />
                               {item.label}
                               <Icon
                                 name="arrowDown3"
                                 size={10}
                                 dataTestId={`${item.id}-collapse`}
-                                className="group-hover/item:!text-neutral-500 navbar-arrow-icon group-hover/item:navbar-arrow-icon-hover"
+                                className={`${
+                                  item?.isActive
+                                    ? 'text-primary-500 group-hover/item:!text-primary-500'
+                                    : 'group-hover/item:!text-neutral-500'
+                                } navbar-arrow-icon group-hover/item:navbar-arrow-icon-hover`}
                               />
                             </div>
                           }
