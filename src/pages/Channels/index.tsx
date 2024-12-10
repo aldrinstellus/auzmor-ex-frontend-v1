@@ -32,6 +32,7 @@ import useProduct from 'hooks/useProduct';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
 import { isEmpty } from 'lodash';
+import { useSearchParams } from 'react-router-dom';
 
 interface IChannelsProps {
   isInfinite?: boolean;
@@ -52,6 +53,7 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
   const { t } = useTranslation('channels');
   const { filters, setFilters, updateFilter, clearFilters } =
     useAppliedFiltersStore();
+  const [searchParams] = useSearchParams();
   const [isModalOpen, openModal, closeModal] = useModal();
   const filterForm = useForm<{
     search: string;
@@ -115,6 +117,15 @@ export const Channels: FC<IChannelsProps> = ({ isInfinite = true }) => {
 
   useEffect(() => {
     if (isEmpty(filters?.channelType) && !isLoading) {
+      const visibilityParam = searchParams.get('visibility');
+      const channelTypeParam = searchParams.get('channelType');
+      if (visibilityParam && channelTypeParam) {
+        setFilters({
+          visibility: visibilityParam,
+          channelType: channelTypeParam,
+        });
+        return;
+      }
       if (isAdmin && isLxp) {
         setFilters({
           visibility: ChannelVisibilityEnum.All,
