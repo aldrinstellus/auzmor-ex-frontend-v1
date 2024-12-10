@@ -4,7 +4,7 @@ import ChannelHome from './components/Home';
 import ProfileSection from './components/ProfileSection';
 import Members from './components/Members';
 import { ChannelVisibilityEnum, IChannel } from 'stores/channelStore';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import PageLoader from 'components/PageLoader';
 import clsx from 'clsx';
 import DocumentPathProvider from 'contexts/DocumentPathContext';
@@ -23,6 +23,7 @@ import {
 import { useChannelRole } from 'hooks/useChannelRole';
 import useRole from 'hooks/useRole';
 import useProduct from 'hooks/useProduct';
+import Button, { Size, Variant } from 'components/Button';
 
 export enum ChannelDetailTabsEnum {
   Home = 'HOME',
@@ -43,7 +44,9 @@ const ChannelDetail: FC<AppProps> = ({
   const { channelId } = useParams();
   const { getApi } = usePermissions();
   const navigate = useNavigate();
-  const { t } = useTranslation('channelDetail', { keyPrefix: 'tabs' });
+  const { state } = useLocation();
+  const { prevRoute } = state || {};
+  const { t } = useTranslation('channelDetail');
   const { isChannelJoined } = useChannelRole(channelId);
   const { isAdmin, isLearner } = useRole();
   const { isLxp } = useProduct();
@@ -74,6 +77,15 @@ const ChannelDetail: FC<AppProps> = ({
   if (isLoading && !channelData) {
     return <PageLoader />;
   }
+
+  const handleGoBack = () => {
+    if (prevRoute) {
+      console.log({ prevRoute });
+      navigate(prevRoute);
+    } else {
+      navigate(`/channels`);
+    }
+  };
 
   const tabStyles = (active: boolean, disabled = false) =>
     clsx(
@@ -162,7 +174,7 @@ const ChannelDetail: FC<AppProps> = ({
     {
       id: ChannelDetailTabsEnum.Home,
       tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>{t('home')}</div>
+        <div className={tabStyles(isActive)}>{t('tabs.home')}</div>
       ),
       hidden: false,
       dataTestId: 'channel-home-tab',
@@ -173,7 +185,7 @@ const ChannelDetail: FC<AppProps> = ({
     {
       id: ChannelDetailTabsEnum.Documents,
       tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>{t('documents')}</div>
+        <div className={tabStyles(isActive)}>{t('tabs.documents')}</div>
       ),
       hidden: !permissions.includes(
         ChannelPermissionEnum.CanAccessDocumentsTab,
@@ -188,7 +200,7 @@ const ChannelDetail: FC<AppProps> = ({
     {
       id: ChannelDetailTabsEnum.Members,
       tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}>{t('members')}</div>
+        <div className={tabStyles(isActive)}>{t('tabs.members')}</div>
       ),
       hidden: !permissions.includes(ChannelPermissionEnum.CanAccessMembersTab),
       dataTestId: 'channel-member-tab',
@@ -199,7 +211,7 @@ const ChannelDetail: FC<AppProps> = ({
     {
       id: ChannelDetailTabsEnum.Setting,
       tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}> {t('settings')}</div>
+        <div className={tabStyles(isActive)}> {t('tabs.settings')}</div>
       ),
       hidden: !permissions.includes(ChannelPermissionEnum.CanAccessSettingsTab),
       dataTestId: 'channel-setting-tab',
@@ -214,7 +226,7 @@ const ChannelDetail: FC<AppProps> = ({
     {
       id: ChannelDetailTabsEnum.ManageAccess,
       tabLabel: (isActive: boolean) => (
-        <div className={tabStyles(isActive)}> {t('manageAccess')}</div>
+        <div className={tabStyles(isActive)}> {t('tabs.manageAccess')}</div>
       ),
       hidden: !permissions.includes(ChannelPermissionEnum.CanAccessManageTab),
       dataTestId: 'channel-access-tab',
@@ -225,7 +237,17 @@ const ChannelDetail: FC<AppProps> = ({
   ].filter((item) => !item.hidden);
 
   return (
-    <div className="flex flex-col  w-full ">
+    <div className="flex flex-col  w-full gap-6">
+      <div>
+        <Button
+          label={t('backToChannels')}
+          leftIcon="arrowLeft"
+          leftIconClassName="!text-neutral-900 group-hover:!text-primary-500"
+          variant={Variant.Secondary}
+          onClick={handleGoBack}
+          size={Size.Large}
+        />
+      </div>
       <ProfileSection
         permissions={permissions}
         activeTab={activeTab}

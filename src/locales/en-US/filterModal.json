@@ -15,5 +15,6 @@
   "role": "Roles",
   "byPeople": "By people",
   "clearFilter": "Clear Filter",
-  "channel": "Channel"
+  "channel": "Channel",
+  "channelType": "Type"
 }

@@ -20,10 +20,16 @@ const useNavigate = () => {
 
     let newPath = to;
     if (isLearner) {
-      newPath =
-        typeof to === 'string'
-          ? `/user${to}`
-          : { ...(newPath as Partial<Path>), pathname: `/user${to.pathname}` };
+      if (typeof to === 'string')
+        newPath = to.split('/')[1] === 'user' ? to : `/user${to}`;
+      else
+        newPath = {
+          ...(newPath as Partial<Path>),
+          pathname:
+            to.pathname?.split('/')[1] === 'user'
+              ? to.pathname
+              : `/user${to.pathname}`,
+        };
     }
     return navigation(newPath, options);
   };

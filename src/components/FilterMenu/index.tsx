@@ -20,6 +20,9 @@ import Icon from 'components/Icon';
 import { ICategory, ITeam, IDepartmentAPI, ILocationAPI } from 'interfaces';
 import { useTranslation } from 'react-i18next';
 import { channelRequestStatusData } from 'components/FilterModal/ChannelRequestStatus';
+import { ChannelTypeEnum } from 'components/FilterModal/ChannelType';
+import { ChannelVisibilityEnum } from 'stores/channelStore';
+import { isEmpty } from 'lodash';
 
 export enum FilterKey {
   departments = 'departments',
@@ -29,6 +32,8 @@ export enum FilterKey {
   categories = 'categories',
   teams = 'teams',
   byPeople = 'byPeople',
+  channelType = 'channelType',
+  visibility = 'visibility',
 }
 
 interface IFilterMenu {
@@ -117,12 +122,17 @@ const FilterMenu: FC<IFilterMenu> = ({
 
   const handleRemoveFilters = (key: FilterKey, id: any) => {
     if (filters) {
-      const updatedFilter = filters[key]!.filter((item: any) => item.id !== id);
-      const serializedFilters = serializeFilter(updatedFilter);
-      if (updatedFilter.length === 0) {
-        deleteParam(key);
+      let updatedFilter = [];
+      if (filters[key] && filters[key] instanceof Array) {
+        updatedFilter = filters[key]!.filter((item: any) => item.id !== id);
+        const serializedFilters = serializeFilter(updatedFilter);
+        if (updatedFilter.length === 0) {
+          deleteParam(key);
+        } else {
+          updateParam(key, serializedFilters);
+        }
       } else {
-        updateParam(key, serializedFilters);
+        deleteParam(key);
       }
       setFilters({ ...filters, [key]: updatedFilter });
     }
@@ -206,7 +216,10 @@ const FilterMenu: FC<IFilterMenu> = ({
         filters?.categories?.length ||
         filters?.locations?.length ||
         filters?.byPeople?.length ||
-        filters?.teams?.length ? (
+        filters?.teams?.length ||
+        (!isEmpty(filters?.visibility) &&
+          filters?.visibility != ChannelVisibilityEnum.All) ||
+        filters?.channelType === ChannelTypeEnum.Archived ? (
           <div className="flex justify-between items-start">
             <div className="flex items-center space-x-2 flex-wrap gap-y-2">
               <div className="text-base text-neutral-500 whitespace-nowrap">
@@ -398,6 +411,77 @@ const FilterMenu: FC<IFilterMenu> = ({
                   />
                 </div>
               ))}
+              {filters?.channelType === ChannelTypeEnum.Archived ? (
+                <div
+                  key={filters?.channelType}
+                  className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
+                  data-testid={`channelType-filterby-${filters?.channelType}`}
+                  onClick={() =>
+                    handleRemoveFilters(
+                      FilterKey.channelType,
+                      filters?.channelType,
+                    )
+                  }
+                >
+                  <div className="mr-1 text-neutral-500 whitespace-nowrap">
+                    {tf('channelType')}
+                    <span className="ml-1 text-primary-500">
+                      {filters.channelType
+                        .toLowerCase()
+                        .replace(/\b(\w)/g, (x: any) => x.toUpperCase())}
+                    </span>
+                  </div>
+                  <Icon
+                    name="close"
+                    size={16}
+                    color="text-neutral-900"
+                    className="cursor-pointer"
+                    onClick={() =>
+                      handleRemoveFilters(
+                        FilterKey.channelType,
+                        filters.channelType,
+                      )
+                    }
+                    dataTestId={`applied-filter-close`}
+                  />
+                </div>
+              ) : null}
+              {!isEmpty(filters?.visibility) &&
+              filters?.visibility != ChannelVisibilityEnum.All ? (
+                <div
+                  key={filters?.visibility}
+                  className="border border-neutral-200 rounded-7xl px-3 py-1 flex bg-white capitalize text-sm font-medium items-center mr-1 hover:text-primary-600 hover:border-primary-600 cursor-pointer group"
+                  data-testid={`visibility-filterby-${filters?.visibility}`}
+                  onClick={() =>
+                    handleRemoveFilters(
+                      FilterKey.visibility,
+                      filters?.visibility,
+                    )
+                  }
+                >
+                  <div className="mr-1 text-neutral-500 whitespace-nowrap">
+                    {tf('visibility')}
+                    <span className="ml-1 text-primary-500">
+                      {filters?.visibility
+                        .toLowerCase()
+                        .replace(/\b(\w)/g, (x: any) => x.toUpperCase())}
+                    </span>
+                  </div>
+                  <Icon
+                    name="close"
+                    size={16}
+                    color="text-neutral-900"
+                    className="cursor-pointer"
+                    onClick={() =>
+                      handleRemoveFilters(
+                        FilterKey.visibility,
+                        filters?.visibility,
+                      )
+                    }
+                    dataTestId={`applied-filter-close`}
+                  />
+                </div>
+              ) : null}
             </div>
             <div
               className="text-neutral-500 border px-3 py-[3px] whitespace-nowrap rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"

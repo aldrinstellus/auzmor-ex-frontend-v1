@@ -29,6 +29,7 @@ import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import useProduct from 'hooks/useProduct';
 import useRole from 'hooks/useRole';
 import useAuth from 'hooks/useAuth';
+import { useLocation } from 'react-router-dom';
 
 interface IChannelCardProps {
   channel: IChannel;
@@ -39,6 +40,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
   const { t: tc } = useTranslation('channelDetail');
   const updateChannel = useChannelStore((state) => state.updateChannel);
   const navigate = useNavigate();
+  const { pathname, search } = useLocation();
   const { getApi } = usePermissions();
   const { isLxp } = useProduct();
   const { isAdmin } = useRole();
@@ -133,15 +135,19 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
     },
   });
 
+  const handleNavigate = () => {
+    navigate(`/channels/${channel.id}`, {
+      state: { prevRoute: `${pathname}${search}` },
+    });
+  };
+
   return (
     <div
       className="w-full cursor-pointer outline-none group/channel-card"
       tabIndex={0}
       title={channel.name}
-      onKeyUp={(e) =>
-        e.code === 'Enter' ? navigate(`/channels/${channel.id}`) : ''
-      }
-      onClick={() => navigate(`/channels/${channel.id}`)}
+      onKeyUp={(e) => (e.code === 'Enter' ? handleNavigate() : '')}
+      onClick={handleNavigate}
     >
       <Card
         shadowOnHover
@@ -150,7 +156,11 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
         <div className="w-full h-[80px] bg-slate-500 rounded-t-9xl">
           <ChannelBanner channel={channel} />
         </div>
-        <div className="p-3 flex flex-col gap-1">
+        <div
+          className={`p-3 flex flex-col gap-1 ${
+            isLxp && isAdmin ? 'min-h-[138px]' : ''
+          }`}
+        >
           <div className="flex w-full items-center">
             <Truncate
               text={channel.name}

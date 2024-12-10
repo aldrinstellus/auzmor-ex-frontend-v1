@@ -227,7 +227,7 @@ const People: FC<IPeopleProps> = ({
   };
 
   const handleRemoveFilters = (key: FilterKey, id: any) => {
-    const updatedFilter = appliedFilters[key]!.filter(
+    const updatedFilter = (appliedFilters[key] as any)!.filter(
       (item: any) => item.id !== id,
     );
     const serializedFilters = serializeFilter(updatedFilter);

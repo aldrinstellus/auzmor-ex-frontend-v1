@@ -24,11 +24,12 @@ import Truncate from 'components/Truncate';
 import Avatar from 'components/Avatar';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import Divider, { Variant as DividerVariant } from 'components/Divider';
 
 export const formatDate = (date: string, timezone: string) => {
   const momentDate = moment.tz(date, timezone);
-  return `${momentDate.format('ddd, MMM DD')} at ${momentDate.format(
-    'hh:mm a',
+  return `${momentDate.format('MMM DD, YYYY')} at ${momentDate.format(
+    'h:mm a',
   )}`;
 };
 
@@ -58,128 +59,141 @@ const ChannelRow: FC<IChannelRowProps> = ({ channel }) => {
     },
   });
 
+  const defaulChannelDescription = t('defaultDescription', {
+    visibilty: channel?.settings?.visibility,
+    channelName: channel?.name,
+  });
+
   return (
-    <div className="flex items-center w-full px-6 gap-4 py-8">
+    <div className="flex items-center w-full p-4 gap-4 border-1 border-neutral-300 rounded-9xl">
       <Avatar
         ariaLabel={''}
+        className="flex-shrink-0"
         image={getChannelLogoImage(channel)}
         size={80}
         dataTestId={'edit-profile-pic'}
       />
-      <div className="flex justify-between w-[calc(100%-80px)] items-center">
-        <div className="flex flex-col gap-0.5 max-w-[70%]">
-          {channel.name && (
-            <Truncate
-              text={channel.name || ''}
-              className="font-bold text-xl leading-normal text-neutral-900"
-            />
-          )}
-          {channel.description && (
-            <Truncate
-              text={channel.description || ''}
-              className="text-xs leading-normal  text-neutral-500"
-            />
-          )}
-          <p className="text-xs  leading-normal text-neutral-500">
-            {t('ownedBy')}
-            &nbsp;
-            <span className="text-xs text-primary-500 font-bold">
-              {getFullName(channel.createdBy)}
-            </span>
-          </p>
-          <div className="flex mt-1 gap-8 items-center">
-            <div className="flex gap-3 items-center">
-              <IconWrapper
-                type={IconWrapperType.Square}
-                className="h-[24px] w-[24px]"
-                dataTestId={`contact-info-edit`}
-              >
-                <Icon
-                  name={
-                    channel.settings?.visibility ===
-                    ChannelVisibilityEnum.Private
-                      ? 'lock'
-                      : 'website'
-                  }
-                  color="text-primary-500"
-                  hover={false}
-                  size={16}
-                />
-              </IconWrapper>
-              <p className="text-xs text-neutral-500">
-                {channel.settings?.visibility === ChannelVisibilityEnum.Private
-                  ? t('private')
-                  : t('public')}
-              </p>
-            </div>
-            <div className="flex gap-3 items-center">
-              <IconWrapper
-                type={IconWrapperType.Square}
-                className="h-[24px] w-[24px]"
-                dataTestId={`contact-info-edit`}
-              >
-                <Icon
-                  name="people"
-                  color="text-primary-500"
-                  hover={false}
-                  size={16}
-                />
-              </IconWrapper>
-              <p className="text-xs text-neutral-500">
-                {channel?.totalMembers}&nbsp;{t('member')}
-              </p>
-            </div>
-            <div className="flex gap-3 items-center">
-              <IconWrapper
-                type={IconWrapperType.Square}
-                className="h-[24px] w-[24px]"
-                dataTestId={`contact-info-edit`}
-              >
-                <Icon
-                  name="chartOutline"
-                  color="text-primary-500"
-                  hover={false}
-                  size={16}
-                />
-              </IconWrapper>
-              <p className="text-xs text-neutral-500">
-                {channel?.categories
-                  ?.map((category) => category.name)
-                  ?.join(', ') || ''}
-              </p>
-            </div>
+      <div className="flex flex-col gap-0.5 flex-auto overflow-hidden mr-8">
+        {channel.name && (
+          <Truncate
+            text={channel.name || ''}
+            className="font-bold text-xl leading-normal text-neutral-900"
+          />
+        )}
+        {
+          <Truncate
+            text={channel.description || defaulChannelDescription}
+            className="text-xs leading-normal  text-neutral-500"
+          />
+        }
+        <p className="text-xs  leading-normal text-neutral-500">
+          {t('ownedBy')}
+          &nbsp;
+          <span className="text-xs text-primary-500 font-bold">
+            {getFullName(channel.createdBy)}
+          </span>
+        </p>
+        <div className="flex py-1 gap-4 items-center">
+          <div className="flex gap-2 items-center">
+            <IconWrapper
+              type={IconWrapperType.Square}
+              className="h-[24px] w-[24px] rounded-7xl"
+              dataTestId={`contact-info-edit`}
+            >
+              <Icon
+                name={
+                  channel.settings?.visibility === ChannelVisibilityEnum.Private
+                    ? 'lock'
+                    : 'website'
+                }
+                color="text-primary-500"
+                hover={false}
+                size={16}
+              />
+            </IconWrapper>
+            <p className="text-xs text-neutral-500">
+              {channel.settings?.visibility === ChannelVisibilityEnum.Private
+                ? t('private')
+                : t('public')}
+            </p>
           </div>
-        </div>
-        <div className="flex items-end flex-col gap-3">
-          <p className="text-xs text-neutral-500">
-            {t('channelRow.archivedOn')}
-            {channel.updatedAt
-              ? ` ${formatDate(channel.updatedAt, currentTimezone)}`
-              : ''}
-            {channel.updatedBy ? (
-              <span className="text-primary-500 font-bold">
-                {` ${t('channelRow.by')} ${getFullName(channel.updatedBy)}`}
-              </span>
-            ) : null}
-          </p>
-          <div className="flex gap-3">
-            <Button
-              label={t('unarchive')}
-              loading={unarchiveChannelMutation.isLoading}
-              variant={Variant.Secondary}
-              size={Size.Small}
-              onClick={() => unarchiveChannelMutation.mutate(channel.id)}
-            />
-            <Button
-              label={t('permanentlyDelete')}
-              variant={Variant.Secondary}
-              size={Size.Small}
-              onClick={() => openDeleteModal()}
-              className="border-none text-red-500 hover:text-red-700"
-            />
+          <Divider
+            variant={DividerVariant.Vertical}
+            className="!bg-neutral-100"
+          />
+          <div className="flex gap-2 items-center">
+            <IconWrapper
+              type={IconWrapperType.Square}
+              className="h-[24px] w-[24px] rounded-7xl"
+              dataTestId={`contact-info-edit`}
+            >
+              <Icon
+                name="people"
+                color="text-primary-500"
+                hover={false}
+                size={16}
+              />
+            </IconWrapper>
+            <p className="text-xs text-neutral-500">
+              {channel?.totalMembers}&nbsp;{t('member')}
+            </p>
+          </div>
+          <Divider
+            variant={DividerVariant.Vertical}
+            className="!bg-neutral-100"
+          />
+          <div className="flex gap-2 items-center">
+            <IconWrapper
+              type={IconWrapperType.Square}
+              className="h-[24px] w-[24px] rounded-7xl"
+              dataTestId={`contact-info-edit`}
+            >
+              <Icon
+                name="chartOutline"
+                color="text-primary-500"
+                hover={false}
+                size={16}
+              />
+            </IconWrapper>
+            <p className="text-xs text-neutral-500">
+              {channel?.categories
+                ?.map((category) => category.name)
+                ?.join(', ') || ''}
+            </p>
           </div>
         </div>
       </div>
+
+      <div className="flex items-end flex-col flex-shrink-0 gap-3">
+        <p className="text-xs text-neutral-500">
+          {t('channelRow.archivedOn')}
+          {channel.updatedAt
+            ? ` ${formatDate(channel.updatedAt, currentTimezone)}`
+            : ''}
+          {channel.updatedBy ? (
+            <span className="text-primary-500 font-bold">
+              {` ${t('channelRow.by')} ${getFullName(channel.updatedBy)}`}
+            </span>
+          ) : null}
+        </p>
+        <div className="flex gap-3">
+          <Button
+            label={t('unarchive')}
+            loading={unarchiveChannelMutation.isLoading}
+            variant={Variant.Secondary}
+            size={Size.Small}
+            onClick={() => unarchiveChannelMutation.mutate(channel.id)}
+          />
+          <Button
+            label={t('permanentlyDelete')}
+            variant={Variant.Secondary}
+            size={Size.Small}
+            onClick={() => openDeleteModal()}
+            className="border-none !text-xs !leading-normal text-red-500 hover:text-red-700 !p-0"
+          />
+        </div>
+      </div>
+
       {isDeleteModalOpen && (
         <ChannelDeleteModal
           isOpen={isDeleteModalOpen}
