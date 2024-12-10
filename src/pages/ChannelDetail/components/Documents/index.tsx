@@ -47,6 +47,7 @@ import {
   BackgroundJobStatusEnum,
   useBackgroundJobStore,
 } from 'stores/backgroundJobStore';
+import queryClient from 'utils/queryClient';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
@@ -95,6 +96,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const createFolderMutation = useMutation({
     mutationKey: ['create-channel-doc-folder'],
     mutationFn: createChannelDocFolder,
+    onSuccess: () => {
+      successToastConfig({ content: 'Folder created successfully' });
+    },
+    onError: () => {
+      failureToastConfig({ content: 'Folder creation failed' });
+    },
   });
 
   // Api call: Connect site / folder
@@ -103,6 +110,53 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     mutationKey: ['update-channel-connection', channelId],
     mutationFn: updateConnection,
   });
+
+  // Initialise rename file mutation
+  const renameChannelFileMutation = useMutation({
+    mutationFn: getApi(ApiEnum.RenameChannelFile),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['get-channel-files'], {
+        exact: false,
+      });
+      successToastConfig({ content: 'File renamed successfully' });
+      dataGridProps.setRowSelection({});
+    },
+    onError: () => {
+      failureToastConfig({ content: 'File rename failed' });
+    },
+  });
+
+  // Initialise rename folder mutation
+  const renameChannelFolderMutation = useMutation({
+    mutationFn: getApi(ApiEnum.RenameChannelFolder),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['get-channel-files'], {
+        exact: false,
+      });
+      successToastConfig({ content: 'Folder renamed successfully' });
+      dataGridProps.setRowSelection({});
+    },
+    onError: () => {
+      failureToastConfig({ content: 'Folder rename failed' });
+    },
+  });
+
+  // Api call: Handle rename file / folder
+  const handleRename = async (name: string) => {
+    if (selectedItems[0].isFolder) {
+      renameChannelFolderMutation.mutate({
+        channelId,
+        name,
+        folderId: selectedItems[0].id,
+      } as any);
+    } else {
+      renameChannelFileMutation.mutate({
+        channelId,
+        name,
+        fileId: selectedItems[0].id,
+      } as any);
+    }
+  };
 
   // State management flags
   const isBaseFolderSet = statusResponse?.status === 'ACTIVE';
@@ -309,6 +363,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           appendItem({
             id: virtualRow.original.id,
             label: virtualRow?.original?.name,
+            meta: virtualRow.original,
           });
           table.setRowSelection({});
           return;
@@ -425,6 +480,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     return items;
   }, [dataGridProps.rowSelection]);
 
+  console.log(items);
   return isLoading ? (
     <Card className="flex flex-col gap-6 p-8 pb-16 w-full justify-center bg-white overflow-hidden">
       <p className="font-bold text-2xl text-neutral-900">Documents</p>
@@ -565,13 +621,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                           <Icon name={'dir'} size={16} /> Folder
                         </div>
                       ),
-                      onClick: () => {
-                        // createFolderMutation.mutate({
-                        //   channelId: channelId,
-                        //   remoteFolderId: '',
-                        //   name: 'NewFolder123',
-                        // } as any);
-                      },
+                      onClick: openAddModal,
                     },
                     {
                       renderNode: (
@@ -614,6 +664,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 onDeselect={() => {
                   dataGridProps.setRowSelection({});
                 }}
+                onRename={handleRename}
               />
             ) : (
               <FilterMenuDocument
@@ -666,8 +717,14 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           isOpen={isAddModalOpen}
           closeModal={closeAddModal}
           onSelect={(folderName) => {
-            console.log(folderName);
-            openModal();
+            createFolderMutation.mutate({
+              channelId: channelId,
+              remoteFolderId:
+                items.length > 1
+                  ? items[items.length - 1]?.meta?.externalId
+                  : '',
+              name: folderName,
+            } as any);
             closeAddModal();
           }}
         />

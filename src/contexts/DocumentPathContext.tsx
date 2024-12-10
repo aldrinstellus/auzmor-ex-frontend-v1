@@ -3,6 +3,7 @@ import React, { FC, ReactNode, createContext, useState } from 'react';
 export type Item = {
   id: string;
   label: string;
+  meta?: Record<string, any>;
 };
 
 interface IDocumentPathContextState {
@@ -17,7 +18,7 @@ interface IDocumentPathContextAction {
 export const DocumentPathContext = createContext<
   IDocumentPathContextState & IDocumentPathContextAction
 >({
-  items: [{ id: 'root', label: 'Documents' }],
+  items: [{ id: 'root', label: 'Documents', meta: {} }],
   setItems: () => {},
   appendItem: () => {},
   sliceItems: () => {},

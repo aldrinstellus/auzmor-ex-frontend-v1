@@ -111,6 +111,32 @@ export const deleteChannelDoc = async (payload: {
   return response;
 };
 
+// Rename channel file document
+export const renameChannelFile = async (payload: {
+  channelId: string;
+  fileId: string;
+  name: string;
+}) => {
+  const response = await apiService.patch(
+    `/channels/${payload.channelId}/files/${payload.fileId}`,
+    { name: payload.name },
+  );
+  return response;
+};
+
+// Rename channel folder document
+export const renameChannelFolder = async (payload: {
+  channelId: string;
+  folderId: string;
+  name: string;
+}) => {
+  const response = await apiService.patch(
+    `/channels/${payload.channelId}/folders/${payload.folderId}`,
+    { name: payload.name },
+  );
+  return response;
+};
+
 /** Hooks */
 
 // To list out all rirectories / sites

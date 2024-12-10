@@ -208,4 +208,10 @@ export const apiConfigLxp = {
   [ApiEnum.DeleteChannelDoc]: {
     [Default]: queries.deleteChannelDoc,
   },
+  [ApiEnum.RenameChannelFile]: {
+    [Default]: queries.renameChannelFile,
+  },
+  [ApiEnum.RenameChannelFolder]: {
+    [Default]: queries.renameChannelFolder,
+  },
 };

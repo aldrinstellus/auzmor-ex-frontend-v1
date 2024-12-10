@@ -13,6 +13,7 @@ import NoDataFound from 'components/NoDataFound';
 import Skeleton from 'react-loading-skeleton';
 import FilePreviewModal from './FilePreviewModal';
 import useModal from 'hooks/useModal';
+import Truncate from 'components/Truncate';
 // import moment from 'moment';
 
 interface IRecentlyAddedEntitiesProps {}
@@ -44,9 +45,10 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({}) => {
               />
             </div>
             <div className="flex flex-col gap-1">
-              <div className="text-xs font-medium text-neutral-900">
-                {info.row.original?.name}
-              </div>
+              <Truncate
+                text={info.row.original?.name}
+                className="text-xs font-medium text-neutral-900 w-[176px]"
+              />
               <div className="text-xxs font-medium text-neutral-500">
                 added{' '}
                 {info.row.original.externalCreatedAt
