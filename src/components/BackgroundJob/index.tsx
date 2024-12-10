@@ -1,14 +1,15 @@
 import { clsx } from 'clsx';
 import Icon from 'components/Icon';
 import ProgressBar from 'components/ProgressBar';
-import Spinner from 'components/Spinner';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, Fragment, useEffect, useState } from 'react';
+import { useBackgroundJobStore } from 'stores/backgroundJobStore';
 
 interface IindexProps {}
 
-const index: FC<IindexProps> = ({}) => {
+const BackgroundJob: FC<IindexProps> = ({}) => {
   const [right, setRight] = useState<number>(2);
-  const [isExpanded, setIsExpanded] = useState(true);
+  const { isExpanded, jobTitle, progress, jobs, setIsExpanded } =
+    useBackgroundJobStore();
 
   useEffect(() => {
     try {
@@ -31,6 +32,8 @@ const index: FC<IindexProps> = ({}) => {
     'flex flex-col gap-4 w-full h-[168px] overflow-y-auto px-4 py-3': true,
   });
 
+  console.log(jobs);
+
   return (
     <div
       className={style}
@@ -42,7 +45,7 @@ const index: FC<IindexProps> = ({}) => {
       <div className="flex flex-col bg-neutral-100 rounded-t-9xl px-4 py-3 border-b border-b-neutral-200">
         <div className="flex items-center gap-2 ml-12">
           <span className="flex-grow font-medium leading-6 text-neutral-900">
-            Syncing 10 out of 20 files
+            {jobTitle}
           </span>
           <Icon
             name="arrowDown"
@@ -53,9 +56,9 @@ const index: FC<IindexProps> = ({}) => {
           <Icon name="close" size={20} />
         </div>
         <div className="flex items-center gap-4">
-          <span>75%</span>
+          <span>{progress}%</span>
           <ProgressBar
-            completed={75}
+            completed={progress}
             total={100}
             className="flex-grow"
             barClassName="!w-full"
@@ -65,47 +68,19 @@ const index: FC<IindexProps> = ({}) => {
         </div>
       </div>
       <div className={contentStyle}>
-        <div className="flex gap-2">
-          <Icon name="doc" />
-          <span className="flex-grow">Invoice- November</span>
-          <Icon
-            name="tickCircleFilled"
-            color="text-primary-600"
-            hover={false}
-            size={20}
-          />
-        </div>
-        <div className="flex gap-2">
-          <Icon name="xls" />
-          <span className="flex-grow">Invoice details</span>
-          <Spinner className="!w-5 !h-5" />
-        </div>
-        <div className="flex gap-2">
-          <Icon name="xls" />
-          <span className="flex items-center gap-1 flex-grow">
-            Invoice details{' '}
-            <span className="text-xxs text-neutral-500 leading-[15px] font-medium">
-              (Unsupported file type)
-            </span>
-          </span>
-          <Icon name="infoCircleFilled" size={20} hover={false} />
-        </div>
-        <div className="flex gap-2">
-          <Icon name="xls" />
-          <span className="flex items-center gap-1 flex-grow">
-            Travel policy
-          </span>
-          <Icon
-            name="closeCircleFilled"
-            color="text-red-500"
-            hoverColor="text-red-600"
-            className="hover:!text-red-600"
-            size={20}
-          />
-        </div>
+        {Object.keys(jobs).map((key) => (
+          <Fragment key={key}>
+            {jobs[key].renderer(
+              jobs[key].id,
+              jobs[key].jobData,
+              jobs[key].progress,
+              jobs[key].status,
+            )}
+          </Fragment>
+        ))}
       </div>
     </div>
   );
 };
 
-export default index;
+export default BackgroundJob;

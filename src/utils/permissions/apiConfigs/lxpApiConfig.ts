@@ -205,4 +205,7 @@ export const apiConfigLxp = {
   [ApiEnum.GetChannelDocOwners]: {
     [Default]: queries.useChannelDocOwners,
   },
+  [ApiEnum.DeleteChannelDoc]: {
+    [Default]: queries.deleteChannelDoc,
+  },
 };

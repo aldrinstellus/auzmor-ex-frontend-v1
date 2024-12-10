@@ -100,6 +100,17 @@ export const getChannelDocOwners = async ({
   return response?.data?.result?.data?.owners;
 };
 
+// Delete Channel Document
+export const deleteChannelDoc = async (payload: {
+  channelId: string;
+  itemId: string;
+}) => {
+  const response = await apiService.delete(
+    `/channels/${payload.channelId}/files/${payload.itemId}`,
+  );
+  return response;
+};
+
 /** Hooks */
 
 // To list out all rirectories / sites

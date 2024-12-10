@@ -4,8 +4,10 @@ import IconButton, {
   Size as IconSize,
 } from 'components/IconButton';
 import PopupMenu from 'components/PopupMenu';
+import { usePermissions } from 'hooks/usePermissions';
 import { Doc } from 'interfaces';
 import React, { FC } from 'react';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface IActionMenuProps {
   selectedItems: Doc[];
@@ -33,6 +35,8 @@ const ActionMenu: FC<IActionMenuProps> = ({
     },
   ];
 
+  const { getApi } = usePermissions();
+  const _deleteChannelDoc = getApi(ApiEnum.DeleteChannelDoc);
   const showRename = selectedItems.length === 1;
   const showDownload = selectedItems.some((doc) => doc.downloadable);
 

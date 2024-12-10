@@ -4,6 +4,11 @@ import axios from 'axios';
 import { useState } from 'react';
 import { getType } from 'utils/misc';
 import { IMedia, EntityType } from 'interfaces';
+import {
+  BackgroundJobStatusEnum,
+  useBackgroundJobStore,
+} from 'stores/backgroundJobStore';
+import Icon from 'components/Icon';
 
 export enum UploadStatus {
   YetToStart = 'YET_TO_START',
@@ -274,27 +279,25 @@ export interface IUploadUrlResponse {
   uploadURL: string;
 }
 
-interface IUploadToSharepointResposne {
-  id?: string;
-  etags?: IETag[];
-}
-
 export const useChannelDocUpload = (channelId: string) => {
-  const [uploadStatus, setUploadStatus] = useState<UploadStatus>(
-    UploadStatus.YetToStart,
-  );
-  const [error, setError] = useState('');
-  const chunksize = 5 * 1024 * 1024; // 5 MB
+  const { setShow, updateJobProgress } = useBackgroundJobStore();
 
   const getUploadUrl = async (payload: IUploadUrlPayload) =>
     await apiService.get(`/channels/${channelId}/file/uploadUrl`, payload);
 
-  const uploadToSharepoint = async (res: IUploadUrlResponse, file: File) => {
+  const uploadToSharepoint = async (
+    res: IUploadUrlResponse,
+    file: File,
+    jobId: string,
+  ) => {
     const uploadUrl = res.uploadURL;
     const chunkSize = 5 * 1024 * 1024; // 5 MB
     const totalBytes = file.size;
     let offset = 0;
+    let lastResponse = null;
+    const totalSteps = Math.floor(totalBytes / chunkSize);
     while (offset < totalBytes) {
+      const completedsteps = Math.floor(offset / chunkSize);
       const chunk = file.slice(offset, offset + chunkSize);
       const startByte = offset;
       const endByte = offset + chunk.size - 1;
@@ -308,23 +311,34 @@ export const useChannelDocUpload = (channelId: string) => {
         headers,
         body: chunk,
       });
-      const responseJson = await response.json();
-      console.log(responseJson);
+      lastResponse = await response.json();
       offset += chunk.size;
+      updateJobProgress(jobId, Math.round((completedsteps * 100) / totalSteps));
     }
+    return lastResponse;
+  };
+
+  const finishUpload = async (payload: {
+    fileName: string;
+    etag: string;
+    id: string;
+    ownerName: string;
+    externalModifiedBy: string;
+    externalCreatedAt: string;
+    externalUpdatedAt: string;
+    externalParentId: string;
+    externalUrl: string;
+    mimeType: string;
+    size: number;
+  }) => {
+    apiService.post(`/channels/${channelId}/file/upload`, payload);
   };
 
   const uploadMedia = async (
     fileList: { parentFolderId: string; file: File }[],
   ) => {
-    // TODO Add error state when upload fails.
+    setShow(true);
     const uploadedFiles: IMedia[] = [];
-    const uploadUrlPromises: Promise<IUploadUrlResponse>[] = [];
-    const uploadToSharepointPromises: Promise<
-      IUploadToSharepointResposne | undefined
-    >[] = [];
-    const uploadETagPromises: Promise<any>[] = [];
-    setUploadStatus(UploadStatus.Uploading);
     const files: IUploadUrlPayload[] = [];
     fileList.forEach(({ file, parentFolderId }) => {
       files.push({
@@ -332,52 +346,50 @@ export const useChannelDocUpload = (channelId: string) => {
         parentFolderId,
       });
     });
-    files.forEach((file: IUploadUrlPayload, _index: number) => {
-      uploadUrlPromises.push(getUploadUrl(file) as Promise<any>);
-    });
-
-    if (uploadUrlPromises.length > 0) {
-      const promisesRes = await Promise.allSettled(uploadUrlPromises);
-      promisesRes.forEach(
-        (promiseRes: PromiseSettledResult<IUploadUrlResponse>) => {
-          if (promiseRes.status === 'fulfilled') {
-            uploadToSharepoint(
-              (promiseRes.value as any).data.result as IUploadUrlResponse,
-              fileList.find(
-                ({ file }) =>
-                  file.name === (promiseRes.value as any).data.result.name,
-              )!.file,
+    files.forEach((file: IUploadUrlPayload, index: number) => {
+      const jobId = `upload-job-${index}`;
+      getUploadUrl(file).then((response) => {
+        updateJobProgress(jobId, 0, BackgroundJobStatusEnum.Running);
+        uploadToSharepoint(
+          (response as any).data.result as IUploadUrlResponse,
+          fileList.find(
+            ({ file }) => file.name === (response as any).data.result.name,
+          )!.file,
+          jobId,
+        ).then((response) => {
+          updateJobProgress(
+            jobId,
+            100,
+            BackgroundJobStatusEnum.CompletedSuccessfully,
+          );
+          finishUpload({
+            fileName: response?.name,
+            etag: response?.eTag.match(/\{([A-F0-9\-]+)\}/)[1],
+            id: response?.id,
+            ownerName: response?.createdBy?.user?.displayName,
+            externalModifiedBy: response?.lastModifiedDateTime,
+            externalCreatedAt: response?.createdDateTime,
+            externalUpdatedAt: response?.lastModifiedDateTime,
+            externalParentId: response?.parentReference?.id,
+            externalUrl: response?.webUrl,
+            mimeType: response?.file?.mimeType,
+            size: response?.size,
+          }).then((response) => {
+            console.log(response);
+            updateJobProgress(
+              jobId,
+              100,
+              BackgroundJobStatusEnum.CompletedSuccessfully,
             );
-            setError('');
-          } else {
-            const reason =
-              promiseRes?.reason?.response?.data?.errors?.[0]?.message ||
-              'Something went wrong';
-            if (reason.includes('File type')) {
-              setError('File type not supported. Upload a supported file type');
-            } else {
-              setError(
-                promiseRes?.reason?.response?.data?.errors?.[0]?.message ||
-                  'Something went wrong',
-              );
-            }
-
-            console.log('create file failed');
-            // setUploadStatus(UploadStatus.Error);
-          }
-        },
-      );
-    } else {
-      setUploadStatus(UploadStatus.Finished);
-      return uploadedFiles;
-    }
+          });
+        });
+      });
+    });
 
     return uploadedFiles;
   };
 
   return {
-    error,
     uploadMedia,
-    uploadStatus,
   };
 };
