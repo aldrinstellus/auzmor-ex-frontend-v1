@@ -130,15 +130,6 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       icon: 'learningCenter',
       options: [
         {
-          id: 'tasks',
-          label: t('learn.tasks'),
-          onClick: () =>
-            window.location.assign(`${getLearnUrl('/user/tasks')}`),
-          show: !!user?.organization?.setting?.enablechecklist,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
-        },
-        {
           id: 'mentorship',
           label: t('learn.mentorship'),
           onClick: () =>
@@ -146,6 +137,15 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
               `${getLearnUrl('/user/mentorship/overview')}`,
             ),
           show: !!user?.organization?.setting?.enableMentorship,
+          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
+          labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
+        },
+        {
+          id: 'tasks',
+          label: t('learn.tasks'),
+          onClick: () =>
+            window.location.assign(`${getLearnUrl('/user/tasks')}`),
+          show: !!user?.organization?.setting?.enablechecklist,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: '!text-neutral-500 group-hover:!text-black leading-4',
         },

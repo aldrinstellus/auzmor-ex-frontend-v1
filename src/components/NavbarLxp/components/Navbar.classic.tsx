@@ -93,16 +93,16 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       show: true,
     },
     {
-      id: 'tasks',
-      label: t('learn.tasks'),
-      to: `${getLearnUrl('/user/tasks')}`,
-      show: !!user?.organization?.setting?.enablechecklist,
-    },
-    {
       id: 'mentorship',
       label: t('learn.mentorship'),
       to: `${getLearnUrl('/user/mentorship/overview')}`,
       show: !!user?.organization?.setting?.enableMentorship,
+    },
+    {
+      id: 'tasks',
+      label: t('learn.tasks'),
+      to: `${getLearnUrl('/user/tasks')}`,
+      show: !!user?.organization?.setting?.enablechecklist,
     },
     {
       id: 'forums',
