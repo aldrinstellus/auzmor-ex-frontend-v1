@@ -46,8 +46,8 @@ const AvatarList: FC<AvatarListProps> = ({
             ariaLabel={user?.name}
           />
         ))
-        .slice(0, 2)}
-      {moreCount > 2 && (
+        .slice(0, display)}
+      {moreCount > display && (
         <Avatar
           size={size}
           name={`+${moreCount - display}`}

@@ -50,9 +50,9 @@ const MembersWidget: FC<MembersWidgetProps> = ({
   return (
     <>
       <Card className="py-6 rounded-9xl" shadowOnHover>
-        <div className="px-6">
+        <div className="px-4">
           <div
-            className="flex items-center justify-between cursor-pointer"
+            className="flex items-center justify-between cursor-pointer px-2"
             data-testid="app-launcher"
             onClick={toggleWidget}
             onKeyUp={(e) => (e.code === 'Enter' ? toggleWidget() : '')}
@@ -79,9 +79,11 @@ const MembersWidget: FC<MembersWidgetProps> = ({
           >
             <div className="mt-3">
               <AvatarList
-                className="!-space-x-5"
+                className="!-space-x-[12.5px]"
                 users={users || []}
                 moreCount={data?.pages[0]?.data?.result?.totalCount}
+                size={40}
+                display={8}
               />
             </div>
             <div className="mt-3">
