@@ -81,8 +81,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: `!text-black hover:!text-black leading-4 ${
-            pathname.startsWith('/feed') &&
-            '!font-bold !text-primary-500 hover:!text-primary-500'
+            pathname.startsWith('/feed') && '!font-bold !text-primary-500'
           }`,
         },
         {
@@ -92,8 +91,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: `!text-black hover:!text-black leading-4 ${
-            pathname.startsWith('/channels') &&
-            '!font-bold !text-primary-500 hover:!text-primary-500'
+            pathname.startsWith('/channels') && '!font-bold !text-primary-500 '
           }`,
         },
         {
@@ -256,7 +254,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
         },
       ],
     },
-  ].filter((each) => each.show);
+  ].filter((each) => each.show && (each.to || each.options.length > 0));
 
   const optionWrapperStyle = clsx({
     'w-full max-w-[1280px] flex items-center': true,
@@ -334,7 +332,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
                                 dataTestId={`${item.id}-collapse`}
                                 className="group-hover/item:!text-black navbar-arrow-icon group-hover/item:navbar-arrow-icon-hover"
                                 color={
-                                  item.id === 'engage'
+                                  item.isActive
                                     ? 'text-primary-500'
                                     : '!text-black'
                                 }
@@ -342,7 +340,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
                             </div>
                           }
                           menuItems={item.options}
-                          className={`dropdown-menu-option group-hover/item:visible invisible h-[39px] !transition-[height] !duration-300 w-[124px] left-1/2 -translate-x-1/2 ${getOptionHeight(
+                          className={`dropdown-menu-option group-hover/item:visible invisible h-[39px] !transition-[height] !duration-300 w-full left-1/2 -translate-x-1/2 ${getOptionHeight(
                             item.options.length,
                           )}`}
                           controlled

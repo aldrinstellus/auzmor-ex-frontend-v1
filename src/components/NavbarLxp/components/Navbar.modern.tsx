@@ -151,7 +151,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
         },
       ].filter((option) => option.show),
     },
-  ];
+  ].filter((navItem) => navItem.to || navItem.options.length > 0);
 
   const getNavItemStyle = (id: string) => {
     switch (id) {
@@ -236,7 +236,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
                             </div>
                           }
                           menuItems={item.options}
-                          className={`dropdown-menu-option group-hover/item:visible invisible h-[39px] !transition-[height] !duration-300 w-[124px] left-1/2 -translate-x-1/2 ${getOptionHeight(
+                          className={`dropdown-menu-option group-hover/item:visible invisible h-[39px] !transition-[height] !duration-300 w-full left-1/2 -translate-x-1/2 ${getOptionHeight(
                             item.options.length,
                           )}`}
                           controlled
