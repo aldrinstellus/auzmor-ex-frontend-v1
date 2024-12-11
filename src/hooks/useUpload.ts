@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import apiService from 'utils/apiService';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getType } from 'utils/misc';
 import { IMedia, EntityType } from 'interfaces';
 import {
@@ -280,7 +280,19 @@ export interface IUploadUrlResponse {
 }
 
 export const useChannelDocUpload = (channelId: string) => {
-  const { setShow, updateJobProgress } = useBackgroundJobStore();
+  const { jobs, setShow, setProgress, updateJobProgress } =
+    useBackgroundJobStore();
+
+  useEffect(() => {
+    let progress = 0;
+    let total = 0;
+    Object.keys(jobs).forEach((key) => {
+      console.log(jobs);
+      progress += jobs[key].progress;
+      total += 100;
+    });
+    setProgress((progress * 100) / total);
+  }, [jobs]);
 
   const getUploadUrl = async (payload: IUploadUrlPayload) =>
     await apiService.get(`/channels/${channelId}/file/uploadUrl`, payload);
