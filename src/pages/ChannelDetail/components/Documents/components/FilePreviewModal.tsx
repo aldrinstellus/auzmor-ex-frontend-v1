@@ -38,9 +38,14 @@ const FilePreview: FC<IFilePreviewProps> = ({ file, open, closeModal }) => {
           {file.name}
         </div>
         <div className="flex absolute gap-3 right-4">
-          <Icon name="download" />
-          <Icon name="starOutline" />
-          <Icon name="export" />
+          <Icon name="download" color="text-neutral-900" />
+          <a
+            href={data?.data?.result?.launchURL}
+            rel="noreferrer"
+            target="_blank"
+          >
+            <Icon name="launch" color="text-neutral-900" />
+          </a>
         </div>
       </div>
       <Divider />

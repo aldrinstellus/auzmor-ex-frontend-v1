@@ -194,6 +194,7 @@ import ListIcon from '../components/List';
 import FileUploadIcon from '../components/FileUpload';
 import FolderUploadIcon from '../components/FolderUpload';
 import VuesaxIcon from '../components/Vuesax';
+import LaunchIcon from '../components/Launch';
 
 export const icon = {
   add: Add,
@@ -300,6 +301,7 @@ export const icon = {
   insightful: Insightful,
   insightfulReaction: InsightfulReaction,
   integration: Integration,
+  launch: LaunchIcon,
   launcher: LauncherIcon,
   learningCenter: LearningCenterIcon,
   lifeBuoy: LifeBuoyIcon,
