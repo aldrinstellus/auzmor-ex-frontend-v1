@@ -8,7 +8,7 @@ interface IindexProps {}
 
 const BackgroundJob: FC<IindexProps> = ({}) => {
   const [right, setRight] = useState<number>(2);
-  const { isExpanded, jobTitle, progress, jobs, setIsExpanded } =
+  const { isExpanded, jobTitle, progress, jobs, jobsRenderer, setIsExpanded } =
     useBackgroundJobStore();
 
   useEffect(() => {
@@ -68,16 +68,19 @@ const BackgroundJob: FC<IindexProps> = ({}) => {
         </div>
       </div>
       <div className={contentStyle}>
-        {Object.keys(jobs).map((key) => (
-          <Fragment key={key}>
-            {jobs[key].renderer(
-              jobs[key].id,
-              jobs[key].jobData,
-              jobs[key].progress,
-              jobs[key].status,
-            )}
-          </Fragment>
-        ))}
+        {jobsRenderer
+          ? jobsRenderer(Object.keys(jobs).map((key) => jobs[key]))
+          : Object.keys(jobs).map((key) => (
+              <Fragment key={key}>
+                {jobs[key].renderer(
+                  jobs[key].id,
+                  jobs[key].jobData,
+                  jobs[key].progress,
+                  jobs[key].status,
+                  jobs[key].jobComment,
+                )}
+              </Fragment>
+            ))}
       </div>
     </div>
   );

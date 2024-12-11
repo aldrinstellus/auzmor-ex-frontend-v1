@@ -14,6 +14,7 @@ import { useForm } from 'react-hook-form';
 import { useDebounce } from 'hooks/useDebounce';
 import { getInitials } from 'utils/misc';
 import NoDataFound from 'components/NoDataFound';
+import moment from 'moment';
 
 interface IEntitySelectModalProps {
   isOpen: boolean;
@@ -93,7 +94,11 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
         header: () => (
           <div className="font-bold text-neutral-500">Last Updated</div>
         ),
-        cell: (info) => info.getValue(),
+        cell: (info) => (
+          <span>
+            {moment(info.row.original.lastUpdatedAt).format('MMM DD,YYYY')}
+          </span>
+        ),
         size: 120,
       },
     ],

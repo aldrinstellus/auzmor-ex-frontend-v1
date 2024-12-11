@@ -118,7 +118,7 @@ const DataGrid = <T extends object>({
   const getTdClassName = (cell: any) =>
     clsx({ flex: true, [cell?.column?.columnDef?.tdClassName || '']: true });
   const trHeaderClassName = () =>
-    clsx({ 'flex w-full px-5 py-3 bg-neutral-100 gap-2 group/row': true });
+    clsx({ 'flex w-full px-5 py-3 bg-neutral-100 gap-2 group/row z-20': true });
   const getTrDataClassName = (row: Row<T>) =>
     clsx({
       'flex absolute w-full hover:bg-primary-100 px-5 py-3 gap-2 cursor-default border-b-1 select-none group/row':

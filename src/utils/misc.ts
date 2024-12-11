@@ -682,3 +682,23 @@ export const getCookieParam = (key = SESSION_ID) => {
 export const getSizeInMB: (sizeInBytes: number) => number = (sizeInBytes) => {
   return sizeInBytes / 8 / 1024;
 };
+
+export const isThisAFile = (maybeFile: File) => {
+  return new Promise((resolve) => {
+    if (maybeFile.type !== '') {
+      return resolve(true);
+    }
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (
+        reader.error &&
+        (reader.error.name === 'NotFoundError' ||
+          reader.error.name === 'NotReadableError')
+      ) {
+        return resolve(false);
+      }
+      resolve(true);
+    };
+    reader.readAsArrayBuffer(maybeFile);
+  });
+};

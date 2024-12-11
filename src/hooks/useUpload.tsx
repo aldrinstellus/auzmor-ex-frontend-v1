@@ -367,7 +367,7 @@ export const useChannelDocUpload = (channelId: string) => {
             etag: response?.eTag.match(/\{([A-F0-9\-]+)\}/)[1],
             id: response?.id,
             ownerName: response?.createdBy?.user?.displayName,
-            externalModifiedBy: response?.lastModifiedDateTime,
+            externalModifiedBy: response?.lastModifiedBy?.user?.displayName,
             externalCreatedAt: response?.createdDateTime,
             externalUpdatedAt: response?.lastModifiedDateTime,
             externalParentId: response?.parentReference?.id,

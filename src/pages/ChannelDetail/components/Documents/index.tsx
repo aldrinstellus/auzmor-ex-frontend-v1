@@ -48,6 +48,7 @@ import {
   useBackgroundJobStore,
 } from 'stores/backgroundJobStore';
 import queryClient from 'utils/queryClient';
+import { isThisAFile } from 'utils/misc';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
@@ -78,8 +79,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const { uploadMedia } = useChannelDocUpload(channelId);
   const { filters } = useAppliedFiltersStore();
   const folderInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const docType = watch('docType');
-  const { setJobs, getIconFromStatus, setJobTitle } = useBackgroundJobStore();
+  const { setJobs, getIconFromStatus, setJobTitle, setJobsRenderer } =
+    useBackgroundJobStore();
 
   // Api call: Check connection status
   const useChannelDocumentStatus = getApi(ApiEnum.GetChannelDocumentStatus);
@@ -489,7 +492,68 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   ) : (
     <Fragment>
       <input
+        id="input-file-upload"
+        className="hidden"
+        type="file"
+        ref={fileInputRef}
+        multiple={true}
+        onChange={async (e: any) => {
+          // Id of root folder
+          const rootFolderId =
+            items.length <= 1 ? '' : items[items.length - 1].id;
+
+          // Collection file with mapped parent folder id
+          const files: { file: File; parentFolderId: string }[] = [];
+
+          setJobTitle('Upload in progress...');
+
+          let index = 0;
+          const jobs: { [key: string]: any } = {};
+
+          for (const file of Array.from(e.target.files) as File[]) {
+            const isFile = await isThisAFile(file);
+            files.push({ file, parentFolderId: rootFolderId });
+            jobs[`upload-job-${index}`] = {
+              id: `upload-job-${index}`,
+              jobData: { file, parentFolderId: rootFolderId },
+              progress: 100,
+              status: isFile
+                ? BackgroundJobStatusEnum.YetToStart
+                : BackgroundJobStatusEnum.Cancelled,
+              jobComment: !isFile && 'File not found',
+              renderer: (
+                id: string,
+                jobData: { parentFolderId: string; file: File },
+                progress: number,
+                status: BackgroundJobStatusEnum,
+                jobComment: string,
+              ) => (
+                <div className="flex gap-2 items-center">
+                  <Icon name={getIconFromMime(jobData?.file.type)} />
+                  <span className="flex-grow">
+                    {jobData?.file.name}{' '}
+                    {jobComment && (
+                      <span className="text-xxs font-medium text-neutral-500">
+                        ({jobComment})
+                      </span>
+                    )}
+                  </span>
+                  {getIconFromStatus(status)}
+                </div>
+              ),
+            };
+            index += 1;
+          }
+
+          setJobs(jobs);
+
+          // Call your uploadMedia function here
+          uploadMedia(files);
+        }}
+      />
+      <input
         id="input-folder-upload"
+        className="hidden"
         type="file"
         ref={folderInputRef}
         multiple={true}
@@ -550,22 +614,23 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                   jobData: each,
                   progress: 0,
                   status: BackgroundJobStatusEnum.YetToStart,
-                  renderer: (
-                    id: string,
-                    jobData: { parentFolderId: string; file: File },
-                    progress: number,
-                    status: BackgroundJobStatusEnum,
-                  ) => (
-                    <div className="flex gap-2">
-                      <Icon name={getIconFromMime(jobData?.file.type)} />
-                      <span className="flex-grow">{jobData?.file.name}</span>
-                      {getIconFromStatus(status)}
-                    </div>
-                  ),
+                  renderer: () => <></>,
                 },
               })) as [{ [key: string]: any }]),
             ),
           );
+
+          setJobsRenderer((jobs) => {
+            console.log(jobs);
+            return (
+              <div className="flex gap-2">
+                <Icon name="dir" />
+                <span className="flex-grow">
+                  {jobs[0].jobData?.webkitRelativePath?.split[0]}
+                </span>
+              </div>
+            );
+          });
 
           // Call your uploadMedia function here
           uploadMedia(files);
@@ -637,6 +702,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                           <Icon name={'fileUpload'} size={16} /> File
                         </div>
                       ),
+                      onClick: () => fileInputRef?.current?.click(),
                     },
                     {
                       label: (
@@ -644,6 +710,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                           <Icon name={'folderUpload'} size={16} /> Folder
                         </div>
                       ),
+                      onClick: () => folderInputRef?.current?.click(),
                     },
                   ]}
                   className="right-0 mt-2 top-full border-1 border-neutral-200 focus-visible:outline-none w-[247px]"

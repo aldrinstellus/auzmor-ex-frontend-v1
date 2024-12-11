@@ -16,11 +16,13 @@ type BackgroundJob = {
   jobData: Record<string, any>;
   progress: number;
   status: BackgroundJobStatusEnum;
+  jobComment: string;
   renderer: (
     id: string,
     jobData: Record<string, any>,
     progress: number,
     status: BackgroundJobStatusEnum,
+    jobComment: string,
   ) => React.ReactNode;
 };
 
@@ -30,6 +32,7 @@ interface IBackgroundJobState {
   progress: number;
   isExpanded: boolean;
   jobs: Record<string, BackgroundJob>;
+  jobsRenderer?: (jobs: BackgroundJob[]) => ReactNode;
 }
 
 interface IBackgroundJobActions {
@@ -38,12 +41,14 @@ interface IBackgroundJobActions {
   setProgress: (progress: number) => void;
   setIsExpanded: (flag: boolean) => void;
   setJobs: (jobs: Record<string, BackgroundJob>) => void;
+  setJobsRenderer: (renderer: (jobs: BackgroundJob[]) => ReactNode) => void;
   updateJobProgress: (
     jobId: string,
     progress: number,
     status?: BackgroundJobStatusEnum,
   ) => void;
   getIconFromStatus: (status: BackgroundJobStatusEnum) => ReactNode;
+  reset: () => void;
 }
 
 export const useBackgroundJobStore = create<
@@ -60,6 +65,7 @@ export const useBackgroundJobStore = create<
   setProgress: (progress) => set({ progress: progress }),
   setIsExpanded: (flag) => set({ isExpanded: flag }),
   setJobs: (jobs) => set({ jobs }),
+  setJobsRenderer: (renderer) => set({ jobsRenderer: renderer }),
   updateJobProgress: (jobId, progress, status) =>
     set(({ jobs }) => ({
       jobs: {
@@ -100,4 +106,13 @@ export const useBackgroundJobStore = create<
         );
     }
   },
+  reset: () =>
+    set({
+      show: false,
+      jobTitle: '',
+      progress: 0,
+      isExpanded: false,
+      jobs: {},
+      jobsRenderer: undefined,
+    }),
 }));
