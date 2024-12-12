@@ -120,26 +120,28 @@ const TeamDetail: FC<ITeamMemberProps> = () => {
         ) : (
           <>
             <div className="flex justify-between items-center px-8">
-              <div
-                className="flex space-x-2"
-                onClick={handleGoBack}
-                onKeyUp={(e) => (e.code === 'Enter' ? handleGoBack() : '')}
-                role="button"
-                title={
-                  prevRoute === TeamTab.MyTeams
-                    ? t('goBack.myTeams')
-                    : t('goBack.allTeams')
-                }
-                tabIndex={0}
-                data-testid="my-team-back"
-              >
-                <Icon name="linearLeftArrowOutline" size={20} />
-                <div className="text-base font-bold text-neutral-900">
-                  {prevRoute === TeamTab.MyTeams
-                    ? t('goBackText.myTeams')
-                    : t('goBackText.allTeams')}
+              {!isLxp && (
+                <div
+                  className="flex space-x-2"
+                  onClick={handleGoBack}
+                  onKeyUp={(e) => (e.code === 'Enter' ? handleGoBack() : '')}
+                  role="button"
+                  title={
+                    prevRoute === TeamTab.MyTeams
+                      ? t('goBack.myTeams')
+                      : t('goBack.allTeams')
+                  }
+                  tabIndex={0}
+                  data-testid="my-team-back"
+                >
+                  <Icon name="linearLeftArrowOutline" size={20} />
+                  <div className="text-base font-bold text-neutral-900">
+                    {prevRoute === TeamTab.MyTeams
+                      ? t('goBackText.myTeams')
+                      : t('goBackText.allTeams')}
+                  </div>
                 </div>
-              </div>
+              )}
               {isAdmin && !isLxp ? (
                 <Tooltip
                   tooltipContent={

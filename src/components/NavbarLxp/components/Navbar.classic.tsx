@@ -36,22 +36,22 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
   };
 
   const isLxpEnabled = user?.organization.type === 'LXP';
-
-  switch (pathname) {
-    case '/user/apps':
-      backBtn.show = true;
-      backBtn.linkTo = isLxpEnabled ? '/user/feed' : getLearnUrl('/user');
-      backBtn.label = isLxpEnabled
-        ? t('learn.backToFeed')
-        : t('learn.backToHome');
-      backBtn.for = t('learn.appLauncher');
-      break;
-    case '/user/teams':
-      backBtn.show = true;
-      backBtn.linkTo = '/user/feed';
-      backBtn.label = t('learn.backToFeed');
-      backBtn.for = t('learn.myTeams');
-      break;
+  if (pathname === '/user/apps') {
+    backBtn.show = true;
+    backBtn.linkTo = isLxpEnabled ? '/user/feed' : getLearnUrl('/user');
+    backBtn.label = isLxpEnabled
+      ? t('learn.backToFeed')
+      : t('learn.backToHome');
+    backBtn.for = t('learn.appLauncher');
+  } else if (pathname === '/user/teams') {
+    backBtn.show = true;
+    backBtn.linkTo = '/user/feed';
+    backBtn.label = t('learn.backToFeed');
+    backBtn.for = t('learn.myTeams');
+  } else if (pathname.startsWith('/user/teams')) {
+    backBtn.show = true;
+    backBtn.linkTo = '/user/teams';
+    backBtn.label = t('learn.backToMyTeams');
   }
 
   const navbarMenu = [
@@ -74,7 +74,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () => window.location.assign('/user/feed'),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: `!text-black group-hover:!text-black leading-4 ${
+          labelClassName: `!text-[15px] !leading-4 !text-black group-hover:!text-black leading-4 ${
             pathname.startsWith('/user/feed') && '!font-bold !text-primary-500'
           }`,
         },
@@ -84,7 +84,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () => window.location.assign('/user/channels'),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: `!text-black group-hover:!text-black leading-4 ${
+          labelClassName: `!text-[15px] !leading-4 !text-black group-hover:!text-black leading-4 ${
             pathname.startsWith('/user/channels') &&
             '!font-bold !text-primary-500'
           }`,
@@ -96,7 +96,8 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
             window.location.assign(`${getLearnUrl('/user/forums')}`),
           show: !!user?.organization?.setting?.enableSocialLearning,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black group-hover:!text-black leading-4',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black group-hover:!text-black leading-4',
         },
       ].filter((option) => option.show),
       isActive: true,
@@ -137,7 +138,8 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
             ),
           show: !!user?.organization?.setting?.enableMentorship,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black group-hover:!text-black leading-4',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black group-hover:!text-black leading-4',
         },
         {
           id: 'tasks',
@@ -146,7 +148,8 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
             window.location.assign(`${getLearnUrl('/user/tasks')}`),
           show: !!user?.organization?.setting?.enablechecklist,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black group-hover:!text-black leading-4',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black group-hover:!text-black leading-4',
         },
       ].filter((option) => option.show),
     },

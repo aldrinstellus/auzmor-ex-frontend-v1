@@ -33,8 +33,6 @@ const routers = createBrowserRouter(
           <Route path="/" element={<Navigate to="/feed" replace={true} />} />
           <Route path="/login" element={<Login />} />
           <Route path="/home" element={<HomeFeed />} />
-          <Route path="/teams" element={<Users />} />
-          <Route path="/teams/:teamId" element={<TeamDetail />} />
           <Route path="/apps" element={<Apps />} />
           <Route path="/apps/:id/launch" element={<AppLaunchPage />} />
           <Route path="/scheduledPosts" element={<HomeFeed />} />
