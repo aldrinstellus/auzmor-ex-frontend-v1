@@ -18,7 +18,9 @@ const AudienceRow: FC<IAudienceRowProps> = ({ audience }) => {
 
   return (
     <div
-      className="flex justify-between py-5 border-b-1 border-neutral-100 cursor-pointer"
+      className={`flex justify-between py-5 border-b-1 border-neutral-100 ${
+        isLxp ? '' : 'cursor-pointer'
+      }`}
       onClick={() => {
         if (isLxp) return;
         if (audience.id === user?.id) {
@@ -29,6 +31,9 @@ const AudienceRow: FC<IAudienceRowProps> = ({ audience }) => {
         }
         if (audience.entityType === AudienceEntityType.Team) {
           return navigate(`/teams/${audience.id}`);
+        }
+        if (audience.entityType === AudienceEntityType.Channel) {
+          return navigate(`/channels/${audience.id}`);
         }
       }}
     >

@@ -378,7 +378,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
                 <li>
                   <IconButton
                     icon="messageQuestionOutline"
-                    color="#888888"
+                    color="text-#888888"
                     size={22}
                     onClick={() => {
                       window.open(`${getLearnUrl()}?openHelpSupport=true`);

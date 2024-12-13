@@ -188,6 +188,7 @@ import TrainingIcon from '../components/Training';
 import LearningCenterIcon from '../components/LearningCenter';
 import ArrowDown3 from '../components/ArrowDown3';
 import { ExclamationSVG } from 'components/LearnIcons';
+import Notification2Icon from '../components/Notification2';
 
 export const icon = {
   add: Add,
@@ -319,6 +320,7 @@ export const icon = {
   news: NewsIcon,
   noteFavourite: NoteFavouriteIcon,
   notification: NotificationIcon,
+  notification2: Notification2Icon,
   orangeHashtag: OrangeHashtagIcon,
   outOfOffice: OutOfOfficeIcon,
   pause: PauseIcon,

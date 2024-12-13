@@ -297,21 +297,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   ].filter((option) => option.hidden !== true);
 
   const handleTabChange = (index: any) => {
-    if (index === 0) {
-      navigate(`/channels/${channelData?.id}`);
-    } else if (index === 1) {
-      if (!isChannelJoined && isChannelPublic) {
-        navigate(`/channels/${channelData?.id}/members?type=${'All_Members'}`);
-      } else {
-        navigate(`/channels/${channelData?.id}/documents`);
-      }
-    } else if (index === 2) {
-      navigate(`/channels/${channelData?.id}/members?type=${'All_Members'}`);
-    } else if (index === 3) {
-      navigate(`/channels/${channelData?.id}/settings`);
-    } else if (index === 4) {
-      navigate(`/channels/${channelData?.id}/manage-access`);
-    }
+    if (tabs[index]?.path) navigate(tabs[index].path!);
   };
   const editMenuOptions = [
     {

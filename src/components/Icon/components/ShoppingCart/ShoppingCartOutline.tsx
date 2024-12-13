@@ -3,27 +3,45 @@ import { SVGProps } from 'react';
 const SvgShoppingCartOutline = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
+      width="23"
+      height="23"
+      viewBox="0 0 18 18"
       fill="none"
-      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <g>
-        <g
-          stroke="#737373"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeMiterlimit="10"
-          strokeWidth="1.2"
-        >
-          <path d="M1.667 1.667h1.45c.9 0 1.608.775 1.533 1.666l-.692 8.3a2.33 2.33 0 002.325 2.525h8.875c1.2 0 2.25-.983 2.342-2.175l.45-6.25c.1-1.383-.95-2.508-2.342-2.508H4.85"></path>
-          <path d="M13.542 18.333a1.042 1.042 0 100-2.083 1.042 1.042 0 000 2.083z"></path>
-          <path d="M6.875 18.333a1.042 1.042 0 100-2.083 1.042 1.042 0 000 2.083z"></path>
-          <path d="M7.5 6.667h10"></path>
-        </g>
-      </g>
+      <path
+        d="M0.666687 0.666687H2.11669C3.01669 0.666687 3.72502 1.44169 3.65002 2.33335L2.95835 10.6333C2.84169 11.9917 3.91668 13.1583 5.28335 13.1583H14.1584C15.3584 13.1583 16.4084 12.175 16.5 10.9834L16.95 4.73336C17.05 3.35002 16 2.22502 14.6084 2.22502H3.85003"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      ></path>
+      <path
+        d="M12.5417 17.3333C13.117 17.3333 13.5833 16.867 13.5833 16.2917C13.5833 15.7164 13.117 15.25 12.5417 15.25C11.9664 15.25 11.5 15.7164 11.5 16.2917C11.5 16.867 11.9664 17.3333 12.5417 17.3333Z"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      ></path>
+      <path
+        d="M5.87498 17.3333C6.45028 17.3333 6.91665 16.867 6.91665 16.2917C6.91665 15.7164 6.45028 15.25 5.87498 15.25C5.29968 15.25 4.83331 15.7164 4.83331 16.2917C4.83331 16.867 5.29968 17.3333 5.87498 17.3333Z"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      ></path>
+      <path
+        d="M6.5 5.66669H16.5"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      ></path>
     </svg>
   );
 };

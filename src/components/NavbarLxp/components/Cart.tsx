@@ -16,7 +16,7 @@ const Cart = () => {
   const cartItemCount = data?.result?.total_records;
   const { isLearner } = useRole();
   return (
-    <div className="relative" title="Cart">
+    <div className="relative" title={t('learn.cartTitle')}>
       {!isLoading && cartItemCount > 0 && (
         <div
           className="absolute text-[8px] tracking-[0.3px] 
@@ -33,12 +33,12 @@ const Cart = () => {
       )}
       <IconButton
         icon="shoppingCart"
-        color="#888888"
-        size={22}
+        color="text-[#888888]"
+        size={23}
         onClick={() => {
           window.open(getLearnUrl(isLearner ? '/user/checkout' : '/checkout'));
         }}
-        ariaLabel="Cart"
+        ariaLabel={t('learn.cartTitle')}
         className="bg-white hover:!bg-neutral-100 rounded-md active:bg-white py-[9px] px-[13px]"
         iconClassName="group-hover:!text-neutral-500"
       />

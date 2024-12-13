@@ -262,24 +262,26 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
               </div>
               <div className="w-[1px] h-5 bg-[#e5e5e5]"></div>
               <ul className="flex items-center gap-[10px]">
+                <li>
+                  <div title={t('learn.helpAndSupportTitle')}>
+                    <IconButton
+                      icon="messageQuestionOutline"
+                      color="text-[#888888]"
+                      size={22}
+                      onClick={() => {
+                        window.open(`${getLearnUrl()}?openHelpSupport=true`);
+                      }}
+                      ariaLabel={t('learn.helpAndSupportTitle')}
+                      className="bg-white hover:!bg-neutral-100 rounded-md active:bg-white py-[9px] px-[13px]"
+                      iconClassName="group-hover:!text-neutral-500"
+                    />
+                  </div>
+                </li>
                 {!!user?.organization?.setting?.enableEcommerce && (
                   <li>
                     <Cart />
                   </li>
                 )}
-                <li>
-                  <IconButton
-                    icon="messageQuestionOutline"
-                    color="#888888"
-                    size={22}
-                    onClick={() => {
-                      window.open(`${getLearnUrl()}?openHelpSupport=true`);
-                    }}
-                    ariaLabel="help and support"
-                    className="bg-white hover:!bg-neutral-100 rounded-md active:bg-white py-[9px] px-[13px]"
-                    iconClassName="group-hover:!text-neutral-500"
-                  />
-                </li>
                 <li>
                   <LxpNotificationsOverview />
                 </li>

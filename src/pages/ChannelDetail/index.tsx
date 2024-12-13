@@ -24,6 +24,7 @@ import { useChannelRole } from 'hooks/useChannelRole';
 import useRole from 'hooks/useRole';
 import useProduct from 'hooks/useProduct';
 import Button, { Size, Variant } from 'components/Button';
+import { IS_PROD } from 'utils/constants';
 
 export enum ChannelDetailTabsEnum {
   Home = 'HOME',
@@ -181,21 +182,23 @@ const ChannelDetail: FC<AppProps> = ({
       tabContent: showBanner(ChannelDetailTabsEnum.Home) || (
         <ChannelHome channelData={channelData} permissions={permissions} />
       ),
+      path: `/channels/${channelId}`,
     },
     {
       id: ChannelDetailTabsEnum.Documents,
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>{t('tabs.documents')}</div>
       ),
-      hidden: !permissions.includes(
-        ChannelPermissionEnum.CanAccessDocumentsTab,
-      ),
+      hidden:
+        IS_PROD ||
+        !permissions.includes(ChannelPermissionEnum.CanAccessDocumentsTab),
       dataTestId: 'channel-document-tab',
       tabContent: showBanner(ChannelDetailTabsEnum.Documents) || (
         <DocumentPathProvider>
           <Documents />
         </DocumentPathProvider>
       ),
+      path: `/channels/${channelId}/documents`,
     },
     {
       id: ChannelDetailTabsEnum.Members,
@@ -207,6 +210,7 @@ const ChannelDetail: FC<AppProps> = ({
       tabContent: showBanner(ChannelDetailTabsEnum.Members) || (
         <Members channelData={channelData} permissions={permissions} />
       ),
+      path: `/channels/${channelId}/members?type=${'All_Members'}`,
     },
     {
       id: ChannelDetailTabsEnum.Setting,
@@ -222,6 +226,7 @@ const ChannelDetail: FC<AppProps> = ({
           permissions={permissions}
         />
       ),
+      path: `/channels/${channelId}/settings`,
     },
     {
       id: ChannelDetailTabsEnum.ManageAccess,
@@ -233,6 +238,7 @@ const ChannelDetail: FC<AppProps> = ({
       tabContent: showBanner(ChannelDetailTabsEnum.ManageAccess) || (
         <ManageAccess channelData={channelData} />
       ),
+      path: `/channels/${channelId}/manage-access`,
     },
   ].filter((item) => !item.hidden);
 

@@ -8,6 +8,7 @@ export interface ITab {
   tabAction?: ReactNode;
   dataTestId?: string;
   disabled?: boolean;
+  path?: string;
 }
 
 export interface ITabsProps {

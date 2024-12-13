@@ -103,7 +103,7 @@ const AccountCard = () => {
       triggerNodeRenderer={(isOpen) => (
         <div
           tabIndex={0}
-          className="flex items-center px-[7px] py-2 transition ease duration-150 group-hover:bg-neutral-100 hover:bg-neutral-100 rounded-xl cursor-pointer group"
+          className="flex items-center gap-1 px-[10px] py-2 transition ease duration-150 group-hover:bg-neutral-100 hover:bg-neutral-100 rounded-xl cursor-pointer group"
         >
           <Avatar
             dataTestId="my-profile-avatar"
@@ -113,8 +113,8 @@ const AccountCard = () => {
             ariaLabel={user?.name || 'profile image'}
           />
           <Icon
-            name="arrowDown2"
-            size={20}
+            name="arrowDown3"
+            size={10}
             dataTestId={`$my-profile-avatar-collapse`}
             className={`group-hover:!text-neutral-500 ${
               isOpen ? 'navbar-arrow-icon-hover' : 'navbar-arrow-icon'
