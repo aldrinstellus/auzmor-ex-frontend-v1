@@ -164,7 +164,7 @@
   },
   "setting": {
     "basicSetting": "Basic Settings",
-    "persnolDetails": "Personal Details",
+    "privacySettings": "Privacy settings",
     "category": {
       "label": "Category",
       "channelCategoryPlaceholder": "Start typing for suggestions."

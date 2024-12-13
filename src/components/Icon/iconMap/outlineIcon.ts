@@ -111,6 +111,8 @@ import SvgGridOutline from '../components/Grid/GridOutline';
 import SvgFileUploadOutline from '../components/FileUpload/FileUploadOutline';
 import SvgFolderUploadOutline from '../components/FolderUpload/FolderUploadOutline';
 import SvgVuesaxOutline from '../components/Vuesax/VuesaxOutline';
+import SvgUserTickOutline from '../components/UserTick/UserTickOutline';
+import SvgRefreshCircleOutline from '../components/RefreshCircle/RefreshCircleOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -197,6 +199,7 @@ export const outlineIcon = {
   profileOutline: SvgProfileOutline,
   profileUserOutline: SvgProfileUserOutline,
   redoOutline: SvgRedoOutline,
+  refreshCircleOutline: SvgRefreshCircleOutline,
   replyOutline: SvgReplyOutline,
   repostOutline: SvgRepostOutline,
   searchOutline: SvgSearchOutline,
@@ -219,6 +222,7 @@ export const outlineIcon = {
   userRemoveOutline: SvgUserRemoveOutline,
   userRole: SvgUserRoleOutline,
   usersOutline: SvgUsersOutline,
+  userTick: SvgUserTickOutline,
   videoOutline: SvgVideoOutline,
   videoSquareOutline: SvgVideoSquareOutline,
   vuesaxOutline: SvgVuesaxOutline,

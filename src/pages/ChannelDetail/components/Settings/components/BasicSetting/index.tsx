@@ -17,11 +17,15 @@ export interface IBasicSettingProps {
 }
 
 const BasicSetting: FC<IBasicSettingProps> = ({ channelData, canEdit }) => {
-  const styles = clsx({ 'p-4 mb-8': true });
+  const styles = clsx({ 'p-4': true });
   const { t } = useTranslation('channelDetail', { keyPrefix: 'setting' });
   return (
-    <div>
-      <Header title={t('basicSetting')} dataTestId="channel-setting-details" />
+    <div className="flex flex-col gap-3">
+      <Header
+        title={t('basicSetting')}
+        dataTestId="channel-setting-details"
+        className="!mb-0"
+      />
       <Card className={styles} shadowOnHover={canEdit}>
         <NameRow canEdit={canEdit} data={channelData} />
         <DescriptionRow canEdit={canEdit} channelData={channelData} />

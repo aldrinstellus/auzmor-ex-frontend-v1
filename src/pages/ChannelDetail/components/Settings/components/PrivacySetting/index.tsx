@@ -17,8 +17,12 @@ const PrivacySetting: FC<AppProps> = ({ channelData, canEdit }) => {
   const { t } = useTranslation('channelDetail', { keyPrefix: 'setting' });
 
   return (
-    <div>
-      <Header title={t('persnolDetails')} dataTestId="personal-details" />
+    <div className="flex flex-col gap-3">
+      <Header
+        title={t('privacySettings')}
+        dataTestId="privacy-settings"
+        className="!mb-0"
+      />
       <Card shadowOnHover={canEdit} className="px-4">
         <PrivacyRow canEdit={canEdit} data={channelData} />
       </Card>
