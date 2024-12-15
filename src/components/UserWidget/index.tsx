@@ -6,6 +6,7 @@ import Truncate from 'components/Truncate';
 import useAuth from 'hooks/useAuth';
 import useNavigate from 'hooks/useNavigation';
 import useProduct from 'hooks/useProduct';
+import useRole from 'hooks/useRole';
 import { FC, memo, useMemo } from 'react';
 import { getLearnUrl } from 'utils/misc';
 
@@ -16,6 +17,7 @@ export interface IUserCardProps {
 const UserCard: FC<IUserCardProps> = ({ className = '' }) => {
   const { user } = useAuth();
   const { isLxp } = useProduct();
+  const { isAdmin } = useRole();
   const navigate = useNavigate();
 
   const style = useMemo(
@@ -29,7 +31,9 @@ const UserCard: FC<IUserCardProps> = ({ className = '' }) => {
 
   const handleRedirect = () => {
     if (isLxp) {
-      window.location.assign(`${getLearnUrl()}/user/settings/profile`);
+      window.location.assign(
+        `${isAdmin ? getLearnUrl() : getLearnUrl('/user')}/settings/profile`,
+      );
     } else {
       navigate('/profile');
     }
