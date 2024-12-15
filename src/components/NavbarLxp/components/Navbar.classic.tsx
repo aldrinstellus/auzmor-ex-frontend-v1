@@ -71,20 +71,20 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
         {
           id: 'feed',
           label: t('learn.feed'),
-          onClick: () => window.location.assign('/user/feed'),
+          onClick: () => navigate('/user/feed'),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: `!text-[15px] !leading-4 !text-black group-hover:!text-black leading-4 ${
+          labelClassName: `!text-[15px] !leading-4 !text-black hover:!text-black leading-4 ${
             pathname.startsWith('/user/feed') && '!font-bold !text-primary-500'
           }`,
         },
         {
           id: 'channels',
           label: t('learn.channels'),
-          onClick: () => window.location.assign('/user/channels'),
+          onClick: () => navigate('/user/channels'),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: `!text-[15px] !leading-4 !text-black group-hover:!text-black leading-4 ${
+          labelClassName: `!text-[15px] !leading-4 !text-black hover:!text-black leading-4 ${
             pathname.startsWith('/user/channels') &&
             '!font-bold !text-primary-500'
           }`,
@@ -97,7 +97,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           show: !!user?.organization?.setting?.enableSocialLearning,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
-            '!text-[15px] !leading-4 !text-black group-hover:!text-black leading-4',
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
         },
       ].filter((option) => option.show),
       isActive: true,
@@ -139,7 +139,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           show: !!user?.organization?.setting?.enableMentorship,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
-            '!text-[15px] !leading-4 !text-black group-hover:!text-black leading-4',
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
         },
         {
           id: 'tasks',
@@ -149,7 +149,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           show: !!user?.organization?.setting?.enablechecklist,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
-            '!text-[15px] !leading-4 !text-black group-hover:!text-black leading-4',
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
         },
       ].filter((option) => option.show),
     },
@@ -164,7 +164,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
     switch (id) {
       case 'engage':
         return clsx({
-          'gap-1 font-lato items-center font-lato my-[5px] text-[15px] px-2.5 py-1 transition ease duration-150 text-primary-500 group-hover/item:bg-neutral-100 group-hover/item:text-black font-semibold cursor-pointer rounded-xl flex group':
+          'gap-1 font-lato items-center font-lato my-[5px] text-[15px] px-2.5 py-1 transition ease duration-150 text-primary-500 group-hover/item:bg-neutral-100 font-semibold cursor-pointer rounded-xl flex group':
             true,
         });
       case 'home':
@@ -173,12 +173,12 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       case 'events':
       case 'develop':
         return clsx({
-          'gap-1 font-lato items-center font-lato my-[5px] flex text-[15px] px-2.5 py-1 transition ease duration-150 group-hover/item:bg-neutral-100 hover:bg-neutral-100 group-hover/item:text-black font-medium rounded-xl cursor-pointer group':
+          'gap-1 font-lato items-center font-lato my-[5px] flex text-[15px] px-2.5 py-1 transition ease duration-150 group-hover/item:bg-neutral-100 hover:bg-neutral-100 font-medium rounded-xl cursor-pointer group':
             true,
         });
       case 'backBtn':
         return clsx({
-          'font-lato my-[5px] nav-item text-[15px] gap-[8px] transition ease duration-150 group-hover/item:text-primary-500 flex items-center px-4 py-2 border rounded-17xl group':
+          'font-lato my-[5px] nav-item text-base gap-[8px] transition ease duration-150 flex items-center px-4 py-2 border rounded-17xl group':
             true,
         });
     }
@@ -201,7 +201,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           <div className="flex items-center gap-2">
             <Logo
               className="cursor-pointer min-h-[40px] max-h-[40px]"
-              onClick={() => navigate('/feed')}
+              onClick={() => navigate('/user/feed')}
             />
             {backBtn.show && (
               <div className="text-neutral-900 text-base font-bold">
@@ -223,7 +223,9 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
                               tabIndex={0}
                               className={getNavItemStyle(item.id)}
                             >
-                              {item.label}
+                              <span className="group-hover:!text-black">
+                                {item.label}
+                              </span>
                               <Icon
                                 name="arrowDown3"
                                 size={10}
@@ -233,7 +235,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
                                     ? 'text-primary-500'
                                     : '!text-black'
                                 }
-                                className="group-hover/item:!text-black navbar-arrow-icon group-hover/item:navbar-arrow-icon-hover"
+                                className="group-hover:!text-black navbar-arrow-icon group-hover/item:navbar-arrow-icon-hover"
                               />
                             </div>
                           }
@@ -301,6 +303,9 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
                 name={'arrowLeft'}
                 size={18}
                 dataTestId={`backBtnNavbarClassicIcon`}
+                color="!text-black"
+                hoverColor="!text-black"
+                hover
               />
               {backBtn.label}
             </NavLink>

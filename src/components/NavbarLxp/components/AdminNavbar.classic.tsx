@@ -279,7 +279,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
     switch (id) {
       case 'engagement':
         return clsx({
-          'gap-1 font-lato items-center font-lato my-[5px] text-[15px] px-2.5 py-1 transition ease duration-150 text-primary-500 group-hover/item:bg-neutral-100 group-hover/item:text-black font-semibold cursor-pointer rounded-xl flex group':
+          'gap-1 font-lato items-center font-lato my-[5px] text-[15px] px-2.5 py-1 transition ease duration-150 text-primary-500 group-hover/item:bg-neutral-100 font-semibold cursor-pointer rounded-xl flex group':
             true,
         });
       case 'home':
@@ -289,12 +289,12 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       case 'analytics':
       case 'ecommerce':
         return clsx({
-          'gap-1 font-lato items-center font-lato my-[5px] flex text-[15px] px-2.5 py-1 transition ease duration-150 group-hover/item:bg-neutral-100 hover:bg-neutral-100 group-hover/item:text-black font-medium rounded-xl cursor-pointer group':
+          'gap-1 font-lato items-center font-lato my-[5px] flex text-[15px] px-2.5 py-1 transition ease duration-150 group-hover/item:bg-neutral-100 hover:bg-neutral-100 font-medium rounded-xl cursor-pointer group':
             true,
         });
       case 'backBtn':
         return clsx({
-          'font-lato my-[5px] nav-item text-[15px] gap-[8px] transition ease duration-150 group-hover/item:text-primary-500 flex items-center px-4 py-2 border rounded-17xl group':
+          'font-lato my-[5px] nav-item text-base gap-[8px] transition ease duration-150 text-neutral-900 flex items-center px-4 py-2 border rounded-17xl group':
             true,
         });
     }
@@ -339,12 +339,14 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
                               tabIndex={0}
                               className={getNavItemStyle(item.id)}
                             >
-                              {item.label}
+                              <span className="group-hover:!text-black">
+                                {item.label}
+                              </span>
                               <Icon
                                 name="arrowDown3"
                                 size={10}
                                 dataTestId={`${item.id}-collapse`}
-                                className="group-hover/item:!text-black navbar-arrow-icon group-hover/item:navbar-arrow-icon-hover"
+                                className="group-hover:!text-black navbar-arrow-icon group-hover/item:navbar-arrow-icon-hover"
                                 color={
                                   item.isActive
                                     ? 'text-primary-500'
@@ -407,6 +409,9 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
                 name={'arrowLeft'}
                 size={18}
                 dataTestId={`backBtnAdminNavbarClassicIcon`}
+                color="!text-black"
+                hoverColor="!text-black"
+                hover
               />
               {backBtn.label}
             </NavLink>
