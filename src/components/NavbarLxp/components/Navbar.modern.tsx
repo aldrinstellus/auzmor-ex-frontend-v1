@@ -76,22 +76,23 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
         {
           id: 'feed',
           label: t('learn.feed'),
-          onClick: () => window.location.assign('/user/feed'),
+          onClick: () => navigate('/user/feed'),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: `!text-[15px] !leading-4 !text-neutral-500 group-hover:!text-black leading-4 ${
-            pathname.startsWith('/user/feed') && '!font-bold !text-primary-500'
+          labelClassName: `!text-sm !leading-4 !text-neutral-500 !font-normal group-hover:!text-black leading-4 ${
+            pathname.startsWith('/user/feed') &&
+            '!font-semibold !text-primary-500'
           }`,
         },
         {
           id: 'channels',
           label: t('learn.channels'),
-          onClick: () => window.location.assign('/user/channels'),
+          onClick: () => navigate('/user/channels'),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: `!text-[15px] !leading-4 !text-neutral-500 group-hover:!text-black leading-4 ${
+          labelClassName: `!text-sm !leading-4 !text-neutral-500 !font-normal group-hover:!text-black leading-4 ${
             pathname.startsWith('/user/channels') &&
-            '!font-bold !text-primary-500'
+            '!font-semibold !text-primary-500'
           }`,
         },
         {
@@ -102,7 +103,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           show: !!user?.organization?.setting?.enableSocialLearning,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
-            '!text-[15px] !leading-4 !text-neutral-500 group-hover:!text-black leading-4',
+            '!text-sm !leading-4 !text-neutral-500 !font-normal group-hover:!text-black leading-4',
         },
       ].filter((option) => option.show),
       isActive: true,
@@ -133,7 +134,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           show: !!user?.organization?.setting?.enableMentorship,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
-            '!text-[15px] !leading-4 !text-neutral-500 group-hover:!text-black leading-4',
+            '!text-sm !leading-4 !text-neutral-500 !font-normal group-hover:!text-black leading-4',
         },
         {
           id: 'tasks',
@@ -143,7 +144,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           show: !!user?.organization?.setting?.enablechecklist,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
-            '!text-[15px] !leading-4 !text-neutral-500 group-hover:!text-black leading-4',
+            '!text-sm !leading-4 !text-neutral-500 !font-normal group-hover:!text-black leading-4',
         },
       ].filter((option) => option.show),
     },
@@ -164,7 +165,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
         });
       case 'backBtn':
         return clsx({
-          'my-[5px] nav-item text-[15px] gap-[8px] transition ease duration-150 group-hover/item:text-primary-500 flex items-center px-4 py-2 border rounded-17xl group':
+          'my-[5px] nav-item text-base gap-[8px] transition ease duration-150 flex items-center px-4 py-2 border rounded-17xl group':
             true,
         });
     }
@@ -185,7 +186,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
         <div className="w-full max-w-[1280px] flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Logo
-              onClick={() => navigate('/feed')}
+              onClick={() => navigate('/user/feed')}
               className="cursor-pointer min-h-[40px] max-h-[40px] max-w-full align-middle relative border-none"
             />
             {backBtn.show && (
@@ -302,6 +303,9 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
                 name={'arrowLeft'}
                 size={18}
                 dataTestId={`backBtnNavbarModernIcon`}
+                color="!text-black"
+                hoverColor="!text-black"
+                hover
               />
               {backBtn.label}
             </NavLink>
