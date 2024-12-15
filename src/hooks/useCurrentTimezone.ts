@@ -1,11 +1,10 @@
-import { useCurrentUser } from 'queries/users';
 import { getBrwoserTimezone } from 'utils/time';
+import useAuth from './useAuth';
 
 export const useCurrentTimezone = () => {
-  const { data, isLoading } = useCurrentUser();
+  const { user } = useAuth();
   const browserTimezone = getBrwoserTimezone();
   return {
-    isLoading,
-    currentTimezone: data?.data?.result?.data?.timeZone || browserTimezone,
+    currentTimezone: user?.timezone || browserTimezone,
   };
 };

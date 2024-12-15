@@ -5,8 +5,9 @@ import Icon from 'components/Icon';
 import IconWrapper from 'components/Icon/components/IconWrapper';
 import Spinner from 'components/Spinner';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { usePermissions } from 'hooks/usePermissions';
 import useProduct from 'hooks/useProduct';
-import { IGetUser, getUser } from 'queries/users';
+import { IGetUser } from 'interfaces';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import Skeleton from 'react-loading-skeleton';
@@ -17,6 +18,7 @@ import {
   getInitials,
   getProfileImage,
 } from 'utils/misc';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export enum UsercardVariant {
   Small = 'SMALL',
@@ -41,6 +43,8 @@ const UserCard: FC<IUserCardProp> = ({
 }) => {
   const { t } = useTranslation('profile');
   const { isLxp } = useProduct();
+  const { getApi } = usePermissions();
+  const getUser = getApi(ApiEnum.GetUserApi);
   switch (variant) {
     case UsercardVariant.Small: {
       const style = clsx({

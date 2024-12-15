@@ -5,12 +5,14 @@ import Header from './Header';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import queryClient from 'utils/queryClient';
-import { EditUserSection, updateCurrentUser } from 'queries/users';
+import { EditUserSection } from 'interfaces';
 import { useMutation } from '@tanstack/react-query';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import Icon from 'components/Icon';
 import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface IAboutMe {
   about: string;
@@ -36,6 +38,7 @@ const AboutMe: FC<IAboutMeProps> = ({
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [isHovered, eventHandlers] = useHover();
   const { t } = useTranslation('profile');
+  const { getApi } = usePermissions();
 
   const { control, handleSubmit, getValues, reset } = useForm<IUpdateAboutMe>({
     mode: 'onSubmit',
@@ -80,8 +83,9 @@ const AboutMe: FC<IAboutMeProps> = ({
     },
   ];
 
+  const updateCurrentUser = getApi(ApiEnum.UpdateMe);
   const updateUserAboutMeMutation = useMutation({
-    mutationFn: updateCurrentUser,
+    mutationFn: (payload: Record<string, any>) => updateCurrentUser(payload),
     mutationKey: ['update-user-personal-details-mutation'],
     onError: (_error: any) => {},
     onSuccess: (_response: any) => {

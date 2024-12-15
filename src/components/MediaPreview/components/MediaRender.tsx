@@ -1,4 +1,4 @@
-import { IMedia } from 'contexts/CreatePostContext';
+import { IMedia } from 'interfaces';
 import { Mode } from '..';
 import Icon from 'components/Icon';
 import BlurImg from 'components/Image/components/BlurImg';

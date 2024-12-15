@@ -5,10 +5,12 @@ import Header from 'components/ModalHeader';
 import ErrorWarningPng from 'images/error-warning-line.png';
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import { useMutation } from '@tanstack/react-query';
-import { IPost, IPostPayload, updatePost } from 'queries/post';
+import { IPost, IPostPayload } from 'interfaces';
 import { useFeedStore } from 'stores/feedStore';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface PublishPostModalProps {
   post: IPost;
@@ -17,9 +19,11 @@ interface PublishPostModalProps {
 
 const PublishPostModal: FC<PublishPostModalProps> = ({ closeModal, post }) => {
   const { t } = useTranslation('post', { keyPrefix: 'publishPostModal' });
+  const { getApi } = usePermissions();
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
 
+  const updatePost = getApi(ApiEnum.UpdatePost);
   const updatePostMutation = useMutation({
     mutationKey: ['updatePostMutation'],
     mutationFn: (payload: IPostPayload) => updatePost(post.id || '', payload),

@@ -3,45 +3,56 @@ import Button, { Size, Variant } from 'components/Button';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
 import useModal from 'hooks/useModal';
-import { useInfiniteChannelMembers } from 'queries/channel';
 import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import AddChannelMembersModal from './AddChannelMembersModal';
 import { IChannel } from 'stores/channelStore';
-import { useChannelRole } from 'hooks/useChannelRole';
+import useNavigate from 'hooks/useNavigation';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { ChannelPermissionEnum } from './utils/channelPermission';
 
 export type MembersWidgetProps = {
   channelData: IChannel;
+  permissions: ChannelPermissionEnum[];
 };
-const MembersWidget: FC<MembersWidgetProps> = ({ channelData }) => {
-  const { isChannelAdmin } = useChannelRole(channelData.id);
+const MembersWidget: FC<MembersWidgetProps> = ({
+  channelData,
+  permissions,
+}) => {
   const [show, setShow] = useState(true);
   const { t } = useTranslation('channelDetail');
   const { channelId } = useParams();
+  const { getApi } = usePermissions();
+  const useInfiniteChannelMembers = getApi(ApiEnum.GetChannelMembers);
   const { data } = useInfiniteChannelMembers({
     channelId: channelId,
   });
   const [showAddMemberModal, openAddMemberModal, closeAddMemberModal] =
     useModal(false);
-  const users = data?.pages.flatMap((page) => {
-    return page?.data?.result?.data.map((user: any) => {
-      try {
-        return { id: user.id, role: user.role, ...user.user };
-      } catch (e) {
-        console.log('Error', { user });
-      }
-    });
-  });
+  const users =
+    data?.pages
+      .flatMap((page: any) => {
+        return page?.data?.result?.data.map((user: any) => {
+          try {
+            return { id: user.id, role: user.role, ...user.user };
+          } catch (e) {
+            console.log('Error', { user });
+            return null;
+          }
+        });
+      })
+      .filter(Boolean) || [];
   const navigate = useNavigate();
 
   const toggleWidget = () => setShow((t) => !t);
   return (
     <>
       <Card className="py-6 rounded-9xl" shadowOnHover>
-        <div className="px-6">
+        <div className="px-4">
           <div
-            className="flex items-center justify-between cursor-pointer"
+            className="flex items-center justify-between cursor-pointer px-2"
             data-testid="app-launcher"
             onClick={toggleWidget}
             onKeyUp={(e) => (e.code === 'Enter' ? toggleWidget() : '')}
@@ -68,13 +79,15 @@ const MembersWidget: FC<MembersWidgetProps> = ({ channelData }) => {
           >
             <div className="mt-3">
               <AvatarList
-                className="!-space-x-5"
+                className="!-space-x-[12.5px]"
                 users={users || []}
                 moreCount={data?.pages[0]?.data?.result?.totalCount}
+                size={40}
+                display={8}
               />
             </div>
             <div className="mt-3">
-              {isChannelAdmin ? (
+              {permissions.includes(ChannelPermissionEnum.CanAddMember) ? (
                 <Button
                   size={Size.Small}
                   className="w-full"

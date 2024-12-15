@@ -4,30 +4,34 @@ import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
 import { ChangeEvent, FC, ReactNode, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useInfiniteChannels } from 'queries/channel';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 import { ChannelVisibilityEnum, IChannel } from 'stores/channelStore';
 import ChannelLogo from 'pages/Channels/components/ChannelLogo';
 import { isFiltersEmpty } from 'utils/misc';
 import InfiniteSearch from 'components/InfiniteSearch';
-import { ICategory } from 'queries/category';
+import { ICategory } from 'interfaces';
 import Truncate from 'components/Truncate';
 import NoDataFound from 'components/NoDataFound';
-import { useInfiniteLearnCategory } from 'queries/learn';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
+type ApiCallFunction = (queryParams: any) => any;
 interface IChannelsBodyProps {
   entityRenderer?: (data: IChannel) => ReactNode;
   selectedChannelIds?: string[];
   dataTestId?: string;
+  fetchChannels?: ApiCallFunction;
 }
 
 const ChannelsBody: FC<IChannelsBodyProps> = ({
   entityRenderer,
   selectedChannelIds = [],
   dataTestId,
+  fetchChannels,
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { form } = useEntitySearchFormStore();
+  const { getApi } = usePermissions();
   const { watch, setValue, control, resetField } = form!;
   const [channelSearch, privacy, categories, channels, showSelectedMembers] =
     watch([
@@ -48,18 +52,20 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
   );
 
   const debouncedSearchValue = useDebounce(channelSearch || '', 500);
+  const useInfiniteChannels = getApi(ApiEnum.GetChannels);
+  const queryParams = isFiltersEmpty({
+    limit: 30,
+    q: debouncedSearchValue,
+    visibility: privacy?.value,
+    categoryIds: selectedCategories.length ? selectedCategories : undefined,
+  });
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteChannels(
-      isFiltersEmpty({
-        limit: 30,
-        q: debouncedSearchValue,
-        visibility: privacy?.value,
-        categoryIds: selectedCategories.length ? selectedCategories : undefined,
-      }),
-    );
+    fetchChannels
+      ? fetchChannels(queryParams)
+      : useInfiniteChannels(queryParams);
 
   const channelsData = data?.pages
-    .flatMap((page) => page?.data?.result?.data)
+    .flatMap((page: any) => page?.data?.result?.data)
     .filter((channel: IChannel) => {
       if (showSelectedMembers) {
         return !!channels[channel.id];
@@ -67,15 +73,16 @@ const ChannelsBody: FC<IChannelsBodyProps> = ({
       return true;
     });
 
+  const useInfiniteCategories = getApi(ApiEnum.GetCategories);
   const {
     data: fetchedCategories,
     isLoading: categoryLoading,
     isFetchingNextPage: isFetchingNextCategoryPage,
     fetchNextPage: fetchNextCategoryPage,
     hasNextPage: hasNextCategoryPage,
-  } = useInfiniteLearnCategory(); // use learn category .
+  } = useInfiniteCategories();
 
-  const categoryData = fetchedCategories?.pages?.flatMap((page) =>
+  const categoryData = fetchedCategories?.pages?.flatMap((page: any) =>
     page.data.result.data.map((category: ICategory) => category),
   );
 

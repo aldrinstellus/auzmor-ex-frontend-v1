@@ -5,11 +5,12 @@ import { usePageTitle } from 'hooks/usePageTitle';
 import DocSearchRow, {
   Variant,
 } from 'pages/ChannelDetail/components/Documents/components/DocSearchRow';
-import { DocType } from 'queries/files';
-import { useConnectedStatus, useDocument } from 'queries/storage';
+import { DocType } from 'interfaces';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 enum OptionType {
   Document = 'DOCUMENT',
@@ -22,6 +23,7 @@ enum OptionType {
 
 const SearchResults: FC = () => {
   usePageTitle('searchResults');
+  const { getApi } = usePermissions();
   const { t } = useTranslation('document', { keyPrefix: 'searchResults' });
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get('q') || undefined;
@@ -32,6 +34,7 @@ const SearchResults: FC = () => {
 
   const { user } = useAuth();
 
+  const useConnectedStatus = getApi(ApiEnum.GetStorageConnectionStatus);
   const {
     data: syncStatus,
     isLoading: isStatusLoading,
@@ -39,7 +42,8 @@ const SearchResults: FC = () => {
   } = useConnectedStatus(user?.email || '');
   const isSynced = !error && !!syncStatus?.data?.result?.data;
 
-  const { data: documentData, isLoading } = useDocument(
+  const searchStorage = getApi(ApiEnum.SearchStorage);
+  const { data: documentData, isLoading } = searchStorage(
     {
       q: searchQuery,
       limit: 30,

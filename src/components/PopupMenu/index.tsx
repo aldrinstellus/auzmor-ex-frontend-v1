@@ -24,6 +24,8 @@ export interface IMenuItem {
   fill?: string;
   onClick?: () => any;
   permissions?: string[];
+  className?: string;
+  isActive?: boolean;
 }
 
 export interface IPopupMenuProps {
@@ -87,7 +89,7 @@ const PopupMenu: FC<IPopupMenuProps> = ({
                       <PopupMenuItem
                         menuItem={menuItem}
                         border={idx !== menuItems?.length - 1}
-                        isActive={active}
+                        isActive={menuItem.isActive || active}
                       />
                     );
                   }}

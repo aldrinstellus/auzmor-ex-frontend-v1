@@ -10,9 +10,10 @@ import Banner, { Variant as BannerVariant } from 'components/Banner';
 import Layout, { FieldType } from 'components/Form';
 import { Variant as InputVariant } from 'components/Input';
 import Icon from 'components/Icon';
-import { useIsUserExistAuthenticated } from 'queries/users';
 import { useDebounce } from 'hooks/useDebounce';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 export interface IInviteFormRowProps {
   field: FieldArrayWithId<IUserForm, 'members', 'id'>;
@@ -37,7 +38,11 @@ const InviteFormRow: FC<IInviteFormRowProps> = ({
   setErrorValidationErrors,
   member,
 }) => {
+  const { getApi } = usePermissions();
   const debouncedValue = useDebounce(member.workEmail, 500);
+  const useIsUserExistAuthenticated = getApi(
+    ApiEnum.GetUserExistsAuthenticated,
+  );
   const { isLoading, data } = useIsUserExistAuthenticated(debouncedValue);
   const { t } = useTranslation('profile', {
     keyPrefix: 'inviteUserModal.inviteFormRow',

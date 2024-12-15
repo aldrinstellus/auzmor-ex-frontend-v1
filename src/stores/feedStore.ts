@@ -1,4 +1,4 @@
-import { IPost } from 'queries/post';
+import { IPost } from 'interfaces';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 

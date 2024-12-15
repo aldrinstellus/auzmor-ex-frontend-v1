@@ -21,7 +21,7 @@ import Icon from 'components/Icon';
 import Tooltip from 'components/Tooltip';
 import { OrgChart } from 'd3-org-chart';
 import Popover from 'components/Popover';
-import { IGetUser, getOrgChart, useOrgChart } from 'queries/users';
+import { IGetUser } from 'interfaces';
 import { useDebounce } from 'hooks/useDebounce';
 import Spinner from 'components/Spinner';
 import UserRow from 'components/UserRow';
@@ -39,6 +39,8 @@ import { QueryFunctionContext } from '@tanstack/react-query';
 import NoDataFound from 'components/NoDataFound';
 import Button, { Variant } from 'components/Button';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface IToolbarProps {
   activeMode: OrgChartMode;
@@ -82,6 +84,7 @@ const Toolbar: FC<IToolbarProps> = ({
   isSafari = false,
 }) => {
   const { t } = useTranslation('orgChart');
+  const { getApi } = usePermissions();
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const [memberSearchString, setMemberSearchString] = useState<string>('');
   const [specificPersonSearch] = watch(['specificPersonSearch']);
@@ -98,6 +101,8 @@ const Toolbar: FC<IToolbarProps> = ({
     specificPersonSearch || '',
     300,
   );
+  const useOrgChart = getApi(ApiEnum.GetOrganizationChart);
+  const getOrgChart = getApi(ApiEnum.GetOrganizationChartApi);
   const { data: fetchedPersons, isFetching: isPersonFetching } = useOrgChart(
     isFiltersEmpty({
       q: debouncedPersonSearchValue,
@@ -239,7 +244,7 @@ const Toolbar: FC<IToolbarProps> = ({
                     target: user?.id,
                   },
                 ],
-              } as QueryFunctionContext<any>).then((data) => {
+              } as QueryFunctionContext<any>).then((data: any) => {
                 chartRef.current?.addNodes(data.data.result.data);
                 getOrgChart({
                   queryKey: [
@@ -261,7 +266,7 @@ const Toolbar: FC<IToolbarProps> = ({
                       expand: 0,
                     },
                   ],
-                } as QueryFunctionContext<any>).then((data) => {
+                } as QueryFunctionContext<any>).then((data: any) => {
                   chartRef.current?.addNodes(data.data.result.data);
                   chartRef.current
                     ?.expandAll()

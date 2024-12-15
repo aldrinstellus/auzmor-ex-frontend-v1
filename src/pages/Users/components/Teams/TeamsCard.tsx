@@ -4,7 +4,7 @@ import useHover from 'hooks/useHover';
 import Icon from 'components/Icon';
 import TeamWork from 'images/teamwork.svg';
 import { TeamFlow } from '.';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { FC } from 'react';
 import { isNewEntity } from 'utils/misc';
 import TeamOptions from 'components/TeamOptions';
@@ -12,6 +12,7 @@ import useRole from 'hooks/useRole';
 import useProduct from 'hooks/useProduct';
 import Truncate from 'components/Truncate';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
 
 export interface ITeamsCardProps {
   id: string;
@@ -42,13 +43,15 @@ const TeamsCard: FC<ITeamsCardProps> = ({
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [isHovered, eventHandlers] = useHover();
-  const { isMember } = useRole();
+  const { isAdmin } = useRole();
   const { isLxp } = useProduct();
   return (
-    <div className="cursor-pointer" data-testid="" {...eventHandlers}>
+    <div className="cursor-pointer w-full" data-testid="" {...eventHandlers}>
       <Card
         shadowOnHover
-        className="relative w-[190px] h-[217px] border-solid border border-neutral-200 flex flex-col items-center justify-center py-6 px-3 bg-white focus-within:shadow-xl"
+        className={`relative ${
+          isLxp ? 'p-6' : 'w-[190px] h-[217px]'
+        } border-solid border border-neutral-200 flex flex-col items-center justify-center bg-white focus-within:shadow-xl`}
         dataTestId="team-card"
       >
         <div
@@ -63,7 +66,7 @@ const TeamsCard: FC<ITeamsCardProps> = ({
           }}
           title={`${name} with ${totalMembers} ${t('members')}`}
         >
-          {!isMember && !isLxp && isHovered && (
+          {isAdmin && !isLxp && isHovered && (
             <TeamOptions
               id={id}
               onEdit={() => {

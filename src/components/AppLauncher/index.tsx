@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { memo } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
@@ -13,27 +13,26 @@ import AppLauncherSkeleton from './components/AppLauncherSkeleton';
 import useModal from 'hooks/useModal';
 import useRole from 'hooks/useRole';
 
-import { useInfiniteWidgetApps } from 'queries/apps';
 import { useAppStore } from 'stores/appStore';
 
 import { isFiltersEmpty } from 'utils/misc';
 import { useTranslation } from 'react-i18next';
-import { useShouldRender } from 'hooks/useShouldRender';
-
-const ID = 'AppLauncher';
+import useNavigate from 'hooks/useNavigation';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
+import useProduct from 'hooks/useProduct';
 
 const AppLauncher = () => {
   const { t } = useTranslation('appLauncher');
-  const shouldRender = useShouldRender(ID);
-  if (!shouldRender) {
-    return <></>;
-  }
+  const { getApi } = usePermissions();
   const navigate = useNavigate();
   const { isAdmin } = useRole();
+  const { isLxp } = useProduct();
   const widgetApps = useAppStore((state) => state.widgetApps);
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const [openAddApp, openAddAppModal, closeAddAppModal] = useModal();
   const { channelId } = useParams();
+  const useInfiniteWidgetApps = getApi(ApiEnum.GetWidgetApps);
   const { data, isLoading } = useInfiniteWidgetApps(
     isFiltersEmpty(
       !channelId
@@ -127,9 +126,13 @@ const AppLauncher = () => {
                   className="py-[7px]"
                   label={t('view-All-CTA')}
                   dataTestId="app-launcher-view-all"
-                  onClick={() =>
-                    navigate(isAdmin ? '/apps?myApp=true' : '/apps')
-                  }
+                  onClick={() => {
+                    if (isLxp) {
+                      navigate(isAdmin ? '/apps' : '/apps?myApp=true');
+                    } else {
+                      navigate('/apps?myApp=true');
+                    }
+                  }}
                 />
               </div>
             );

@@ -2,10 +2,11 @@ import { Control, FieldErrors, UseFormGetValues } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import { Variant as InputVariant } from 'components/Input';
 import { ITeamForm } from '.';
-import { CategoryType, useInfiniteCategories } from 'queries/apps';
-import { ICategoryDetail } from 'queries/category';
+import { ICategoryDetail, CategoryType } from 'interfaces';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 export interface IAddTeamsProps {
   control: Control<ITeamForm, any>;
@@ -15,6 +16,7 @@ export interface IAddTeamsProps {
 
 const AddTeams: FC<IAddTeamsProps> = ({ control, errors, defaultValues }) => {
   const { t } = useTranslation('profile', { keyPrefix: 'teamModal.addTeams' });
+  const { getApi } = usePermissions();
 
   const formatCategories = (data: any) => {
     const categoriesData = data?.pages.flatMap((page: any) => {
@@ -59,6 +61,8 @@ const AddTeams: FC<IAddTeamsProps> = ({ control, errors, defaultValues }) => {
       errorDataTestId: 'team-name-error-message',
     },
   ];
+
+  const useInfiniteCategories = getApi(ApiEnum.GetCategories);
 
   const teamCategory = [
     {

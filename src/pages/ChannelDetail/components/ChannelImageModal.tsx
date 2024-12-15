@@ -7,12 +7,12 @@ import Icon from 'components/Icon';
 import clsx from 'clsx';
 import { channelCoverImages, channelCoverLogo } from './utils/ChannelImages';
 import { useMutation } from '@tanstack/react-query';
-import { updateChannel } from 'queries/channel';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import queryClient from 'utils/queryClient';
 import { toBlob } from 'html-to-image';
 import { useTranslation } from 'react-i18next';
-import { uploadImage } from 'queries/learn';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type AppProps = {
   open: boolean;
@@ -28,6 +28,8 @@ const ChannelImageModal: FC<AppProps> = ({
   channelId,
   isCoverImg,
 }) => {
+  const { getApi } = usePermissions();
+  const uploadMedia = getApi(ApiEnum.UploadImage);
   const channelImages = isCoverImg ? channelCoverImages : channelCoverLogo;
   const [selectedImageId, setSelectedImageId] = useState<number>(0);
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -38,6 +40,7 @@ const ChannelImageModal: FC<AppProps> = ({
   const { t } = useTranslation('channelDetail', {
     keyPrefix: 'channelImageModal',
   });
+  const updateChannel = getApi(ApiEnum.UpdateChannel);
   const updateChannelMutation = useMutation({
     mutationFn: (data: any) => updateChannel(channelId, data),
     mutationKey: ['update-channel-name-mutation'],
@@ -57,7 +60,6 @@ const ChannelImageModal: FC<AppProps> = ({
       }
     },
   });
-
   const uploadMediaFn = async () => {
     setIsFile(true);
     if (isCoverImg) {
@@ -78,11 +80,11 @@ const ChannelImageModal: FC<AppProps> = ({
               const file = new File([blob], 'cover.png', {
                 type: blob.type,
               });
-
               const formData = new FormData();
               formData.append('url', file);
-              const res = await uploadImage(formData);
+              const res = await uploadMedia(formData);
               const uploadedFile = res.result?.data?.url;
+
               if (uploadedFile) {
                 updateChannelMutation.mutate({
                   bannerUrl: uploadedFile,
@@ -108,7 +110,7 @@ const ChannelImageModal: FC<AppProps> = ({
           });
           const formData = new FormData();
           formData.append('url', file);
-          const res = await uploadImage(formData);
+          const res = await uploadMedia(formData);
           const uploadedFile = res.result?.data?.url;
 
           if (uploadedFile) {

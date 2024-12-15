@@ -17,7 +17,7 @@ import Icon from 'components/Icon';
 import useCarousel from 'hooks/useCarousel';
 import EditImageModal from 'components/EditImageModal';
 import { clearInputValue, getBlobUrl } from 'utils/misc';
-import { EntityType } from 'queries/files';
+import { EntityType } from 'interfaces';
 import useAuth from 'hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 

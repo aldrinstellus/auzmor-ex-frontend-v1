@@ -5,13 +5,11 @@ import { FC, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import Spinner from 'components/Spinner';
 import Popover from 'components/Popover';
-import {
-  markAllNotificationsAsRead,
-  useGetUnreadNotificationsCount,
-} from 'queries/notifications';
 import Tabs from 'components/Tabs';
 import NotificationsList from './components/NotificationsList';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export enum NotificationType {
   ALL = 'All',
@@ -19,10 +17,15 @@ export enum NotificationType {
 }
 
 const NotificationsOverview: FC = () => {
+  const { getApi } = usePermissions();
+  const useGetUnreadNotificationsCount = getApi(
+    ApiEnum.GetNotificationsUnreadCount,
+  );
   const { data, isLoading, isError } = useGetUnreadNotificationsCount();
   const viewAllRef = useRef<HTMLButtonElement>(null);
   const queryClient = useQueryClient();
 
+  const markAllNotificationsAsRead = getApi(ApiEnum.MarkAllNotificationsAsRead);
   const markReadMutation = useMutation(() => markAllNotificationsAsRead(), {
     onSuccess: () => {
       queryClient.invalidateQueries(['unread-count']);
@@ -131,8 +134,7 @@ const NotificationsOverview: FC = () => {
         <Tabs
           tabs={notifTabs}
           tabContentClassName=""
-          className="flex justify-start gap-x-1 px-4 border-b-1 border-neutral-200 w-full mb-2"
-          itemSpacing={4}
+          className="flex justify-start gap-1 px-4 border-b-1 border-neutral-200 w-full"
         />
         <Divider />
         <NavLink

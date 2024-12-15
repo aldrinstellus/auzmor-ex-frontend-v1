@@ -19,8 +19,9 @@ import Button, {
 import { FC } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
-import { updateCurrentUser, updateUserById } from 'queries/users';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type AppProps = {
   open: boolean;
@@ -38,6 +39,7 @@ interface IForm {
 
 const SocialLinksModal: FC<AppProps> = ({ open, closeModal, socialLinks }) => {
   const { userId = '' } = useParams();
+  const { getApi } = usePermissions();
   const schema = yup.object({
     linkedIn: yup.string().url(),
     instagram: yup.string().url(),
@@ -48,10 +50,12 @@ const SocialLinksModal: FC<AppProps> = ({ open, closeModal, socialLinks }) => {
 
   const queryClient = useQueryClient();
 
+  const updateCurrentUser = getApi(ApiEnum.UpdateMe);
+  const updateUserById = getApi(ApiEnum.UpdateUser);
   const updateUserMutation = useMutation({
     mutationFn: userId
       ? (data: any) => updateUserById(userId, data)
-      : updateCurrentUser,
+      : (data: Record<string, any>) => updateCurrentUser(data),
     mutationKey: ['update-user-social-accounts-mutation'],
     onError: (_error: any) => {},
     onSuccess: async (_response: any) => {

@@ -20,10 +20,10 @@ import {
   IMediaValidationError,
   MediaValidationError,
 } from 'contexts/CreatePostContext';
-import { useNavigate } from 'react-router-dom';
 import Tooltip from 'components/Tooltip';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
 
 interface UserProps {
   id: string;

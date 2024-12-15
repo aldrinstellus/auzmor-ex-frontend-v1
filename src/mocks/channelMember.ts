@@ -1,4 +1,4 @@
-import { UserRole } from 'queries/users';
+import { UserRole } from 'interfaces';
 
 export const channelMemberData = [
   {

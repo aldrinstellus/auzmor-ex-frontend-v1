@@ -5,10 +5,11 @@ import React from 'react';
 import { StepEnum } from './utils';
 import Button, { Size, Variant } from 'components/Button';
 import { useMutation } from '@tanstack/react-query';
-import { startCreatingUsers } from 'queries/importUsers';
 import { useJobStore } from 'stores/jobStore';
 import apiService from 'utils/apiService';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type AppProps = {
   closeModal: () => any;
@@ -21,11 +22,13 @@ const ConfirmationStep: React.FC<AppProps> = ({
   open,
   closeModal,
 }) => {
+  const { getApi } = usePermissions();
   const { setShowJobProgress, setImportId, setTotal, setStep } = useJobStore();
 
   const { t } = useTranslation('profile', {
     keyPrefix: 'importUser.confirmationStep',
   });
+  const startCreatingUsers = getApi(ApiEnum.StartCreatingUsers);
   const startCreatingUserMutation = useMutation(
     () => startCreatingUsers(importId),
     {

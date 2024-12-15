@@ -5,13 +5,13 @@ import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import InfoRow from 'components/ProfileInfo/components/InfoRow';
-import { ICategoryDetail, useInfiniteCategories } from 'queries/category';
+import { ICategoryDetail, CategoryType } from 'interfaces';
 import { Variant as InputVariant } from 'components/Input';
 import useProduct from 'hooks/useProduct';
-import { createCatergory, useInfiniteLearnCategory } from 'queries/learn';
-import { updateChannel } from 'queries/channel';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type AppProps = {
   channelData: any;
@@ -21,9 +21,11 @@ type AppProps = {
 const CategoryRow: FC<AppProps> = ({ channelData, canEdit }) => {
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);
+  const { getApi } = usePermissions();
   const { t } = useTranslation('channelDetail', { keyPrefix: 'setting' });
 
   const { isLxp } = useProduct();
+  const updateChannel = getApi(ApiEnum.UpdateChannel);
   const updateChannelMutation = useMutation({
     mutationKey: ['update-channel-mutation'],
     mutationFn: ({ id, payload }: { id: string; payload: any }) =>
@@ -88,7 +90,8 @@ const CategoryRow: FC<AppProps> = ({ channelData, canEdit }) => {
       formData?.channelCategory &&
       isLxp
     ) {
-      lxpCategoryId = await createCatergory({
+      const createCategory = getApi(ApiEnum.CreateCategory);
+      lxpCategoryId = await createCategory({
         title: formData?.channelCategory?.label,
       });
       lxpCategoryId = lxpCategoryId?.result?.data?.id;
@@ -101,6 +104,9 @@ const CategoryRow: FC<AppProps> = ({ channelData, canEdit }) => {
     };
     updateChannelMutation.mutate({ id: channelData?.id || '', payload });
   };
+
+  const useInfiniteCategories = getApi(ApiEnum.GetCategories);
+
   const fields = [
     {
       type: FieldType.CreatableSearch,
@@ -108,7 +114,8 @@ const CategoryRow: FC<AppProps> = ({ channelData, canEdit }) => {
       placeholder: t('category.channelCategoryPlaceholder'),
       name: 'channelCategory',
       control,
-      fetchQuery: isLxp ? useInfiniteLearnCategory : useInfiniteCategories,
+      fetchQuery: useInfiniteCategories,
+      queryParams: { type: CategoryType.CHANNEL },
       getFormattedData: formatCategory,
       dataTestId: `channel-category-dropdown`,
       maxLength: 60,

@@ -4,14 +4,16 @@ import Icon from 'components/Icon';
 import { AudienceFlow } from 'components/PostBuilder/components/Audience';
 import Spinner from 'components/Spinner';
 import useRole from 'hooks/useRole';
-import { useOrganization } from 'queries/organization';
 import { FC, useEffect } from 'react';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
-import { IS_PROD } from 'utils/constants';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import useProduct from 'hooks/useProduct';
 import useAuth from 'hooks/useAuth';
 
 interface IAudienceSelectorProps {
+  audienceType?: AudienceType;
   audienceFlow: AudienceFlow;
   setAudienceFlow: any;
   isEveryoneSelected: boolean;
@@ -20,7 +22,13 @@ interface IAudienceSelectorProps {
   dataTestId?: string;
 }
 
+export enum AudienceType {
+  PostAudience = 'POST_AUDIENCE',
+  AppAudience = 'APP_AUDIENCE',
+}
+
 const AudienceSelector: FC<IAudienceSelectorProps> = ({
+  audienceType = AudienceType.PostAudience,
   audienceFlow,
   setAudienceFlow,
   isEveryoneSelected,
@@ -29,18 +37,33 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
   infoText,
 }) => {
   const { t } = useTranslation('components', { keyPrefix: 'AudienceSelector' });
-  const { isAdmin } = useRole();
+  const { isAdmin, isLearner } = useRole();
+  const { isLxp } = useProduct();
+  const { getApi } = usePermissions();
+  const useOrganization = getApi(ApiEnum.GetOrganization);
+  const fetchChannels =
+    audienceType === AudienceType.PostAudience
+      ? getApi(ApiEnum.GetMyChannels)
+      : getApi(ApiEnum.GetChannels);
+  const fetchTeams =
+    audienceType === AudienceType.PostAudience
+      ? getApi(ApiEnum.GetMyTeams)
+      : getApi(ApiEnum.GetTeams);
+  const { data, isLoading } = useOrganization(undefined, { enabled: !isLxp });
   const { user } = useAuth();
-  const { data, isLoading } = useOrganization();
   const { form } = useEntitySearchFormStore();
-
   const [teams, channels, users] = form!.watch(['teams', 'channels', 'users']);
+  let isLimitGlobalPosting = true;
+
+  if (isLxp) {
+    isLimitGlobalPosting = !!isLearner;
+  } else {
+    isLimitGlobalPosting =
+      !!data?.adminSettings?.postingControls?.limitGlobalPosting && !isAdmin;
+  }
 
   useEffect(() => {
-    if (
-      !isAdmin &&
-      !!data?.adminSettings?.postingControls?.limitGlobalPosting
-    ) {
+    if (isLimitGlobalPosting) {
       setIsEveryoneSelected(false);
     }
   }, [data, isAdmin]);
@@ -52,8 +75,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
       title: t('everyone'),
       subTitle: t('everyoneSubtitle'),
       onClick: () => setIsEveryoneSelected(true),
-      isHidden:
-        data?.adminSettings?.postingControls?.limitGlobalPosting && !isAdmin,
+      isHidden: isLimitGlobalPosting,
       isSelected: isEveryoneSelected,
       selectedCount: 0,
       dataTestId: 'audience-selection-everyone',
@@ -81,7 +103,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
       title: t('channels'),
       subTitle: t('channelsSubtitle'),
       onClick: () => setAudienceFlow(AudienceFlow.ChannelSelect),
-      isHidden: IS_PROD || user?.organization.type === 'LMS',
+      isHidden: !isLxp || user?.organization.type === 'LMS',
       isSelected:
         channels &&
         Object.keys(channels).some(
@@ -106,7 +128,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
               {infoText || t('defaultInfoText')}
             </div>
           </div>
-          {isLoading ? (
+          {isLoading && !isLxp ? (
             <Spinner className="w-full m-10" />
           ) : (
             audienceEntity.map((entity) => (
@@ -185,6 +207,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
               ? Object.keys(channels).filter((key: string) => channels[key])
               : []
           }
+          fetchChannels={fetchChannels}
         />
       );
     }
@@ -196,6 +219,7 @@ const AudienceSelector: FC<IAudienceSelectorProps> = ({
           selectedTeamIds={
             teams ? Object.keys(teams).filter((key: string) => teams[key]) : []
           }
+          fetchTeams={fetchTeams}
         />
       );
     }

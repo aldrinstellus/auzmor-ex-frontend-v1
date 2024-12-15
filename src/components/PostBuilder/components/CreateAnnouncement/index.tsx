@@ -10,7 +10,7 @@ import { afterXUnit } from 'utils/time';
 import Header from 'components/ModalHeader';
 import Footer from './Footer';
 import Body from './Body';
-import { IPost } from 'queries/post';
+import { IPost } from 'interfaces';
 import { useTranslation } from 'react-i18next';
 
 interface IAnnouncementForm {

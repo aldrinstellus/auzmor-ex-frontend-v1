@@ -6,13 +6,14 @@ import { useDropzone } from 'react-dropzone';
 import Button, { Size, Variant } from 'components/Button';
 import { StepEnum } from './utils';
 import { UploadStatus, useUpload } from 'hooks/useUpload';
-import { EntityType } from 'queries/files';
+import { EntityType } from 'interfaces';
 import { useMutation } from '@tanstack/react-query';
-import { startImportUser } from 'queries/importUsers';
 import Spinner from 'components/Spinner';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { useJobStore } from 'stores/jobStore';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 const IMPORT_FORMAT =
   'Name,Email,Manager Email,Designation,Department,Location,Employee Id,Phone Number,Date of Birth,Date of Joining,Marital Status,Role';
@@ -32,6 +33,7 @@ const UploadFileStep: React.FC<AppProps> = ({
   setMeta,
   importId,
 }) => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('profile', {
     keyPrefix: 'importUser.uploadFileStep',
   });
@@ -52,6 +54,7 @@ const UploadFileStep: React.FC<AppProps> = ({
     }
   }, [importId]);
 
+  const startImportUser = getApi(ApiEnum.StartImportUsers);
   const triggerUserImportMutation = useMutation(
     () => startImportUser({ fileId: fileObj.id }),
     {

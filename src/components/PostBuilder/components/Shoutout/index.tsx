@@ -7,7 +7,7 @@ import Button from 'components/Button';
 import { Variant as ButtonVariant } from 'components/Button';
 import { IAudienceForm } from 'components/EntitySearchModal';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
-import { PostType } from 'queries/post';
+import { PostType } from 'interfaces';
 import { updateEditorValue } from 'components/DynamicImagePreview/utils';
 import { useTranslation } from 'react-i18next';
 

@@ -1,10 +1,5 @@
 import ContactWidget from 'components/ContactWidget';
-import {
-  UserEditType,
-  UserRole,
-  useCurrentUser,
-  useSingleUser,
-} from 'queries/users';
+import { UserEditType, UserRole } from 'interfaces';
 import ProfileInfo from 'components/ProfileInfo';
 import {
   Navigate,
@@ -26,6 +21,8 @@ import ManagerWidget from 'components/ManagerWidget';
 import Recognitions from './components/Recognitions';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export interface IUpdateProfileImage {
   profileImage: File;
@@ -35,6 +32,7 @@ export interface IUpdateProfileImage {
 interface IUserDetailProps {}
 
 const UserDetail: FC<IUserDetailProps> = () => {
+  const { getApi } = usePermissions();
   const [open, openModal, closeModal] = useModal(undefined, false);
   const { user } = useAuth();
   const { isAdmin } = useRole();
@@ -44,18 +42,22 @@ const UserDetail: FC<IUserDetailProps> = () => {
   const { t } = useTranslation('profile');
   let editType = UserEditType.NONE;
 
-  let userDetail;
-  if (pathname === '/profile') {
-    userDetail = useCurrentUser();
-    usePageTitle('profile');
-  } else {
-    userDetail = useSingleUser(params?.userId || '');
-    usePageTitle('userProfile');
-  }
+  const useCurrentUser = getApi(ApiEnum.GetMe);
+  const useSingleUser = getApi(ApiEnum.GetUser);
+
+  const isCurrentUserDetail = pathname === '/profile';
+
+  usePageTitle(isCurrentUserDetail ? 'profile' : 'userProfile');
+
+  const { data: userDetail, isLoading } = isCurrentUserDetail
+    ? useCurrentUser()
+    : useSingleUser(params?.userId || '');
+
+  const data = isCurrentUserDetail
+    ? userDetail?.result?.data
+    : userDetail?.data?.result?.data;
 
   const editSection = searchParams.get('edit') || '';
-
-  const data = userDetail?.data?.data?.result?.data;
 
   if (data) {
     editType =
@@ -90,7 +92,7 @@ const UserDetail: FC<IUserDetailProps> = () => {
       tabContent: (
         <ProfileInfo
           profileDetails={data}
-          isLoading={userDetail?.isLoading}
+          isLoading={isLoading}
           editType={editType}
           editSection={editSection}
           setSearchParams={setSearchParams}
@@ -135,13 +137,13 @@ const UserDetail: FC<IUserDetailProps> = () => {
     },
   ];
 
-  if (!userDetail?.isLoading && !data) {
+  if (!isLoading && !data) {
     return <Navigate to="/404" />;
   }
 
   return (
     <div className="flex flex-col space-y-10 w-full">
-      {userDetail?.isLoading ? (
+      {isLoading ? (
         <UserDetailSkeleton />
       ) : (
         <ProfileCoverSection userDetails={data} editSection={editSection} />
@@ -150,7 +152,7 @@ const UserDetail: FC<IUserDetailProps> = () => {
       <div className="mb-32 flex w-full">
         <div className="w-1/4 pr-10 space-y-6">
           <div>
-            {userDetail?.isLoading ? (
+            {isLoading ? (
               <ContactSkeleton />
             ) : (
               <ContactWidget
@@ -163,10 +165,9 @@ const UserDetail: FC<IUserDetailProps> = () => {
         <div className="w-1/2 px-3">
           <Tabs
             tabs={tabs}
-            className="w-fit flex justify-start bg-neutral-50 rounded-8xl border-solid border-1 border-neutral-200"
+            className="w-fit flex justify-start bg-neutral-50 rounded-8xl border-solid border-1 border-neutral-200 gap-0"
             tabSwitcherClassName="!p-1"
             showUnderline={false}
-            itemSpacing={0}
             tabContentClassName="mt-5"
           />
         </div>

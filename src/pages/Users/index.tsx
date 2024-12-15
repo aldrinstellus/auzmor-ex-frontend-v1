@@ -7,13 +7,14 @@ import Card from 'components/Card';
 import Tabs from 'components/Tabs';
 import OrgChart from 'components/OrgChart';
 import People from './components/People';
-import { Role } from 'utils/enum';
 import Team from './components/Teams';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import PopupMenu from 'components/PopupMenu';
 import { useTranslation } from 'react-i18next';
 import useProduct from 'hooks/useProduct';
 import { usePageTitle } from 'hooks/usePageTitle';
+import useNavigate from 'hooks/useNavigation';
+import { UserRole } from 'interfaces';
 
 interface IUsersProps {}
 
@@ -92,7 +93,7 @@ const Users: FC<IUsersProps> = () => {
             iconColor="text-black"
             onClick={() => setShowOrgChart(true)}
           />
-          {user?.role !== Role.Member && (
+          {user?.role !== UserRole.Member && (
             <PopupMenu
               triggerNode={
                 <Button
@@ -138,7 +139,7 @@ const Users: FC<IUsersProps> = () => {
         />
       ),
       tabAction:
-        user?.role !== Role.Member && !isLxp ? (
+        user?.role !== UserRole.Member && !isLxp ? (
           <div className="flex space-x-2">
             <Button
               className="flex space-x-1 px-6 py-[10px] rounded-[24px]"
@@ -159,18 +160,17 @@ const Users: FC<IUsersProps> = () => {
   return showOrgChart ? (
     <OrgChart setShowOrgChart={setShowOrgChart} />
   ) : (
-    <Card className="p-8 px-7 w-full h-full">
+    <Card className="pt-8 px-7 w-full mb-6">
       <Tabs
         tabs={tabs}
-        title={isLxp ? 'My Teams' : 'People Hub'}
-        className={`w-fit   ${
+        title={isLxp ? '' : 'People Hub'}
+        className={`!w-fit gap-1 ${
           isLxp ? 'hidden' : 'flex'
         } justify-start bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200`}
         tabSwitcherClassName="!p-1"
         activeTabIndex={!isUserTab ? 1 : 0}
         showUnderline={false}
-        itemSpacing={1}
-        tabContentClassName="mt-4"
+        tabContentClassName={isLxp ? '' : 'mt-4'}
         onTabChange={() => {
           navigate(isUserTab ? '/teams' : '/users');
         }}

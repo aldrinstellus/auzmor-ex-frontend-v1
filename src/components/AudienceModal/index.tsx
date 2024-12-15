@@ -1,7 +1,7 @@
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import Tabs from 'components/Tabs';
-import { AudienceEntityType, IAudience } from 'queries/post';
+import { AudienceEntityType, IAudience } from 'interfaces';
 import { FC } from 'react';
 import AudienceTab from './AudienceTab';
 
@@ -153,6 +153,7 @@ const AudienceModal: FC<IAudienceModalProps> = ({
               ]
             );
           })}
+        className="px-6"
       />
     </Modal>
   );

@@ -8,11 +8,12 @@ import useHover from 'hooks/useHover';
 import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import { useMutation } from '@tanstack/react-query';
-import { updateCurrentUser } from 'queries/users';
 import queryClient from 'utils/queryClient';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import CopyButton from './components/CopyButton';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export interface IContactInfoForm {
   primaryEmail: string;
@@ -28,6 +29,7 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
   const [isEditable, setIsEditable] = useState<boolean>(false);
   const [isHovered, eventHandlers] = useHover();
   const { t } = useTranslation('profile');
+  const { getApi } = usePermissions();
   const { control, handleSubmit, getValues, reset } = useForm<IContactInfoForm>(
     {
       mode: 'onSubmit',
@@ -68,8 +70,9 @@ const ContactWidget: FC<IContactCardProps> = ({ contactCardData, canEdit }) => {
     },
   ];
 
+  const updateCurrentUser = getApi(ApiEnum.UpdateMe);
   const updateUserContactDetailMutation = useMutation({
-    mutationFn: updateCurrentUser,
+    mutationFn: (payload: Record<string, any>) => updateCurrentUser(payload),
     mutationKey: ['update-user-contact-detail-mutation'],
     onError: (_error: any) => {},
     onSuccess: (_response: any) => {

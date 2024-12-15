@@ -1,11 +1,12 @@
 import Divider from 'components/Divider';
-import { useGetNotifications } from 'queries/notifications';
 import NotificationProps from './Notification';
 import Notification from './Notification';
-import { IMedia } from 'contexts/CreatePostContext';
+import { IMedia } from 'interfaces';
 import NotificationsOverviewSkeleton from './NotificationsOverviewSkeleton';
 import { forwardRef } from 'react';
 import NoNotification from 'images/noNotification.svg';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type NotificationsList = {
   mentions?: boolean;
@@ -71,15 +72,23 @@ export type NotificationProps = {
 
 const NotificationsList = forwardRef(
   ({ mentions, className }: NotificationsList, ref: any) => {
-    const { data, isLoading, isError } = useGetNotifications(mentions);
+    const { getApi } = usePermissions();
+    const useInfiniteNotifications = getApi(ApiEnum.GetNotifications);
+    const { data, isLoading, isError } = useInfiniteNotifications({
+      limit: 20,
+      ...(mentions ? { mentions: true } : undefined),
+    });
 
+    const notificationData = data?.pages?.flatMap((page: any) =>
+      page.data.result.data.map((item: any) => item),
+    );
     return isLoading ? (
       <NotificationsOverviewSkeleton />
     ) : (
       <div>
-        {!isError && data.data?.result?.data?.length ? (
+        {!isError && notificationData?.length ? (
           <div className={`flex flex-col overflow-y-auto ${className}`}>
-            {data.data?.result?.data?.map(
+            {notificationData?.map(
               (notification: NotificationProps, index: number) => (
                 <div key={index} onClick={() => ref?.current?.click()}>
                   <Notification

@@ -2,6 +2,7 @@ import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import React, { FC, ReactNode } from 'react';
 
 export interface IHeaderProps {
+  className?: string;
   title: string | ReactNode;
   onClose?: () => void;
   onBackIconClick?: () => void;
@@ -15,9 +16,12 @@ const Header: FC<IHeaderProps> = ({
   onBackIconClick,
   closeBtnDataTestId,
   titleDataTestId,
+  className,
 }) => {
   return (
-    <div className="flex flex-wrap p-4 space-x-3 border-b-1 border-neutral-100 items-center">
+    <div
+      className={`flex flex-wrap p-4 space-x-3 border-b-1 border-neutral-100 items-center ${className}`}
+    >
       {onBackIconClick && (
         <IconButton
           onClick={onBackIconClick}

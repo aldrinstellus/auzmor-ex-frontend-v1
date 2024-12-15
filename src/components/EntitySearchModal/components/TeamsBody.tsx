@@ -4,37 +4,43 @@ import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
 import { ChangeEvent, FC, ReactNode, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { ITeam, useInfiniteTeams } from 'queries/teams';
 import TeamRow from './TeamRow';
 import InfiniteSearch from 'components/InfiniteSearch';
-import { ICategory, useInfiniteCategories } from 'queries/category';
+import { ITeam, ICategory, CategoryType } from 'interfaces';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 import useAuth from 'hooks/useAuth';
 import { isFiltersEmpty } from 'utils/misc';
-import { useOrganization } from 'queries/organization';
 import useRole from 'hooks/useRole';
-import { CategoryType } from 'queries/apps';
 import NoDataFound from 'components/NoDataFound';
 import useProduct from 'hooks/useProduct';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
+type ApiCallFunction = (queryParams: any) => any;
 interface ITeamsBodyProps {
   entityRenderer?: (data: ITeam) => ReactNode;
   selectedTeamIds?: string[];
   dataTestId?: string;
+  fetchTeams?: ApiCallFunction;
 }
 
 const TeamsBody: FC<ITeamsBodyProps> = ({
   entityRenderer,
   selectedTeamIds = [],
   dataTestId,
+  fetchTeams,
 }) => {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const { form } = useEntitySearchFormStore();
   const { watch, setValue, control } = form!;
   const { user } = useAuth();
-  const { isAdmin } = useRole();
+  const { isAdmin, isLearner } = useRole();
   const { isLxp } = useProduct();
-  const { data: organization } = useOrganization();
+  const { getApi } = usePermissions();
+  const useOrganization = getApi(ApiEnum.GetOrganization);
+  const { data: organization } = useOrganization(undefined, {
+    enabled: !isLxp,
+  });
   const [teamSearch, showSelectedMembers, teams, categorySearch, categories] =
     watch([
       'teamSearch',
@@ -43,6 +49,15 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
       'categorySearch',
       'categories',
     ]);
+
+  let isLimitGlobalPosting = true;
+  if (isLxp) {
+    isLimitGlobalPosting = !!isLearner;
+  } else {
+    isLimitGlobalPosting =
+      !!organization?.adminSettings?.postingControls?.limitGlobalPosting &&
+      !isAdmin;
+  }
 
   // Reset state on unmount
   useEffect(
@@ -53,34 +68,27 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
     [],
   );
 
-  // fetch teams datar
+  // fetch teams data
   const debouncedSearchValue = useDebounce(teamSearch || '', 500);
+  const useInfiniteTeams = getApi(ApiEnum.GetTeams);
+  const queryParams = {
+    q: isFiltersEmpty({
+      q: debouncedSearchValue,
+      categoryIds:
+        selectedCategories && selectedCategories.length
+          ? selectedCategories.join(',')
+          : undefined,
+      userId: isLimitGlobalPosting ? user?.id : undefined,
+    }),
+  };
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteTeams({
-      q: isFiltersEmpty({
-        q: debouncedSearchValue,
-        categoryIds:
-          selectedCategories && selectedCategories.length
-            ? selectedCategories.join(',')
-            : undefined,
-        userId:
-          organization?.adminSettings?.postingControls?.limitGlobalPosting &&
-          !isAdmin
-            ? user?.id
-            : undefined,
-      }),
-    });
+    fetchTeams ? fetchTeams(queryParams) : useInfiniteTeams(queryParams);
+
   const teamsData = data?.pages
-    .flatMap((page) => {
-      return page?.data?.result?.data.map((team: ITeam) => {
-        try {
-          return team;
-        } catch (e) {
-          console.log('Error', { team });
-        }
-      });
+    .flatMap((page: any) => {
+      return page?.data?.result?.data.map((team: ITeam) => team);
     })
-    .filter((team) => {
+    .filter((team: ITeam) => {
       if (showSelectedMembers) {
         return !!teams[team.id];
       }
@@ -89,6 +97,7 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
 
   // fetch category data
   const debouncedCategorySearchValue = useDebounce(categorySearch || '', 500);
+  const useInfiniteCategories = getApi(ApiEnum.GetCategories);
   const {
     data: fetchedCategories,
     isLoading: categoryLoading,
@@ -99,15 +108,11 @@ const TeamsBody: FC<ITeamsBodyProps> = ({
     q: debouncedCategorySearchValue,
     type: CategoryType.TEAM,
   });
-  const categoryData = fetchedCategories?.pages.flatMap((page) => {
-    return page?.data?.result?.data.map((category: ICategory) => {
-      try {
-        return category;
-      } catch (e) {
-        console.log('Error', { category });
-      }
-    });
-  });
+  const categoryData: ICategory[] = fetchedCategories?.pages.flatMap(
+    (page: any) => {
+      return page?.data?.result?.data.map((category: ICategory) => category);
+    },
+  );
 
   const { ref, inView } = useInView();
   useEffect(() => {

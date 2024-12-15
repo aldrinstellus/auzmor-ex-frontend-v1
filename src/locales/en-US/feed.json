@@ -26,5 +26,10 @@
     "title": "Publish your first post!",
     "emptyMessage": "Post something interesting for your audience, share an update,",
     "emptyMessage2": "or just make a little introduction to the teams."
+  },
+  "announcementPosts": {
+    "title": "All Announcement",
+    "emptyMessage": "Post something interesting for your audience, share an update,",
+    "emptyMessage2": "or just make a little introduction to the teams."
   }
 }

@@ -4,16 +4,16 @@ import Button, { Type } from 'components/Button';
 import Divider from 'components/Divider';
 import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
-import { changePassword } from 'queries/account';
 import { Variant as InputVariant } from 'components/Input';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { getSubDomain } from 'utils/misc';
-import { useGetSSOFromDomain } from 'queries/organization';
 import Card from 'components/Card';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface IForm {
   currentPassword: string;
@@ -40,11 +40,15 @@ const AccountSecurity = () => {
   const { t } = useTranslation('userSetting', {
     keyPrefix: 'sign-in-security',
   });
+  const { getApi } = usePermissions();
   const [err, setErr] = useState(false);
 
   const domain = getSubDomain(window.location.host);
+
+  const useGetSSOFromDomain = getApi(ApiEnum.GetOrganizationDomain);
   const { data, isLoading } = useGetSSOFromDomain(domain);
 
+  const changePassword = getApi(ApiEnum.ChangePassword);
   const changePasswordMutation = useMutation(
     (formData: any) => changePassword(formData),
     {

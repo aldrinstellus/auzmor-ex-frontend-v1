@@ -2,7 +2,7 @@ import Button, { Variant } from 'components/Button';
 import Card from 'components/Card';
 import { FC, ReactElement } from 'react';
 import NotificationBell from 'images/bell.png';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 
 const NotificationSettingsCard: FC = (): ReactElement => {
   const navigate = useNavigate();

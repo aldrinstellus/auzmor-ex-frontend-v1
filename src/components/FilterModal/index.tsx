@@ -2,8 +2,16 @@ import Button, { Variant as ButtonVariant } from 'components/Button';
 import Divider from 'components/Divider';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
-import { IDepartmentAPI } from 'queries/department';
-import { ILocationAPI } from 'queries/location';
+import {
+  ICategory,
+  IDepartmentAPI,
+  IDocType,
+  ILocationAPI,
+  ITeam,
+  UserStatus,
+  CategoryType,
+  UserRole,
+} from 'interfaces';
 import { FC, ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Locations from './Locations';
@@ -11,11 +19,7 @@ import Departments from './Departments';
 import Status from './Status';
 import { ICheckboxListOption } from 'components/CheckboxList';
 import Categories from './Categories';
-import { ICategory } from 'queries/category';
-import { ITeam } from 'queries/teams';
 import Teams from './Teams';
-import { CategoryType } from 'queries/apps';
-import { UserStatus } from 'queries/users';
 import {
   CHANNEL_MEMBER_STATUS,
   ChannelVisibilityEnum,
@@ -23,18 +27,15 @@ import {
 import Visibility from './Visibility';
 import ChannelType, { ChannelTypeEnum } from './ChannelType';
 import { useTranslation } from 'react-i18next';
-import { IDocType } from 'queries/storage';
 import DocumentPeople from './DocumentPeople';
 import DocumentType from './DocumentType';
 import DocumentModified from './DocumentModifed';
 import Roles from './Roles';
-import { Role } from 'utils/enum';
 import ByPeople, { ByPeopleEnum } from './ByPeople';
 import ChannelRequestStatus from './ChannelRequestStatus';
 import { titleCase } from 'utils/misc';
 import Channels from './Channels';
-import { IS_PROD } from 'utils/constants';
-import useAuth from 'hooks/useAuth';
+import useRole from 'hooks/useRole';
 
 export interface IFilterForm {
   visibilityRadio: ChannelVisibilityEnum;
@@ -79,7 +80,7 @@ export interface IChannelRequestStatus {
   name: string;
 }
 export interface IRole {
-  id: Role;
+  id: UserRole;
   name: string;
 }
 export interface IBypeople {
@@ -157,7 +158,7 @@ const FilterModal: FC<IFilterModalProps> = ({
   variant = FilterModalVariant.People,
 }) => {
   const { t } = useTranslation('filterModal');
-  const { user } = useAuth();
+  const { isLearner } = useRole();
 
   const defaultChannelRequestStatus = !!(
     appliedFilters?.channelRequestStatus || []
@@ -304,9 +305,9 @@ const FilterModal: FC<IFilterModalProps> = ({
     'doc-people-filters': [FilterModalVariant.Document],
     'doc-type-filters': [FilterModalVariant.Document],
     'doc-modified-filters': [FilterModalVariant.Document],
-    'visibility-filters': IS_PROD ? [] : [FilterModalVariant.ChannelsListing],
-    'channel-type-filters': IS_PROD ? [] : [FilterModalVariant.ChannelsListing],
-    'channel-roles-filters': IS_PROD ? [] : [FilterModalVariant.ChannelMember],
+    'visibility-filters': [FilterModalVariant.ChannelsListing],
+    'channel-type-filters': [FilterModalVariant.ChannelsListing],
+    'channel-roles-filters': [FilterModalVariant.ChannelMember],
     'locations-filters': [
       FilterModalVariant.Orgchart,
       FilterModalVariant.People,
@@ -319,40 +320,27 @@ const FilterModal: FC<IFilterModalProps> = ({
       FilterModalVariant.Team,
       FilterModalVariant.App,
       FilterModalVariant.LxpApp,
-      ...(IS_PROD ? [] : [FilterModalVariant.ChannelsListing]),
+      FilterModalVariant.ChannelsListing,
     ],
-    'channel-filters':
-      IS_PROD || user?.organization.type === 'LMS'
-        ? []
-        : [FilterModalVariant.People, FilterModalVariant.LxpApp],
+    'channel-filters': [],
     'team-filters': [
       FilterModalVariant.App,
-      FilterModalVariant.LxpApp,
-      ...(IS_PROD
-        ? []
-        : [
-            FilterModalVariant.ChannelMember,
-            FilterModalVariant.ChannelRequest,
-            FilterModalVariant.ChannelsMangeAcess,
-          ]),
+      FilterModalVariant.ChannelMember,
+      FilterModalVariant.ChannelRequest,
+      FilterModalVariant.ChannelsMangeAcess,
+      ...(isLearner ? [] : [FilterModalVariant.LxpApp]),
     ],
     'status-filters': [
       FilterModalVariant.People,
       FilterModalVariant.Orgchart,
-      ...(IS_PROD
-        ? []
-        : [
-            FilterModalVariant.ChannelMember,
-            FilterModalVariant.ChannelsMangeAcess,
-          ]),
+      FilterModalVariant.ChannelMember,
+      FilterModalVariant.ChannelsMangeAcess,
     ],
-    'by-people-filter': IS_PROD
-      ? []
-      : [
-          FilterModalVariant.ChannelMember,
-          FilterModalVariant.ChannelRequest,
-          FilterModalVariant.ChannelsMangeAcess,
-        ],
+    'by-people-filter': [
+      FilterModalVariant.ChannelMember,
+      FilterModalVariant.ChannelRequest,
+      FilterModalVariant.ChannelsMangeAcess,
+    ],
     'channel-request-status': [],
   };
 
@@ -511,7 +499,7 @@ const FilterModal: FC<IFilterModalProps> = ({
       component: () => (
         <Channels control={control} watch={watch} setValue={setValue} />
       ),
-      isHidden: !filterOptionMappings['channel-filters'].includes(variant),
+      isHidden: true,
       dataTestId: 'filterby-channel-filters',
     },
     {

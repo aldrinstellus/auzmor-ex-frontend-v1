@@ -14,16 +14,20 @@ import {
   IChannel,
   useChannelStore,
 } from 'stores/channelStore';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 import { Variant } from 'components/IconButton';
 import { useMutation } from '@tanstack/react-query';
-import { deleteJoinChannelRequest, joinChannelRequest } from 'queries/channel';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useTranslation } from 'react-i18next';
 import queryClient from 'utils/queryClient';
 import ChannelBanner from './ChannelBanner';
 import ChannelLogo from './ChannelLogo';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import useProduct from 'hooks/useProduct';
+import useRole from 'hooks/useRole';
+import { useLocation } from 'react-router-dom';
 
 interface IChannelCardProps {
   channel: IChannel;
@@ -33,16 +37,23 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
   const { t } = useTranslation('channels');
   const updateChannel = useChannelStore((state) => state.updateChannel);
   const navigate = useNavigate();
+  const { pathname, search } = useLocation();
+  const { getApi } = usePermissions();
+  const { isLxp } = useProduct();
+  const { isAdmin } = useRole();
 
   const showRequestBtn =
+    !(isLxp && isAdmin) &&
     channel.settings?.visibility === ChannelVisibilityEnum.Private &&
     !!!channel.member &&
     !!!channel.joinRequest;
   const showJoinChannelBtn =
+    !(isLxp && isAdmin) &&
     channel.settings?.visibility === ChannelVisibilityEnum.Public &&
     !!!channel.member &&
     !!!channel.joinRequest;
   const showWithdrawBtn =
+    !(isLxp && isAdmin) &&
     channel.settings?.visibility === ChannelVisibilityEnum.Private &&
     !!!channel.member &&
     !!channel.joinRequest;
@@ -50,7 +61,9 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
     visibilty: channel?.settings?.visibility,
     channelName: channel?.name,
   });
+
   // Join public/private channel request mutation
+  const joinChannelRequest = getApi(ApiEnum.CreateJoinChannelRequest);
   const joinChannelMutation = useMutation({
     mutationKey: ['join-public-channel-request'],
     mutationFn: (channelId: string) => joinChannelRequest(channelId),
@@ -58,7 +71,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
       failureToastConfig({
         content: t('joinRequestError'),
       }),
-    onSuccess: async (data) => {
+    onSuccess: async (data: any) => {
       successToastConfig({
         content:
           channel.settings?.visibility === ChannelVisibilityEnum.Private
@@ -74,6 +87,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
   });
 
   // Withdraw join request
+  const deleteJoinChannelRequest = getApi(ApiEnum.DeleteJoinChannelRequest);
   const withdrawJoinChannelRequest = useMutation({
     mutationKey: ['withdraw-join-request'],
     mutationFn: (joinId: string) =>
@@ -91,24 +105,29 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
       });
     },
   });
+
+  const handleNavigate = () => {
+    navigate(`/channels/${channel.id}`, {
+      state: { prevRoute: `${pathname}${search}` },
+    });
+  };
+
   return (
     <div
       className="w-full cursor-pointer outline-none group/channel-card"
       tabIndex={0}
       title={channel.name}
-      onKeyUp={(e) =>
-        e.code === 'Enter' ? navigate(`/channels/${channel.id}`) : ''
-      }
-      onClick={() => navigate(`/channels/${channel.id}`)}
+      onKeyUp={(e) => (e.code === 'Enter' ? handleNavigate() : '')}
+      onClick={handleNavigate}
     >
       <Card
         shadowOnHover
-        className="flex flex-col gap-2 relative group-focus-within/channel-card:shadow-xl"
+        className="h-full flex flex-col gap-2 relative group-focus-within/channel-card:shadow-xl"
       >
         <div className="w-full h-[80px] bg-slate-500 rounded-t-9xl">
           <ChannelBanner channel={channel} />
         </div>
-        <div className="p-3 flex flex-col gap-1">
+        <div className={`p-3 flex flex-col gap-1`}>
           <div className="flex w-full items-center">
             <Truncate
               text={channel.name}

@@ -4,6 +4,7 @@ import { initReactI18next } from 'react-i18next';
 // the translations
 const resources = {
   'en-US': {
+    learnNotifications: require('locales/en-US/learnNotifications.json'),
     adminSetting: require('locales/en-US/adminSetting.json'),
     announcement: require('locales/en-US/announcement.json'),
     appLauncher: require('locales/en-US/appLauncher.json'),

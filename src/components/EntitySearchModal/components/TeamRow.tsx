@@ -1,7 +1,7 @@
 import TeamWork from 'images/teamwork.svg';
 import AvatarList from 'components/AvatarList';
 import Icon from 'components/Icon';
-import { ITeam } from 'queries/teams';
+import { ITeam } from 'interfaces';
 import { FC } from 'react';
 import truncate from 'lodash/truncate';
 
@@ -133,13 +133,15 @@ const TeamRow: FC<ITeamRowProps> = ({
               className="text-neutral-500 text-xs ml-1"
               data-testid="team-category"
             >
-              {truncate(team.category.name || '', {
+              {truncate(team?.category?.name || '', {
                 length: 15,
                 separator: ' ',
               })}
             </div>
           </div>
-          <div className="mx-6 w-1 h-1 bg-neutral-500 rounded-full" />
+          {team.category ? (
+            <div className="mx-6 w-1 h-1 bg-neutral-500 rounded-full" />
+          ) : null}
           <div className="flex">
             <Icon name="profileUserOutline" size={16} />
             <div

@@ -1,6 +1,6 @@
 import CreatePostProvider, { CreatePostFlow } from 'contexts/CreatePostContext';
 import CreatePostModal from './components/CreatePostModal';
-import { IPost } from 'queries/post';
+import { IPost } from 'interfaces';
 import { FC } from 'react';
 
 export enum PostBuilderMode {

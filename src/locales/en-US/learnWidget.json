@@ -26,5 +26,16 @@
     "assignedBy": "Assigned by",
     "includesCertificate": "Includes Certificate",
     "overdue": "Overdue"
+  },
+  "evaluationRequestWidget": {
+    "trackerPictureAlt": "Tracker Picture",
+    "noPendingEvaluations": "No pending evaluations",
+    "viewAllCompletedButton": "View all completed",
+    "startEvaluationTooltip": "Start Evaluation",
+    "attempts": "Attempts",
+    "attemptedOn": "Attempted on",
+    "dateFormat": "MMM D, YYYY",
+    "pendingEvaluation": "Pending evaluations",
+    "viewAll": "View All"
   }
 }

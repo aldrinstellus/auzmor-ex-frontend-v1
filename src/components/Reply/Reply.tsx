@@ -2,7 +2,6 @@ import { FC, useState } from 'react';
 import Likes from 'components/Reactions';
 import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import Avatar from 'components/Avatar';
-import { deleteComment } from 'queries/comments';
 import { useMutation } from '@tanstack/react-query';
 import Popover from 'components/Popover';
 import clsx from 'clsx';
@@ -34,6 +33,8 @@ import UserCard from 'components/UserCard';
 import { Link } from 'react-router-dom';
 import useProduct from 'hooks/useProduct';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface ReplyProps {
   comment: IComment;
@@ -45,14 +46,16 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
   const { t } = useTranslation('components', { keyPrefix: 'Reply' });
   const { user } = useAuth();
   const { isLxp } = useProduct();
+  const { getApi } = usePermissions();
   const [confirm, showConfirm, closeConfirm] = useModal();
   const [showReactionModal, setShowReactionModal] = useState(false);
   const [editReply, setEditReply] = useState<boolean>(false);
   const { comment: storedComments, setComment } = useCommentStore();
 
+  const deleteComment = getApi(ApiEnum.DeleteComment);
   const deleteReplyMutation = useMutation({
     mutationKey: ['delete-reply-comment-mutation'],
-    mutationFn: deleteComment,
+    mutationFn: (id: string) => deleteComment(id),
     onMutate: (variables) => {
       const previousData = comment;
       const updatedComment = produce(

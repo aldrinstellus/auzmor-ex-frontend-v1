@@ -4,11 +4,9 @@ import useAuth from 'hooks/useAuth';
 import Tooltip, { Variant } from 'components/Tooltip';
 import './index.css';
 import UserCard from 'components/UserCard';
-import { ILocation } from 'queries/location';
-import { UserStatus } from 'queries/users';
+import { ILocation, IDesignation, UserStatus } from 'interfaces';
 import { getUserCardTooltipProps } from 'utils/misc';
 import useProduct from 'hooks/useProduct';
-import { IDesignation } from 'queries/designation';
 import { useTranslation } from 'react-i18next';
 
 type MentionProps = {

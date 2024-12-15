@@ -1,9 +1,9 @@
 import Avatar from 'components/Avatar';
 import useAuth from 'hooks/useAuth';
+import useNavigate from 'hooks/useNavigation';
 import useProduct from 'hooks/useProduct';
-import { IGetPollVote } from 'queries/pollVotes';
+import { IGetPollVote } from 'interfaces';
 import { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getAvatarColor, getFullName, getProfileImage } from 'utils/misc';
 
 export interface IPollVoteRowProps {

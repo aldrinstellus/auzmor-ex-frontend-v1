@@ -1,20 +1,19 @@
-import IconButton, {
-  Size,
-  Variant as IconVariant,
-} from 'components/IconButton';
+import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import Button, {
+  Size,
   Variant as ButtonVariant,
   Type as ButtonType,
 } from 'components/Button';
 import Modal from 'components/Modal';
-import { deleteTeam } from 'queries/teams';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 export interface IDeleteTeamProps {
   open: boolean;
@@ -30,11 +29,13 @@ const DeleteTeam: FC<IDeleteTeamProps> = ({
   isDetailPage,
 }) => {
   const { t } = useTranslation('profile', { keyPrefix: 'deleteTeam' });
+  const { getApi } = usePermissions();
   const navigate = useNavigate();
 
+  const deleteTeam = getApi(ApiEnum.DeleteTeam);
   const deleteTeamMutation = useMutation({
     mutationKey: ['delete-team', teamId],
-    mutationFn: deleteTeam,
+    mutationFn: (id: string) => deleteTeam(id),
     onError: () => failureToastConfig({ content: t('errorToast') }),
     onSuccess: () => {
       closeModal();

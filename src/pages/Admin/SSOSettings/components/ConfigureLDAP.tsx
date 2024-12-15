@@ -12,8 +12,10 @@ import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from '@tanstack/react-query';
-import { IdentityProvider, updateSso } from 'queries/organization';
+import { IdentityProvider } from 'interfaces';
 import queryClient from 'utils/queryClient';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type ConfigureLDAPProps = {
   open: boolean;
@@ -88,6 +90,7 @@ const ConfigureLDAP: FC<ConfigureLDAPProps> = ({
   closeModal,
   ssoSetting,
 }): ReactElement => {
+  const { getApi } = usePermissions();
   const [currentScreen, _prev, next, setCurrentScreen] = useCarousel(0, 3);
   const [connectionSettingsError, setConnectionSettingsError] =
     useState<boolean>(false);
@@ -202,9 +205,11 @@ const ConfigureLDAP: FC<ConfigureLDAPProps> = ({
     },
   });
 
+  const updateSso = getApi(ApiEnum.UpdateOrganizationSSO);
   const updateSsoMutation = useMutation({
     mutationKey: ['update-sso-mutation-ldap'],
-    mutationFn: updateSso,
+    mutationFn: (payload: { idp: IdentityProvider; formData: FormData }) =>
+      updateSso(payload),
     onError: (error: any) => {
       console.log('Error while updating LDAP: ', error);
     },

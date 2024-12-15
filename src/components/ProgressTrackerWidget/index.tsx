@@ -1,30 +1,27 @@
 import clsx from 'clsx';
 import Button, { Variant } from 'components/Button';
 import LearnCard from 'components/LearnCard';
-import { useShouldRender } from 'hooks/useShouldRender';
-import { useProgressTracker } from 'queries/learn';
 import React, { FC, useMemo } from 'react';
 import { getLearnUrl } from 'utils/misc';
 import EmptyState from './EmptyState';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
+import useProduct from 'hooks/useProduct';
 
 interface IProgressTrackerWidgetProps {
   className?: string;
 }
 
-const ID = 'ProgressTrackerWidget';
-
 const ProgressTrackerWidget: FC<IProgressTrackerWidgetProps> = ({
   className = '',
 }) => {
   const { t } = useTranslation('learnWidget', { keyPrefix: 'progressTracker' });
-  const shouldRender = useShouldRender(ID);
+  const { getApi } = usePermissions();
+  const { isLxp } = useProduct();
 
-  if (!shouldRender) {
-    return <></>;
-  }
-
-  const { data, isLoading } = useProgressTracker();
+  const useProgressTracker = getApi(ApiEnum.GetProgressTracker);
+  const { data, isLoading } = useProgressTracker({ enabled: isLxp });
   const trackerData = data?.data.result?.data || [];
 
   const style = useMemo(

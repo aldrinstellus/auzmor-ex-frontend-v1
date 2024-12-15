@@ -5,8 +5,6 @@ import Card from 'components/Card';
 import { formatDate } from 'components/CelebrationWidget/utils';
 import Icon from 'components/Icon';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
-import { useShouldRender } from 'hooks/useShouldRender';
-import { useEventAttendee, useInfiniteLearnEvents } from 'queries/learn';
 import React, { FC, useMemo } from 'react';
 import { getLearnUrl } from 'utils/misc';
 import { getTimeDifference } from 'utils/time';
@@ -15,32 +13,33 @@ import Skeleton from 'react-loading-skeleton';
 import EmptyState from './Component/EmptyState';
 import TimeChip from './Component/TimeChip';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
+import useAuth from 'hooks/useAuth';
+import { FRONTEND_VIEWS } from 'interfaces';
 
 export interface IEventWidgetProps {
   className?: string;
 }
-const ID = 'EventWidget';
 
 const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
   const { currentTimezone } = useCurrentTimezone();
-  const shouldRender = useShouldRender(ID);
   const { t } = useTranslation('learnWidget', { keyPrefix: 'eventWidget' });
-
-  if (!shouldRender) {
-    return <></>;
-  }
+  const { getApi } = usePermissions();
+  const { user } = useAuth();
 
   let isLive = true;
   const style = useMemo(
     () => clsx({ 'min-w-[240px]': true, [className]: true }),
     [className],
   );
+  const useInfiniteEvents = getApi(ApiEnum.GetEvents);
   const { data: ongoingEvents, isLoading: isLoadingOngoing } =
-    useInfiniteLearnEvents({
+    useInfiniteEvents({
       q: { limit: 1, filter: 'ONGOING' },
     });
   const { data: upcomingEvents, isLoading: isLoadingUpcoming } =
-    useInfiniteLearnEvents({
+    useInfiniteEvents({
       q: { limit: 1, filter: 'UPCOMING' },
     });
   const isLoading = isLoadingOngoing || isLoadingUpcoming;
@@ -54,7 +53,8 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
     );
   }
   const event = events?.[0];
-  const { data: attendees } = useEventAttendee(event?.id);
+  const useEventAttendees = getApi(ApiEnum.GetEventAttendees);
+  const { data: attendees } = useEventAttendees({ eventId: event?.id });
   const eventsAttendees = attendees?.data?.result?.data?.map(
     (attendee: any) => ({
       id: attendee.id,
@@ -84,11 +84,18 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
           className="border-0 !bg-transparent !px-0 !py-1 group"
           labelClassName=" text-primary-500 hover:text-primary-600  group-focus:text-primary-500"
           onClick={() => {
-            window.location.assign(
-              `${getLearnUrl()}/user/trainings?type=events&tab=${
-                isLive ? 'ONGOING' : 'UPCOMING'
-              }`,
-            );
+            if (user?.preferences?.learnerViewType === FRONTEND_VIEWS.modern)
+              window.location.assign(
+                `${getLearnUrl()}/user/trainings?type=events&tab=${
+                  isLive ? 'ONGOING' : 'UPCOMING'
+                }`,
+              );
+            else
+              window.location.assign(
+                `${getLearnUrl()}/user/events/${
+                  isLive ? 'ongoing' : 'upcoming'
+                }`,
+              );
           }}
         />
       </div>

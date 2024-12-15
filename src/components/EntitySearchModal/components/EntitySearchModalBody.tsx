@@ -18,6 +18,8 @@ interface IEntitySearchModalBodyProps {
   disableKey?: string;
   dataTestId?: string;
   fetchUsers?: ApiCallFunction;
+  fetchTeams?: ApiCallFunction;
+  fetchChannels?: ApiCallFunction;
   usersQueryParams?: Record<string, any>;
 }
 
@@ -33,6 +35,8 @@ const EntitySearchModalBody: FC<IEntitySearchModalBodyProps> = ({
   dataTestId,
   disableKey,
   fetchUsers,
+  fetchTeams,
+  fetchChannels,
   usersQueryParams,
 }) => {
   switch (entityType) {
@@ -56,6 +60,7 @@ const EntitySearchModalBody: FC<IEntitySearchModalBodyProps> = ({
           entityRenderer={entityRenderer}
           selectedTeamIds={selectedTeamIds}
           dataTestId={dataTestId || 'team'}
+          fetchTeams={fetchTeams}
         />
       );
     case EntitySearchModalType.Channel:
@@ -64,6 +69,7 @@ const EntitySearchModalBody: FC<IEntitySearchModalBodyProps> = ({
           entityRenderer={entityRenderer}
           selectedChannelIds={selectedChannelIds}
           dataTestId={dataTestId || 'channel'}
+          fetchChannels={fetchChannels}
         />
       );
     case EntitySearchModalType.ChannelMembers:

@@ -6,17 +6,17 @@ import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 import { useMutation } from '@tanstack/react-query';
-import { forgotPassword } from 'queries/account';
 import 'utils/custom-yup-validators/email/validateEmail';
 import { useBrandingStore } from 'stores/branding';
 import { getSubDomain, isDark } from 'utils/misc';
-import { useGetSSOFromDomain } from 'queries/organization';
 import clsx from 'clsx';
 import { usePageTitle } from 'hooks/usePageTitle';
 import { useTranslation } from 'react-i18next';
 import { Success } from 'components/Logo';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface IForgotPasswordProps {}
 
@@ -31,7 +31,9 @@ const schema = yup.object({
 const ForgotPassword: FC<IForgotPasswordProps> = () => {
   usePageTitle('forgotPassword');
   const navigate = useNavigate();
+  const { getApi } = usePermissions();
   const { t } = useTranslation('auth', { keyPrefix: 'forgotPassword' });
+  const forgotPassword = getApi(ApiEnum.ForgotPassword);
   const forgotPasswordMutation = useMutation((formData: any) =>
     forgotPassword(formData),
   );
@@ -71,6 +73,7 @@ const ForgotPassword: FC<IForgotPasswordProps> = () => {
   };
 
   const domain = getSubDomain(window.location.host);
+  const useGetSSOFromDomain = getApi(ApiEnum.GetOrganizationDomain);
   const { isFetching } = useGetSSOFromDomain(
     domain,
     domain !== '' ? true : false,

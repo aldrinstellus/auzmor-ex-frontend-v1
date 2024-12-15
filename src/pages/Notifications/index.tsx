@@ -1,11 +1,10 @@
-import UserCard from 'components/UserWidget';
 import { FC, ReactElement, ReactNode, useState } from 'react';
-import NotificationSettingsCard from './components/NotificationSettingsCard';
 import Card from 'components/Card';
 import Button, { Variant } from 'components/Button';
 import NotificationsListing from './components/NotificationsListing';
-import { useShouldRender } from 'hooks/useShouldRender';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { usePermissions } from 'hooks/usePermissions';
+import { ComponentEnum } from 'utils/permissions/enums/componentEnum';
 
 enum NotificationType {
   ALL = 'ALL',
@@ -39,8 +38,12 @@ const Notifications: FC = (): ReactElement => {
   usePageTitle('notifications');
   const [notificationsList, setNotificationsList] =
     useState<NotificationButtonGroup>(buttonGroup[0]);
+  const { getComponent } = usePermissions();
 
-  const shouldRender = useShouldRender('NotificationSettingsCard');
+  const UserCard = getComponent(ComponentEnum.UserCardWidget) || <></>;
+  const NotificationSettingsCard = getComponent(
+    ComponentEnum.NotificationSettingsWidget,
+  );
 
   return (
     <>
@@ -74,7 +77,7 @@ const Notifications: FC = (): ReactElement => {
           </Card>
           <div className="mt-4">{notificationsList.component}</div>
         </div>
-        {shouldRender && (
+        {NotificationSettingsCard && (
           <div className="w-[293px]">
             <NotificationSettingsCard />
           </div>

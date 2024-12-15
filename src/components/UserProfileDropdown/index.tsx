@@ -1,18 +1,18 @@
 import { FC, ReactNode } from 'react';
-import useAuth from 'hooks/useAuth';
 import PopupMenu from 'components/PopupMenu';
-import { UserRole, UserStatus } from 'queries/users';
-import useRole from 'hooks/useRole';
 import Button, { Variant, Size } from 'components/Button';
-import useProduct from 'hooks/useProduct';
 import { useTranslation } from 'react-i18next';
+import { PeopleCardPermissionEnum } from 'pages/Users/components/People/PeopleCard';
 
 export interface IUserDropdownProps {
-  id: string;
-  role: string;
-  status: string | undefined;
   isHovered?: boolean;
   parentIsUserProfile?: boolean;
+  triggerNode: ReactNode;
+  showOnHover: boolean;
+  className: string;
+  loggedInUserId?: string;
+  showDirectOption?: boolean;
+  permissions: PeopleCardPermissionEnum[];
   onEditClick?: any;
   onPromoteClick?: any;
   onDeactivateClick?: any;
@@ -20,53 +20,30 @@ export interface IUserDropdownProps {
   onDeleteClick?: any;
   onResendInviteClick?: any;
   onRemoveTeamMember?: any;
-  triggerNode: ReactNode;
-  showOnHover: boolean;
-  className: string;
-  loggedInUserId?: string;
-  isTeamPeople?: boolean;
-  showDirectOption?: boolean;
-  isChannelPeople?: boolean;
-  userId?: string;
-  isChannelAdmin?: boolean;
   onRemoveChannelMember?: any;
 }
 
 const UserProfileDropdown: FC<IUserDropdownProps> = ({
-  id,
-  role,
-  status,
   isHovered,
+  onDeleteClick,
+  triggerNode,
+  showOnHover,
+  className,
+  showDirectOption = false,
+  permissions,
   onEditClick,
   onPromoteClick,
   onDeactivateClick,
   onReactivateClick,
   onResendInviteClick,
   onRemoveTeamMember,
-  onDeleteClick,
-  triggerNode,
-  showOnHover,
-  isTeamPeople,
-  className,
-  isChannelPeople,
-  showDirectOption = false,
-  userId,
-  isChannelAdmin,
   onRemoveChannelMember,
 }) => {
   const { t } = useTranslation('components', {
     keyPrefix: 'userProfileDropdown',
   });
-  const { user } = useAuth();
-  const { isAdmin } = useRole();
   const _options = [];
-  const { isLxp } = useProduct();
-  if (
-    isChannelPeople &&
-    isChannelAdmin &&
-    role == UserRole.Member &&
-    user?.id != userId
-  ) {
+  if (permissions.includes(PeopleCardPermissionEnum.CanPromote)) {
     _options.push({
       icon: 'promoteUser',
       label: t('promoteToAdmin'),
@@ -74,7 +51,7 @@ const UserProfileDropdown: FC<IUserDropdownProps> = ({
       onClick: onPromoteClick,
     });
   }
-  if (isChannelPeople && isChannelAdmin && user?.id != userId) {
+  if (permissions.includes(PeopleCardPermissionEnum.CanRemoveFromChannel)) {
     _options.push({
       icon: 'deactivateUser',
       label: <div className="text-red-500">{t('removeFromChannel')}</div>,
@@ -83,83 +60,59 @@ const UserProfileDropdown: FC<IUserDropdownProps> = ({
       iconClassName: '!text-red-500',
     });
   }
+  if (permissions.includes(PeopleCardPermissionEnum.CanRemoveFromTeam)) {
+    _options.push({
+      icon: 'forbidden',
+      label: <div className="text-red-500">{t('remove')}</div>,
+      dataTestId: 'people-card-ellipsis-remove-member',
+      onClick: onRemoveTeamMember,
+      iconClassName: '!text-red-500',
+    });
+  }
+  if (permissions.includes(PeopleCardPermissionEnum.CanEdit)) {
+    _options.push({
+      icon: 'edit',
+      label: t('edit'),
+      dataTestId: 'user-edit',
+      onClick: onEditClick,
+    });
+  }
 
-  if (isTeamPeople) {
-    if (isAdmin && !isLxp) {
-      _options.push({
-        icon: 'forbidden',
-        label: <div className="text-red-500">{t('remove')}</div>,
-        dataTestId: 'people-card-ellipsis-remove-member',
-        onClick: onRemoveTeamMember,
-        iconClassName: '!text-red-500',
-      });
-    }
-  } else {
-    if ((id === user?.id || isAdmin) && !isLxp) {
-      _options.push({
-        icon: 'edit',
-        label: t('edit'),
-        dataTestId: 'user-edit',
-        onClick: onEditClick,
-      });
-    }
+  if (permissions.includes(PeopleCardPermissionEnum.CanResendInvite)) {
+    _options.push({
+      icon: 'redo',
+      label: t('resendInvite'),
+      dataTestId: 'people-card-ellipsis-resend-invite',
+      onClick: onResendInviteClick,
+    });
+  }
 
-    if (
-      isAdmin &&
-      [UserStatus.Invited, UserStatus.Created].includes(status as any)
-    ) {
-      _options.push({
-        icon: 'redo',
-        label: t('resendInvite'),
-        dataTestId: 'people-card-ellipsis-resend-invite',
-        onClick: onResendInviteClick,
-      });
-    }
+  if (permissions.includes(PeopleCardPermissionEnum.CanReactivate)) {
+    _options.push({
+      icon: 'reactivateUser',
+      label: t('reactivateUser'),
+      dataTestId: 'user-reactivate',
+      onClick: onReactivateClick,
+    });
+  }
 
-    if (isAdmin && role === UserRole.Member && status === UserStatus.Active) {
-      _options.push({
-        icon: 'promoteUser',
-        label: t('promoteToAdmin'),
-        dataTestId: 'user-promoteToAdmin',
-        onClick: onPromoteClick,
-      });
-    }
+  if (permissions.includes(PeopleCardPermissionEnum.CanDeactivate)) {
+    _options.push({
+      icon: 'deactivateUser',
+      label: t('deactivateUser'),
+      dataTestId: 'user-deactivate',
+      onClick: onDeactivateClick,
+    });
+  }
 
-    if (
-      [UserStatus.Inactive, UserStatus.Active].includes(status as any) &&
-      role !== UserRole.Superadmin &&
-      id !== user?.id &&
-      isAdmin
-    ) {
-      _options.push({
-        icon:
-          (status as any) === UserStatus.Inactive
-            ? 'reactivateUser'
-            : 'deactivateUser',
-        label:
-          (status as any) === UserStatus.Inactive
-            ? t('reactivateUser')
-            : t('deactivateUser'),
-        dataTestId:
-          (status as any) === UserStatus.Inactive
-            ? 'user-deactivate'
-            : 'user-reactivate',
-        onClick:
-          (status as any) === UserStatus.Inactive
-            ? onReactivateClick
-            : onDeactivateClick,
-      });
-    }
-
-    if (isAdmin && id !== user?.id && !isLxp) {
-      _options.push({
-        icon: 'forbidden',
-        label: <div className="text-red-500">{t('removeAccount')}</div>,
-        dataTestId: 'people-card-ellipsis-remove-user',
-        onClick: onDeleteClick,
-        iconClassName: '!text-red-500',
-      });
-    }
+  if (permissions.includes(PeopleCardPermissionEnum.CanDelete)) {
+    _options.push({
+      icon: 'forbidden',
+      label: <div className="text-red-500">{t('removeAccount')}</div>,
+      dataTestId: 'people-card-ellipsis-remove-user',
+      onClick: onDeleteClick,
+      iconClassName: '!text-red-500',
+    });
   }
 
   if (showDirectOption && _options.length === 1) {

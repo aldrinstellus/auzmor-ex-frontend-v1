@@ -3,13 +3,14 @@ import Header from './Header';
 import { useDocumentPath } from 'hooks/useDocumentPath';
 import Folder, { FolderType } from './Folder';
 import Doc from './Doc';
-import { useFiles, useFolders } from 'queries/storage';
 import Skeleton from 'react-loading-skeleton';
 import Card from 'components/Card';
 import Button, { Variant } from 'components/Button';
-import { DocType } from 'queries/files';
+import { DocType } from 'interfaces';
 import { useAppliedFiltersForDoc } from 'stores/appliedFiltersForDoc';
 import moment from 'moment';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface IFolderNavigatorProps {
   showFiles: boolean;
@@ -20,6 +21,7 @@ const FolderNavigator: FC<IFolderNavigatorProps> = ({
   showFiles,
   showFolders,
 }) => {
+  const { getApi } = usePermissions();
   const { path, appendFolder } = useDocumentPath();
   const { filters } = useAppliedFiltersForDoc();
 
@@ -31,6 +33,7 @@ const FolderNavigator: FC<IFolderNavigatorProps> = ({
   }, [path]);
 
   // Fetch folder data
+  const useFolders = getApi(ApiEnum.GetStorageFolders);
   const { data: folderData, isLoading: folderLoading } = useFolders({
     parentFolderId: getFolderId(),
   });
@@ -50,6 +53,7 @@ const FolderNavigator: FC<IFolderNavigatorProps> = ({
   );
 
   // fetch files data
+  const useFiles = getApi(ApiEnum.GetStorageFiles);
   const { data: fileData, isLoading: fileLoading } = useFiles({
     folderId: getFolderId(),
   });

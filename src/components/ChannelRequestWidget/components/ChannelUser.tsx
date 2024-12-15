@@ -6,14 +6,12 @@ import Icon from 'components/Icon';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import Truncate from 'components/Truncate';
-import {
-  approveChannelJoinRequest,
-  rejectChannelJoinRequest,
-} from 'queries/channel';
+import { usePermissions } from 'hooks/usePermissions';
 import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { IChannelRequest } from 'stores/channelStore';
 import { getProfileImage } from 'utils/misc';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import queryClient from 'utils/queryClient';
 
 interface IUserRowProps {
@@ -27,6 +25,8 @@ const ChannelUserRow: FC<IUserRowProps> = ({ request, className = '' }) => {
   const { t } = useTranslation('channelDetail', {
     keyPrefix: 'channelRequestWidget',
   });
+  const { getApi } = usePermissions();
+  const approveChannelJoinRequest = getApi(ApiEnum.ApproveJoinChannelRequest);
   const approveMutation = useMutation({
     mutationKey: ['approve-channel-join-request'],
     mutationFn: () => approveChannelJoinRequest(request.channel.id, id),
@@ -41,6 +41,8 @@ const ChannelUserRow: FC<IUserRowProps> = ({ request, className = '' }) => {
       queryClient.invalidateQueries(['channel-requests'], { exact: false });
     },
   });
+
+  const rejectChannelJoinRequest = getApi(ApiEnum.RejectJoinChannelRequest);
   const rejectMutation = useMutation({
     mutationKey: ['reject-channel-join-request'],
     mutationFn: () => rejectChannelJoinRequest(request.channel.id, id),

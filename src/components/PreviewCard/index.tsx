@@ -1,7 +1,7 @@
 import Card from 'components/Card';
 import IconPreview from 'components/PreviewLink/components/IconPreview';
 import ImagePreview from 'components/PreviewLink/components/ImagePreview';
-import { Metadata } from 'components/PreviewLink/types';
+import { Metadata } from 'interfaces';
 import { FC, useMemo } from 'react';
 
 type PreviewCardProps = {

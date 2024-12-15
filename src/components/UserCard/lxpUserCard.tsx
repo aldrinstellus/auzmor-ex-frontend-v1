@@ -3,14 +3,17 @@ import Spinner from 'components/Spinner';
 import Skeleton from 'react-loading-skeleton';
 import Icon from 'components/Icon';
 import { getInitials } from 'utils/misc';
-import { getUser } from 'queries/users';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 const LxpUserCard = ({ userId, className }: any) => {
   const style = clsx('flex items-start h-20', className);
+  const { getApi } = usePermissions();
   const { t } = useTranslation('profile');
 
+  const getUser = getApi(ApiEnum.GetUserApi);
   const { data, isLoading } = useQuery(
     ['user', userId],
     () => getUser(userId),

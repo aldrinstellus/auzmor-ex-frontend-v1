@@ -3,6 +3,10 @@
     "title": "User Login",
     "description": "Securely log in to your account."
   },
+  "announcements": {
+    "title": "announcements",
+    "description": "View and manage your announcement post."
+  },
   "signup": {
     "title": "Sign Up",
     "description": "Create a new account."

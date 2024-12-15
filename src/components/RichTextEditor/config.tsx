@@ -1,13 +1,14 @@
 import { renderToString } from 'react-dom/server';
 import ReactionSkeleton from 'components/Post/components/ReactionModal/ReactionSkeleton';
-import apiService from 'utils/apiService';
+import apiService, { getProduct, ProductEnum } from 'utils/apiService';
 import {
   createMentionsList,
   createHashtagsList,
   newHashtags,
 } from './mentions/utils';
 import { extractFirstWord } from 'utils/misc';
-import { UserStatus } from 'queries/users';
+import { UserStatus } from 'interfaces';
+import { mapUser } from 'queries/learn/users';
 
 // interface IOrg {
 //   id: string;
@@ -47,11 +48,22 @@ export const previewLinkRegex = /(http|https):\/\/[^\s]+/gi;
 const mentionEntityFetch = async (character: string, searchTerm: string) => {
   const isContainWhiteSpace = /^\s/.test(searchTerm);
   if (character === '@' && !isContainWhiteSpace) {
-    const { data: mentions } = await apiService.get('/users', {
-      q: searchTerm,
-      status: [UserStatus.Active],
-    });
-    const mentionList = mentions?.result?.data;
+    const getAllUser =
+      getProduct() === ProductEnum.Lxp
+        ? apiService.get('/users/list', {
+            q: searchTerm || '',
+            status: [UserStatus.Active],
+          })
+        : apiService.get('/users', {
+            q: searchTerm,
+            status: [UserStatus.Active],
+          });
+    const { data: mentions } = await getAllUser;
+    const mentionList =
+      getProduct() === ProductEnum.Lxp
+        ? mentions?.result?.data.map(mapUser)
+        : mentions?.result?.data;
+
     return createMentionsList(mentionList, character);
   } else if (character === '#' && !isContainWhiteSpace) {
     const hashtag = extractFirstWord(searchTerm);
@@ -115,7 +127,12 @@ export const mention = {
                             ${
                               item?.firstName?.charAt(0) +
                                 item?.lastName?.charAt(0) ||
-                              item?.fullName?.charAt(0).toUpperCase()
+                              item?.fullName
+                                ?.split(' ')
+                                .map((name: any) =>
+                                  name.charAt(0).toUpperCase(),
+                                )
+                                .join('')
                             }
                         </div>`
                   }

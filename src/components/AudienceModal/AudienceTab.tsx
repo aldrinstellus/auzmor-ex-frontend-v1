@@ -1,12 +1,12 @@
-import { IAudience } from 'queries/audience';
+import { IAudience, AudienceEntityType } from 'interfaces';
 import { FC, memo, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import AudienceRow from './AudienceRow';
 import AudienceSkeleton from './AudienceSkeleton';
 import AudienceRowSkeleton from './AudienceRowSkeleton';
-import { AudienceEntityType } from 'queries/post';
-import { useInfiniteAudience } from 'queries/audience';
 import { isFiltersEmpty } from 'utils/misc';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 export interface IAudienceTabProps {
   entity: 'apps' | 'posts';
   entityId: string;
@@ -23,6 +23,8 @@ const AudienceTab: FC<IAudienceTabProps> = ({
     root: document.getElementById(rootId),
     rootMargin: '20%',
   });
+  const { getApi } = usePermissions();
+  const useInfiniteAudience = getApi(ApiEnum.GetAudience);
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useInfiniteAudience(entity, entityId, isFiltersEmpty({ entityType }));
 

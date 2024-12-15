@@ -1,5 +1,6 @@
+import useNavigate from 'hooks/useNavigation';
 import { FC, ReactElement, useRef } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 type HashtagProps = {
   value: string;

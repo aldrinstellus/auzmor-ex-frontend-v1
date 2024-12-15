@@ -22,7 +22,7 @@ const Divider = ({
           'w-full h-px': variant === Variant.Horizontal,
         },
         {
-          'h-full w-px': variant === Variant.Vertical,
+          'w-px self-stretch': variant === Variant.Vertical,
         },
         { 'bg-neutral-200': true },
         { [className]: true },

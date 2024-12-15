@@ -8,7 +8,6 @@ import RequireAuth from 'components/RequireAuth';
 import Notifications from 'pages/Notifications';
 import { lazy } from 'react';
 import RequireAdminAuth from 'components/RequireAdminAuth';
-import RequireOfficeAuth from 'components/RequireOfficeAuth';
 import RequireNonProdAuth from 'components/RequireNonProdAuth';
 import { ChannelDetailTabsEnum } from 'pages/ChannelDetail';
 
@@ -48,50 +47,19 @@ const routers = createBrowserRouter(
       <Route element={<RequireAuth />}>
         <Route path="/" element={<Navigate to="/feed" replace={true} />} />
         <Route path="/home" element={<HomeFeed />} />
-        <Route element={<RequireOfficeAuth />}>
-          <Route // users route  is not required in lxp
-            path="/users"
-            element={<Users />}
-          />
-        </Route>
+        <Route path="/users" element={<Users />} />
         <Route path="/teams" element={<Users />} />
-        <Route element={<RequireOfficeAuth />}>
-          <Route // users details route  is not required in lxp
-            path="/users/:userId"
-            element={<UserDetail />}
-            loader={async () => {
-              // ⬇️ loader fetch data as earlier as possible
-              return '';
-            }}
-          />
-        </Route>
-        <Route
-          path="/teams/:teamId"
-          element={<TeamDetail />}
-          loader={({}) => {
-            // ⬇️ loader fetch data as earlier as possible
-            return '';
-          }}
-        />
-        <Route element={<RequireOfficeAuth />}>
-          <Route
-            path="/profile"
-            element={<UserDetail />}
-            loader={() => {
-              return '';
-            }}
-          />
-        </Route>
+        <Route path="/users/:userId" element={<UserDetail />} />
+        <Route path="/teams/:teamId" element={<TeamDetail />} />
+        <Route path="/profile" element={<UserDetail />} />
         <Route path="/apps" element={<Apps />} />
-        <Route path="/user/apps" element={<Apps />} />
         <Route path="/apps/:id/launch" element={<AppLaunchPage />} />
         <Route path="/scheduledPosts" element={<HomeFeed />} />
         <Route path="/bookmarks" element={<HomeFeed />} />
+        <Route path="/announcements" element={<HomeFeed />} />
         <Route path="/feed" element={<HomeFeed />} />
-        <Route element={<RequireOfficeAuth />}>
-          <Route path="/settings" element={<UserSettings />} />
-        </Route>
-        <Route element={<RequireAdminAuth /> && <RequireOfficeAuth />}>
+        <Route path="/settings" element={<UserSettings />} />
+        <Route element={<RequireAdminAuth />}>
           <Route path="/admin" element={<Admin />} />
         </Route>
         <Route path="/posts/:id" element={<PostPage />} />

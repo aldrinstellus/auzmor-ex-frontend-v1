@@ -53,14 +53,20 @@ function createMentionsList(mentionsList, character) {
   // eslint-disable-next-line array-callback-return
   mentionsList &&
     mentionsList.map((mention) => {
-      const val = (mention?.preferredName?.trim() ?? '') || mention?.fullName;
-
+      const val =
+        (mention?.preferredName?.trim() ?? '') ||
+        mention?.fullName ||
+        mention?.name;
       atValues.push({
         ...mention,
         charDenotation: character,
         name: val,
         value: val,
+        fullName: val,
+        workEmail:
+          mention?.email || mention?.additional_info?.designation || '',
         avatar: null, // profile image
+        preferredName: mention?.preferredName || val,
         title: 'Anything', // Profile Designation
       });
     });

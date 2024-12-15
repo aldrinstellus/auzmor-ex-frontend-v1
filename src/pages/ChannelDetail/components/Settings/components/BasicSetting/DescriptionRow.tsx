@@ -9,10 +9,11 @@ import Layout, { FieldType } from 'components/Form';
 import { useParams } from 'react-router-dom';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import InfoRow from 'components/ProfileInfo/components/InfoRow';
-import { updateChannel } from 'queries/channel';
 import { IChannel } from 'stores/channelStore';
 import { useTranslation } from 'react-i18next';
 import Truncate from 'components/Truncate';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type AppProps = {
   channelData: IChannel;
@@ -26,12 +27,14 @@ const DescriptionRow: FC<AppProps> = ({ channelData, canEdit }) => {
   const { channelId = '' } = useParams();
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);
+  const { getApi } = usePermissions();
 
   //channel description
   const schema = yup.object({
     name: yup.string(),
   });
   // channel update api call
+  const updateChannel = getApi(ApiEnum.UpdateChannel);
   const updateChannelMutation = useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: any }) =>
       updateChannel(id, payload),

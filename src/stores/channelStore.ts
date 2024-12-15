@@ -2,7 +2,7 @@ import { IUser } from 'contexts/AuthContext';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import _ from 'lodash';
-import { IUserDetails } from 'queries/users';
+import { IUserDetails } from 'interfaces';
 
 export enum CHANNEL_MEMBER_STATUS {
   PENDING = 'PENDING',

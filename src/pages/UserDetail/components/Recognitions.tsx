@@ -1,12 +1,10 @@
 import Post from 'components/Post';
-import {
-  useInfiniteMyRecognitionFeed,
-  useInfinitePeopleProfileRecognitionFeed,
-} from 'queries/post';
 import NoDataCard from './NoDataCard';
 import { useFeedStore } from 'stores/feedStore';
 import { FC } from 'react';
 import SkeletonLoader from 'components/Feed/components/SkeletonLoader';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export type AppProps = {
   data: any;
@@ -19,13 +17,14 @@ export type AppProps = {
 
 const Recognitions: FC<AppProps> = ({ data, pathname, userId }) => {
   const { feed } = useFeedStore();
-
+  const { getApi } = usePermissions();
   if (pathname === '/profile') {
+    const useInfiniteMyRecognitionFeed = getApi(ApiEnum.GetMyRecognitionPosts);
     const { data: myProfileFeed, isLoading: myProfileFeedLoading } =
       useInfiniteMyRecognitionFeed();
 
     const feedIds = (
-      (myProfileFeed?.pages.flatMap((page) =>
+      (myProfileFeed?.pages.flatMap((page: any) =>
         page.data?.result?.data?.map((post: { id: string }) => post),
       ) as { id: string }[]) || []
     )
@@ -56,11 +55,14 @@ const Recognitions: FC<AppProps> = ({ data, pathname, userId }) => {
       </div>
     );
   } else {
+    const useInfinitePeopleProfileRecognitionFeed = getApi(
+      ApiEnum.GetUserRecognitionPosts,
+    );
     const { data: peopleProfileFeed, isLoading: isPeopleProfileFeedLoading } =
       useInfinitePeopleProfileRecognitionFeed(userId, {});
 
     const feedIds = (
-      (peopleProfileFeed?.pages.flatMap((page) =>
+      (peopleProfileFeed?.pages.flatMap((page: any) =>
         page.data?.result?.data.map((post: { id: string }) => post),
       ) as { id: string }[]) || []
     )

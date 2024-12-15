@@ -10,7 +10,7 @@ import Header from 'components/ModalHeader';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
-import { IPost, IPostPayload, updatePost } from 'queries/post';
+import { IPost, IPostPayload } from 'interfaces';
 import { useFeedStore } from 'stores/feedStore';
 import {
   afterXUnit,
@@ -19,6 +19,8 @@ import {
   getTimezoneNameFromIANA,
 } from 'utils/time';
 import timezones from 'utils/timezones.json';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface EditSchedulePostModalProp {
   closeModal?: () => void;
@@ -40,12 +42,14 @@ const EditSchedulePostModal: FC<EditSchedulePostModalProp> = ({
   schedule,
   post,
 }) => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('post', { keyPrefix: 'editSchedulePostModal' });
   const [timezoneFieldVisible, setTimezoneFieldVisible] = useState(false);
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
   const { currentTimezone } = useCurrentTimezone();
 
+  const updatePost = getApi(ApiEnum.UpdatePost);
   const updatePostMutation = useMutation({
     mutationKey: ['updatePostMutation'],
     mutationFn: (payload: IPostPayload) =>

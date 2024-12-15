@@ -6,29 +6,30 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import Layout, { FieldType } from 'components/Form';
 import Modal from 'components/Modal';
 import IconButton, {
-  Size,
+  Size as IconSize,
   Variant as IconVariant,
 } from 'components/IconButton';
 import DefaultCoverImage from 'images/png/CoverImage.png';
-import Button, { Variant as ButtonVariant } from 'components/Button';
+import Button, {
+  Size as ButtonSize,
+  Variant as ButtonVariant,
+} from 'components/Button';
 import Avatar from 'components/Avatar';
 import { Variant as InputVariant } from 'components/Input';
 import { getProfileImage, twConfig } from 'utils/misc';
 import { IUpdateProfileImage } from 'pages/UserDetail';
 import { useMutation } from '@tanstack/react-query';
-import { updateCurrentUser, updateUserById } from 'queries/users';
 import useAuth from 'hooks/useAuth';
 import queryClient from 'utils/queryClient';
 import Header from 'components/ModalHeader';
 import PopupMenu from 'components/PopupMenu';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
-import { useGooglePlaces } from 'queries/location';
-import { useInfiniteDepartments } from 'queries/department';
 import useRole from 'hooks/useRole';
-import { useInfiniteDesignations } from 'queries/designation';
 import { useDebounce } from 'hooks/useDebounce';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface IOptions {
   value: string;
@@ -76,6 +77,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
 }) => {
   const { t } = useTranslation('profile', { keyPrefix: 'EditProfileModal' });
   const { isAdmin } = useRole();
+  const { getApi } = usePermissions();
   const { userId = '' } = useParams();
   const {
     control,
@@ -136,6 +138,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
     locationSearchString || 'a',
     300,
   );
+  const useGooglePlaces = getApi(ApiEnum.GetGooglePlaces);
   const { data: fetchedLocations, isLoading: isLocationsLoading } =
     useGooglePlaces({
       q: debouncedLocationSearchValue,
@@ -173,6 +176,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
     },
   ];
 
+  const useInfiniteDesignations = getApi(ApiEnum.GetDesignations);
   const positionTitlefields = [
     {
       type: FieldType.CreatableSearch,
@@ -196,6 +200,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
     },
   ];
 
+  const useInfiniteDepartments = getApi(ApiEnum.GetDepartments);
   const departmentField = [
     {
       type: FieldType.CreatableSearch,
@@ -295,10 +300,12 @@ const EditProfileModal: FC<IEditProfileModal> = ({
     [],
   );
 
+  const updateCurrentUser = getApi(ApiEnum.UpdateMe);
+  const updateUserById = getApi(ApiEnum.UpdateUser);
   const updateUsersMutation = useMutation({
     mutationFn: userId
       ? (data: any) => updateUserById(userId, data)
-      : updateCurrentUser,
+      : (data: Record<string, any>) => updateCurrentUser(data),
     mutationKey: ['update-users-mutation'],
     onError: (error: any) => {
       console.log('API call resulted in error: ', error);
@@ -403,7 +410,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
                   icon="edit"
                   className="bg-white p-2.5 text-black"
                   variant={IconVariant.Secondary}
-                  size={Size.Medium}
+                  size={IconSize.Medium}
                   dataTestId="edit-coverpic-btn"
                 />
               </div>
@@ -426,7 +433,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
                   icon="edit"
                   className="bg-white m-0 absolute top-0 right-0 p-[7px] text-black"
                   variant={IconVariant.Secondary}
-                  size={Size.Medium}
+                  size={IconSize.Medium}
                   onClick={() => {
                     userProfileImageRef?.current?.click();
                   }}
@@ -453,7 +460,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
         <div className="flex justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
           <Button
             variant={ButtonVariant.Secondary}
-            size={Size.Small}
+            size={ButtonSize.Small}
             label={t('cancel')}
             className="mr-3"
             onClick={() => {
@@ -464,7 +471,7 @@ const EditProfileModal: FC<IEditProfileModal> = ({
           />
           <Button
             label={t('saveChanges')}
-            size={Size.Small}
+            size={ButtonSize.Small}
             disabled={!isValid}
             onClick={handleSubmit(onSubmit)}
             loading={updateUsersMutation.isLoading}

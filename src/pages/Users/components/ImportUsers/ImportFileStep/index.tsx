@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react';
 import ImportCsv from './ImportCsv';
 import ImportExcel from './ImportExcel';
 import Modal from 'components/Modal';
-import { parseImport } from 'queries/importUsers';
 import { useMutation } from '@tanstack/react-query';
 import Spinner from 'components/Spinner';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type AppProps = {
   open: boolean;
@@ -16,9 +17,11 @@ type AppProps = {
 };
 
 const ImportingFileStep: React.FC<AppProps> = (props) => {
+  const { getApi } = usePermissions();
   const isCsv = props.meta?.file?.name?.includes('.csv');
   const [loading, setLoading] = useState(true);
 
+  const parseImport = getApi(ApiEnum.ParseImport);
   const parseMutation = useMutation(() => parseImport(props.importId), {
     onSuccess: () => {
       props.setMeta((m: any) => ({ ...m, parsed: true }));

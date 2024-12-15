@@ -2,7 +2,7 @@ import AvatarList from 'components/AvatarList';
 import Icon from 'components/Icon';
 import React from 'react';
 import { truncate } from 'lodash';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 import { useTranslation } from 'react-i18next';
 
 interface ITeamCard {
@@ -11,6 +11,7 @@ interface ITeamCard {
   category: Record<string, any>;
   totalMembers: number;
   recentMembers: any;
+  onClick?: (id: string) => null;
 }
 
 const TeamCard: React.FC<ITeamCard> = ({
@@ -19,16 +20,23 @@ const TeamCard: React.FC<ITeamCard> = ({
   category,
   totalMembers,
   recentMembers,
+  onClick,
 }) => {
   const navigate = useNavigate();
   const { t } = useTranslation('team');
+
+  const handleClick = (id: string) => {
+    if (onClick) onClick(id);
+    else navigate(`/teams/${id}`);
+  };
+
   return (
     <div
       className="flex items-center gap-2"
       tabIndex={0}
       title={name}
-      onClick={() => navigate(`/teams/${id}`)}
-      onKeyUp={(e) => (e.code === 'Enter' ? navigate(`/teams/${id}`) : '')}
+      onClick={() => handleClick(id)}
+      onKeyUp={(e) => (e.code === 'Enter' ? handleClick(id) : '')}
       role="link"
     >
       <AvatarList

@@ -4,16 +4,15 @@ import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
 import Layout, { FieldType } from 'components/Form';
 import { useDebounce } from 'hooks/useDebounce';
-import { ICategory, useInfiniteCategories } from 'queries/category';
+import { ICategory, CategoryType } from 'interfaces';
 import { ICheckboxListOption } from 'components/CheckboxList';
 import Spinner from 'components/Spinner';
 import Icon from 'components/Icon';
 import ItemSkeleton from './ItemSkeleton';
-import { CategoryType } from 'queries/apps';
 import NoDataFound from 'components/NoDataFound';
-import { useInfiniteLearnCategory } from 'queries/learn';
-import useProduct from 'hooks/useProduct';
 import Truncate from 'components/Truncate';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface ICategoriesProps {
   control: Control<IFilterForm, any>;
@@ -28,7 +27,12 @@ const Categories: FC<ICategoriesProps> = ({
   setValue,
   type,
 }) => {
-  const { ref, inView } = useInView();
+  const rootId = 'category-filter-body';
+  const { ref, inView } = useInView({
+    root: document.getElementById(rootId),
+    rootMargin: '20%',
+  });
+  const { getApi } = usePermissions();
   useEffect(() => {
     if (inView) {
       fetchNextPage();
@@ -50,28 +54,24 @@ const Categories: FC<ICategoriesProps> = ({
     'categorySearch',
     'categoryCheckbox',
   ]);
-  const { isLxp } = useProduct();
+
   // fetch category from search input
   const debouncedCategorySearchValue = useDebounce(categorySearch || '', 300);
 
-  // hit learn category api for lxp
+  const useInfiniteCategories = getApi(ApiEnum.GetCategories);
   const {
     data: fetchedDCategory,
     isLoading,
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-  } = isLxp
-    ? useInfiniteLearnCategory({
-        q: debouncedCategorySearchValue,
-        limit: 30,
-      })
-    : useInfiniteCategories({
-        q: debouncedCategorySearchValue,
-        type,
-      });
+  } = useInfiniteCategories({
+    q: debouncedCategorySearchValue,
+    limit: 30,
+    type,
+  });
 
-  const categoryData = fetchedDCategory?.pages.flatMap((page) => {
+  const categoryData = fetchedDCategory?.pages.flatMap((page: any) => {
     return page.data?.result?.data?.map((category: ICategory) => category);
   });
   const categoryFields = [
@@ -98,7 +98,7 @@ const Categories: FC<ICategoriesProps> = ({
   return (
     <div className="px-2 py-4">
       <Layout fields={searchField} />
-      <div className="max-h-[330px] min-h-[330px] overflow-y-auto">
+      <div className="max-h-[330px] min-h-[330px] overflow-y-auto" id={rootId}>
         {!!categoryCheckbox?.length && (
           <ul className="flex mt-2 mb-3 flex-wrap">
             {categoryCheckbox.map((category: ICheckboxListOption) => (

@@ -5,10 +5,12 @@ import Button, { Variant } from 'components/Button';
 import Divider from 'components/Divider';
 import Icon from 'components/Icon';
 import Modal from 'components/Modal';
-import { IPost, updatePost } from 'queries/post';
+import { IPost } from 'interfaces';
 import { useFeedStore } from 'stores/feedStore';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type AppProps = {
   open: boolean;
@@ -17,10 +19,12 @@ type AppProps = {
 };
 
 const ClosePollModal: FC<AppProps> = ({ open, closeModal, data }) => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('post', { keyPrefix: 'closePollModal' });
   const getPost = useFeedStore((state) => state.getPost);
   const updateFeed = useFeedStore((state) => state.updateFeed);
 
+  const updatePost = getApi(ApiEnum.UpdatePost);
   const closePollMutation = useMutation({
     mutationKey: ['closePoll', data.id],
     mutationFn: (payload: any) => updatePost(payload.id || '', payload),

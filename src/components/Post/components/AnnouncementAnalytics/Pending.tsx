@@ -8,12 +8,12 @@ import AvatarRowSkeleton from './AvatarRowSkeleton';
 import AvatarRow from './AvatarRow';
 import PageLoader from 'components/PageLoader';
 import Button, { Variant } from 'components/Button';
-import { useInfiniteAcknowledgements } from 'queries/post';
 import { useMutation } from '@tanstack/react-query';
-import { createNewJob } from 'queries/job';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { useFeedStore } from 'stores/feedStore';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type AppProps = {
   postId: string;
@@ -25,10 +25,14 @@ const Pending: FC<AppProps> = ({ postId, closeModal }) => {
   const { t } = useTranslation('post', { keyPrefix: 'announcementAnalytics' });
   const updatePost = useFeedStore((state) => state.updateFeed);
   const post = useFeedStore((state) => state.getPost)(postId);
+  const { getApi } = usePermissions();
 
+  const sendAcknowledgementReminders = getApi(
+    ApiEnum.SendAcknowledgementReminders,
+  );
   const reminderMutation = useMutation(
     () =>
-      createNewJob({
+      sendAcknowledgementReminders({
         type: 'ACKNOWLEDGEMENT_REMINDER',
         postId: post.id,
       }),
@@ -44,8 +48,9 @@ const Pending: FC<AppProps> = ({ postId, closeModal }) => {
     },
   );
 
+  const useInfiniteAcknowledgements = getApi(ApiEnum.GetPostAcknowledgements);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteAcknowledgements(post.id, { acknowledged: false }, (data) =>
+    useInfiniteAcknowledgements(post.id, { acknowledged: false }, (data: any) =>
       updatePost(post.id, {
         ...post,
         acknowledgementStats: {
@@ -55,7 +60,7 @@ const Pending: FC<AppProps> = ({ postId, closeModal }) => {
       }),
     );
 
-  const usersData = data?.pages.flatMap((page) =>
+  const usersData = data?.pages.flatMap((page: any) =>
     page?.data?.result?.data.map((user: any) => user),
   );
 
@@ -113,7 +118,7 @@ const Pending: FC<AppProps> = ({ postId, closeModal }) => {
             <AvatarRowSkeleton />
           ) : (
             <div>
-              {usersData?.map((user) => (
+              {usersData?.map((user: any) => (
                 <AvatarRow key={user.id} {...user} />
               ))}
             </div>

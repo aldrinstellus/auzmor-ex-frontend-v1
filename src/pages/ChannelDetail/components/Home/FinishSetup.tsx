@@ -12,7 +12,7 @@ import ChannelImageModal from '../ChannelImageModal';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { IUpdateProfileImage } from 'pages/UserDetail';
 import EditImageModal from 'components/EditImageModal';
-import { EntityType } from 'queries/files';
+import { EntityType } from 'interfaces';
 import PostBuilder from 'components/PostBuilder';
 import { CreatePostFlow } from 'contexts/CreatePostContext';
 import { useFeedStore } from 'stores/feedStore';

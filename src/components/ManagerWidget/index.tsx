@@ -8,14 +8,9 @@ import IconWrapper, { Type } from 'components/Icon/components/IconWrapper';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useHover from 'hooks/useHover';
 import { isEmpty, omitBy } from 'lodash';
-import {
-  updateCurrentUser,
-  updateUserById,
-  useInfiniteUsers,
-} from 'queries/users';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   getFullName,
   getProfileImage,
@@ -24,6 +19,9 @@ import {
 import Tooltip, { Variant as TooltipVariant } from 'components/Tooltip';
 import UserCard from 'components/UserCard';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type AppProps = {
   data: Record<string, any>;
@@ -42,6 +40,8 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
   const { userId = '' } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation('profile');
+  const { getApi } = usePermissions();
+  const useInfiniteUsers = getApi(ApiEnum.GetUsers);
   const {
     data: users,
     isFetchingNextPage,
@@ -53,10 +53,12 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
     startFetching: true,
   });
 
+  const updateCurrentUser = getApi(ApiEnum.UpdateMe);
+  const updateUserById = getApi(ApiEnum.UpdateUser);
   const updateMutation = useMutation({
     mutationFn: userId
       ? (data: any) => updateUserById(userId, data)
-      : updateCurrentUser,
+      : (data: Record<string, any>) => updateCurrentUser(data),
     mutationKey: ['update-user-employeeId-mutation'],
     onError: (_error: any) => {},
     onSuccess: async (_response: any) => {
@@ -90,14 +92,8 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
     setIsEditable(false);
   };
 
-  const usersData = users?.pages.flatMap((page) => {
-    return page?.data?.result?.data.map((user: any) => {
-      try {
-        return user;
-      } catch (e) {
-        console.log('Error', { user });
-      }
-    });
+  const usersData = users?.pages.flatMap((page: any) => {
+    return page?.data?.result?.data.map((user: any) => user);
   });
 
   const fields = [
@@ -122,7 +118,7 @@ const ManagerWidget: React.FC<AppProps> = ({ data, canEdit }) => {
           dataTestId: member?.id,
           rowData: member,
         }))
-        .filter((member) => member.value !== data?.id),
+        .filter((member: any) => member.value !== data?.id),
       isFetchingNextPage,
       fetchNextPage,
       hasNextPage,

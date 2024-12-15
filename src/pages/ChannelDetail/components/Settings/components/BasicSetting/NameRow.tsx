@@ -8,9 +8,10 @@ import Layout, { FieldType } from 'components/Form';
 import { useParams } from 'react-router-dom';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import InfoRow from 'components/ProfileInfo/components/InfoRow';
-import { updateChannel } from 'queries/channel';
 import { IChannel } from 'stores/channelStore';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type AppProps = {
   data: IChannel;
@@ -19,6 +20,7 @@ type AppProps = {
 
 const NameRow: FC<AppProps> = ({ data, canEdit }) => {
   const { channelId = '' } = useParams();
+  const { getApi } = usePermissions();
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);
   const { t } = useTranslation('channels');
@@ -35,6 +37,7 @@ const NameRow: FC<AppProps> = ({ data, canEdit }) => {
   });
 
   // channel update api call
+  const updateChannel = getApi(ApiEnum.UpdateChannel);
   const updateChannelNameMutation = useMutation({
     mutationFn: (data: any) => updateChannel(channelId, data),
     mutationKey: ['update-channel-name-mutation'],

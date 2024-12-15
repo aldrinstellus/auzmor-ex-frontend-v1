@@ -9,13 +9,12 @@ import {
 import { ADD_APP_FLOW, IAddAppForm } from './AddApp';
 import UploadIconButton from './UploadIconButton';
 import Button, { Size, Variant } from 'components/Button';
-import { CategoryType, IAudience, useInfiniteCategories } from 'queries/apps';
-import { ICategoryDetail } from 'queries/category';
+import { IAudience, ICategoryDetail, CategoryType } from 'interfaces';
 import { FC } from 'react';
-import useProduct from 'hooks/useProduct';
-import { useInfiniteLearnCategory } from 'queries/learn';
 import { useTranslation } from 'react-i18next';
 import Truncate from 'components/Truncate';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type AppDetailsFormProps = {
   control: Control<IAddAppForm, any>;
@@ -36,7 +35,7 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
   icon,
   audience,
 }) => {
-  const { isLxp } = useProduct();
+  const { getApi } = usePermissions();
   const { t } = useTranslation('appLauncher', {
     keyPrefix: 'addDetailsForm',
   });
@@ -84,6 +83,8 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
     return transformedOption;
   };
 
+  const useInfiniteCategories = getApi(ApiEnum.GetCategories);
+
   const appFields = [
     {
       type: FieldType.Input,
@@ -125,8 +126,8 @@ const AppDetailsForm: FC<AppDetailsFormProps> = ({
       menuPlacement: 'topLeft',
       dataTestId: 'add-app-category',
       addItemDataTestId: 'add-app-add-category',
-      fetchQuery: isLxp ? useInfiniteLearnCategory : useInfiniteCategories,
-      queryParams: isLxp ? '' : { type: CategoryType.APP },
+      fetchQuery: useInfiniteCategories,
+      queryParams: { type: CategoryType.APP },
       getFormattedData: formatCategories,
     },
   ];

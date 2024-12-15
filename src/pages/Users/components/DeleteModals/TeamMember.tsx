@@ -1,8 +1,6 @@
-import IconButton, {
-  Size,
-  Variant as IconVariant,
-} from 'components/IconButton';
+import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import Button, {
+  Size,
   Variant as ButtonVariant,
   Type as ButtonType,
 } from 'components/Button';
@@ -11,9 +9,10 @@ import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
-import { removeTeamMember } from 'queries/teams';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export interface IRemoveTeamMemberProps {
   open: boolean;
@@ -29,9 +28,11 @@ const RemoveTeamMember: FC<IRemoveTeamMemberProps> = ({
   userId,
 }) => {
   const { t } = useTranslation('profile', { keyPrefix: 'removeTeamMember' });
-
+  const { getApi } = usePermissions();
+  const removeTeamMember = getApi(ApiEnum.RemoveTeamMembers);
   const onRemoveTeamMember = useMutation({
-    mutationFn: removeTeamMember,
+    mutationFn: (payload: { teamId: string; params: { userIds: string } }) =>
+      removeTeamMember(payload),
     mutationKey: ['remove-team-member'],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['team', teamId] });

@@ -1,5 +1,6 @@
 import { FC, ReactNode, useEffect, useState } from 'react';
 import './styles.css';
+import { clsx } from 'clsx';
 
 export interface ITab {
   tabLabel: (isActive: boolean) => string | ReactNode;
@@ -7,6 +8,7 @@ export interface ITab {
   tabAction?: ReactNode;
   dataTestId?: string;
   disabled?: boolean;
+  path?: string;
 }
 
 export interface ITabsProps {
@@ -15,29 +17,34 @@ export interface ITabsProps {
   activeTabIndex?: number;
   tabContentClassName?: string;
   className?: string;
-  itemSpacing?: number;
   showUnderline?: boolean;
   tabSwitcherClassName?: string;
   disableAnimation?: boolean;
   onTabChange?: (param: any) => void;
+  underlineOffset?: number;
 }
 
 const Tabs: FC<ITabsProps> = ({
   tabs,
   title,
   tabContentClassName = 'px-6',
-  className = 'w-full flex justify-start border-b-1 border border-neutral-200 px-8',
-  itemSpacing = 4,
+  className = '',
   showUnderline = true,
   tabSwitcherClassName = '',
   disableAnimation = false,
   onTabChange,
   activeTabIndex = 0,
+  underlineOffset = 0,
 }) => {
   const [activeTab, setActiveTab] = useState(activeTabIndex);
   const [previousTab, setPreviousTab] = useState(activeTab);
 
   useEffect(() => setActiveTab(activeTabIndex), [activeTabIndex]);
+
+  const style = clsx({
+    'w-full flex justify-start border-b-1 border-neutral-200 gap-4': true,
+    [className]: true,
+  });
 
   useEffect(() => {
     if (!disableAnimation) {
@@ -79,7 +86,7 @@ const Tabs: FC<ITabsProps> = ({
               {title}
             </h1>
           )}
-          <ul className={className}>
+          <ul className={style}>
             {tabs.map((tab, index) => (
               <li
                 className={`flex py-4 relative outline-none ${tabSwitcherClassName} ${
@@ -88,7 +95,7 @@ const Tabs: FC<ITabsProps> = ({
                       ? 'cursor-default'
                       : 'cursor-pointer hover:!text-neutral-900 group'
                     : 'cursor-not-allowed'
-                } ${index !== tabs.length - 1 && `mr-${itemSpacing}`}
+                }
             `}
                 onClick={() => handleTabSelect(tab, index)}
                 onKeyUp={(e) =>
@@ -101,7 +108,9 @@ const Tabs: FC<ITabsProps> = ({
               >
                 {tab.tabLabel(activeTab === index)}
                 {isActive(index) && showUnderline && (
-                  <div className="absolute bottom-0 bg-primary-500 w-full rounded-7xl h-1"></div>
+                  <div
+                    className={`absolute bg-primary-500 w-full rounded-7xl h-1 bottom-${underlineOffset} `}
+                  ></div>
                 )}
               </li>
             ))}

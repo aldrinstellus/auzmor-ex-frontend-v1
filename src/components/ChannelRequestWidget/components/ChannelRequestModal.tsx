@@ -3,7 +3,6 @@ import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import { FC, useEffect, useMemo } from 'react';
 import ChannelUserRow from './ChannelUser';
-import { useInfiniteChannelsRequest } from 'queries/channel';
 import { CHANNEL_MEMBER_STATUS, IChannelRequest } from 'stores/channelStore';
 import { useInView } from 'react-intersection-observer';
 import Spinner from 'components/Spinner';
@@ -12,6 +11,8 @@ import Divider from 'components/Divider';
 import { groupByDate } from 'utils/time';
 import Skeleton from 'react-loading-skeleton';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type ChannelRequestModalProps = {
   open: boolean;
@@ -26,6 +27,8 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
   const { t } = useTranslation('channelDetail', {
     keyPrefix: 'channelRequestWidget',
   });
+  const { getApi } = usePermissions();
+  const useInfiniteChannelsRequest = getApi(ApiEnum.GetJoinChannelRequests);
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isLoading } =
     useInfiniteChannelsRequest(
       channelId,
@@ -39,7 +42,7 @@ const ChannelRequestModal: FC<ChannelRequestModalProps> = ({
   const requests = useMemo(
     () =>
       groupByDate(
-        (data?.pages.flatMap((page) => {
+        (data?.pages.flatMap((page: any) => {
           return (
             page?.data?.result?.data.map((request: IChannelRequest) => {
               try {

@@ -10,9 +10,10 @@ import useProduct from 'hooks/useProduct';
 
 interface IProps {
   className?: string;
+  onClick?: () => void;
 }
 
-export const Logo = ({ className = '' }: IProps) => {
+export const Logo = ({ className = '', onClick }: IProps) => {
   const { isLxp } = useProduct();
   const branding = useBrandingStore((state) => state.branding);
   const style = useMemo(
@@ -20,15 +21,15 @@ export const Logo = ({ className = '' }: IProps) => {
       clsx({
         'h-[64px]': true,
         [className]: true,
-        'py-3': isLxp,
       }),
-    [className, isLxp],
+    [className],
   );
   return (
     <img
       src={branding?.logo?.original || (isLxp ? LxpLogoSvg : OfficeLogoSvg)}
       alt="Office Logo"
       className={style}
+      onClick={onClick}
     />
   );
 };

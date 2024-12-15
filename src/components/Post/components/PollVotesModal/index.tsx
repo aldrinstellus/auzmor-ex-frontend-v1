@@ -3,7 +3,7 @@ import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import Tabs from 'components/Tabs';
 import PollVoteTab from './PollVoteTab';
-import { IPost } from 'queries/post';
+import { IPost } from 'interfaces';
 import { FC } from 'react';
 
 export interface IPollVotesModalProps {
@@ -56,6 +56,7 @@ const PollVotesModal: FC<IPollVotesModalProps> = ({
               ),
             })),
           ]}
+          className="px-6"
         />
       ) : (
         <div className="flex flex-col w-full justify-center items-center gap-4 p-8">

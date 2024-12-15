@@ -1,4 +1,4 @@
-import { DocType } from 'queries/files';
+import { DocType } from 'interfaces';
 
 export const FILES: DocType[] = [
   {

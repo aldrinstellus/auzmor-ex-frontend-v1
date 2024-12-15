@@ -22,7 +22,6 @@ import { CommentsRTE, PostCommentMode } from './CommentsRTE';
 import ConfirmationBox from 'components/ConfirmationBox';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
-import { deleteComment } from 'queries/comments';
 import { useFeedStore } from 'stores/feedStore';
 import { useCommentStore } from 'stores/commentStore';
 import { produce } from 'immer';
@@ -32,6 +31,8 @@ import UserCard from 'components/UserCard';
 import useProduct from 'hooks/useProduct';
 import PopupMenu from 'components/PopupMenu';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface CommentProps {
   commentId: string;
@@ -55,6 +56,7 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
   const [showReplies, setShowReplies] = useState(false);
   const { user } = useAuth();
   const { isLxp } = useProduct();
+  const { getApi } = usePermissions();
   const previousShowReply = useRef<boolean>(false);
 
   const comment = storedcomments[commentId];
@@ -71,9 +73,10 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
     }
   }, [showReplies]);
 
+  const deleteComment = getApi(ApiEnum.DeleteComment);
   const deleteCommentMutation = useMutation({
     mutationKey: ['delete-comment-mutation'],
-    mutationFn: deleteComment,
+    mutationFn: (id: string) => deleteComment(id),
     onMutate: (variables) => {
       const previousData = storedcomments;
       const post = getPost(storedcomments[variables].entityId);

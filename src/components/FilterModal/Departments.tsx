@@ -3,7 +3,7 @@ import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
-import { IDepartment, useInfiniteDepartments } from 'queries/department';
+import { IDepartment } from 'interfaces';
 import { FC, useEffect } from 'react';
 import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
@@ -11,6 +11,8 @@ import { IFilterForm } from '.';
 import ItemSkeleton from './ItemSkeleton';
 import NoDataFound from 'components/NoDataFound';
 import Truncate from 'components/Truncate';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface IDepartmentsProps {
   control: Control<IFilterForm, any>;
@@ -20,11 +22,14 @@ interface IDepartmentsProps {
 
 const Departments: FC<IDepartmentsProps> = ({ control, watch, setValue }) => {
   const { ref, inView } = useInView();
+  const { getApi } = usePermissions();
+
   useEffect(() => {
     if (inView) {
       fetchNextPage();
     }
   }, [inView]);
+
   const searchField = [
     {
       type: FieldType.Input,
@@ -47,6 +52,7 @@ const Departments: FC<IDepartmentsProps> = ({ control, watch, setValue }) => {
     departmentSearch || '',
     300,
   );
+  const useInfiniteDepartments = getApi(ApiEnum.GetDepartments);
   const {
     data: fetchedDepartments,
     isLoading,
@@ -56,7 +62,7 @@ const Departments: FC<IDepartmentsProps> = ({ control, watch, setValue }) => {
   } = useInfiniteDepartments({
     q: debouncedDepartmentSearchValue,
   });
-  const departmentData = fetchedDepartments?.pages.flatMap((page) => {
+  const departmentData = fetchedDepartments?.pages.flatMap((page: any) => {
     return page.data.result.data.map((department: IDepartment) => department);
   });
 

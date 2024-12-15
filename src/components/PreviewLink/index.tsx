@@ -1,6 +1,5 @@
 import { FC, useContext } from 'react';
 
-import { usePreviewLink } from 'queries/post';
 import { useDebounce } from 'hooks/useDebounce';
 import IconButton, {
   Variant as IconVariant,
@@ -8,6 +7,8 @@ import IconButton, {
 } from 'components/IconButton';
 import PreviewCard from 'components/PreviewCard';
 import { CreatePostContext } from 'contexts/CreatePostContext';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export type LinkMetadataProps = {
   title?: string;
@@ -32,6 +33,8 @@ const PreviewLink: FC<PreviewLinkProps> = ({
   const { media, poll } = useContext(CreatePostContext);
   const debouncePreviewUrl = useDebounce(previewUrl, 1000);
 
+  const { getApi } = usePermissions();
+  const usePreviewLink = getApi(ApiEnum.GetLinkPreview);
   const { data, isLoading, isError } = usePreviewLink(debouncePreviewUrl);
 
   if (!previewUrl) {

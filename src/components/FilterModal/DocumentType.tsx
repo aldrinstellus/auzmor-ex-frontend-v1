@@ -4,7 +4,7 @@ import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { IFilterForm } from '.';
 import { titleCase } from 'utils/misc';
 import { ICheckboxListOption } from 'components/CheckboxList';
-import { IDocType } from 'queries/storage';
+import { IDocType } from 'interfaces';
 import Icon from 'components/Icon';
 
 interface IVisibilityProps {

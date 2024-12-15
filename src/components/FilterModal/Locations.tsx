@@ -3,7 +3,7 @@ import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
-import { ILocation, useInfiniteLocations } from 'queries/location';
+import { ILocation } from 'interfaces';
 import { FC, useEffect } from 'react';
 import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
@@ -11,6 +11,8 @@ import { IFilterForm } from '.';
 import ItemSkeleton from './ItemSkeleton';
 import NoDataFound from 'components/NoDataFound';
 import Truncate from 'components/Truncate';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface ILocationsProps {
   control: Control<IFilterForm, any>;
@@ -20,6 +22,7 @@ interface ILocationsProps {
 
 const Locations: FC<ILocationsProps> = ({ control, watch, setValue }) => {
   const { ref, inView } = useInView();
+  const { getApi } = usePermissions();
   useEffect(() => {
     if (inView) {
       fetchNextPage();
@@ -44,6 +47,7 @@ const Locations: FC<ILocationsProps> = ({ control, watch, setValue }) => {
 
   // fetch location from search input
   const debouncedLocationSearchValue = useDebounce(locationSearch || '', 300);
+  const useInfiniteLocations = getApi(ApiEnum.GetLocations);
   const {
     data: fetchedLocations,
     isLoading,
@@ -52,8 +56,8 @@ const Locations: FC<ILocationsProps> = ({ control, watch, setValue }) => {
     hasNextPage,
   } = useInfiniteLocations({
     q: debouncedLocationSearchValue,
-  });
-  const locationData = fetchedLocations?.pages.flatMap((page) => {
+  }) || {};
+  const locationData = fetchedLocations?.pages.flatMap((page: any) => {
     return page.data.result.data.map((location: ILocation) => location);
   });
 

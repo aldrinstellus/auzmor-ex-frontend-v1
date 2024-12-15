@@ -4,14 +4,14 @@ import { useTranslation } from 'react-i18next';
 
 interface EmptyStateProps {
   openModal?: () => void;
-  isAdmin: boolean;
+  canEdit: boolean;
 }
 
-const EmptyState: FC<EmptyStateProps> = ({ openModal, isAdmin }) => {
+const EmptyState: FC<EmptyStateProps> = ({ openModal, canEdit }) => {
   const { t } = useTranslation('channelLinksWidget', {
     keyPrefix: 'emptyState',
   });
-  const showAddLinks = isAdmin && !!openModal;
+  const showAddLinks = canEdit && !!openModal;
 
   return (
     <div className="w-full text-xs font-normal text-neutral-500">

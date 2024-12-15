@@ -9,13 +9,13 @@ import {
   getLearnUrl,
   userChannel,
 } from 'utils/misc';
-import { logout } from 'queries/account';
 import { useMutation } from '@tanstack/react-query';
 import useModal from 'hooks/useModal';
 import ContactSales from 'components/ContactSales';
 import useProduct from 'hooks/useProduct';
-import { learnLogout } from 'queries/learn';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 const SubscriptionExpired = () => {
   const { t } = useTranslation('components', {
@@ -23,9 +23,10 @@ const SubscriptionExpired = () => {
   });
   const { user, reset } = useAuth();
   const { isLxp } = useProduct();
+  const { getApi } = usePermissions();
   const [sales, showSales, closeSales] = useModal();
 
-  const logoutMutation = useMutation(isLxp ? learnLogout : logout, {
+  const logoutMutation = useMutation(getApi(ApiEnum.Logout), {
     onSuccess: async () => {
       reset();
       userChannel.postMessage({

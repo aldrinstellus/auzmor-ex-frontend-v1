@@ -6,18 +6,19 @@ import { Variant as InputVariant } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import { resetPassword, useTokenValidation } from 'queries/account';
 import PasswordExpiry from 'pages/PasswordExpiry';
 import clsx from 'clsx';
 import PageLoader from 'components/PageLoader';
 import { getSubDomain, isDark } from 'utils/misc';
-import { useGetSSOFromDomain } from 'queries/organization';
 import { useBrandingStore } from 'stores/branding';
 import OfficeLogoSvg from 'components/Logo/images/OfficeLogo.svg';
 import { usePageTitle } from 'hooks/usePageTitle';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface IForm {
   newPassword: string;
@@ -28,6 +29,7 @@ interface IForm {
 const ResetPassword = () => {
   usePageTitle('resetPassword');
 
+  const { getApi } = usePermissions();
   const { t } = useTranslation('auth', {
     keyPrefix: 'resetPassword',
   });
@@ -44,15 +46,19 @@ const ResetPassword = () => {
     token: yup.string(),
   });
 
+  const useTokenValidation = getApi(ApiEnum.ValidateToken);
   const { data, isLoading } = useTokenValidation(token || '');
 
   const domain = getSubDomain(window.location.host);
+
+  const useGetSSOFromDomain = getApi(ApiEnum.GetOrganizationDomain);
   const { isFetching: isDomainInfoLoading } = useGetSSOFromDomain(
     domain,
     domain !== '' ? true : false,
   );
   const branding = useBrandingStore((state) => state.branding);
 
+  const resetPassword = getApi(ApiEnum.ResetPassword);
   const resetPasswordMutation = useMutation((formData: any) =>
     resetPassword(formData),
   );

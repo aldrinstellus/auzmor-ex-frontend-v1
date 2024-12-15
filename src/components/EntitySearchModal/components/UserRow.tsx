@@ -1,6 +1,6 @@
 import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
-import { IGetUser } from 'queries/users';
+import { IGetUser } from 'interfaces';
 import { FC } from 'react';
 import { getProfileImage } from 'utils/misc';
 

@@ -11,11 +11,6 @@ import { Variant as InputVariant, Size as InputSize } from 'components/Input';
 import { useForm } from 'react-hook-form';
 import useModal from 'hooks/useModal';
 import AddApp from './components/AddApp';
-import {
-  useInfiniteApps,
-  useInfiniteCategories,
-  useInfiniteFeaturedApps,
-} from 'queries/apps';
 import { useAppStore } from 'stores/appStore';
 import { useDebounce } from 'hooks/useDebounce';
 import { isFiltersEmpty } from 'utils/misc';
@@ -30,13 +25,13 @@ import FilterModal, {
   FilterModalVariant,
   IChannelFilter,
 } from 'components/FilterModal';
-import { ICategory } from 'queries/category';
-import { ITeam } from 'queries/teams';
+import { ICategory, ITeam } from 'interfaces';
 import useProduct from 'hooks/useProduct';
-import { useInfiniteLearnCategory } from 'queries/learn';
 import { useTranslation } from 'react-i18next';
 import { usePageTitle } from 'hooks/usePageTitle';
 import { isTrim } from 'pages/ChannelDetail/components/utils';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 import { useLocation } from 'react-router-dom';
 import PageLoader from 'components/PageLoader';
 import useAuth from 'hooks/useAuth';
@@ -75,6 +70,7 @@ const defaultAppFilters: IAppFilters = {
 const Apps: FC<IAppsProps> = () => {
   usePageTitle('apps');
   const { t } = useTranslation('appLauncher');
+  const { isLearner } = useRole();
   const {
     searchParams,
     updateParam,
@@ -97,6 +93,7 @@ const Apps: FC<IAppsProps> = () => {
     },
   });
   const { isLxp } = useProduct();
+  const { getApi } = usePermissions();
   const { user } = useAuth();
   const { apps, featuredApps } = useAppStore();
   const { isAdmin } = useRole();
@@ -140,27 +137,18 @@ const Apps: FC<IAppsProps> = () => {
   const searchValue = watch('search');
   const debouncedSearchValue = useDebounce(searchValue || '', 500);
 
-  const { data: categories } = isLxp
-    ? useInfiniteLearnCategory(
-        isFiltersEmpty({
-          limit: 3,
-        }),
-      )
-    : useInfiniteCategories(
-        isFiltersEmpty({
-          limit: 3,
-        }),
-      );
+  const useInfiniteCategories = getApi(ApiEnum.GetCategories);
+  const { data: categories } = useInfiniteCategories(
+    isFiltersEmpty({
+      limit: 3,
+    }),
+  );
 
-  const flattenCategories = categories?.pages.flatMap((page: any) => {
-    return page?.data?.result?.data.map((category: any) => {
-      try {
-        return category;
-      } catch (e) {
-        console.log('Error', { category });
-      }
-    });
-  });
+  const flattenCategories: ICategory[] = categories?.pages.flatMap(
+    (page: any) => {
+      return page?.data?.result?.data.map((category: ICategory) => category);
+    },
+  );
 
   const handleRemoveFilters = (key: AppFilterKey, id: string) => {
     const updatedFilter = {
@@ -304,28 +292,37 @@ const Apps: FC<IAppsProps> = () => {
     (category) => category.id !== selectedTab,
   );
 
+  const useInfiniteApps = getApi(ApiEnum.GetApps);
+  const useInfiniteFeaturedApps = getApi(ApiEnum.GetFeaturedApps);
+
   return (
     <div>
-      <Card className="p-8">
-        <div className="flex justify-between">
-          <h1 className="font-bold text-2xl text-black" tabIndex={0}>
-            {t('title')}
-          </h1>
-          {isAdmin && (
-            <Button
-              onClick={openModal}
-              label={t('add-app-CTA')}
-              leftIcon="add"
-              leftIconClassName="!text-white"
-              className="flex space-x-1"
-              leftIconSize={20}
-              dataTestId="app-add-app-cta"
-            />
-          )}
-        </div>
-        <div className="flex justify-between py-4">
-          <div className="flex items-center gap-x-4">
+      <Card
+        className={`p-8 ${
+          isLxp ? 'min-h-[calc(100vh-112px)] relative mb-6' : ''
+        }`}
+      >
+        {!isLxp ? (
+          <div className="flex justify-between pb-4">
+            <h1 className="font-bold text-2xl text-black" tabIndex={0}>
+              {t('title')}
+            </h1>
             {isAdmin && (
+              <Button
+                onClick={openModal}
+                label={t('add-app-CTA')}
+                leftIcon="add"
+                leftIconClassName="!text-white"
+                className="flex space-x-1"
+                leftIconSize={20}
+                dataTestId="app-add-app-cta"
+              />
+            )}
+          </div>
+        ) : null}
+        <div className="flex justify-between pb-4">
+          <div className="flex items-center gap-x-4">
+            {!(isLxp && isAdmin) && (
               <Button
                 variant={ButtonVariant.Secondary}
                 label={t('my-apps')}
@@ -338,17 +335,19 @@ const Apps: FC<IAppsProps> = () => {
                 onClick={() => handleTabChange(AppGroup.MY_APPS)}
               />
             )}
-            <Button
-              variant={ButtonVariant.Secondary}
-              label={t('all-apps')}
-              className={
-                selectedTab === AppGroup.ALL_APPS
-                  ? selectedButtonClassName
-                  : regularButtonClassName
-              }
-              dataTestId="all-apps"
-              onClick={() => handleTabChange(AppGroup.ALL_APPS)}
-            />
+            {!(isLxp && isLearner) && (
+              <Button
+                variant={ButtonVariant.Secondary}
+                label={t('all-apps')}
+                className={
+                  selectedTab === AppGroup.ALL_APPS
+                    ? selectedButtonClassName
+                    : regularButtonClassName
+                }
+                dataTestId="all-apps"
+                onClick={() => handleTabChange(AppGroup.ALL_APPS)}
+              />
+            )}
             <Button
               variant={ButtonVariant.Secondary}
               label={t('featured')}
@@ -390,9 +389,7 @@ const Apps: FC<IAppsProps> = () => {
             <Sort
               controlled
               setFilter={handleSetSortFilter}
-              filterKey={{ createdAt: 'createdAt', aToZ: 'name' }}
               selectedValue={sortByFilter}
-              filterValue={{ asc: 'ASC', desc: 'DESC' }}
               dataTestId="teams-sort"
               entity="apps-filters"
             />
@@ -629,6 +626,17 @@ const Apps: FC<IAppsProps> = () => {
             appGridTitle="All apps"
           />
         </div>
+        {isAdmin && isLxp && (
+          <IconButton
+            onClick={openModal}
+            icon="add"
+            color="!text-white"
+            hoverColor="text-white"
+            size={IconSize.ExtraLarge}
+            className="fixed bottom-[78px] right-[max(8%,calc(50%-720px))] p-[15px] z-50 hover:!text-white"
+            dataTestId="app-add-app-cta"
+          />
+        )}
       </Card>
       <AddApp open={open} closeModal={closeModal} />
       {showFilterModal && (

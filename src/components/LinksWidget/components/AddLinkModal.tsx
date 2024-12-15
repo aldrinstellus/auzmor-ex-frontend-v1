@@ -9,11 +9,11 @@ import * as yup from 'yup';
 import Layout, { FieldType } from 'components/Form';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createLinks, updateChannelLink } from 'queries/channel';
-import { getPreviewLink } from 'queries/post';
 import { useDebounce } from 'hooks/useDebounce';
 import { isValidUrl } from 'utils/misc';
 import { getUrlWithProtocol } from 'utils/misc';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface IAddLinksModalProps {
   open: boolean;
@@ -37,6 +37,7 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
   channelId = '',
   isEditMode = false,
 }) => {
+  const { getApi } = usePermissions();
   const queryClient = useQueryClient();
   const { t } = useTranslation('channelLinksWidget', {
     keyPrefix: 'addLinkModal',
@@ -55,6 +56,9 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
       )
       .max(256, t('urlField.maxLengthError')),
   });
+
+  const createLinks = getApi(ApiEnum.CreateChannelLinks);
+  const updateChannelLink = getApi(ApiEnum.UpdateChannelLink);
   const updateLinksMutation = useMutation(
     async (payload: any) => {
       if (isCreateMode) {
@@ -90,13 +94,16 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
 
   const url = useDebounce(watch('url'), 800);
 
+  const getPreviewLink = getApi(ApiEnum.GetLinkPreviewApi);
   useEffect(() => {
     if (!url) {
       return;
     }
-    getPreviewLink(getUrlWithProtocol(url)).then((response) => {
+    getPreviewLink(getUrlWithProtocol(url)).then((response: any) => {
       if (!getValues('title') && response?.title) {
-        setValue('title', response.title);
+        setValue('title', response.title.slice(0, 20), {
+          shouldValidate: true,
+        });
       }
     });
   }, [url, setValue]);

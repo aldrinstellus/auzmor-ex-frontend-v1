@@ -1,9 +1,11 @@
-import { IGetReaction, useInfiniteReactions } from 'queries/reaction';
+import { IGetReaction } from 'interfaces';
 import { FC, memo, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import ReactionRow from './ReactionRow';
 import ReactionSkeleton from './ReactionSkeleton';
 import ReactionRowSkeleton from './ReactionRowSkeleton';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 export interface IReactionTabProps {
   entityId: string;
   entityType: string;
@@ -22,7 +24,9 @@ const ReactionTab: FC<IReactionTabProps> = ({
     root: document.getElementById(rootId),
     rootMargin: '20%',
   });
+  const { getApi } = usePermissions();
 
+  const useInfiniteReactions = getApi(ApiEnum.GetReactions);
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useInfiniteReactions({ entityId, entityType, reaction, limit });
 

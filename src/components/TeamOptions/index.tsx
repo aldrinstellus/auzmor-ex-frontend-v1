@@ -46,7 +46,7 @@ const TeamOptions: React.FC<AppProps> = ({
     //   icon: 'shareForwardOutline',
     //   label: t('share'),
     //   dataTestId: `${dataTestIdPrefix}share-team`,
-    //   enabled: isAdmin || isMember,
+    //   enabled: true,
     // },
     {
       icon: 'cancel',

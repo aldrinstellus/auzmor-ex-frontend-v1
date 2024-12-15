@@ -1,17 +1,21 @@
 import Card from 'components/Card';
 import Icon from 'components/Icon';
 import useModal from 'hooks/useModal';
-import { useInfiniteTeams } from 'queries/teams';
-import { isFiltersEmpty } from 'utils/misc';
+import { getLearnUrl, isFiltersEmpty } from 'utils/misc';
 import useAuth from 'hooks/useAuth';
 import TeamCard from './components/TeamCard';
 import Button, { Size, Variant } from 'components/Button';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 import SkeletonLoader from './components/SkeletonLoader';
 import TeamNotFound from 'images/TeamNotFound.svg';
 import { memo, FC, useMemo } from 'react';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
+import useProduct from 'hooks/useProduct';
+import useRole from 'hooks/useRole';
+import { TeamTab } from 'pages/Users/components/Teams';
 
 export interface IMyTeamWidgetProps {
   className?: string;
@@ -19,11 +23,15 @@ export interface IMyTeamWidgetProps {
 
 const MyTeamWidget: FC<IMyTeamWidgetProps> = ({ className = '' }) => {
   const { user } = useAuth();
+  const { getApi } = usePermissions();
   const navigate = useNavigate();
   const [open, openCollpase, closeCollapse] = useModal(true, false);
   const { t } = useTranslation('team');
   const { t: tb } = useTranslation('button');
+  const { isLxp } = useProduct();
+  const { isAdmin } = useRole();
 
+  const useInfiniteTeams = getApi(ApiEnum.GetTeams);
   const { data, isLoading, hasNextPage } = useInfiniteTeams({
     q: isFiltersEmpty({
       userId: user?.id,
@@ -31,14 +39,8 @@ const MyTeamWidget: FC<IMyTeamWidgetProps> = ({ className = '' }) => {
     }),
   });
 
-  const teamsData = data?.pages.flatMap((page) => {
-    return page?.data?.result?.data.map((team: any) => {
-      try {
-        return team;
-      } catch (e) {
-        console.log('Error', { team });
-      }
-    });
+  const teamsData = data?.pages.flatMap((page: any) => {
+    return page?.data?.result?.data.map((team: any) => team);
   });
 
   const toggleModal = () => {
@@ -98,7 +100,18 @@ const MyTeamWidget: FC<IMyTeamWidgetProps> = ({ className = '' }) => {
                   <ul className="divide-y divide-neutral-200">
                     {teamsData?.map((team: any) => (
                       <li key={team.id} className="py-2">
-                        <TeamCard {...team} />
+                        <TeamCard
+                          {...team}
+                          onClick={(id) =>
+                            isLxp && isAdmin
+                              ? window.location.assign(
+                                  getLearnUrl(`/teams/${id}`),
+                                )
+                              : navigate(`/teams/${id}`, {
+                                  state: { prevRoute: TeamTab.MyTeams },
+                                })
+                          }
+                        />
                       </li>
                     ))}
                   </ul>
@@ -108,9 +121,15 @@ const MyTeamWidget: FC<IMyTeamWidgetProps> = ({ className = '' }) => {
                       variant={Variant.Secondary}
                       size={Size.Small}
                       className="py-[7px]"
-                      label={tb('myTeams')}
+                      label={isLxp && isAdmin ? tb('allTeams') : tb('myTeams')}
                       dataTestId="my-teams-cta"
-                      onClick={() => navigate('/teams?tab=myTeams')}
+                      onClick={() =>
+                        isLxp && isAdmin
+                          ? window.location.assign(
+                              getLearnUrl('/peoples?tab=teams'),
+                            )
+                          : navigate('/teams?tab=myTeams')
+                      }
                     />
                   )}
                 </>

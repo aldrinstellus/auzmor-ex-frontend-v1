@@ -216,10 +216,14 @@ const LearnCard: FC<ILearnCardProps> = ({
             data?.my_enrollment?.completed_percentage >= 0 && (
               <ProgressBar
                 total={100}
-                completed={data?.my_enrollment?.completed_percentage}
+                completed={Math.min(
+                  data.my_enrollment.completed_percentage,
+                  100,
+                )}
                 customLabel={
                   <p className="text-white text-xs font-medium whitespace-nowrap">
-                    {data?.my_enrollment?.completed_percentage}% completed
+                    {Math.min(data.my_enrollment.completed_percentage, 100)}%
+                    completed
                   </p>
                 }
                 className="w-full"

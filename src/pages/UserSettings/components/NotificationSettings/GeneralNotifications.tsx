@@ -1,22 +1,22 @@
 import Accordion from 'components/Accordion';
 import queryClient from 'utils/queryClient';
 import NotificationSettingsList from './NotificationSettingsList';
-import {
-  INotificationSettings,
-  IUserSettings,
-  updateUserSettings,
-} from 'queries/users';
+import { INotificationSettings, IUserSettings } from 'interfaces';
 import useAuth from 'hooks/useAuth';
 import { useMutation } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 const GeneralNotifications = () => {
   const { t } = useTranslation('userSetting', { keyPrefix: 'notifications' });
   const { user, updateUser } = useAuth();
+  const { getApi } = usePermissions();
 
+  const updateCurrentUser = getApi(ApiEnum.UpdateMe);
   const updateMutation = useMutation({
     mutationKey: ['update-user-settings'],
-    mutationFn: (data: IUserSettings) => updateUserSettings(data),
+    mutationFn: (data: IUserSettings) => updateCurrentUser(data),
   });
 
   const { notificationSettings } = user || {};

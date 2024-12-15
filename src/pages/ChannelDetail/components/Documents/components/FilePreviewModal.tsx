@@ -1,9 +1,10 @@
 import React, { FC } from 'react';
-import { DocType } from 'queries/files';
+import { DocType } from 'interfaces';
 import Modal from 'components/Modal';
 import Icon from 'components/Icon';
 import Avatar from 'components/Avatar';
-import { download } from 'queries/storage';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface IFilePreviewProps {
   file: DocType;
@@ -12,10 +13,13 @@ interface IFilePreviewProps {
 }
 
 const FilePreview: FC<IFilePreviewProps> = ({ file, open, closeModal }) => {
+  const { getApi } = usePermissions();
+  const downloadFile = getApi(ApiEnum.DownloadStorageFile);
   const thumbnailUrl = new URL(file.fileThumbnailUrl);
   if (thumbnailUrl.searchParams.has('sz')) {
     thumbnailUrl.searchParams.set('sz', 'w1440');
   }
+
   const user = file.createdBy;
 
   return (
@@ -32,7 +36,7 @@ const FilePreview: FC<IFilePreviewProps> = ({ file, open, closeModal }) => {
           <Icon
             name="download"
             color="text-neutral-800"
-            onClick={() => download(file.id || '')}
+            onClick={() => downloadFile(file.id || '')}
           />
           <Icon name="postBookmark" color="text-neutral-800" />
           <Icon name="export" color="text-neutral-800" />

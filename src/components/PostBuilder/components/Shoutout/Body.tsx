@@ -3,10 +3,14 @@ import EntitySearchModalBody from 'components/EntitySearchModal/components/Entit
 import { EntitySearchModalType } from 'components/EntitySearchModal';
 import Icon from 'components/Icon';
 import Avatar from 'components/Avatar';
-import { IGetUser, UserStatus } from 'queries/users';
+import { IGetUser, UserStatus } from 'interfaces';
 import DynamicImagePreview from 'components/DynamicImagePreview';
 import { SHOUTOUT_STEPS } from '.';
-import { getProfileImage, isFiltersEmpty } from 'utils/misc';
+import {
+  getProfileImage,
+  getUserCardTooltipProps,
+  isFiltersEmpty,
+} from 'utils/misc';
 import { FC } from 'react';
 import { truncate } from 'lodash';
 import Tooltip from 'components/Tooltip';
@@ -53,47 +57,53 @@ const Body: FC<ShoutoutBodyProps> = ({
           hideCurrentUser
           showJobTitleFilter
           entityRenderer={(data: IGetUser) => {
+            const userData = getUserCardTooltipProps(data, '');
             return (
               <div className="flex space-x-4 w-full pr-5">
                 <Avatar
-                  name={data?.fullName || 'U'}
+                  name={userData?.fullName || 'U'}
                   size={32}
-                  image={getProfileImage(data)}
+                  image={getProfileImage(userData)}
                 />
                 <div className="flex space-x-6 w-full">
                   <div className="flex flex-col w-full">
                     <div className="flex justify-between items-center">
                       <div className="text-sm font-bold text-neutral-900">
-                        {data?.fullName}
+                        {userData?.fullName}
                       </div>
                       <div className="flex space-x-[14px] items-center">
-                        {data?.designation?.name && (
+                        {userData?.designation?.name && (
                           <div className="flex space-x-1 items-start">
                             <Icon name="briefcase" size={16} />
                             <Tooltip
-                              tooltipContent={data?.designation.name}
-                              showTooltip={data?.designation.name.length > 24}
+                              tooltipContent={userData?.designation.name}
+                              showTooltip={
+                                userData?.designation.name.length > 24
+                              }
                             >
                               <div className="text-xs font-normal text-neutral-500 max-w-[128px]">
-                                {truncate(data?.designation.name, {
+                                {truncate(userData?.designation.name, {
                                   length: 22,
                                 })}
                               </div>
                             </Tooltip>
                           </div>
                         )}
-                        {data?.designation && data?.workLocation?.name && (
-                          <div className="w-1 h-1 bg-neutral-500 rounded-full" />
-                        )}
-                        {data?.workLocation?.name && (
+                        {userData?.designation &&
+                          userData?.workLocation?.name && (
+                            <div className="w-1 h-1 bg-neutral-500 rounded-full" />
+                          )}
+                        {userData?.workLocation?.name && (
                           <div className="flex space-x-1 items-start">
                             <Icon name="location" size={16} />
                             <Tooltip
-                              tooltipContent={data?.workLocation.name}
-                              showTooltip={data?.workLocation.name.length > 24}
+                              tooltipContent={userData?.workLocation.name}
+                              showTooltip={
+                                userData?.workLocation.name.length > 24
+                              }
                             >
                               <div className="text-xs font-normal text-neutral-500 max-w-[128px]">
-                                {truncate(data?.workLocation.name, {
+                                {truncate(userData?.workLocation.name, {
                                   length: 22,
                                 })}
                               </div>
@@ -103,7 +113,7 @@ const Body: FC<ShoutoutBodyProps> = ({
                       </div>
                     </div>
                     <div className="text-xs font-normal text-neutral-500">
-                      {data?.primaryEmail}
+                      {userData?.workEmail}
                     </div>
                   </div>
                 </div>

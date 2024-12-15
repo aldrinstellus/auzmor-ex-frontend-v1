@@ -3,13 +3,7 @@ import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import ConfirmationBox from 'components/ConfirmationBox';
-import {
-  AudienceEntityType,
-  IPost,
-  PostType,
-  deletePost,
-  updatePost,
-} from 'queries/post';
+import { AudienceEntityType, IPost, PostType } from 'interfaces';
 import PostBuilder, { PostBuilderMode } from 'components/PostBuilder';
 import useModal from 'hooks/useModal';
 import useAuth from 'hooks/useAuth';
@@ -24,8 +18,13 @@ import ClosePollModal from './ClosePollModal';
 import PollVotesModal from './PollVotesModal';
 import ChangeToRegularPostModal from './ChangeToRegularPostModal';
 import AnnouncementAnalytics from './AnnouncementAnalytics';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import useNavigate from 'hooks/useNavigation';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import useProduct from 'hooks/useProduct';
+import { CHANNEL_ROLE, useChannelStore } from 'stores/channelStore';
 
 export interface IFeedPostMenuProps {
   data: IPost;
@@ -33,10 +32,14 @@ export interface IFeedPostMenuProps {
 }
 
 const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
+  const { t } = useTranslation('post', { keyPrefix: 'feedPostMenu' });
+  const { getApi } = usePermissions();
   const { user } = useAuth();
-  const { isMember } = useRole();
+  const { isOffice } = useProduct();
+  const { isAdmin } = useRole();
   const location = useLocation();
   const navigate = useNavigate();
+
   const feedRef = useRef(useFeedStore.getState().feed);
   const [confirm, showConfirm, closeConfirm] = useModal();
   const [analytics, showAnalytics, closeAnalytics] = useModal();
@@ -51,17 +54,19 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
 
   const queryClient = useQueryClient();
   const setFeed = useFeedStore((state) => state.setFeed);
-  const { isAdmin } = useRole();
   const currentDate = new Date().toISOString();
 
   const isPostPage = location.pathname.startsWith('/posts/');
-  const isChannelPage = location.pathname.startsWith('/channels/');
+  const isChannelPage = location.pathname.includes('/channels/');
   const { channelId = '' } = useParams();
-  const { t } = useTranslation('post', { keyPrefix: 'feedPostMenu' });
+  const getChannel = useChannelStore((action) => action.getChannel);
+  const channelData = channelId ? getChannel(channelId) : null;
+  const isChannelAdmin = channelData?.member?.role === CHANNEL_ROLE.Admin;
 
+  const deletePost = getApi(ApiEnum.DeletePost);
   const deletePostMutation = useMutation({
     mutationKey: ['deletePostMutation', data.id],
-    mutationFn: deletePost,
+    mutationFn: (id: string) => deletePost(id),
     onMutate: (variables) => {
       const previousFeed = feedRef.current;
       if (!isPostPage) setFeed({ ...omit(feedRef.current, [variables]) });
@@ -94,6 +99,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
     },
   });
 
+  const updatePost = getApi(ApiEnum.UpdatePost);
   const updatePostMutation = useMutation({
     mutationKey: ['updatePostMutation'],
     mutationFn: (payload: any) => updatePost(payload.id || '', payload as any),
@@ -131,8 +137,8 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
 
   const allOptions = [
     {
-      icon: 'cyclicArrow',
       label: t('promoteToAnnouncement'),
+      icon: 'cyclicArrow',
       onClick: () => {
         setCustomActiveFlow(CreatePostFlow.CreateAnnouncement);
         openModal();
@@ -140,11 +146,11 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-promote-to-announcement',
       permissions: ['CREATE_ANNOUNCEMENTS'],
-      enabled: isRegularPost(data, currentDate, isAdmin),
+      enabled: isAdmin && isRegularPost(data, currentDate, isAdmin),
     },
     {
-      icon: 'editReceipt',
       label: t('editAnnouncement'),
+      icon: 'editReceipt',
       onClick: () => {
         setCustomActiveFlow(CreatePostFlow.CreateAnnouncement);
         openModal();
@@ -152,20 +158,20 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-edit-announcement',
       permissions: ['UPDATE_ANNOUNCEMENTS'],
-      enabled: !isRegularPost(data, currentDate, isAdmin),
+      enabled: isAdmin && !isRegularPost(data, currentDate, isAdmin),
     },
     {
-      icon: 'cyclicArrow',
       label: t('changeToRegularPost'),
+      icon: 'cyclicArrow',
       onClick: () => showRemoveAnnouncement(),
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-changeto-regularpost',
       permissions: ['UPDATE_ANNOUNCEMENTS'],
-      enabled: !isRegularPost(data, currentDate, isAdmin),
+      enabled: isAdmin && !isRegularPost(data, currentDate, isAdmin),
     },
     {
-      icon: 'edit',
       label: t('editPost'),
+      icon: 'edit',
       onClick: () => {
         setCustomActiveFlow(CreatePostFlow.CreatePost);
         openModal();
@@ -176,8 +182,8 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
       enabled: !data?.isAutomatedPost && data.createdBy?.userId === user?.id,
     },
     {
-      icon: 'closeCircle',
       label: t('closePoll'),
+      icon: 'closeCircle',
       onClick: () => showClosePoll(),
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-close-poll',
@@ -188,8 +194,8 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
         (isAdmin || data.createdBy?.userId === user?.id),
     },
     {
-      icon: 'chartOutline',
       label: t('seeWhoVoted'),
+      icon: 'chartOutline',
       onClick: () => showPollVotes(),
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-see-poll-votes',
@@ -199,23 +205,26 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
         (isAdmin || data.createdBy?.userId === user?.id),
     },
     {
-      icon: 'announcementChart',
       label: t('viewAcknowledgementReport'),
+      icon: 'announcementChart',
       onClick: () => showAnalytics(),
       stroke: 'text-neutral-900',
       dataTestId: 'post-ellipsis-view-acknowledgement-report',
       permissions: ['CREATE_ANNOUNCEMENTS', 'UPDATE_ANNOUNCEMENTS'],
-      enabled: !isRegularPost(data, currentDate, isAdmin),
+      enabled: isAdmin && !isRegularPost(data, currentDate, isAdmin),
     },
     {
-      icon: 'delete',
       label: t('deletePost'),
+      icon: 'delete',
       onClick: () => showConfirm(),
       iconClassName: '!text-red-500',
       labelClassName: '!text-red-500',
       dataTestId: 'post-ellipsis-delete-post',
       permissions: ['DELETE_MY_POSTS', 'DELETE_POSTS'],
-      enabled: isAdmin || data.createdBy?.userId === user?.id,
+      enabled:
+        isAdmin ||
+        (isChannelPage && isChannelAdmin) ||
+        data.createdBy?.userId === user?.id,
     },
   ];
   const handleDelete = () => {
@@ -239,18 +248,20 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
     }
   };
 
-  const postOptions = allOptions
-    .filter((option) => option.enabled)
-    .filter((menuItem) => {
+  const postOptions = allOptions.filter((option) => {
+    if (option.enabled) {
       if (
-        menuItem.permissions &&
-        !canPerform(menuItem.permissions, user?.permissions) &&
-        isMember
+        option.permissions &&
+        !canPerform(option.permissions, user?.permissions) &&
+        !isAdmin &&
+        isOffice
       ) {
         return false;
       }
       return true;
-    });
+    }
+    return false;
+  });
 
   useEffect(
     () => useFeedStore.subscribe((state) => (feedRef.current = state.feed)),
@@ -259,7 +270,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
 
   if (postOptions.length && !readOnly) {
     return (
-      <>
+      <div className="relative">
         <PopupMenu
           triggerNode={
             <div
@@ -327,7 +338,7 @@ const FeedPostMenu: FC<IFeedPostMenuProps> = ({ data, readOnly = false }) => {
             closeModal={closeAnalytics}
           />
         )}
-      </>
+      </div>
     );
   }
 

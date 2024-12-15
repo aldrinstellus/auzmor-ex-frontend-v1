@@ -3,6 +3,7 @@
   "channel": "Channel",
   "defaultDescription": "This is a {{visibilty}} channel for {{channelName}}",
   "filterCTA": {
+    "allChannels": "All Channels",
     "myChannels": "My Channels",
     "managed": "Managed",
     "discoverNewChannels": "Discover New Channels",

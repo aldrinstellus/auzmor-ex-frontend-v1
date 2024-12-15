@@ -1,16 +1,16 @@
 import { create } from 'zustand';
-import { App } from 'queries/apps';
+import { IApp } from 'interfaces';
 
 export interface IAppsStore {
-  apps: { [key: string]: App };
-  featuredApps: { [key: string]: App };
-  widgetApps: { [key: string]: App };
-  getApps: () => { [key: string]: App };
-  getFeaturedApps: () => { [key: string]: App };
-  setApp: (app: { [key: string]: App }) => void;
-  setFeaturedApp: (app: { [key: string]: App }) => void;
-  setWidgetApp: (app: { [key: string]: App }) => void;
-  updateApp: (id: string, app: App) => void;
+  apps: { [key: string]: IApp };
+  featuredApps: { [key: string]: IApp };
+  widgetApps: { [key: string]: IApp };
+  getApps: () => { [key: string]: IApp };
+  getFeaturedApps: () => { [key: string]: IApp };
+  setApp: (app: { [key: string]: IApp }) => void;
+  setFeaturedApp: (app: { [key: string]: IApp }) => void;
+  setWidgetApp: (app: { [key: string]: IApp }) => void;
+  updateApp: (id: string, app: IApp) => void;
 }
 
 export const useAppStore = create<IAppsStore>((set, get) => ({

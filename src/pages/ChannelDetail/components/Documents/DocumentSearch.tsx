@@ -1,4 +1,3 @@
-import { useDocument } from 'queries/storage';
 import React, { FC } from 'react';
 import { humanizeTime } from 'utils/time';
 import Icon from 'components/Icon';
@@ -7,14 +6,18 @@ import PageLoader from 'components/PageLoader';
 import { humanFileSize } from 'utils/misc';
 import { useAppliedFiltersForDoc } from 'stores/appliedFiltersForDoc';
 import Button, { Variant } from 'components/Button';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type DocumentSearchProps = {
   searchQuery?: string;
 };
 
 const DocumentSearch: FC<DocumentSearchProps> = ({ searchQuery = '' }) => {
+  const { getApi } = usePermissions();
   const { filters, clearFilters } = useAppliedFiltersForDoc();
-  const { data: documentData, isLoading } = useDocument({
+  const searchStorage = getApi(ApiEnum.SearchStorage);
+  const { data: documentData, isLoading } = searchStorage({
     q: searchQuery,
     mimeTypes:
       filters?.docTypeCheckbox

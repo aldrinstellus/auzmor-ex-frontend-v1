@@ -7,17 +7,14 @@ import AddUsers from './AddUsers';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  IPostUser,
-  IPostUsersResponse,
-  UserStatus,
-  inviteUsers,
-} from 'queries/users';
+import { IPostUser, IPostUsersResponse, UserStatus } from 'interfaces';
 import ConfirmationBox from 'components/ConfirmationBox';
 import InvitedUsersList from './InvitedUsersList';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import 'utils/custom-yup-validators/email/validateEmail';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 export interface IInviteUserModalProps {
   open: boolean;
@@ -50,6 +47,7 @@ const InviteUserModal: FC<IInviteUserModalProps> = ({
   openModal,
   closeModal,
 }) => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('profile', {
     keyPrefix: 'inviteUserModal',
   });
@@ -109,9 +107,10 @@ const InviteUserModal: FC<IInviteUserModalProps> = ({
     }
   };
 
+  const inviteUsers = getApi(ApiEnum.InviteUsers);
   const inviteUsersMutation = useMutation({
     mutationKey: ['inviteUsersMutation'],
-    mutationFn: inviteUsers,
+    mutationFn: (payload: { users: IPostUser[] }) => inviteUsers(payload),
     onError: () => {
       setShowConfirmationModal(true);
     },

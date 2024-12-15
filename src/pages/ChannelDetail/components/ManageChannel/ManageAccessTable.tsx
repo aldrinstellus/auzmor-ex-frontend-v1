@@ -15,7 +15,6 @@ import PopupMenu from 'components/PopupMenu';
 import Button, { Variant } from 'components/Button';
 import { useTranslation } from 'react-i18next';
 import { useMutation } from '@tanstack/react-query';
-import { updateMemberRole } from 'queries/channel';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 
 import { useParams } from 'react-router-dom';
@@ -23,6 +22,10 @@ import { CHANNEL_ROLE, useChannelStore } from 'stores/channelStore';
 import queryClient from 'utils/queryClient';
 import useAuth from 'hooks/useAuth';
 import { useInView } from 'react-intersection-observer';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
+import useProduct from 'hooks/useProduct';
+import useRole from 'hooks/useRole';
 
 type AppProps = {
   isLoading?: boolean;
@@ -41,7 +44,9 @@ const ManageAccessTable: FC<AppProps> = ({
   const { t } = useTranslation('channelDetail', { keyPrefix: 'manageAccess' });
   const { channelId = '' } = useParams();
   const channel = useChannelStore((state) => state.channels)[channelId];
-
+  const { isLxp } = useProduct();
+  const { isAdmin } = useRole();
+  const { getApi } = usePermissions();
   const { ref, inView } = useInView();
   useEffect(() => {
     if (inView) {
@@ -49,8 +54,19 @@ const ManageAccessTable: FC<AppProps> = ({
     }
   }, [inView]);
   const { user: currentUser } = useAuth();
+
+  const updateChannelMember = getApi(ApiEnum.UpdateChannelMember);
   const updateMemberRoleMutation = useMutation({
-    mutationFn: updateMemberRole,
+    mutationFn: (data: {
+      channelId: string;
+      memberId: string;
+      role: CHANNEL_ROLE;
+    }) =>
+      updateChannelMember({
+        channelId: data.channelId,
+        memberId: data.memberId,
+        data: { role: data.role },
+      }),
     mutationKey: ['update-channel-member-role'],
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['channel-members'] });
@@ -112,10 +128,13 @@ const ManageAccessTable: FC<AppProps> = ({
                 <TableCell>
                   <div className="relative">
                     <PopupMenu
-                      disabled={user?.userId === currentUser?.id} // disable popup menu for current user
+                      disabled={
+                        !(isLxp && isAdmin) && user?.userId === currentUser?.id
+                      } // disable popup menu for current user
                       triggerNode={
                         <>
-                          {user?.userId === currentUser?.id ? (
+                          {!(isLxp && isAdmin) &&
+                          user?.userId === currentUser?.id ? (
                             <div className=" pl-4 !text-sm !font-medium capitalize w-28 text-center">
                               {user?.role?.toLowerCase()}
                             </div>
@@ -126,9 +145,11 @@ const ManageAccessTable: FC<AppProps> = ({
                               label={user?.role?.toLowerCase() || 'Admin'}
                               rightIcon={'arrowDown'}
                               disabled={
-                                user.role === CHANNEL_ROLE.Admin &&
-                                (user?.globalRole === 'PRIMARY_ADMIN' ||
-                                  user?.globalRole === 'ADMIN')
+                                isLxp
+                                  ? false
+                                  : user.role === CHANNEL_ROLE.Admin &&
+                                    (user?.globalRole === 'PRIMARY_ADMIN' ||
+                                      user?.globalRole === 'ADMIN')
                               }
                             />
                           )}
@@ -141,7 +162,7 @@ const ManageAccessTable: FC<AppProps> = ({
                             label: t('table.admin'),
                             onClick: () => {
                               updateMemberRoleMutation.mutate({
-                                id: user?.id,
+                                memberId: user?.id,
                                 channelId: channelId,
                                 role: CHANNEL_ROLE.Admin,
                               });
@@ -153,7 +174,7 @@ const ManageAccessTable: FC<AppProps> = ({
                             label: t('table.member'),
                             onClick: () => {
                               updateMemberRoleMutation.mutate({
-                                id: user?.id,
+                                memberId: user?.id,
                                 channelId: channelId,
                                 role: CHANNEL_ROLE.Member,
                               });

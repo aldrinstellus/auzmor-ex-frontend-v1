@@ -6,6 +6,7 @@ import UsersIcon from '../components/Users';
 import HomeIcon from '../components/Home';
 import FeedIcon from '../components/Feed';
 import ArrowDown from '../components/ArrowDown';
+import ArrowDown2 from '../components/ArrowDown2';
 import ClockIcon from '../components/Clock';
 import FilterIcon from '../components/Filter';
 import MoreIcon from '../components/More';
@@ -178,10 +179,16 @@ import UserTagIcon from '../components/User-tag';
 import MessageTagIcon from '../components/message-tag';
 import LockOpenIcon from '../components/LockOpen';
 import GlobalEditIcon from '../components/GlobalEdit';
+import DocumentViewIcon from '../components/CarbonDocumentView';
 import DeelIcon from '../components/Deel/DeelIcon';
 import MinusCircle from '../components/MinusCircle';
 import DeelIcon2 from '../components/DeelIcon2/DeelIcon2';
 import RestInPeaceIcon from '../components/RestInPeace';
+import TrainingIcon from '../components/Training';
+import LearningCenterIcon from '../components/LearningCenter';
+import ArrowDown3 from '../components/ArrowDown3';
+import { ExclamationSVG } from 'components/LearnIcons';
+import Notification2Icon from '../components/Notification2';
 
 export const icon = {
   add: Add,
@@ -190,6 +197,8 @@ export const icon = {
   announcementChart: AnnouncementChartIcon,
   archive: ArchiveIcon,
   arrowDown: ArrowDown,
+  arrowDown2: ArrowDown2,
+  arrowDown3: ArrowDown3,
   arrowLeft: ArrowLeftIcon,
   arrowRight: ArrowRightIcon,
   arrowRightUp: ArrowRightUp,
@@ -279,6 +288,7 @@ export const icon = {
   insightfulReaction: InsightfulReaction,
   integration: Integration,
   launcher: LauncherIcon,
+  learningCenter: LearningCenterIcon,
   lifeBuoy: LifeBuoyIcon,
   like: Like,
   likeIcon: LikeIcon,
@@ -310,6 +320,7 @@ export const icon = {
   news: NewsIcon,
   noteFavourite: NoteFavouriteIcon,
   notification: NotificationIcon,
+  notification2: Notification2Icon,
   orangeHashtag: OrangeHashtagIcon,
   outOfOffice: OutOfOfficeIcon,
   pause: PauseIcon,
@@ -351,6 +362,7 @@ export const icon = {
   threeDots: ThreeDots,
   tickCircle: TickCircleIcon,
   trash: Trash,
+  training: TrainingIcon,
   'user-tag': UserTagIcon,
   userAdmin: UserAdminIcon,
   userManagement: UserManagement,
@@ -367,7 +379,9 @@ export const icon = {
   xlsx: XlsIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
+  documentView: DocumentViewIcon,
   deel: DeelIcon,
   deel2: DeelIcon2,
   restInPeace: RestInPeaceIcon,
+  exclamation: ExclamationSVG,
 };

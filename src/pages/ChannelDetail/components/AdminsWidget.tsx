@@ -2,44 +2,57 @@ import Avatar from 'components/Avatar';
 import Button, { Size, Variant } from 'components/Button';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
-import { useInfiniteChannelMembers } from 'queries/channel';
-import { useState } from 'react';
+import useNavigate from 'hooks/useNavigation';
+import clsx from 'clsx';
+import { usePermissions } from 'hooks/usePermissions';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Role } from 'utils/enum';
+import { useParams } from 'react-router-dom';
+import { CHANNEL_ROLE } from 'stores/channelStore';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { getProfileImage } from 'utils/misc';
 
-const AdminsWidget = () => {
+const AdminsWidget = ({ className = '' }) => {
   const navigate = useNavigate();
   const { channelId } = useParams();
   const [show, setShow] = useState(true);
   const { t } = useTranslation('channelDetail');
+  const { getApi } = usePermissions();
+  const useInfiniteChannelMembers = getApi(ApiEnum.GetChannelMembers);
   const { data } = useInfiniteChannelMembers({
     channelId: channelId,
     q: {
       limit: 3,
-      userRole: Role.Admin,
+      userRole: CHANNEL_ROLE.Admin,
     },
   });
   const admins =
-    data?.pages.flatMap((page) => {
-      return page?.data?.result?.data.map((admin: any) => {
-        try {
-          return { id: admin.id, role: admin.role, ...admin.user };
-        } catch (e) {
-          console.log('Error', { admin });
-        }
-      });
-    }) || [];
+    data?.pages
+      .flatMap((page: any) => {
+        return page?.data?.result?.data.map((admin: any) => {
+          try {
+            return { id: admin.id, role: admin.role, ...admin.user };
+          } catch (e) {
+            console.log('Error', { admin });
+            return null;
+          }
+        });
+      })
+      .filter(Boolean) || [];
+
+  const style = useMemo(
+    () => clsx({ 'py-6 rounded-9xl': true, [className]: true }),
+    [className],
+  );
 
   if (admins?.length == 0) return null;
   const toggleModal = () => setShow((t) => !t);
 
   return (
-    <Card className="py-6 rounded-9xl" shadowOnHover>
-      <div className="px-6">
+    <Card className={style} shadowOnHover>
+      <div className="px-4">
         <div
-          className="flex items-center justify-between cursor-pointer"
+          className="flex items-center justify-between cursor-pointer px-2"
           onClick={toggleModal}
           onKeyUp={(e) => (e.code === 'Enter' ? toggleModal() : '')}
           tabIndex={0}
@@ -59,7 +72,7 @@ const AdminsWidget = () => {
             show ? 'max-h-[1000px]' : 'max-h-[0]'
           }`}
         >
-          {admins?.slice(0, 3).map((admin) => (
+          {admins?.slice(0, 3).map((admin: any) => (
             <div key={admin.id} className="flex items-center gap-2 py-2">
               <Avatar
                 name={admin.fullName}

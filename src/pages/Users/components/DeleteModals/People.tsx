@@ -1,19 +1,18 @@
-import IconButton, {
-  Size,
-  Variant as IconVariant,
-} from 'components/IconButton';
+import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import Button, {
+  Size,
   Variant as ButtonVariant,
   Type as ButtonType,
 } from 'components/Button';
 import Modal from 'components/Modal';
-import { deleteUser } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 export interface IDeletePeopleProps {
   open: boolean;
@@ -23,11 +22,13 @@ export interface IDeletePeopleProps {
 }
 
 const DeletePeople: FC<IDeletePeopleProps> = ({ open, closeModal, userId }) => {
+  const { getApi } = usePermissions();
   const { t } = useTranslation('profile', { keyPrefix: 'deletePeople' });
 
+  const deleteUser = getApi(ApiEnum.DeleteUser);
   const deleteUserMutation = useMutation({
     mutationKey: ['delete-user', userId],
-    mutationFn: deleteUser,
+    mutationFn: (id: string) => deleteUser(id),
     onError: () =>
       failureToastConfig({
         content: t('errorToast'),

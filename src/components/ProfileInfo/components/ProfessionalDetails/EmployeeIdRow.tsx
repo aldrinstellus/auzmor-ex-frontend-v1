@@ -4,12 +4,13 @@ import * as yup from 'yup';
 import 'moment-timezone';
 import useRole from 'hooks/useRole';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { updateCurrentUser, updateUserById } from 'queries/users';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Layout, { FieldType } from 'components/Form';
 import { useParams } from 'react-router-dom';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 type AppProps = {
   data: any;
@@ -17,6 +18,7 @@ type AppProps = {
 
 const EmployeeIdRow: FC<AppProps> = ({ data }) => {
   const { userId = '' } = useParams();
+  const { getApi } = usePermissions();
   const queryClient = useQueryClient();
   const ref = useRef<any>(null);
   const { isAdmin } = useRole();
@@ -25,10 +27,12 @@ const EmployeeIdRow: FC<AppProps> = ({ data }) => {
     employeeId: yup.string(),
   });
 
+  const updateCurrentUser = getApi(ApiEnum.UpdateMe);
+  const updateUserById = getApi(ApiEnum.UpdateUser);
   const updateUserEmployeeIdMutation = useMutation({
     mutationFn: userId
       ? (data: any) => updateUserById(userId, data)
-      : updateCurrentUser,
+      : (data: Record<string, any>) => updateCurrentUser(data),
     mutationKey: ['update-user-employeeId-mutation'],
     onError: (_error: any) => {},
     onSuccess: async (_response: any) => {

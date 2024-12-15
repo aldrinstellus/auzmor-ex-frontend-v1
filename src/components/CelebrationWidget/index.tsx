@@ -7,16 +7,14 @@ import User from './components/User';
 import Button, { Size, Variant } from 'components/Button';
 import UpcomingCelebrationModal from './components/UpcomingCelebrationModal';
 import EmptyState from './components/EmptyState';
-import { useCelebrations } from 'queries/post';
 import SkeletonLoader from './components/SkeletonLoader';
 import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import { AuthContext } from 'contexts/AuthContext';
 import { isFiltersEmpty } from 'utils/misc';
 import clsx from 'clsx';
 import { useTranslation } from 'react-i18next';
-import { useShouldRender } from 'hooks/useShouldRender';
-
-const ID = 'CelebrationWidget';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export enum CELEBRATION_TYPE {
   Birthday = 'BIRTHDAY',
@@ -33,10 +31,7 @@ const CelebrationWidget: FC<ICelebrationWidgetProps> = ({
   className = '',
 }) => {
   const { t } = useTranslation('celebrationWidget');
-  const shouldRender = useShouldRender(ID);
-  if (!shouldRender) {
-    return <></>;
-  }
+  const { getApi } = usePermissions();
   const { user } = useContext(AuthContext);
   const { currentTimezone } = useCurrentTimezone();
   const userTimezone = user?.timezone || currentTimezone || 'Asia/Kolkata';
@@ -47,7 +42,7 @@ const CelebrationWidget: FC<ICelebrationWidgetProps> = ({
   const thisMonthRef = useRef<any>(null);
 
   const isBirthday = type === CELEBRATION_TYPE.Birthday;
-
+  const useCelebrations = getApi(ApiEnum.GetOrganizationCelebrations);
   const { data, isLoading, hasNextPage } = useCelebrations(
     isFiltersEmpty({
       limit: 3,
@@ -66,7 +61,7 @@ const CelebrationWidget: FC<ICelebrationWidgetProps> = ({
   });
 
   const thisMonthCelebration = formattedData
-    ? formattedData.filter((item) => {
+    ? formattedData.filter((item: any) => {
         const itemDate = momentTz(item.nextOcassionDateTime).tz(userTimezone);
         if (
           itemDate.month() === currentDate.month() &&
@@ -83,7 +78,7 @@ const CelebrationWidget: FC<ICelebrationWidgetProps> = ({
     : [];
 
   const upcomingMonthCelebration = formattedData
-    ? formattedData.filter((item) => {
+    ? formattedData.filter((item: any) => {
         const itemDate = momentTz(item.nextOcassionDateTime).tz(userTimezone);
         const isSameYearAndSameorLaterMonth =
           itemDate.year() === currentDate.year() &&
@@ -185,7 +180,7 @@ const CelebrationWidget: FC<ICelebrationWidgetProps> = ({
                         {t('this-month')}
                       </div>
                     )}
-                  {thisMonthCelebration.map((celebration) => (
+                  {thisMonthCelebration.map((celebration: any) => (
                     <User
                       id={celebration.featuredUser.userId}
                       type={type}
@@ -204,7 +199,7 @@ const CelebrationWidget: FC<ICelebrationWidgetProps> = ({
                             {t('next-month')}
                           </div>
                         )}
-                      {upcomingMonthCelebration.map((celebration) => (
+                      {upcomingMonthCelebration.map((celebration: any) => (
                         <User
                           id={celebration.featuredUser.userId}
                           type={type}

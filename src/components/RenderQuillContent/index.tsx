@@ -10,12 +10,9 @@ import { Text } from './components/Text';
 import MediaPreview from 'components/MediaPreview';
 import PreviewCard from 'components/PreviewCard';
 import { IComment } from 'components/Comments';
-import { IMedia } from 'contexts/CreatePostContext';
-import { Metadata } from 'components/PreviewLink/types';
 import AvatarChips from 'components/AvatarChips';
 
-// queries
-import { IPost } from 'queries/post';
+import { IPost, IMedia, Metadata } from 'interfaces';
 
 // utils
 import { getMentionProps } from './utils';
@@ -162,7 +159,9 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
                 setShowSeeMore(false);
               }}
               id={`${data?.id}-see-more-button`}
-              className="absolute bottom-0 right-0 bg-white text-neutral-500 text-sm font-bold cursor-pointer"
+              className={`absolute bottom-0 right-0 ${
+                isComment ? 'bg-neutral-100' : 'bg-white'
+              }  text-neutral-500 text-sm font-bold cursor-pointer`}
             >
               ...See more
             </span>

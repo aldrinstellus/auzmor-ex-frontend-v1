@@ -3,14 +3,15 @@ import Icon from 'components/Icon';
 import NoDataFound from 'components/NoDataFound';
 import { useDebounce } from 'hooks/useDebounce';
 import DocSearchRow from 'pages/ChannelDetail/components/Documents/components/DocSearchRow';
-import { useConnectedStatus, useDocument } from 'queries/storage';
 import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { DocType } from 'queries/files';
-import { useNavigate } from 'react-router-dom';
+import { DocType } from 'interfaces';
+import useNavigate from 'hooks/useNavigation';
 import useAuth from 'hooks/useAuth';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 export interface IGlobalSearchProps {}
 
@@ -24,6 +25,7 @@ enum OptionType {
 }
 
 const GlobalSearch: FC<IGlobalSearchProps> = () => {
+  const { getApi } = usePermissions();
   const searchForm = useForm<{
     search: string;
   }>({
@@ -34,6 +36,7 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
 
   const { user } = useAuth();
 
+  const useConnectedStatus = getApi(ApiEnum.GetStorageConnectionStatus);
   const {
     data: syncStatus,
     isLoading,
@@ -50,7 +53,8 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
 
   const debouncedSearchQuery = useDebounce(searchQuery || '', 300);
 
-  const { data: documentData, isFetching } = useDocument(
+  const searchStorage = getApi(ApiEnum.SearchStorage);
+  const { data: documentData, isFetching } = searchStorage(
     {
       q: debouncedSearchQuery,
       limit: 4,

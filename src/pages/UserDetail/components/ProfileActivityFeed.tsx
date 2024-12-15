@@ -1,8 +1,4 @@
 import Post from 'components/Post';
-import {
-  useInfiniteMyProfileFeed,
-  useInfinitePeopleProfileFeed,
-} from 'queries/post';
 import CreatePostCard from 'components/PostBuilder/components/CreatePostCard';
 import NoDataCard from './NoDataCard';
 import PostBuilder from 'components/PostBuilder';
@@ -11,6 +7,8 @@ import { FC } from 'react';
 import useRole from 'hooks/useRole';
 import { isRegularPost } from 'utils/misc';
 import SkeletonLoader from 'components/Feed/components/SkeletonLoader';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export interface IProfileActivityFeedProps {
   data: any;
@@ -29,15 +27,17 @@ const ProfileActivityFeed: FC<IProfileActivityFeedProps> = ({
   openModal,
   closeModal,
 }) => {
+  const { getApi } = usePermissions();
   const { feed } = useFeedStore();
   const { isAdmin } = useRole();
   const currentDate = new Date().toISOString();
   if (pathname === '/profile') {
+    const useInfiniteMyProfileFeed = getApi(ApiEnum.GetMyProfilePosts);
     const { data: myProfileFeed, isLoading: myProfileFeedLoading } =
       useInfiniteMyProfileFeed();
 
     const feedIds = (
-      (myProfileFeed?.pages.flatMap((page) =>
+      (myProfileFeed?.pages.flatMap((page: any) =>
         page.data?.result?.data?.map((post: { id: string }) => post),
       ) as { id: string }[]) || []
     )
@@ -92,11 +92,12 @@ const ProfileActivityFeed: FC<IProfileActivityFeedProps> = ({
       </div>
     );
   } else {
+    const useInfinitePeopleProfileFeed = getApi(ApiEnum.GetUserProfilePosts);
     const { data: peopleProfileFeed, isLoading: isPeopleProfileFeedLoading } =
       useInfinitePeopleProfileFeed(userId, {});
 
     const feedIds = (
-      (peopleProfileFeed?.pages.flatMap((page) =>
+      (peopleProfileFeed?.pages.flatMap((page: any) =>
         page.data?.result?.data.map((post: { id: string }) => post),
       ) as { id: string }[]) || []
     )

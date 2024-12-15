@@ -2,15 +2,6 @@ import { FC, ReactNode, useContext, useEffect, useMemo, useRef } from 'react';
 import Modal from 'components/Modal';
 import CreatePost from 'components/PostBuilder/components/CreatePost';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  AudienceEntityType,
-  IMention,
-  IPost,
-  IPostPayload,
-  PostType,
-  createPost,
-  updatePost,
-} from 'queries/post';
 import CreateAnnouncement, {
   CreateAnnouncementMode,
 } from './CreateAnnouncement';
@@ -18,10 +9,17 @@ import {
   CreatePostFlow,
   CreatePostContext,
   IEditorValue,
-  IMedia,
 } from 'contexts/CreatePostContext';
 import { PostBuilderMode } from '..';
-import { EntityType } from 'queries/files';
+import {
+  AudienceEntityType,
+  EntityType,
+  IMedia,
+  IMention,
+  IPost,
+  IPostPayload,
+  PostType,
+} from 'interfaces';
 import { useUpload, UploadStatus } from 'hooks/useUpload';
 import { previewLinkRegex } from 'components/RichTextEditor/config';
 import EditMedia from './EditMedia';
@@ -52,6 +50,8 @@ import { useChannelStore } from 'stores/channelStore';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { readAxiosErr } from 'utils/apiService';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 export interface IPostMenu {
   id: number;
@@ -105,6 +105,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     setUploads,
   } = useContext(CreatePostContext);
   const { channelId = '' } = useParams();
+  const { getApi } = usePermissions();
   const channelData = useChannelStore((state) => state.channels)[channelId];
 
   const [confirm, showConfirm, closeConfirm] = useModal();
@@ -256,9 +257,10 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     }
   }, []);
 
+  const createPost = getApi(ApiEnum.CreatePost);
   const createPostMutation = useMutation({
     mutationKey: ['createPostMutation'],
-    mutationFn: createPost,
+    mutationFn: (payload: IPostPayload) => createPost(payload),
     onError: (result: any) => {
       failureToastConfig({
         content: readAxiosErr(result, `Error while trying to create post`),
@@ -461,6 +463,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
     },
   });
 
+  const updatePost = getApi(ApiEnum.UpdatePost);
   const updatePostMutation = useMutation({
     mutationKey: ['updatePostMutation'],
     mutationFn: (payload: IPostPayload) =>
@@ -492,7 +495,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         dataTestId: 'post-update-toaster',
       });
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async (data: any, variables) => {
       updateFeed(variables.id!, {
         ...data.result.data,
         ...(data?.result?.data?.isAnnouncement &&
@@ -726,7 +729,8 @@ const CreatePostModal: FC<ICreatePostModal> = ({
               mode === PostBuilderMode.Create ? showConfirm : handleOnClose
             }
             mode={
-              customActiveFlow === CreatePostFlow.CreateAnnouncement
+              customActiveFlow === CreatePostFlow.CreateAnnouncement &&
+              mode === PostBuilderMode.Edit
                 ? CreateAnnouncementMode.DIRECT
                 : CreateAnnouncementMode.POST_BUILDER
             }

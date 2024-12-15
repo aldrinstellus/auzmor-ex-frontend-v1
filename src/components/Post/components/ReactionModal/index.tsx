@@ -3,7 +3,7 @@ import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import Tabs from 'components/Tabs';
 import ReactionTab from './ReactionTab';
-import { IReactionsCount } from 'queries/post';
+import { IReactionsCount } from 'interfaces';
 import { FC } from 'react';
 
 export interface IReactionModalProps {
@@ -193,6 +193,7 @@ const ReactionModal: FC<IReactionModalProps> = ({
               reactionCounts[a.tabContent.props.activeTab]
             );
           })}
+        className="px-6"
       />
     </Modal>
   );

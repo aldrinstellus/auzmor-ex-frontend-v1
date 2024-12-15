@@ -1,8 +1,6 @@
-import IconButton, {
-  Size,
-  Variant as IconVariant,
-} from 'components/IconButton';
+import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import Button, {
+  Size,
   Variant as ButtonVariant,
   Type as ButtonType,
 } from 'components/Button';
@@ -11,9 +9,10 @@ import { useMutation } from '@tanstack/react-query';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { FC } from 'react';
-import { removeChannelMember } from 'queries/channel';
 import queryClient from 'utils/queryClient';
 import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 export interface IDeletePeopleProps {
   open: boolean;
@@ -30,7 +29,8 @@ const RemoveChannelMember: FC<IDeletePeopleProps> = ({
   userId,
 }) => {
   const { t } = useTranslation('profile', { keyPrefix: 'removeChannelMember' });
-
+  const { getApi } = usePermissions();
+  const removeChannelMember = getApi(ApiEnum.DeleteChannelMember);
   const deleteChannelMemberMutation = useMutation({
     mutationKey: ['delete-channel-member'],
     mutationFn: (payload: any) =>

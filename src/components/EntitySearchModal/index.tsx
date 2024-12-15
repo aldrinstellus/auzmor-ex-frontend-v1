@@ -4,10 +4,9 @@ import { FC, ReactNode, useEffect } from 'react';
 import Footer from './components/Footer';
 import EntitySearchModalBody from './components/EntitySearchModalBody';
 import { useForm } from 'react-hook-form';
-import { IGetUser } from 'queries/users';
+import { IGetUser, ITeam } from 'interfaces';
 import { useEntitySearchFormStore } from 'stores/entitySearchFormStore';
 import { CHANNEL_ROLE } from 'stores/channelStore';
-import { ITeam } from 'queries/teams';
 
 export enum EntitySearchModalType {
   User = 'USER',

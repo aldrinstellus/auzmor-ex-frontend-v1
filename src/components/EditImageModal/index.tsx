@@ -12,19 +12,18 @@ import { IUpdateProfileImage } from 'pages/UserDetail';
 import Header from 'components/ModalHeader';
 import { BlobToFile } from 'utils/misc';
 import Modal from 'components/Modal';
-import { EntityType } from 'queries/files';
+import { EntityType } from 'interfaces';
 import { UploadStatus, useUpload } from 'hooks/useUpload';
 import queryClient from 'utils/queryClient';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useAuth from 'hooks/useAuth';
-import { updateCurrentUser, updateUserById } from 'queries/users';
 import { useMutation } from '@tanstack/react-query';
 import Footer from './Footer';
 import ImageCropper from 'components/ImageCropper';
 import PageLoader from 'components/PageLoader';
 import useProduct from 'hooks/useProduct';
-import { updateChannel } from 'queries/channel';
-import { uploadImage } from 'queries/learn';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export interface AppProps {
   title: string;
@@ -68,6 +67,7 @@ const EditImageModal: FC<AppProps> = ({
 }) => {
   const { isLxp } = useProduct();
   const { updateUser } = useAuth();
+  const { getApi } = usePermissions();
 
   const { uploadMedia, uploadStatus } = useUpload();
 
@@ -77,21 +77,16 @@ const EditImageModal: FC<AppProps> = ({
 
   const [isImageLoading, setIsImageLoading] = useState<boolean>(true);
 
-  // To determine the custom visible area in the image cropper
   useEffect(() => {
     const img = new Image();
+    img.src = image;
     img.onload = () => {
-      const _getWidthFactor = (width: number): number => {
-        // Need better algorithm here
-        let factor = 0.6;
-        if (width > 3000) factor = 0.7;
-        return factor;
-      };
       setIsImageLoading(false);
     };
-
-    img.src = image;
   }, []);
+
+  const updateChannel = getApi(ApiEnum.UpdateChannel);
+  const uploadLearnMedia = getApi(ApiEnum.UploadImage);
 
   const updateChannelMutation = useMutation({
     mutationFn: (data: any) => updateChannel(channelId, data),
@@ -117,10 +112,12 @@ const EditImageModal: FC<AppProps> = ({
     },
   });
 
+  const updateCurrentUser = getApi(ApiEnum.UpdateMe);
+  const updateUserById = getApi(ApiEnum.UpdateUser);
   const updateUsersPictureMutation = useMutation({
     mutationFn: userId
       ? (data: any) => updateUserById(userId, data)
-      : updateCurrentUser,
+      : (data: Record<string, any>) => updateCurrentUser(data),
     mutationKey: ['update-users-mutation'],
     onError: (error: any) => {
       console.log('API call resulted in error: ', error);
@@ -165,61 +162,63 @@ const EditImageModal: FC<AppProps> = ({
   const { isLoading: isLoadingChannel } = updateChannelMutation;
 
   const uploadMediaFn = async () => {
-    if (blob) {
-      const newFile = BlobToFile(
-        blob,
-        imageName || `id-${Math.random().toString(16).slice(2)}`,
+    // return if blob is incorrect
+    if (!blob) return;
+
+    // covert blob to jpg image type file
+    const newFile = BlobToFile(
+      blob,
+      imageName || `id-${Math.random().toString(16).slice(2)}.jpg`,
+    );
+
+    // return if file is incorrect
+    if (!newFile) return;
+
+    if (isLxp) {
+      // upload for lxp
+      if (fileEntityType === EntityType.UserProfileImage) {
+        const formData = new FormData();
+        formData.append('url', newFile);
+        const res = await uploadLearnMedia(formData);
+        const uploadedFile = res.result?.data?.url;
+        updateChannelMutation.mutate({
+          displayImageUrl: uploadedFile,
+        });
+      } else {
+        const formData = new FormData();
+        formData.append('url', newFile);
+        const res = await uploadLearnMedia(formData);
+        const uploadedFile = res.result?.data?.url;
+        updateChannelMutation.mutate({
+          bannerUrl: uploadedFile,
+        });
+      }
+    } else {
+      // upload for office
+      const profileImageUploadResponse = await uploadMedia(
+        [newFile],
+        fileEntityType,
       );
-      let profileImageUploadResponse;
-      if (newFile) {
-        // only call office gcp in Office.
-        if (!isLxp) {
-          profileImageUploadResponse = await uploadMedia(
-            [newFile],
-            fileEntityType,
-          );
-        }
-        if (fileEntityType === EntityType.UserProfileImage) {
-          if (isLxp) {
-            const formData = new FormData();
-            formData.append('url', newFile);
-            const res = await uploadImage(formData);
-            const uploadedFile = res.result?.data?.url;
-            updateChannelMutation.mutate({
-              displayImageUrl: uploadedFile,
-            });
-          } else
-            updateUsersPictureMutation.mutate({
-              profileImage: {
-                fileId:
-                  profileImageUploadResponse &&
-                  profileImageUploadResponse[0]?.id,
-                original:
-                  profileImageUploadResponse &&
-                  profileImageUploadResponse[0].original,
-              },
-            });
-        } else {
-          if (isLxp) {
-            const formData = new FormData();
-            formData.append('url', newFile);
-            const res = await uploadImage(formData);
-            const uploadedFile = res.result?.data?.url;
-            updateChannelMutation.mutate({
-              bannerUrl: uploadedFile,
-            });
-          } else
-            updateUsersPictureMutation.mutate({
-              coverImage: {
-                fileId:
-                  profileImageUploadResponse &&
-                  profileImageUploadResponse[0]?.id,
-                original:
-                  profileImageUploadResponse &&
-                  profileImageUploadResponse[0].original,
-              },
-            });
-        }
+      if (fileEntityType === EntityType.UserProfileImage) {
+        updateUsersPictureMutation.mutate({
+          profileImage: {
+            fileId:
+              profileImageUploadResponse && profileImageUploadResponse[0]?.id,
+            original:
+              profileImageUploadResponse &&
+              profileImageUploadResponse[0].original,
+          },
+        });
+      } else {
+        updateUsersPictureMutation.mutate({
+          coverImage: {
+            fileId:
+              profileImageUploadResponse && profileImageUploadResponse[0]?.id,
+            original:
+              profileImageUploadResponse &&
+              profileImageUploadResponse[0].original,
+          },
+        });
       }
     }
   };

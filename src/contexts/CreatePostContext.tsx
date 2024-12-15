@@ -8,8 +8,15 @@ import {
 } from 'react';
 import { DeltaStatic } from 'quill';
 import { getBlobUrl, getMediaObj } from 'utils/misc';
-import { AudienceEntityType, IAudience, IPost, PostType } from 'queries/post';
-import { IGetUser } from 'queries/users';
+import {
+  AudienceEntityType,
+  IAudience,
+  IGetUser,
+  IMedia,
+  IPoll,
+  IPost,
+  PostType,
+} from 'interfaces';
 import { useCreatePostUtilityStore } from 'stores/createPostUtilityStore';
 import { useChannelStore } from 'stores/channelStore';
 import { useParams } from 'react-router-dom';
@@ -38,20 +45,6 @@ export interface IAnnouncement {
 export const IMG_FILE_SIZE_LIMIT = 50; //MB
 export const VIDEO_FILE_SIZE_LIMIT = 2; //GB
 export const MEDIA_LIMIT = 10; // number of media can be uploaded
-
-export interface IPollOption {
-  _id?: string; //Has to be reverted to id once BE is fixed
-  text: string;
-  votes?: number;
-}
-
-export interface IPoll {
-  question: string;
-  closedAt: any;
-  total?: number;
-  options: IPollOption[];
-  datepickerValue?: Date;
-}
 
 export interface ICreatePostContext {
   activeFlow: CreatePostFlow;
@@ -130,32 +123,10 @@ export interface IEditorValue {
   editor: DeltaStatic;
 }
 
-export interface ITranscodedData {
-  l: string;
-  m: string;
-  s: string;
-}
-
 export interface ISchedule {
   timezone: string;
   date: string;
   time: string;
-}
-
-export interface IMedia {
-  altText: string;
-  blurhash: string;
-  contentType: string; //'image/png'
-  id: string;
-  isDeleted: boolean;
-  isPublic: boolean;
-  name: string;
-  original: string;
-  size: string;
-  thumbnailUrl: string;
-  type: 'IMAGE' | 'VIDEO';
-  coverImage?: { original: string } | null;
-  transcodedData?: { image: ITranscodedData };
 }
 
 export interface ICoverImageMap {

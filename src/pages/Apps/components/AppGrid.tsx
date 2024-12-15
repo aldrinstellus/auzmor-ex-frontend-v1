@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import AppCard from './AppCard';
-import { App } from 'queries/apps';
+import { IApp } from 'interfaces';
 
 type AppGridProps = {
-  apps: App[];
+  apps: IApp[];
   title?: string;
 };
 

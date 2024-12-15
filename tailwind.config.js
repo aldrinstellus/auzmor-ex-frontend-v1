@@ -69,7 +69,10 @@ module.exports = {
       fontSize: {
         xxs: '0.625rem',
       },
-      fontFamily: { manrope: 'Manrope' },
+      fontFamily: {
+        lato: ['Lato', 'sans-serif'],
+        manrope: 'Manrope',
+      },
       boxShadow: {
         'shadow-sm': '0px 1px 2px 0px rgba(0,0,0,0.08)',
         shadow:

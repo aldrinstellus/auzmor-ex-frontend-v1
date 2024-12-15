@@ -1,13 +1,10 @@
-import IconButton, {
-  Size,
-  Variant as IconVariant,
-} from 'components/IconButton';
+import IconButton, { Variant as IconVariant } from 'components/IconButton';
 import Button, {
+  Size,
   Variant as ButtonVariant,
   Type as ButtonType,
 } from 'components/Button';
 import Modal from 'components/Modal';
-import { updateChannel } from 'queries/channel';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
 import SuccessToast from 'components/Toast/variants/SuccessToast';
@@ -17,10 +14,12 @@ import Icon from 'components/Icon';
 import { twConfig } from 'utils/misc';
 import { TOAST_AUTOCLOSE_TIME } from 'utils/constants';
 import { slideInAndOutTop } from 'utils/react-toastify';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 import { FC } from 'react';
 import { CHANNEL_STATUS } from 'stores/channelStore';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 export interface IArchiveChannelModalProps {
   isOpen: boolean;
@@ -36,7 +35,9 @@ const ArchiveChannelModal: FC<IArchiveChannelModalProps> = ({
   const { t } = useTranslation('channels', {
     keyPrefix: 'archiveChannelModal',
   });
+  const { getApi } = usePermissions();
   const navigate = useNavigate();
+  const updateChannel = getApi(ApiEnum.UpdateChannel);
   const archiveChannelMutation = useMutation({
     mutationKey: ['archive-channel', channelId],
     mutationFn: (id: string) =>

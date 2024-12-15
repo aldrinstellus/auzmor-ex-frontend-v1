@@ -1,7 +1,7 @@
 import Icon from 'components/Icon';
 import Truncate from 'components/Truncate';
 import React, { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
+import useNavigate from 'hooks/useNavigation';
 import { ChannelVisibilityEnum, IChannel } from 'stores/channelStore';
 
 type ChannelRow = {

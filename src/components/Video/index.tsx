@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { IMedia } from 'contexts/CreatePostContext';
+import { IMedia } from 'interfaces';
 
 export type VideoProps = {
   video: IMedia;

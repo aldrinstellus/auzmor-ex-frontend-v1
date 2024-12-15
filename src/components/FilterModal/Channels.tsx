@@ -3,16 +3,17 @@ import Layout, { FieldType } from 'components/Form';
 import Icon from 'components/Icon';
 import Spinner from 'components/Spinner';
 import { useDebounce } from 'hooks/useDebounce';
-import { ILocation } from 'queries/location';
+import { ILocation } from 'interfaces';
 import { FC, useEffect } from 'react';
 import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import { useInView } from 'react-intersection-observer';
 import { IFilterForm } from '.';
 import ItemSkeleton from './ItemSkeleton';
 import NoDataFound from 'components/NoDataFound';
-import { useInfiniteChannels } from 'queries/channel';
 import { isFiltersEmpty } from 'utils/misc';
 import Truncate from 'components/Truncate';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
 
 interface IChannelsProps {
   control: Control<IFilterForm, any>;
@@ -22,6 +23,7 @@ interface IChannelsProps {
 
 const Channels: FC<IChannelsProps> = ({ control, watch, setValue }) => {
   const { ref, inView } = useInView();
+  const { getApi } = usePermissions();
   useEffect(() => {
     if (inView) {
       fetchNextPage();
@@ -45,18 +47,13 @@ const Channels: FC<IChannelsProps> = ({ control, watch, setValue }) => {
   ]);
 
   const debouncedChannelSearchValue = useDebounce(channelSearch || '', 300);
+  const useInfiniteChannels = getApi(ApiEnum.GetChannels);
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteChannels(
       isFiltersEmpty({ q: debouncedChannelSearchValue, limit: 30 }),
     );
-  const channelsData = data?.pages.flatMap((page) => {
-    return page?.data?.result?.data.map((channel: any) => {
-      try {
-        return channel;
-      } catch (e) {
-        console.log('Error', { channel });
-      }
-    });
+  const channelsData = data?.pages.flatMap((page: any) => {
+    return page?.data?.result?.data.map((channel: any) => channel);
   });
 
   const channelFields = [

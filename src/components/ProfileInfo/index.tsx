@@ -4,8 +4,7 @@ import ProfessionalDetails from './components/ProfessionalDetails';
 import ProfessionalDetailsSkeleton from './components/Skeletons/ProfessionalDetails';
 import PersonalDetails from './components/PersonalDetails';
 import PersonalDetailsSkeleton from './components/Skeletons/PersonalDetails';
-
-import { UserEditType } from 'queries/users';
+import { UserEditType } from 'interfaces';
 import { FC, Fragment } from 'react';
 
 export interface IProfileInfoProps {

@@ -5,12 +5,12 @@ import LoginViaSSO from './components/LoginViaSSO';
 import useAuth from 'hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import { checkLogin } from 'queries/account';
 import { getSubDomain, isDark } from 'utils/misc';
-import { useGetSSOFromDomain } from 'queries/organization';
 import { useBrandingStore } from 'stores/branding';
 import clsx from 'clsx';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface ILoginProps {}
 
@@ -19,16 +19,19 @@ const Login: FC<ILoginProps> = () => {
   const [viaSSO, setViaSSO] = useState(false);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const { getApi } = usePermissions();
 
   const domain = getSubDomain(window.location.host);
+  const useGetSSOFromDomain = getApi(ApiEnum.GetOrganizationDomain);
   const { isFetching: isDomainInfoLoading } = useGetSSOFromDomain(
     domain,
     domain !== '' ? true : false,
   );
   const branding = useBrandingStore((state) => state.branding);
 
+  const checkLogin = getApi(ApiEnum.GetLoginApi);
   const checkLoginMutation = useMutation(checkLogin, {
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       if (data?.data?.code === 200) {
         return window.location.replace(data?.data?.result?.data?.redirectUrl);
       }

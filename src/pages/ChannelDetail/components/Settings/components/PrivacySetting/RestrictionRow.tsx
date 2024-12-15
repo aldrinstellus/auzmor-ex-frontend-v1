@@ -6,9 +6,10 @@ import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import InfoRow from 'components/ProfileInfo/components/InfoRow';
 import Layout, { FieldType } from 'components/Form';
 import { IRadioListOption } from 'components/RadioGroup';
-import { updateChannel } from 'queries/channel';
 import { IChannel } from 'stores/channelStore';
 import { useTranslation } from 'react-i18next';
+import { usePermissions } from 'hooks/usePermissions';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 type RestrictionRowProps = {
   data: IChannel;
@@ -27,7 +28,9 @@ const RestrictionRow: FC<RestrictionRowProps> = ({ data, canEdit }) => {
   const { t } = useTranslation('channelDetail', {
     keyPrefix: 'setting.restrictionRow',
   });
+  const { getApi } = usePermissions();
 
+  const updateChannel = getApi(ApiEnum.UpdateChannel);
   const updateChannelMutation = useMutation({
     mutationKey: ['update-channel-mutation'],
     mutationFn: (data: any) => updateChannel(channelId, data),

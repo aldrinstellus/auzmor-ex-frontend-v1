@@ -9,6 +9,7 @@ export enum Variant {
 }
 
 export enum Size {
+  ExtraLarge = 'EXTRALARGE',
   Large = 'LARGE',
   Medium = 'MEDIUM',
   Small = 'SMALL',
@@ -17,7 +18,7 @@ export enum Size {
 export type IconButtonProps = {
   icon: string;
   variant?: Variant;
-  size?: Size;
+  size?: Size | number;
   disabled?: boolean;
   loading?: boolean;
   onClick?: MouseEventHandler<Element>;
@@ -25,8 +26,10 @@ export type IconButtonProps = {
   borderAround?: boolean;
   borderAroundClassName?: string;
   color?: string;
+  hoverColor?: string;
   dataTestId?: string;
   ariaLabel?: string;
+  iconClassName?: string;
 };
 
 const IconButton = ({
@@ -40,8 +43,10 @@ const IconButton = ({
   borderAroundClassName = '',
   onClick = () => {},
   color,
+  hoverColor,
   dataTestId,
   ariaLabel = 'icon button',
+  iconClassName = '',
 }: IconButtonProps) => {
   const styles = useMemo(
     () =>
@@ -86,12 +91,16 @@ const IconButton = ({
 
   const getSize = () => {
     switch (size) {
+      case Size.ExtraLarge:
+        return 30;
       case Size.Large:
         return 24;
       case Size.Medium:
         return 16;
       case Size.Small:
         return 12;
+      default:
+        return size;
     }
   };
 
@@ -109,7 +118,9 @@ const IconButton = ({
           name={icon}
           size={getSize()}
           color={color}
+          hoverColor={hoverColor}
           disabled={disabled || loading}
+          className={iconClassName}
         />
         {loading && <Spinner />}
       </button>

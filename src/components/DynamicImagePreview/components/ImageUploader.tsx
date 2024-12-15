@@ -4,7 +4,7 @@ import { clearInputValue, getBlobUrl } from 'utils/misc';
 import useModal from 'hooks/useModal';
 import ImageReposition from './ImageReposition';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
-import { validImageTypes } from 'queries/files';
+import { validImageTypes } from 'utils/constants';
 import { IMG_FILE_SIZE_LIMIT } from 'contexts/CreatePostContext';
 import Button, { Variant } from 'components/Button';
 

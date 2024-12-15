@@ -1,10 +1,12 @@
 {
-  "header": "Announcements",
-  "title": "Announcement",
+  "title": "Announcements",
   "description": "When announcements are created, they appear on this card.",
   "create-header": "Create Announcement",
   "create-CTA": "Create an announcement",
   "admin-header": "Only admin can see this.",
   "share-post": "Shared a post",
-  "read-CTA": "Mark as read"
+  "read-CTA": "Mark as read",
+  "addNew": "Add new",
+  "viewAll": "View All",
+  "viewInsight": "View insight"
 }

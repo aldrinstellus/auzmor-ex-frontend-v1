@@ -2,7 +2,7 @@ import Button from 'components/Button';
 import Card from 'components/Card';
 import { FC, ReactElement } from 'react';
 import SSOCardMenu from './SSOCardMenu';
-import { IdentityProvider } from 'queries/organization';
+import { IdentityProvider } from 'interfaces';
 import { ISSOSetting } from '..';
 
 export type SSOCardProps = {
