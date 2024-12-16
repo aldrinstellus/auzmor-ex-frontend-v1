@@ -30,6 +30,7 @@ const NotificationsOverview: FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['unread-count']);
       queryClient.invalidateQueries(['get-notifications']);
+      queryClient.invalidateQueries(['notifications-page']);
     },
   });
 
