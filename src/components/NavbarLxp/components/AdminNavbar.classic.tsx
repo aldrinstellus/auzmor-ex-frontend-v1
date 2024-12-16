@@ -106,8 +106,8 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       ].filter((option) => option.show),
     },
     {
-      id: 'training',
-      label: t('learn.training'),
+      id: 'trainings',
+      label: t('learn.trainings'),
       to: '',
       show: true,
       options: [
@@ -283,7 +283,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
             true,
         });
       case 'home':
-      case 'training':
+      case 'trainings':
       case 'development':
       case 'company':
       case 'analytics':

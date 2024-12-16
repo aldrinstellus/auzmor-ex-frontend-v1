@@ -67,8 +67,8 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       isActive: false,
     },
     {
-      id: 'engage',
-      label: t('learn.engage'),
+      id: 'engagement',
+      label: t('learn.engagement'),
       to: '',
       show: true,
       icon: 'exploreFilled',
@@ -109,8 +109,8 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       isActive: true,
     },
     {
-      id: 'train',
-      label: t('learn.train'),
+      id: 'trainings',
+      label: t('learn.trainings'),
       to: getLearnUrl('/user/trainings'),
       show: true,
       icon: 'training',
@@ -118,8 +118,8 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       isActive: false,
     },
     {
-      id: 'develop',
-      label: t('learn.develop'),
+      id: 'development',
+      label: t('learn.development'),
       to: '',
       show: true,
       icon: 'learningCenter',
@@ -153,13 +153,13 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
   const getNavItemStyle = (id: string) => {
     switch (id) {
       case 'home':
-      case 'engage':
-      case 'train':
-      case 'develop':
+      case 'engagement':
+      case 'trainings':
+      case 'development':
         return clsx({
           'modern-nav-item flex gap-2 items-center text-sm text-neutral-500 px-[13px] py-[9px] transition ease duration-150 group-hover/item:bg-neutral-100 hover:bg-neutral-100 font-medium rounded-xl cursor-pointer group':
             true,
-          'text-primary-500': id === 'engage',
+          'text-primary-500': id === 'engagement',
         });
       case 'backBtn':
         return clsx({

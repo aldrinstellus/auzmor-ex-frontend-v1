@@ -63,8 +63,8 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       options: [],
     },
     {
-      id: 'engage',
-      label: t('learn.engage'),
+      id: 'engagement',
+      label: t('learn.engagement'),
       to: '',
       show: true,
       options: [
@@ -124,8 +124,8 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       options: [],
     },
     {
-      id: 'develop',
-      label: t('learn.develop'),
+      id: 'development',
+      label: t('learn.development'),
       to: '',
       show: true,
       options: [
@@ -162,7 +162,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
 
   const getNavItemStyle = (id: string) => {
     switch (id) {
-      case 'engage':
+      case 'engagement':
         return clsx({
           'gap-1 font-lato items-center font-lato my-[5px] text-[15px] px-2.5 py-1 transition ease duration-150 text-primary-500 group-hover/item:bg-neutral-100 font-semibold cursor-pointer rounded-xl flex group':
             true,
@@ -171,7 +171,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       case 'courses':
       case 'paths':
       case 'events':
-      case 'develop':
+      case 'development':
         return clsx({
           'gap-1 font-lato items-center font-lato my-[5px] flex text-[15px] px-2.5 py-1 transition ease duration-150 group-hover/item:bg-neutral-100 hover:bg-neutral-100 font-medium rounded-xl cursor-pointer group':
             true,
