@@ -159,9 +159,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
         return clsx({
           'modern-nav-item flex gap-2 items-center text-sm text-neutral-500 px-[13px] py-[9px] transition ease duration-150 group-hover/item:bg-neutral-100 hover:bg-neutral-100 font-medium rounded-xl cursor-pointer group':
             true,
-          'text-primary-500':
-            (!!pathname.startsWith('/user/feed') && id === 'engage') ||
-            (!!pathname.startsWith('/user/channels') && id === 'engage'),
+          'text-primary-500': id === 'engage',
         });
       case 'backBtn':
         return clsx({
