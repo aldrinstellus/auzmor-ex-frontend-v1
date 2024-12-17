@@ -84,10 +84,9 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
     const docTypeCheckbox = parseParams('docTypeCheckbox') || [];
     const docModifiedRadio = searchParams.get('docModifiedRadio') || undefined;
     const validSortValues = [
-      'file_type:asc',
       'name:asc',
       'name:desc',
-      'modifiedAt:asc',
+      'external_updated_at',
       'size:desc',
     ];
 
@@ -133,12 +132,6 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
   ];
 
   const sortOptions = [
-    {
-      icon: 'briefcase',
-      label: 'File type',
-      key: 'file_type:asc',
-      dataTestId: 'sortBy-filetype',
-    },
     {
       icon: 'sortByAcs',
       label: 'A to Z',
