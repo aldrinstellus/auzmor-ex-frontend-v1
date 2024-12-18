@@ -2,13 +2,17 @@ import { clsx } from 'clsx';
 import Icon from 'components/Icon';
 import ProgressBar from 'components/ProgressBar';
 import React, { FC, Fragment, useEffect, useState } from 'react';
-import { useBackgroundJobStore } from 'stores/backgroundJobStore';
+import {
+  BackgroundJobStatusEnum,
+  useBackgroundJobStore,
+} from 'stores/backgroundJobStore';
 import './progressbarStyle.css';
 
 interface IindexProps {}
 
 const BackgroundJob: FC<IindexProps> = ({}) => {
   const [right, setRight] = useState<number>(2);
+  const [showProgressbar, setShowProgressbar] = useState(true);
   const {
     isExpanded,
     jobTitle,
@@ -50,16 +54,32 @@ const BackgroundJob: FC<IindexProps> = ({}) => {
         total / 100,
       )} files`,
     );
+
+    if (Math.floor((progress * 100) / total) === 100) {
+      let success = 0;
+      let totalItems = 0;
+      jobKeys.forEach((key) => {
+        if (
+          jobs[key].status === BackgroundJobStatusEnum.CompletedSuccessfully
+        ) {
+          success += 1;
+        }
+        totalItems += 1;
+      });
+      setShowProgressbar(false);
+      setJobTitle(`${success} out of ${totalItems} uploads completed`);
+    }
   }, [jobs]);
 
   const style = clsx({
-    'fixed flex flex-col bottom-0 z-[999] w-[420px] transition-all h-[72px] duration-300 rounded-t-9xl border border-neutral-300 bg-white':
+    'fixed flex flex-col bottom-0 z-[999] w-[420px] transition-all duration-300 rounded-t-9xl border border-neutral-300 bg-white':
       true,
-    '!h-[240px]': isExpanded,
   });
 
   const contentStyle = clsx({
-    'flex flex-col gap-4 w-full h-[168px] overflow-y-auto px-4 py-3': true,
+    'flex flex-col gap-4 w-full overflow-y-auto px-4 h-0 transition-all duration-300':
+      true,
+    '!h-[168px] py-3': isExpanded,
   });
 
   return (
@@ -71,7 +91,7 @@ const BackgroundJob: FC<IindexProps> = ({}) => {
       }}
     >
       <div className="flex flex-col bg-neutral-100 rounded-t-9xl px-4 py-3 border-b border-b-neutral-200">
-        <div className="flex items-center gap-2 ml-12">
+        <div className="flex items-center gap-2">
           <span className="flex-grow font-medium leading-6 text-neutral-900">
             {jobTitle}
           </span>
@@ -83,17 +103,19 @@ const BackgroundJob: FC<IindexProps> = ({}) => {
           />
           <Icon name="close" size={20} onClick={reset} />
         </div>
-        <div className="flex items-center gap-4">
-          <span>{progress}%</span>
-          <ProgressBar
-            completed={progress}
-            total={100}
-            className="flex-grow"
-            barClassName="!w-full"
-            barFilledClassName="!bg-primary-500"
-            customLabel={<></>}
-          />
-        </div>
+        {showProgressbar && (
+          <div className="flex items-center gap-4">
+            <span className="text-neutral-900 font-medium">{progress}%</span>
+            <ProgressBar
+              completed={progress}
+              total={100}
+              className="flex-grow"
+              barClassName="!w-full"
+              barFilledClassName="!bg-primary-500"
+              customLabel={<></>}
+            />
+          </div>
+        )}
       </div>
       <div className={contentStyle}>
         {jobsRenderer

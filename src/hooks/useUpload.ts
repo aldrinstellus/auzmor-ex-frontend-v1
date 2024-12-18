@@ -280,7 +280,8 @@ export interface IUploadUrlResponse {
 }
 
 export const useChannelDocUpload = (channelId: string) => {
-  const { jobs, setShow, updateJobProgress } = useBackgroundJobStore();
+  const { getJob, setShow, updateJobProgress, updateJob } =
+    useBackgroundJobStore();
 
   const getUploadUrl = async (payload: IUploadUrlPayload) =>
     await apiService.get(`/channels/${channelId}/file/uploadUrl`, payload);
@@ -290,32 +291,39 @@ export const useChannelDocUpload = (channelId: string) => {
     file: File,
     jobId: string,
   ) => {
-    const uploadUrl = res.uploadURL;
-    const chunkSize = 5 * 1024 * 1024; // 5 MB
-    const totalBytes = file.size;
-    let offset = 0;
-    let lastResponse = null;
-    const totalSteps = Math.floor(totalBytes / chunkSize);
-    while (offset < totalBytes) {
-      const completedsteps = Math.floor(offset / chunkSize);
-      const chunk = file.slice(offset, offset + chunkSize);
-      const startByte = offset;
-      const endByte = offset + chunk.size - 1;
+    try {
+      const uploadUrl = res.uploadURL;
+      const chunkSize = 5 * 1024 * 1024; // 5 MB
+      const totalBytes = file.size;
+      let offset = 0;
+      let lastResponse = null;
+      const totalSteps = Math.floor(totalBytes / chunkSize);
+      while (offset < totalBytes) {
+        const completedsteps = Math.floor(offset / chunkSize);
+        const chunk = file.slice(offset, offset + chunkSize);
+        const startByte = offset;
+        const endByte = offset + chunk.size - 1;
 
-      const headers = {
-        'Content-Range': `bytes ${startByte}-${endByte}/${totalBytes}`,
-      };
+        const headers = {
+          'Content-Range': `bytes ${startByte}-${endByte}/${totalBytes}`,
+        };
 
-      const response = await fetch(uploadUrl, {
-        method: 'PUT',
-        headers,
-        body: chunk,
-      });
-      lastResponse = await response.json();
-      offset += chunk.size;
-      updateJobProgress(jobId, Math.round((completedsteps * 100) / totalSteps));
+        const response = await fetch(uploadUrl, {
+          method: 'PUT',
+          headers,
+          body: chunk,
+        });
+        lastResponse = await response.json();
+        offset += chunk.size;
+        updateJobProgress(
+          jobId,
+          Math.round((completedsteps * 100) / totalSteps),
+        );
+      }
+      return lastResponse;
+    } catch (e) {
+      throw e;
     }
-    return lastResponse;
   };
 
   const finishUpload = async (payload: {
@@ -348,41 +356,54 @@ export const useChannelDocUpload = (channelId: string) => {
     });
     files.forEach((file: IUploadUrlPayload, index: number) => {
       const jobId = `upload-job-${index}`;
-      getUploadUrl(file).then((response) => {
-        updateJobProgress(jobId, 0, BackgroundJobStatusEnum.Running);
-        uploadToSharepoint(
-          (response as any).data.result as IUploadUrlResponse,
-          fileList.find(
-            ({ file }) => file.name === (response as any).data.result.name,
-          )!.file,
-          jobId,
-        ).then((response) => {
-          updateJobProgress(
-            jobId,
-            100,
-            BackgroundJobStatusEnum.CompletedSuccessfully,
-          );
-          finishUpload({
-            fileName: response?.name,
-            etag: response?.eTag.match(/\{([A-F0-9\-]+)\}/)[1],
-            id: response?.id,
-            ownerName: response?.createdBy?.user?.displayName,
-            externalModifiedBy: response?.lastModifiedBy?.user?.displayName,
-            externalCreatedAt: response?.createdDateTime,
-            externalUpdatedAt: response?.lastModifiedDateTime,
-            externalParentId: response?.parentReference?.id,
-            externalUrl: response?.webUrl,
-            mimeType: response?.file?.mimeType,
-            size: response?.size,
-          }).then(() => {
-            updateJobProgress(
+      const job = getJob(jobId);
+      if (!!job && job.status === BackgroundJobStatusEnum.YetToStart) {
+        try {
+          getUploadUrl(file).then((response) => {
+            updateJobProgress(jobId, 0, BackgroundJobStatusEnum.Running);
+            uploadToSharepoint(
+              (response as any).data.result as IUploadUrlResponse,
+              fileList.find(
+                ({ file }) => file.name === (response as any).data.result.name,
+              )!.file,
               jobId,
-              100,
-              BackgroundJobStatusEnum.CompletedSuccessfully,
-            );
+            ).then((response) => {
+              updateJobProgress(
+                jobId,
+                100,
+                BackgroundJobStatusEnum.CompletedSuccessfully,
+              );
+              finishUpload({
+                fileName: response?.name,
+                etag: response?.eTag.match(/\{([A-F0-9\-]+)\}/)[1],
+                id: response?.id,
+                ownerName: response?.createdBy?.user?.displayName,
+                externalModifiedBy: response?.lastModifiedBy?.user?.displayName,
+                externalCreatedAt: response?.createdDateTime,
+                externalUpdatedAt: response?.lastModifiedDateTime,
+                externalParentId: response?.parentReference?.id,
+                externalUrl: response?.webUrl,
+                mimeType: response?.file?.mimeType,
+                size: response?.size,
+              }).then(() => {
+                updateJobProgress(
+                  jobId,
+                  100,
+                  BackgroundJobStatusEnum.CompletedSuccessfully,
+                );
+              });
+            });
           });
-        });
-      });
+        } catch (e) {
+          updateJob({
+            ...job,
+            progress: 100,
+            status: BackgroundJobStatusEnum.Error,
+            jobComment: 'Upload failed',
+          });
+          console.log(e);
+        }
+      }
     });
 
     return uploadedFiles;

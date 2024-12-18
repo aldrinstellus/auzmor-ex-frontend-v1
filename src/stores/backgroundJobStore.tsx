@@ -43,6 +43,8 @@ interface IBackgroundJobActions {
   setIsExpanded: (flag: boolean) => void;
   setJobs: (jobs: Record<string, BackgroundJob>) => void;
   setJobsRenderer: (renderer: (jobs: BackgroundJob[]) => ReactNode) => void;
+  getJob: (jobId: string) => BackgroundJob;
+  updateJob: (job: BackgroundJob) => void;
   updateJobProgress: (
     jobId: string,
     progress: number,
@@ -57,7 +59,7 @@ interface IBackgroundJobActions {
 
 export const useBackgroundJobStore = create<
   IBackgroundJobState & IBackgroundJobActions
->((set) => ({
+>((set, get) => ({
   show: false,
   jobTitle: 'Uploading in progress',
   progress: 75,
@@ -70,6 +72,8 @@ export const useBackgroundJobStore = create<
   setIsExpanded: (flag) => set({ isExpanded: flag }),
   setJobs: (jobs) => set({ jobs }),
   setJobsRenderer: (renderer) => set({ jobsRenderer: renderer }),
+  getJob: (jobId) => get().jobs[jobId],
+  updateJob: (job) => set(({ jobs }) => ({ jobs: { ...jobs, [job.id]: job } })),
   updateJobProgress: (jobId, progress, status) =>
     set(({ jobs }) => ({
       jobs: {
