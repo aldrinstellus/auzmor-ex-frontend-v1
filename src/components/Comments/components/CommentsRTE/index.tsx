@@ -398,7 +398,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
               )}
               <IconButton
                 icon="image"
-                className="!flex justify-center !mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:cursor-auto "
+                className="!flex justify-center !mx-0 !p-0 !bg-inherit disabled:bg-inherit disabled:!cursor-auto "
                 size={SizeVariant.Large}
                 variant={IconVariant.Primary}
                 dataTestId={
@@ -406,6 +406,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
                     ? 'send-image'
                     : 'postcomment-mediacta'
                 }
+                disabled={mode === PostCommentMode.Edit}
                 onClick={() => {
                   hideMentionHashtagPalette();
                   hideEmojiPalette();

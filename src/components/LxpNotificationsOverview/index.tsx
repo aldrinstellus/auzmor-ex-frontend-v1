@@ -13,9 +13,12 @@ import { getLearnUrl } from 'utils/misc';
 import { useTranslation } from 'react-i18next';
 import Notifications from './components/Notifications';
 import useRole from 'hooks/useRole';
+import useAuth from 'hooks/useAuth';
+import { FRONTEND_VIEWS } from 'interfaces';
 
 const LxpNotificationsOverview: FC = () => {
   const { isAdmin } = useRole();
+  const { user } = useAuth();
   const { t } = useTranslation('notifications');
   const { getApi } = usePermissions();
 
@@ -36,6 +39,7 @@ const LxpNotificationsOverview: FC = () => {
       onSuccess: () => {
         queryClient.invalidateQueries(['unread-count']);
         queryClient.invalidateQueries(['get-notifications']);
+        queryClient.invalidateQueries(['notifications-page']);
         queryClient.invalidateQueries(['get-learner-notifications']);
       },
     },
@@ -91,18 +95,28 @@ const LxpNotificationsOverview: FC = () => {
   return (
     <Popover
       triggerNode={
-        <div className="font-bold flex flex-row justify-center items-center border-none relative px-[13px] py-[9px] hover:bg-neutral-100 rounded-md cursor-pointer outline-none">
+        <div
+          title={t('notifications')}
+          className={`${
+            !isAdmin &&
+            user?.preferences?.learnerViewType === FRONTEND_VIEWS.modern
+              ? 'font-manrope'
+              : 'font-lato'
+          } font-bold flex flex-row justify-center items-center border-none relative px-[13px] py-[9px] hover:bg-neutral-100 rounded-md cursor-pointer outline-none`}
+        >
           {!isLoading && !isError && notificationCount > 0 && (
             <div
               className="absolute text-[8px] tracking-[0.3px] 
              h-[15px] min-w-[15px] 
-            font-semibold font-lato text-light opacity-100
-             no-underline rounded-full bg-primary-500 border border-white text-white 
-               leading-[10px] p-[3px] top-1 right-2.5 flex  items-center justify-center"
+            font-semibold text-light opacity-100
+             no-underline rounded-full bg-primary-500 border-none text-white 
+                p-[3px] top-[5px] right-2.5 flex  items-center justify-center"
             >
-              {notificationCount > 99
-                ? t('notificationCount')
-                : notificationCount || ''}
+              <span className="leading-[17px]">
+                {notificationCount > 99
+                  ? t('notificationCount')
+                  : notificationCount || ''}
+              </span>
             </div>
           )}
           {isLoading && (
@@ -110,10 +124,10 @@ const LxpNotificationsOverview: FC = () => {
           )}
 
           <Icon
-            name="notification"
+            name="notification2"
             size={23}
-            dataTestId="office-notification-page"
-            ariaLabel="notifications"
+            dataTestId="lxp-notification-page"
+            ariaLabel={t('notifications')}
             hover={false}
           />
         </div>
@@ -146,7 +160,9 @@ const LxpNotificationsOverview: FC = () => {
             <p
               onClick={() =>
                 window.location.assign(
-                  `${getLearnUrl()}/settings/notifications`,
+                  `${getLearnUrl(
+                    isAdmin ? '' : '/user',
+                  )}/settings/notifications`,
                 )
               }
               data-testid="notification-setting"

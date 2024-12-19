@@ -159,7 +159,9 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
                 setShowSeeMore(false);
               }}
               id={`${data?.id}-see-more-button`}
-              className="absolute bottom-0 right-0 bg-white text-neutral-500 text-sm font-bold cursor-pointer"
+              className={`absolute bottom-0 right-0 ${
+                isComment ? 'bg-neutral-100' : 'bg-white'
+              }  text-neutral-500 text-sm font-bold cursor-pointer`}
             >
               ...See more
             </span>

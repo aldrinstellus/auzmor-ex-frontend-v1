@@ -3,28 +3,28 @@ import { SVGProps } from 'react';
 const SvgMessageQuestionOutline = (props: SVGProps<SVGSVGElement>) => {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
+      width="22"
+      height="22"
+      viewBox="0 0 18 18"
       fill="none"
-      viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg"
       {...props}
     >
-      <g>
-        <g
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.2"
-        >
-          <path
-            strokeMiterlimit="10"
-            d="M14.167 15.358h-3.334l-3.708 2.467a.83.83 0 01-1.292-.692v-1.775c-2.5 0-4.166-1.666-4.166-4.166v-5c0-2.5 1.666-4.167 4.166-4.167h8.334c2.5 0 4.166 1.667 4.166 4.167v5c0 2.5-1.666 4.166-4.166 4.166z"
-          ></path>
-          <path d="M10 9.467v-.175c0-.567.35-.867.7-1.109.342-.233.683-.533.683-1.083A1.38 1.38 0 0010 5.717 1.38 1.38 0 008.617 7.1"></path>
-          <path d="M9.996 11.458h.008"></path>
-        </g>
-      </g>
+      <path
+        d="M13.1667 14.3584H9.83335L6.12501 16.825C5.57501 17.1917 4.83335 16.8001 4.83335 16.1334V14.3584C2.33335 14.3584 0.666687 12.6917 0.666687 10.1917V5.19169C0.666687 2.69169 2.33335 1.02502 4.83335 1.02502H13.1667C15.6667 1.02502 17.3334 2.69169 17.3334 5.19169V10.1917C17.3334 12.6917 15.6667 14.3584 13.1667 14.3584Z"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      ></path>
+      <path
+        d="M9.00001 8.46668V8.29171C9.00001 7.72504 9.35003 7.42503 9.70003 7.18336C10.0417 6.95003 10.3833 6.65004 10.3833 6.10004C10.3833 5.33337 9.76668 4.71667 9.00001 4.71667C8.23334 4.71667 7.6167 5.33337 7.6167 6.10004"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      ></path>
     </svg>
   );
 };

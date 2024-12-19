@@ -30,11 +30,11 @@
   }
   .navbar-arrow-icon-hover {
     transform: rotateX(-180deg) !important;
-    transition: 0.45s !important;
+    transition: transform 0.45s !important;
   }
   .navbar-arrow-icon {
     transform: rotateX(0deg) !important;
-    transition: 0.45s !important;
+    transition: transform 0.45s !important;
   }
 }
 

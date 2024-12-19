@@ -68,8 +68,8 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       options: [],
     },
     {
-      id: 'engage',
-      label: t('learn.engage'),
+      id: 'engagement',
+      label: t('learn.engagement'),
       to: '',
       show: true,
       isActive: true,
@@ -80,9 +80,8 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () => navigate('/feed'),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: `!text-black hover:!text-black leading-4 ${
-            pathname.startsWith('/feed') &&
-            '!font-bold !text-primary-500 hover:!text-primary-500'
+          labelClassName: `!text-[15px] !leading-4 !text-black hover:!text-black leading-4 ${
+            pathname.startsWith('/feed') && '!font-bold !text-primary-500'
           }`,
         },
         {
@@ -91,16 +90,24 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () => navigate('/channels'),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: `!text-black hover:!text-black leading-4 ${
-            pathname.startsWith('/channels') &&
-            '!font-bold !text-primary-500 hover:!text-primary-500'
+          labelClassName: `!text-[15px] !leading-4 !text-black hover:!text-black leading-4 ${
+            pathname.startsWith('/channels') && '!font-bold !text-primary-500 '
           }`,
         },
-      ],
+        {
+          id: 'forums',
+          label: t('learn.forums'),
+          onClick: () => window.location.assign(`${getLearnUrl('/forums')}`),
+          show: !!user?.organization?.setting?.enableSocialLearning,
+          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
+        },
+      ].filter((option) => option.show),
     },
     {
-      id: 'training',
-      label: t('learn.training'),
+      id: 'trainings',
+      label: t('learn.trainings'),
       to: '',
       show: true,
       options: [
@@ -110,7 +117,8 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () => window.location.assign(`${getLearnUrl('/courses')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
         },
         {
           id: 'paths',
@@ -118,7 +126,8 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () => window.location.assign(`${getLearnUrl('/paths')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
         },
         {
           id: 'events',
@@ -126,7 +135,8 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () => window.location.assign(`${getLearnUrl('/events')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
         },
         {
           id: 'external',
@@ -135,24 +145,17 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
             window.location.assign(`${getLearnUrl('/external-trainings')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
         },
       ],
     },
     {
-      id: 'learningCenter',
-      label: t('learn.learningCenter'),
+      id: 'development',
+      label: t('learn.development'),
       to: '',
       show: true,
       options: [
-        {
-          id: 'tasks',
-          label: t('learn.tasks'),
-          onClick: () => window.location.assign(`${getLearnUrl('/tasks')}`),
-          show: !!user?.organization?.setting?.enablechecklist,
-          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
-        },
         {
           id: 'mentorship',
           label: t('learn.mentorship'),
@@ -160,15 +163,17 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
             window.location.assign(`${getLearnUrl('/mentorship/admin')}`),
           show: !!user?.organization?.setting?.enableMentorship,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
         },
         {
-          id: 'forums',
-          label: t('learn.forums'),
-          onClick: () => window.location.assign(`${getLearnUrl('/forums')}`),
-          show: true,
+          id: 'tasks',
+          label: t('learn.tasks'),
+          onClick: () => window.location.assign(`${getLearnUrl('/tasks')}`),
+          show: !!user?.organization?.setting?.enablechecklist,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
         },
       ].filter((option) => option.show),
     },
@@ -187,7 +192,8 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
             ),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
         },
         {
           id: 'teams',
@@ -196,7 +202,8 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
             window.location.assign(`${getLearnUrl('/peoples?tab=teams')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
         },
         {
           id: 'branches',
@@ -204,7 +211,8 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () => window.location.assign(`${getLearnUrl('/branches')}`),
           show: !!user?.organization?.setting?.enableBranches && isSuperAdmin,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
         },
       ].filter((option) => option.show),
     },
@@ -220,7 +228,8 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () => window.location.assign(`${getLearnUrl('/insights')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
         },
         {
           id: 'reports',
@@ -228,7 +237,8 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () => window.location.assign(`${getLearnUrl('/reports')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
         },
       ],
     },
@@ -244,7 +254,8 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () => window.location.assign(`${getLearnUrl('/orders')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
         },
         {
           id: 'coupons',
@@ -252,11 +263,12 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           onClick: () => window.location.assign(`${getLearnUrl('/coupons')}`),
           show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
-          labelClassName: '!text-black hover:!text-black leading-4',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
         },
       ],
     },
-  ].filter((each) => each.show);
+  ].filter((each) => each.show && (each.to || each.options.length > 0));
 
   const optionWrapperStyle = clsx({
     'w-full max-w-[1280px] flex items-center': true,
@@ -265,24 +277,24 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
 
   const getNavItemStyle = (id: string) => {
     switch (id) {
-      case 'engage':
+      case 'engagement':
         return clsx({
-          'gap-1 font-lato items-center font-lato my-[5px] text-[15px] px-2.5 py-1 transition ease duration-150 text-primary-500 group-hover/item:bg-neutral-100 group-hover/item:text-black font-semibold cursor-pointer rounded-xl flex group':
+          'gap-1 font-lato items-center font-lato my-[5px] text-[15px] px-2.5 py-1 transition ease duration-150 text-primary-500 group-hover/item:bg-neutral-100 font-semibold cursor-pointer rounded-xl flex group':
             true,
         });
       case 'home':
-      case 'training':
-      case 'learningCenter':
+      case 'trainings':
+      case 'development':
       case 'company':
       case 'analytics':
       case 'ecommerce':
         return clsx({
-          'gap-1 font-lato items-center font-lato my-[5px] flex text-[15px] px-2.5 py-1 transition ease duration-150 group-hover/item:bg-neutral-100 hover:bg-neutral-100 group-hover/item:text-black font-medium rounded-xl cursor-pointer group':
+          'gap-1 font-lato items-center font-lato my-[5px] flex text-[15px] px-2.5 py-1 transition ease duration-150 group-hover/item:bg-neutral-100 hover:bg-neutral-100 font-medium rounded-xl cursor-pointer group':
             true,
         });
       case 'backBtn':
         return clsx({
-          'font-lato my-[5px] nav-item text-[15px] gap-[8px] transition ease duration-150 group-hover/item:text-primary-500 flex items-center px-4 py-2 border rounded-17xl group':
+          'font-lato my-[5px] nav-item text-base gap-[8px] transition ease duration-150 text-neutral-900 flex items-center px-4 py-2 border rounded-17xl group':
             true,
         });
     }
@@ -327,14 +339,16 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
                               tabIndex={0}
                               className={getNavItemStyle(item.id)}
                             >
-                              {item.label}
+                              <span className="group-hover:!text-black">
+                                {item.label}
+                              </span>
                               <Icon
                                 name="arrowDown3"
                                 size={10}
                                 dataTestId={`${item.id}-collapse`}
-                                className="group-hover/item:!text-black navbar-arrow-icon group-hover/item:navbar-arrow-icon-hover"
+                                className="group-hover:!text-black navbar-arrow-icon group-hover/item:navbar-arrow-icon-hover"
                                 color={
-                                  item.id === 'engage'
+                                  item.isActive
                                     ? 'text-primary-500'
                                     : '!text-black'
                                 }
@@ -342,7 +356,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
                             </div>
                           }
                           menuItems={item.options}
-                          className={`dropdown-menu-option group-hover/item:visible invisible h-[39px] !transition-[height] !duration-300 w-[124px] left-1/2 -translate-x-1/2 ${getOptionHeight(
+                          className={`dropdown-menu-option group-hover/item:visible invisible h-[39px] !transition-[height] !duration-300 w-full left-1/2 -translate-x-1/2 ${getOptionHeight(
                             item.options.length,
                           )}`}
                           controlled
@@ -366,7 +380,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
                 <li>
                   <IconButton
                     icon="messageQuestionOutline"
-                    color="#888888"
+                    color="text-#888888"
                     size={22}
                     onClick={() => {
                       window.open(`${getLearnUrl()}?openHelpSupport=true`);
@@ -395,6 +409,9 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
                 name={'arrowLeft'}
                 size={18}
                 dataTestId={`backBtnAdminNavbarClassicIcon`}
+                color="!text-black"
+                hoverColor="!text-black"
+                hover
               />
               {backBtn.label}
             </NavLink>

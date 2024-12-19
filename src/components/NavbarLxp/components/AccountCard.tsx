@@ -103,7 +103,7 @@ const AccountCard = () => {
       triggerNodeRenderer={(isOpen) => (
         <div
           tabIndex={0}
-          className="flex items-center px-[7px] py-2 transition ease duration-150 group-hover:bg-neutral-100 hover:bg-neutral-100 rounded-xl cursor-pointer group"
+          className="flex items-center gap-1 px-[10px] py-2 transition ease duration-150 group-hover:bg-neutral-100 hover:bg-neutral-100 rounded-xl cursor-pointer group"
         >
           <Avatar
             dataTestId="my-profile-avatar"
@@ -113,8 +113,8 @@ const AccountCard = () => {
             ariaLabel={user?.name || 'profile image'}
           />
           <Icon
-            name="arrowDown2"
-            size={20}
+            name="arrowDown3"
+            size={10}
             dataTestId={`$my-profile-avatar-collapse`}
             className={`group-hover:!text-neutral-500 ${
               isOpen ? 'navbar-arrow-icon-hover' : 'navbar-arrow-icon'
@@ -131,29 +131,27 @@ const AccountCard = () => {
           )}
         </div>
       )}
-      className="-right-2 top-[52px] rounded-9xl shadow-sm shadow-[#22242626] border border-neutral-200 border-solid"
+      className="right-0 top-[52px] rounded-9xl shadow-sm shadow-[#22242626] border border-neutral-200 border-solid"
       contentRenderer={(close) => (
         <div className="rounded-9xl flex flex-col items-center w-[300px] shadow overflow-hidden">
-          <div className="w-full px-5 py-5 pb-0 flex gap-[14px] items-center">
+          <div className="w-full px-5 pt-5 flex gap-[14px] items-center">
             <Avatar
               size={50}
               name={user?.name || tp('nameNotSpecified')}
               image={user?.profileImage}
               // showActiveIndicator
             />
-            <div className="h-[50px] flex flex-col justify-between">
-              <div
+            <div className="h-[50px] flex flex-col justify-between min-w-0 mr-2">
+              <Truncate
+                text={user?.name || ''}
+                dataTestId="user-menu-user-name"
                 className="text-lg leading-tight tracking-[0.3px] font-semibold"
-                data-testid="user-menu-user-name"
-              >
-                {user?.name}
-              </div>
-              <div
+              />
+              <Truncate
+                text={user?.email || ''}
                 className="text-neutral-500 text-sm leading-tight tracking-[0.3px] font-normal"
-                data-testid="user-menu-user-email"
-              >
-                {user?.email}
-              </div>
+                dataTestId="user-menu-user-email"
+              />
             </div>
           </div>
           <div className="w-full mt-[14px]">
@@ -176,6 +174,17 @@ const AccountCard = () => {
                   onClick={close}
                 >
                   <div>{t('myCertificates')}</div>
+                </div>
+              </Link>
+            )}
+            {isLearnerView && user?.organization?.setting?.enableEcommerce && (
+              <Link to={`${getLearnUrl()}/user/settings/orders`}>
+                <div
+                  className={`flex ${menuItemStyle}`}
+                  data-testid="user-menu-user-settings"
+                  onClick={close}
+                >
+                  <div>{t('myOrders')}</div>
                 </div>
               </Link>
             )}
@@ -285,7 +294,7 @@ const AccountCard = () => {
                 )}
               </div>
             )}
-            <Divider className="my-[6px]" />
+            {totalBranches > 0 && <Divider className="my-[6px]" />}
             <div
               className={`flex ${menuItemStyle} justify-between`}
               data-testid="user-menu-switch-theme"

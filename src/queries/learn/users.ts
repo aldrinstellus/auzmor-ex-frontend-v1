@@ -97,6 +97,8 @@ export const fetchMe = async () => {
               orgData.result.data.organization_setting.enable_checklist,
             enableEcommerce:
               orgData.result.data.organization_setting.enable_ecommerce,
+            enableSocialLearning:
+              orgData.result.data.organization_setting.enable_social_learning,
           },
         },
         ...(user?.designation && {

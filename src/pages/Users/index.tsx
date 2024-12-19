@@ -163,14 +163,14 @@ const Users: FC<IUsersProps> = () => {
     <Card className="pt-8 px-7 w-full mb-6">
       <Tabs
         tabs={tabs}
-        title={isLxp ? 'My Teams' : 'People Hub'}
+        title={isLxp ? '' : 'People Hub'}
         className={`!w-fit gap-1 ${
           isLxp ? 'hidden' : 'flex'
         } justify-start bg-neutral-50 rounded-6xl border-solid border-1 border-neutral-200`}
         tabSwitcherClassName="!p-1"
         activeTabIndex={!isUserTab ? 1 : 0}
         showUnderline={false}
-        tabContentClassName="mt-4"
+        tabContentClassName={isLxp ? '' : 'mt-4'}
         onTabChange={() => {
           navigate(isUserTab ? '/teams' : '/users');
         }}

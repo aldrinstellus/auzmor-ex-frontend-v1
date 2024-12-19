@@ -50,9 +50,9 @@ const AdminsWidget = ({ className = '' }) => {
 
   return (
     <Card className={style} shadowOnHover>
-      <div className="px-6">
+      <div className="px-4">
         <div
-          className="flex items-center justify-between cursor-pointer"
+          className="flex items-center justify-between cursor-pointer px-2"
           onClick={toggleModal}
           onKeyUp={(e) => (e.code === 'Enter' ? toggleModal() : '')}
           tabIndex={0}
