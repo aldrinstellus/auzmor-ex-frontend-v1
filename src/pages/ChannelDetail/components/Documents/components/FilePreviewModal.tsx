@@ -8,6 +8,7 @@ import Icon from 'components/Icon';
 import Divider from 'components/Divider';
 import Avatar from 'components/Avatar';
 import Spinner from 'components/Spinner';
+import moment from 'moment';
 
 interface IFilePreviewProps {
   file: Doc;
@@ -56,15 +57,18 @@ const FilePreview: FC<IFilePreviewProps> = ({ file, open, closeModal }) => {
             <div className="text-sm font-bold text-neutral-900">
               {file.ownerName}
             </div>
-            <div className="text-xs text-[#384D6F]">
+            {/* <div className="text-xs text-[#384D6F]">
               Customer Success Manager
-            </div>
+            </div> */}
           </div>
           <div className="flex flex-col items-end">
             <div className="text-xs text-[#384D6F]">
-              Last Updated: <span>{file.externalUpdatedAt}</span>
+              Last Updated:{' '}
+              <span>
+                {moment(file.externalUpdatedAt).format('MMM DD, YYYY')}
+              </span>
             </div>
-            <div className="text-xs text-[#384D6F]">8 min read</div>
+            {/* <div className="text-xs text-[#384D6F]">8 min read</div> */}
           </div>
         </div>
       </div>
