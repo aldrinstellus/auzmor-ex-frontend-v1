@@ -10,7 +10,7 @@ type DocSearchProps = {
 };
 
 const DocSearchRow = ({ data, searchQuery = '' }: DocSearchProps) => {
-  const iconName = getIconFromMime(data?.mimeType);
+  const iconName = data?.isFolder ? 'folder' : getIconFromMime(data?.mimeType);
   return (
     <div className="flex gap-2 items-center">
       <Icon name={iconName} />

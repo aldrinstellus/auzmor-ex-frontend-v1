@@ -192,7 +192,7 @@ const DataGrid = <T extends object>({
     >
       {/* Even though we're still using sematic table tags, we must use CSS grid and flexbox for dynamic row heights */}
       <table className="grid gap-2">
-        <thead className="grid sticky top-0 z-10">
+        <thead className="grid sticky top-0 z-20">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className={trHeaderClassName()}>
               {headerGroup.headers.map((header: Header<T, unknown>) => {

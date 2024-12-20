@@ -63,7 +63,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
   const SiteIcon: FC<{ name: string }> = ({ name }) => {
     return (
       <div className="flex w-5 h-5 border-1 border-neutral-200 text-white items-end justify-center text-xs font-medium leading-3 bg-primary-600 font-lato">
-        {getInitials(name)}
+        {getInitials(name || '')}
       </div>
     );
   };
@@ -118,6 +118,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
     },
     dataGridProps: {
       columns,
+      view: 'LIST',
       isRowSelectionEnabled: true,
       onRowClick: (e, table, virtualRow, isDoubleClick) => {
         if (

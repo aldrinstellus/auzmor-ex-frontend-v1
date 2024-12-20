@@ -17,7 +17,6 @@ import EntitySelectModal from './components/EntitySelectModal';
 import AddFolderModal from './components/AddFolderModal';
 import DataGrid from 'components/DataGrid';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import Layout, { FieldType } from 'components/Form';
 import { useForm } from 'react-hook-form';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { useDataGrid } from 'hooks/useDataGrid';
@@ -212,7 +211,8 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
   const getAllOptions = useCallback((info: CellContext<DocType, unknown>) => {
     const showDownload =
       !!channelData?.settings?.restriction?.canDownloadDocuments &&
-      !!info?.row?.original?.downloadable;
+      !!info?.row?.original?.downloadable &&
+      !!!info?.row?.original?.isFolder;
     return [
       {
         label: 'Rename',
@@ -273,54 +273,54 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
   // Columns configuration for Datagrid component for List view
   const columnsListView = React.useMemo<ColumnDef<DocType>[]>(
     () => [
-      {
-        id: 'select',
-        header: ({ table }) => (
-          <Layout
-            fields={[
-              {
-                type: FieldType.Checkbox,
-                name: `selectAll`,
-                inputClassName: '!w-4 !h-4 text-white',
-                control,
-                dataTestId: `select-all`,
-                checked: table.getIsAllRowsSelected(),
-                indeterminate: table.getIsSomeRowsSelected(),
-                onChange: (e: any) => {
-                  e.stopPropagation();
-                  table.getToggleAllRowsSelectedHandler();
-                },
-              },
-            ]}
-            className={`items-center group-hover/row:flex ${
-              table.getIsAllRowsSelected() ? 'flex' : 'hidden'
-            }`}
-          />
-        ),
-        cell: ({ row }) => (
-          <Layout
-            fields={[
-              {
-                type: FieldType.Checkbox,
-                name: `selectAll`,
-                inputClassName: '!w-4 !h-4 text-white',
-                control,
-                dataTestId: `select-all`,
-                checked: row.getIsSelected(),
-                indeterminate: row.getIsSomeSelected(),
-                onChange: (e: any) => {
-                  e.stopPropagation();
-                  row.getToggleSelectedHandler();
-                },
-              },
-            ]}
-            className={`items-center group-hover/row:flex ${
-              row.getIsSelected() ? 'flex' : 'hidden'
-            }`}
-          />
-        ),
-        size: 16,
-      },
+      // {
+      //   id: 'select',
+      //   header: ({ table }) => (
+      //     <Layout
+      //       fields={[
+      //         {
+      //           type: FieldType.Checkbox,
+      //           name: `selectAll`,
+      //           inputClassName: '!w-4 !h-4 text-white',
+      //           control,
+      //           dataTestId: `select-all`,
+      //           checked: table.getIsAllRowsSelected(),
+      //           indeterminate: table.getIsSomeRowsSelected(),
+      //           onChange: (e: any) => {
+      //             e.stopPropagation();
+      //             table.getToggleAllRowsSelectedHandler();
+      //           },
+      //         },
+      //       ]}
+      //       className={`items-center group-hover/row:flex ${
+      //         table.getIsAllRowsSelected() ? 'flex' : 'hidden'
+      //       }`}
+      //     />
+      //   ),
+      //   cell: ({ row }) => (
+      //     <Layout
+      //       fields={[
+      //         {
+      //           type: FieldType.Checkbox,
+      //           name: `selectAll`,
+      //           inputClassName: '!w-4 !h-4 text-white',
+      //           control,
+      //           dataTestId: `select-all`,
+      //           checked: row.getIsSelected(),
+      //           indeterminate: row.getIsSomeSelected(),
+      //           onChange: (e: any) => {
+      //             e.stopPropagation();
+      //             row.getToggleSelectedHandler();
+      //           },
+      //         },
+      //       ]}
+      //       className={`items-center group-hover/row:flex ${
+      //         row.getIsSelected() ? 'flex' : 'hidden'
+      //       }`}
+      //     />
+      //   ),
+      //   size: 16,
+      // },
       {
         accessorKey: 'name',
         header: () => (
@@ -440,7 +440,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
     ),
     dataGridProps: {
       columns: view === 'LIST' ? columnsListView : columnsGridView,
-      isRowSelectionEnabled: true,
+      isRowSelectionEnabled: false,
       view,
       onRowClick: (e, table, virtualRow, isDoubleClick) => {
         if (virtualRow.original.isFolder && isDoubleClick) {
@@ -450,7 +450,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
             label: virtualRow?.original?.name,
             meta: virtualRow.original,
           });
-          table.setRowSelection({});
+          // table.setRowSelection({});
           return;
         } else if (!!!virtualRow.original.isFolder && isDoubleClick) {
           openFilePreview(virtualRow.original);
@@ -458,12 +458,12 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
         }
         if (!isDoubleClick) {
           // If single click select file / folder
-          table.setRowSelection((param) => {
-            return {
-              ...param,
-              [virtualRow.index]: !!!param[virtualRow.index],
-            };
-          });
+          // table.setRowSelection((param) => {
+          //   return {
+          //     ...param,
+          //     [virtualRow.index]: !!!param[virtualRow.index],
+          //   };
+          // });
         }
       },
       noDataFound: (
@@ -510,9 +510,8 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
               </p>
               <Divider />
               <p className="text-center text-lg font-medium text-neutral-900">
-                Activate your preferred folder/site from google drive or
-                sharepoint to create, share and collaborate on files and folders
-                in this channel.
+                Activate your preferred site from sharepoint to create, share
+                and collaborate on files and folders in this channel.
               </p>
             </div>
             <div className="flex gap-6 w-full justify-center">
