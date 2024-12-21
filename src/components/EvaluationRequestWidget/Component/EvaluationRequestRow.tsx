@@ -34,8 +34,8 @@ const EvaluationRequestRow: FC<EvaluationRequestRowProps> = ({
 
   return (
     <Card className={style}>
-      <div className="flex rounded justify-between items-center ">
-        <div className="flex gap-1 items-center">
+      <div className="flex rounded justify-between items-center gap-1 ">
+        <div className="flex gap-1 items-center overflow-hidden">
           <Tooltip tooltipContent={data?.module}>
             <Icon
               name={data?.module === 'Event' ? 'calendarTwo' : 'teacher'}
@@ -45,6 +45,7 @@ const EvaluationRequestRow: FC<EvaluationRequestRowProps> = ({
           </Tooltip>
           <Truncate
             className={'text-sm font-bold'}
+            toolTipTextClassName="overflow-hidden"
             text={data?.source?.source_name || data?.module}
           />
         </div>
