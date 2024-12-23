@@ -17,6 +17,7 @@ import {
   BackgroundJobVariantEnum,
   useBackgroundJobStore,
 } from 'stores/backgroundJobStore';
+import { getLearnUrl } from 'utils/misc';
 
 interface IIntegrationSettingProps {
   canEdit: boolean;
@@ -114,6 +115,43 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = ({ canEdit }) => {
   );
   const availableAccount = statusResponse?.availableAccounts[0];
 
+  const popOptions = [
+    {
+      label: (
+        <div className="flex items-center gap-2.5">
+          <Icon name="lock-open" size={16} color="text-neutral-900" />
+          <span className="font-medium text-xs">Disconnect</span>
+        </div>
+      ),
+      onClick: () => {
+        deleteConnectionMutation.mutate({ channelId } as any);
+      },
+      dataTestId: 'disconnect',
+      className: '!px-6 !py-2',
+    },
+    {
+      label: (
+        <div className="flex items-center gap-2.5">
+          <Icon name="refreshCircle" size={16} color="text-neutral-900" />
+          <span className="font-medium text-xs">Re-sync</span>
+        </div>
+      ),
+      onClick: () => {
+        reSyncMutation.mutate({ channelId } as any);
+      },
+      dataTestId: 're-sync',
+      className: '!px-6 !py-2',
+    },
+  ].filter((each) => {
+    if (
+      (each.dataTestId === 'disconnect' || each.dataTestId === 're-sync') &&
+      !isBaseFolderSet
+    ) {
+      return false;
+    }
+    return true;
+  });
+
   return (
     <div className="flex flex-col gap-3">
       <Header
@@ -140,16 +178,28 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = ({ canEdit }) => {
           </p>
         </div>
         <div className="flex flex-col gap-3 flex-grow">
-          <div className="flex gap-2 text-xs text-neutral-700 font-medium">
-            Last sync: 14th july 2024
-          </div>
+          {isConnectionMade && (
+            <div className="flex gap-2 text-xs text-neutral-700 font-medium">
+              Last sync: 14th july 2024
+            </div>
+          )}
           <div className="flex gap-6 w-full">
-            {!isBaseFolderSet && (
+            {isConnectionMade && !isBaseFolderSet && (
               <Button
                 label="Select existing"
                 variant={ButtonVariant.Secondary}
                 size={Size.Small}
                 onClick={openModal}
+                className="h-9"
+              />
+            )}
+            {!isConnectionMade && (
+              <Button
+                label="Connect"
+                size={Size.Small}
+                onClick={() =>
+                  window.location.assign(getLearnUrl('/settings/market-place'))
+                }
                 className="h-9"
               />
             )}
@@ -163,63 +213,23 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = ({ canEdit }) => {
             )}
           </div>
         </div>
-        <div className="relative">
-          <PopupMenu
-            triggerNode={
-              <div
-                className="cursor-pointer relative"
-                data-testid="feed-post-ellipsis"
-                title="more"
-              >
-                <Icon name="moreV2Filled" tabIndex={0} size={16} />
-              </div>
-            }
-            menuItems={[
-              {
-                label: (
-                  <div className="flex items-center gap-2.5">
-                    <Icon name="userTick" size={16} color="text-neutral-900" />
-                    <span className="font-medium text-xs">Re-authorize</span>
-                  </div>
-                ),
-                onClick: () => {},
-                dataTestId: 'folder-menu',
-                className: '!px-6 !py-2',
-              },
-              {
-                label: (
-                  <div className="flex items-center gap-2.5">
-                    <Icon name="lock-open" size={16} color="text-neutral-900" />
-                    <span className="font-medium text-xs">Disconnect</span>
-                  </div>
-                ),
-                onClick: () => {
-                  deleteConnectionMutation.mutate({ channelId } as any);
-                },
-                dataTestId: 'folder-menu',
-                className: '!px-6 !py-2',
-              },
-              {
-                label: (
-                  <div className="flex items-center gap-2.5">
-                    <Icon
-                      name="refreshCircle"
-                      size={16}
-                      color="text-neutral-900"
-                    />
-                    <span className="font-medium text-xs">Re-sync</span>
-                  </div>
-                ),
-                onClick: () => {
-                  reSyncMutation.mutate({ channelId } as any);
-                },
-                dataTestId: 'folder-menu',
-                className: '!px-6 !py-2',
-              },
-            ]}
-            className="right-0 top-6 border-1 border-neutral-200 focus-visible:outline-none w-44"
-          />
-        </div>
+        {!!popOptions.length && (
+          <div className="relative">
+            <PopupMenu
+              triggerNode={
+                <div
+                  className="cursor-pointer relative"
+                  data-testid="feed-post-ellipsis"
+                  title="more"
+                >
+                  <Icon name="moreV2Filled" tabIndex={0} size={16} />
+                </div>
+              }
+              menuItems={popOptions}
+              className="right-0 top-6 border-1 border-neutral-200 focus-visible:outline-none w-44"
+            />
+          </div>
+        )}
       </Card>
 
       {isOpen && (
