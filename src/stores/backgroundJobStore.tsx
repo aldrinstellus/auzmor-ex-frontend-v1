@@ -27,7 +27,13 @@ type BackgroundJob = {
   ) => React.ReactNode;
 };
 
+export enum BackgroundJobVariantEnum {
+  ChannelDocumentUpload = 'CHANNEL_DOCUMENT_UPLOAD',
+  ChannelDocumentSync = 'CHANNEL_DOCUMENT_SYNC',
+}
+
 interface IBackgroundJobState {
+  variant: BackgroundJobVariantEnum;
   show: boolean;
   jobTitle: string;
   progress: number;
@@ -37,6 +43,7 @@ interface IBackgroundJobState {
 }
 
 interface IBackgroundJobActions {
+  setVariant: (variant: BackgroundJobVariantEnum) => void;
   setShow: (flag: boolean) => void;
   setJobTitle: (title: string) => void;
   setProgress: (progress: number) => void;
@@ -60,12 +67,14 @@ interface IBackgroundJobActions {
 export const useBackgroundJobStore = create<
   IBackgroundJobState & IBackgroundJobActions
 >((set, get) => ({
+  variant: BackgroundJobVariantEnum.ChannelDocumentUpload,
   show: false,
   jobTitle: 'Uploading in progress',
   progress: 75,
   isExpanded: true,
   jobs: {},
 
+  setVariant: (variant) => set({ variant }),
   setShow: (flag) => set({ show: flag }),
   setJobTitle: (title) => set({ jobTitle: title }),
   setProgress: (progress) => set({ progress: progress }),
@@ -126,6 +135,7 @@ export const useBackgroundJobStore = create<
   },
   reset: () =>
     set({
+      variant: BackgroundJobVariantEnum.ChannelDocumentUpload,
       show: false,
       jobTitle: '',
       progress: 0,

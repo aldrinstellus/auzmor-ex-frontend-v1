@@ -228,4 +228,8 @@ export const apiConfigLxp = {
   [ApiEnum.GetChannelDocDeepSearch]: {
     [Default]: queries.useChannelDocDeepSearch,
   },
+  [ApiEnum.ChannelDocSync]: { [Default]: queries.channelDocSync },
+  [ApiEnum.GetChannelDocSyncStatus]: {
+    [Default]: queries.getChannelDocumentSyncStatus,
+  },
 };

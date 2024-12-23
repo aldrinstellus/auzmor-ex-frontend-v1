@@ -172,6 +172,17 @@ export const getChannelDocDeepSearch = async (payload: {
 // Trigger manual sync
 export const channelDocSync = async (payload: { channelId: string }) => {
   const response = await apiService.post(`/channels/${payload.channelId}/sync`);
+  console.log(response);
+  return response;
+};
+
+// Get channelDocu ment sync status
+export const getChannelDocumentSyncStatus = async (payload: {
+  channelId: string;
+}) => {
+  const response = await apiService.get(
+    `/channels/${payload.channelId}/sync/status`,
+  );
   return response;
 };
 

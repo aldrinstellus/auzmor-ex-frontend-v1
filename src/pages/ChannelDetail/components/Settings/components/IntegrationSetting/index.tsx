@@ -13,7 +13,10 @@ import EntitySelectModal from 'pages/ChannelDetail/components/Documents/componen
 import { useMutation } from '@tanstack/react-query';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
-import SwitchToggle from 'components/SwitchToggle';
+import {
+  BackgroundJobVariantEnum,
+  useBackgroundJobStore,
+} from 'stores/backgroundJobStore';
 
 interface IIntegrationSettingProps {
   canEdit: boolean;
@@ -23,6 +26,8 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = ({ canEdit }) => {
   const { getApi } = usePermissions();
   const { channelId } = useParams();
   const [isOpen, openModal, closeModal] = useModal();
+  const { setVariant, setShow, setJobTitle, setIsExpanded } =
+    useBackgroundJobStore();
 
   const integrationMapping = {
     [DocIntegrationEnum.GoogleDrive]: {
@@ -68,9 +73,42 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = ({ canEdit }) => {
     mutationFn: deleteConnection,
   });
 
-  const isActive = statusResponse?.status === 'ACTIVE';
+  // API call: Re-sync
+  const reSync = getApi(ApiEnum.ChannelDocSync);
+  const getSyncStatus = getApi(ApiEnum.GetChannelDocSyncStatus);
+  const reSyncMutation = useMutation({
+    mutationFn: reSync,
+    onMutate: () => {
+      setVariant(BackgroundJobVariantEnum.ChannelDocumentSync);
+      setJobTitle('Syncing in progress...');
+      setIsExpanded(false);
+      setShow(true);
+    },
+    onSuccess: async () => {
+      let intervalId: any = null;
+      intervalId = setInterval(async () => {
+        const response = await getSyncStatus({ channelId }).catch(() => {
+          clearInterval(intervalId);
+          setJobTitle('Syncing failed');
+        });
+        if (response?.data?.result?.syncStatus === 'incremental_sync') {
+          clearInterval(intervalId);
+          setJobTitle('Syncing completed successfully');
+        }
+      }, 1000);
+    },
+    onError: () => {
+      setJobTitle('Syncing failed');
+    },
+  });
+
+  const isBaseFolderSet = statusResponse?.status === 'ACTIVE';
+  const isConnectionMade =
+    isBaseFolderSet ||
+    (statusResponse?.status === 'INACTIVE' &&
+      statusResponse.availableAccounts.length > 0);
   const integrationType = mapIntegrationType(
-    isActive
+    isConnectionMade
       ? statusResponse?.activeAccounts[0]?.platformName
       : statusResponse?.availableAccounts[0],
   );
@@ -90,7 +128,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = ({ canEdit }) => {
             <span className="text-sm text-neutral-500 font-bold">
               {integrationMapping[integrationType].label}
             </span>
-            {isActive && (
+            {isConnectionMade && (
               <div className="text-primary-500 font-bold text-xxs bg-primary-50 px-3 py-1 border border-primary-500 rounded-xl">
                 Activated
               </div>
@@ -102,28 +140,19 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = ({ canEdit }) => {
           </p>
         </div>
         <div className="flex flex-col gap-3 flex-grow">
-          <SwitchToggle
-            onChange={(_checked: boolean, _setChecked) =>
-              // updateLimitPostingControlsMutation.mutate(checked, {
-              //   onError: () => setChecked(!checked),
-              //   onSuccess: () =>
-              //     queryClient.invalidateQueries(['organization']),
-              // })
-              {}
-            }
-            defaultValue={!!availableAccount?.enabled}
-          />
           <div className="flex gap-2 text-xs text-neutral-700 font-medium">
             Last sync: 14th july 2024
           </div>
           <div className="flex gap-6 w-full">
-            <Button
-              label="Select existing"
-              variant={ButtonVariant.Secondary}
-              size={Size.Small}
-              onClick={openModal}
-              className="h-9"
-            />
+            {!isBaseFolderSet && (
+              <Button
+                label="Select existing"
+                variant={ButtonVariant.Secondary}
+                size={Size.Small}
+                onClick={openModal}
+                className="h-9"
+              />
+            )}
             {integrationType !== DocIntegrationEnum.Sharepoint && (
               <Button
                 label="Add new"
@@ -182,7 +211,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = ({ canEdit }) => {
                   </div>
                 ),
                 onClick: () => {
-                  console.log('manual sync');
+                  reSyncMutation.mutate({ channelId } as any);
                 },
                 dataTestId: 'folder-menu',
                 className: '!px-6 !py-2',
