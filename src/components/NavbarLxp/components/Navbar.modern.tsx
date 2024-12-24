@@ -109,8 +109,8 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       isActive: true,
     },
     {
-      id: 'trainings',
-      label: t('learn.trainings'),
+      id: 'training',
+      label: t('learn.training'),
       to: getLearnUrl('/user/trainings'),
       show: true,
       icon: 'training',
@@ -154,7 +154,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
     switch (id) {
       case 'home':
       case 'engagement':
-      case 'trainings':
+      case 'training':
       case 'development':
         return clsx({
           'modern-nav-item flex gap-2 items-center text-sm text-neutral-500 px-[13px] py-[9px] transition ease duration-150 group-hover/item:bg-neutral-100 hover:bg-neutral-100 font-medium rounded-xl cursor-pointer group':
