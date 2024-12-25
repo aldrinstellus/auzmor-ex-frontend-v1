@@ -247,10 +247,10 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   };
 
   const initSmartlook = () => {
-    if (!isLxp && process.env.REACT_APP_OFFICE_SMARTLOOK_KEY) {
-      Smartlook.init(process.env.REACT_APP_OFFICE_SMARTLOOK_KEY);
-    } else if (isLxp && process.env.REACT_APP_LXP_SMARTLOOK_KEY) {
-      Smartlook.init(process.env.REACT_APP_LXP_SMARTLOOK_KEY, {
+    if (!isLxp && process.env.REACT_APP_SMARTLOOK_KEY) {
+      Smartlook.init(process.env.REACT_APP_SMARTLOOK_KEY);
+    } else if (isLxp && process.env.REACT_APP_SMARTLOOK_KEY) {
+      Smartlook.init(process.env.REACT_APP_SMARTLOOK_KEY, {
         interceptors: {
           network: (data) => {
             data.url = replaceSensitiveData(data.url);
