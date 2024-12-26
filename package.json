@@ -68,7 +68,6 @@
     "react-select": "^5.7.2",
     "react-toastify": "^9.1.2",
     "react-tooltip": "^5.11.1",
-    "react-truncate-markup": "^5.1.2",
     "react-visibility-sensor": "^5.1.1",
     "remark-directive": "^3.0.0",
     "remark-directive-rehype": "^0.4.2",
