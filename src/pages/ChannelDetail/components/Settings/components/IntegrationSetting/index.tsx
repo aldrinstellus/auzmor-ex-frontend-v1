@@ -92,9 +92,13 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = ({ canEdit }) => {
           clearInterval(intervalId);
           setJobTitle('Syncing failed');
         });
-        if (response?.data?.result?.syncStatus === 'incremental_sync') {
+        if (response?.data?.result?.syncStatus === 'success') {
           clearInterval(intervalId);
           setJobTitle('Syncing completed successfully');
+        }
+        if (response?.data?.result?.syncStatus === 'failed') {
+          clearInterval(intervalId);
+          setJobTitle('Syncing failed');
         }
       }, 1000);
     },
