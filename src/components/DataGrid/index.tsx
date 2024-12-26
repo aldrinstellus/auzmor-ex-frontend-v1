@@ -263,13 +263,15 @@ const DataGrid = <T extends object>({
                 </tr>
               );
             })}
-          {hasNextPage && !isFetchingNextPage && <div ref={ref} />}
-          {isFetchingNextPage && (
-            <div className="w-full flex items-center justify-center p-8">
-              <Spinner />
-            </div>
-          )}
         </tbody>
+        {hasNextPage && !isFetchingNextPage && (
+          <div className="flex" ref={ref} />
+        )}
+        {isFetchingNextPage && (
+          <div className="w-full flex items-center justify-center p-8">
+            <Spinner />
+          </div>
+        )}
       </table>
     </div>
   );

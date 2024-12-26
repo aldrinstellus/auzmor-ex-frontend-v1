@@ -50,7 +50,6 @@ export const useDataGrid = <T extends object>({
     const useInfiniteQuery = getApi(apiEnum);
     const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
       useInfiniteQuery(payload, { enabled: isEnabled });
-    console.log(data);
     const flatData = useMemo(
       () =>
         data?.pages?.flatMap((page: { data: any }) => page.data.result.data) ??
