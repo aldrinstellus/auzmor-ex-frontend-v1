@@ -359,41 +359,53 @@ export const useChannelDocUpload = (channelId: string) => {
       const job = getJob(jobId);
       if (!!job && job.status === BackgroundJobStatusEnum.YetToStart) {
         try {
-          getUploadUrl(file).then((response) => {
-            updateJobProgress(jobId, 0, BackgroundJobStatusEnum.Running);
-            uploadToSharepoint(
-              (response as any).data.result as IUploadUrlResponse,
-              fileList.find(
-                ({ file }) => file.name === (response as any).data.result.name,
-              )!.file,
-              jobId,
-            ).then((response) => {
-              updateJobProgress(
+          getUploadUrl(file)
+            .then((response) => {
+              updateJobProgress(jobId, 0, BackgroundJobStatusEnum.Running);
+              uploadToSharepoint(
+                (response as any).data.result as IUploadUrlResponse,
+                fileList.find(
+                  ({ file }) =>
+                    file.name === (response as any).data.result.name,
+                )!.file,
                 jobId,
-                100,
-                BackgroundJobStatusEnum.CompletedSuccessfully,
-              );
-              finishUpload({
-                fileName: response?.name,
-                etag: response?.eTag.match(/\{([A-F0-9\-]+)\}/)[1],
-                id: response?.id,
-                ownerName: response?.createdBy?.user?.displayName,
-                externalModifiedBy: response?.lastModifiedBy?.user?.displayName,
-                externalCreatedAt: response?.createdDateTime,
-                externalUpdatedAt: response?.lastModifiedDateTime,
-                externalParentId: response?.parentReference?.id,
-                externalUrl: response?.webUrl,
-                mimeType: response?.file?.mimeType,
-                size: response?.size,
-              }).then(() => {
+              ).then((response) => {
                 updateJobProgress(
                   jobId,
                   100,
                   BackgroundJobStatusEnum.CompletedSuccessfully,
                 );
+                finishUpload({
+                  fileName: response?.name,
+                  etag: response?.eTag.match(/\{([A-F0-9\-]+)\}/)[1],
+                  id: response?.id,
+                  ownerName: response?.createdBy?.user?.displayName,
+                  externalModifiedBy:
+                    response?.lastModifiedBy?.user?.displayName,
+                  externalCreatedAt: response?.createdDateTime,
+                  externalUpdatedAt: response?.lastModifiedDateTime,
+                  externalParentId: response?.parentReference?.id,
+                  externalUrl: response?.webUrl,
+                  mimeType: response?.file?.mimeType,
+                  size: response?.size,
+                }).then(() => {
+                  updateJobProgress(
+                    jobId,
+                    100,
+                    BackgroundJobStatusEnum.CompletedSuccessfully,
+                  );
+                });
               });
+            })
+            .catch((e) => {
+              updateJob({
+                ...job,
+                progress: 100,
+                status: BackgroundJobStatusEnum.Error,
+                jobComment: 'Upload failed',
+              });
+              console.log(e);
             });
-          });
         } catch (e) {
           updateJob({
             ...job,

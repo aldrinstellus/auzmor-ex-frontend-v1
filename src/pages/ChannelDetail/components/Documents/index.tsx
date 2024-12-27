@@ -347,14 +347,17 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
         ),
         cell: (info) => (
           <div className="flex gap-2 font-medium text-neutral-900 leading-6">
-            <Icon
-              name={
-                info?.row?.original?.isFolder
-                  ? 'folder'
-                  : getIconFromMime(info.row.original.mimeType)
-              }
-            />
-            {info.getValue() as string}
+            <div className="flex w-6">
+              <Icon
+                name={
+                  info?.row?.original?.isFolder
+                    ? 'folder'
+                    : getIconFromMime(info.row.original.mimeType)
+                }
+                className="!w-6"
+              />
+            </div>
+            <span className="break-all">{info.getValue() as string}</span>
           </div>
         ),
         thClassName: 'flex-1',
@@ -763,7 +766,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
                 try {
                   const response: any = await createFolderMutation.mutateAsync({
                     channelId: channelId,
-                    remoteFolderId: parentFolderId,
+                    remoteFolderId: parentFolderId.toString(),
                     name: folderName,
                   } as any);
 

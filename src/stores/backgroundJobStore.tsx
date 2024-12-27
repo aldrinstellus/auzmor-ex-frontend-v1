@@ -71,7 +71,7 @@ export const useBackgroundJobStore = create<
   show: false,
   jobTitle: 'Uploading in progress',
   progress: 75,
-  isExpanded: true,
+  isExpanded: false,
   jobs: {},
 
   setVariant: (variant) => set({ variant }),
