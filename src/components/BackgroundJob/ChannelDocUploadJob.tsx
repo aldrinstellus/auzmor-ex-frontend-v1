@@ -77,7 +77,7 @@ const ChannelDocUploadJob: FC<IChannelDocUploadJobProps> = ({}) => {
             onClick={() => setIsExpanded(!isExpanded)}
             className={clsx({ 'rotate-0': isExpanded, '-rotate-180': true })}
           />
-          <Icon name="close" size={20} onClick={reset} />
+          {progress === 100 && <Icon name="close" size={20} onClick={reset} />}
         </div>
         {showProgressbar && (
           <div className="flex items-center gap-4">

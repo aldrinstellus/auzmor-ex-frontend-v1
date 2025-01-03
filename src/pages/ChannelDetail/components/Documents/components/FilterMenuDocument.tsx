@@ -28,6 +28,8 @@ interface IFilterMenu {
   dataTestIdSort?: string;
   dataTestIdFilter?: string;
   view: 'LIST' | 'GRID';
+  hideFilter?: boolean;
+  hideSort?: boolean;
   changeView: (view: 'LIST' | 'GRID') => void;
 }
 
@@ -37,6 +39,8 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
   dataTestIdSort,
   dataTestIdFilter,
   view,
+  hideFilter = false,
+  hideSort = false,
   changeView,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
@@ -187,6 +191,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
                       ),
                     },
                   ],
+                  disabled: hideFilter,
                   suffixIcon: !!docType && <></>,
                   isClearable: !!docType,
                   clearIcon: <Icon name="close" size={16} />,
@@ -214,30 +219,34 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
                 className="mt-1 top-full right-0 border-1 border-neutral-200 focus-visible:outline-none"
               />
             </div>
-            <div className="relative flex">
-              <IconButton
-                onClick={openFilterModal}
-                icon="filterLinear"
-                variant={IconVariant.Secondary}
-                size={IconSize.Medium}
-                borderAround
-                className="bg-white !p-[10px]"
-                dataTestId={dataTestIdFilter}
+            {!hideFilter && (
+              <div className="relative flex">
+                <IconButton
+                  onClick={openFilterModal}
+                  icon="filterLinear"
+                  variant={IconVariant.Secondary}
+                  size={IconSize.Medium}
+                  borderAround
+                  className="bg-white !p-[10px]"
+                  dataTestId={dataTestIdFilter}
+                />
+                {isFilterApplied && (
+                  <div className="absolute w-2 h-2 rounded-full bg-red-500 top-0.5 right-0" />
+                )}
+              </div>
+            )}
+            {!hideSort && (
+              <Sort
+                controlled
+                setFilter={(sortValue) => {
+                  setFilters({ sort: sortValue });
+                }}
+                selectedValue={filters ? filters.sort : ''}
+                entity={'channel-document'}
+                dataTestId={dataTestIdSort}
+                sortOptions={sortOptions}
               />
-              {isFilterApplied && (
-                <div className="absolute w-2 h-2 rounded-full bg-red-500 top-0.5 right-0" />
-              )}
-            </div>
-            <Sort
-              controlled
-              setFilter={(sortValue) => {
-                setFilters({ sort: sortValue });
-              }}
-              selectedValue={filters ? filters.sort : ''}
-              entity={'channel-document'}
-              dataTestId={dataTestIdSort}
-              sortOptions={sortOptions}
-            />
+            )}
           </div>
         </div>
         {(filters?.sort || isFilterApplied) && (

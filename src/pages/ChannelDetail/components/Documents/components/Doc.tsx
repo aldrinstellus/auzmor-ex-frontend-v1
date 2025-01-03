@@ -9,6 +9,7 @@ import { humanizeTime } from 'utils/time';
 
 interface IDocProps {
   doc: DocType;
+  isFolder?: boolean;
 }
 
 export const getIconFromMime = (mimeType?: string) => {
@@ -76,7 +77,7 @@ export const getIconFromMime = (mimeType?: string) => {
   return 'file';
 };
 
-const Doc: FC<IDocProps> = ({ doc }) => {
+const Doc: FC<IDocProps> = ({ doc, isFolder }) => {
   const style = useMemo(
     () =>
       clsx({
@@ -86,7 +87,8 @@ const Doc: FC<IDocProps> = ({ doc }) => {
     [],
   );
 
-  const iconName = doc.isFolder ? 'folder' : getIconFromMime(doc.mimeType);
+  const iconName =
+    doc.isFolder || isFolder ? 'folder' : getIconFromMime(doc.mimeType);
   return (
     <Card className={style}>
       <div className="flex justify-center items-center py-[15px] bg-neutral-100 rounded-md">

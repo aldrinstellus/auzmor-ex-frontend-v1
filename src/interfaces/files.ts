@@ -26,7 +26,8 @@ export type Doc = {
   fileType: string;
   ownerName: string;
   ownerImage?: string;
-  path: Record<string, string>;
+  path: string;
+  pathWithId: Record<string, string>;
   externalCreatedAt: string;
   externalUpdatedAt: string;
   syncedAt: string;

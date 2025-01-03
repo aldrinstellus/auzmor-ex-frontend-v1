@@ -8,6 +8,7 @@ import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { useParams } from 'react-router-dom';
 import { ICheckboxListOption } from 'components/CheckboxList';
 import { titleCase } from 'utils/misc';
+import { useChannelStore } from 'stores/channelStore';
 interface IVisibilityProps {
   control: Control<IFilterForm, any>;
   watch: UseFormWatch<IFilterForm>;
@@ -17,8 +18,12 @@ interface IVisibilityProps {
 const DocumentOwner: FC<IVisibilityProps> = ({ control }) => {
   const { getApi } = usePermissions();
   const { channelId = '' } = useParams();
+  const { rootFolderId } = useChannelStore();
   const useChannelDocOwners = getApi(ApiEnum.GetChannelDocOwners);
-  const { data: owners, isLoading } = useChannelDocOwners(channelId);
+  const { data: owners, isLoading } = useChannelDocOwners({
+    channelId,
+    rootFolderId,
+  });
 
   const searchField = [
     {
@@ -31,7 +36,6 @@ const DocumentOwner: FC<IVisibilityProps> = ({ control }) => {
       dataTestId: `doc-owner-search`,
     },
   ];
-  console.log(owners);
   const documentFields = useMemo(
     () => [
       {

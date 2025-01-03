@@ -48,7 +48,7 @@ import {
 } from 'stores/backgroundJobStore';
 import queryClient from 'utils/queryClient';
 import { downloadFromUrl, getLearnUrl, isThisAFile } from 'utils/misc';
-import { IChannel } from 'stores/channelStore';
+import { IChannel, useChannelStore } from 'stores/channelStore';
 import RenameChannelDocModal from './components/RenameChannelDocModal';
 import ConfirmationBox from 'components/ConfirmationBox';
 import DocSearch from './components/DocSearch';
@@ -84,6 +84,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
   const { control, watch, setValue } = useForm<IForm>({
     defaultValues: {
       applyDocumentSearch: '',
+      documentSearch: '',
     },
   });
   const { getApi } = usePermissions();
@@ -92,6 +93,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
     useContext(DocumentPathContext);
   const { uploadMedia } = useChannelDocUpload(channelId);
   const { filters } = useAppliedFiltersStore();
+  const { setRootFolderId } = useChannelStore();
   const { setJobs, getIconFromStatus, setJobTitle, setJobsRenderer, setShow } =
     useBackgroundJobStore();
   const folderInputRef = useRef<HTMLInputElement>(null);
@@ -208,6 +210,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
       statusResponse.availableAccounts.length > 0);
   const integrationType: DocIntegrationEnum = DocIntegrationEnum.Sharepoint;
   const availableAccount = statusResponse?.availableAccounts[0];
+  const isRootDir = items.length === 1;
 
   // A function that decides what options to show on each row of documents
   const getAllOptions = useCallback((info: CellContext<DocType, unknown>) => {
@@ -276,8 +279,8 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
   const getMappedLocation = (doc: DocType) => {
     let items = [
       { id: 'root', label: 'Documents' },
-      ...Object.keys(doc?.path || {}).map((key) => ({
-        id: doc?.path[key],
+      ...Object.keys(doc?.pathWithId || {}).map((key) => ({
+        id: doc?.pathWithId[key],
         label: key,
       })),
     ];
@@ -289,55 +292,161 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
 
   // Columns configuration for Datagrid component for List view
   const columnsListView = React.useMemo<ColumnDef<DocType>[]>(
+    () =>
+      [
+        // {
+        //   id: 'select',
+        //   header: ({ table }) => (
+        //     <Layout
+        //       fields={[
+        //         {
+        //           type: FieldType.Checkbox,
+        //           name: `selectAll`,
+        //           inputClassName: '!w-4 !h-4 text-white',
+        //           control,
+        //           dataTestId: `select-all`,
+        //           checked: table.getIsAllRowsSelected(),
+        //           indeterminate: table.getIsSomeRowsSelected(),
+        //           onChange: (e: any) => {
+        //             e.stopPropagation();
+        //             table.getToggleAllRowsSelectedHandler();
+        //           },
+        //         },
+        //       ]}
+        //       className={`items-center group-hover/row:flex ${
+        //         table.getIsAllRowsSelected() ? 'flex' : 'hidden'
+        //       }`}
+        //     />
+        //   ),
+        //   cell: ({ row }: CellContext<DocType, unknown>) => (
+        //     <Layout
+        //       fields={[
+        //         {
+        //           type: FieldType.Checkbox,
+        //           name: `selectAll`,
+        //           inputClassName: '!w-4 !h-4 text-white',
+        //           control,
+        //           dataTestId: `select-all`,
+        //           checked: row.getIsSelected(),
+        //           indeterminate: row.getIsSomeSelected(),
+        //           onChange: (e: any) => {
+        //             e.stopPropagation();
+        //             row.getToggleSelectedHandler();
+        //           },
+        //         },
+        //       ]}
+        //       className={`items-center group-hover/row:flex ${
+        //         row.getIsSelected() ? 'flex' : 'hidden'
+        //       }`}
+        //     />
+        //   ),
+        //   size: 16,
+        // },
+        {
+          accessorKey: 'name',
+          header: () => (
+            <div className="font-bold text-neutral-500">
+              File Name ({totalRows})
+            </div>
+          ),
+          cell: (info: CellContext<DocType, unknown>) => (
+            <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
+              <div className="flex w-6">
+                <Icon
+                  name={
+                    isRootDir || info?.row?.original?.isFolder
+                      ? 'folder'
+                      : getIconFromMime(info.row.original.mimeType)
+                  }
+                  className="!w-6"
+                />
+              </div>
+              <span className="break-all truncate w-full">
+                {info.getValue() as string}
+              </span>
+            </div>
+          ),
+          thClassName: 'flex-1',
+          tdClassName: 'flex-1',
+        },
+        {
+          accessorKey: 'ownerName',
+          header: () => <div className="font-bold text-neutral-500">Owner</div>,
+          cell: (info: CellContext<DocType, unknown>) => (
+            <div className="flex gap-2 items-center">
+              <Avatar
+                image={info.row.original?.ownerImage}
+                name={info.row.original?.ownerName}
+                size={24}
+              />
+              <span className="truncate">{info.row.original?.ownerName}</span>
+            </div>
+          ),
+          size: 256,
+        },
+        {
+          accessorKey: 'modifiedAt',
+          header: () => (
+            <div className="font-bold text-neutral-500">Last Updated</div>
+          ),
+          cell: (info: CellContext<DocType, unknown>) => (
+            <div className="flex gap-2 font-medium text-neutral-900 leading-6">
+              {
+                moment(info.getValue() as string).format(
+                  'MMMM DD,YYYY',
+                ) as string
+              }
+            </div>
+          ),
+          size: 200,
+        },
+        {
+          accessorKey: 'more',
+          header: () => '',
+          cell: (info: CellContext<DocType, unknown>) => {
+            const options = getAllOptions(info);
+            return options.length > 0 ? (
+              <PopupMenu
+                triggerNode={
+                  <div
+                    className="cursor-pointer relative"
+                    data-testid="feed-post-ellipsis"
+                    title="more"
+                  >
+                    <Icon name="moreV2Filled" tabIndex={0} size={16} />
+                  </div>
+                }
+                menuItems={options}
+                className="right-0 top-full border-1 border-neutral-200 focus-visible:outline-none w-44"
+              />
+            ) : (
+              <></>
+            );
+          },
+          size: 16,
+          tdClassName: 'items-center relative',
+        },
+      ].filter((each) => {
+        if (each.accessorKey === 'ownerName' && isRootDir) {
+          return false;
+        }
+        if (
+          each.accessorKey === 'location' &&
+          (isRootDir || applyDocumentSearch === '')
+        ) {
+          return false;
+        }
+        if (each.accessorKey === 'more' && isRootDir) {
+          return false;
+        }
+        return true;
+      }),
+    [totalRows, isRootDir, applyDocumentSearch],
+  );
+
+  // Columns configuration for Datagrid component for List view
+  const columnsDeepSearchListView = React.useMemo<ColumnDef<DocType>[]>(
     () => [
-      // {
-      //   id: 'select',
-      //   header: ({ table }) => (
-      //     <Layout
-      //       fields={[
-      //         {
-      //           type: FieldType.Checkbox,
-      //           name: `selectAll`,
-      //           inputClassName: '!w-4 !h-4 text-white',
-      //           control,
-      //           dataTestId: `select-all`,
-      //           checked: table.getIsAllRowsSelected(),
-      //           indeterminate: table.getIsSomeRowsSelected(),
-      //           onChange: (e: any) => {
-      //             e.stopPropagation();
-      //             table.getToggleAllRowsSelectedHandler();
-      //           },
-      //         },
-      //       ]}
-      //       className={`items-center group-hover/row:flex ${
-      //         table.getIsAllRowsSelected() ? 'flex' : 'hidden'
-      //       }`}
-      //     />
-      //   ),
-      //   cell: ({ row }) => (
-      //     <Layout
-      //       fields={[
-      //         {
-      //           type: FieldType.Checkbox,
-      //           name: `selectAll`,
-      //           inputClassName: '!w-4 !h-4 text-white',
-      //           control,
-      //           dataTestId: `select-all`,
-      //           checked: row.getIsSelected(),
-      //           indeterminate: row.getIsSomeSelected(),
-      //           onChange: (e: any) => {
-      //             e.stopPropagation();
-      //             row.getToggleSelectedHandler();
-      //           },
-      //         },
-      //       ]}
-      //       className={`items-center group-hover/row:flex ${
-      //         row.getIsSelected() ? 'flex' : 'hidden'
-      //       }`}
-      //     />
-      //   ),
-      //   size: 16,
-      // },
       {
         accessorKey: 'name',
         header: () => (
@@ -345,8 +454,8 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
             File Name ({totalRows})
           </div>
         ),
-        cell: (info) => (
-          <div className="flex gap-2 font-medium text-neutral-900 leading-6">
+        cell: (info: CellContext<DocType, unknown>) => (
+          <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
             <div className="flex w-6">
               <Icon
                 name={
@@ -357,7 +466,9 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
                 className="!w-6"
               />
             </div>
-            <span className="break-all">{info.getValue() as string}</span>
+            <span className="break-all truncate w-full">
+              {info.getValue() as string}
+            </span>
           </div>
         ),
         thClassName: 'flex-1',
@@ -366,7 +477,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
       {
         accessorKey: 'ownerName',
         header: () => <div className="font-bold text-neutral-500">Owner</div>,
-        cell: (info) => (
+        cell: (info: CellContext<DocType, unknown>) => (
           <div className="flex gap-2 items-center">
             <Avatar
               image={info.row.original?.ownerImage}
@@ -383,7 +494,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
         header: () => (
           <div className="font-bold text-neutral-500">Last Updated</div>
         ),
-        cell: (info) => (
+        cell: (info: CellContext<DocType, unknown>) => (
           <div className="flex gap-2 font-medium text-neutral-900 leading-6">
             {moment(info.getValue() as string).format('MMMM DD,YYYY') as string}
           </div>
@@ -395,7 +506,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
         header: () => (
           <div className="font-bold text-neutral-500">Location</div>
         ),
-        cell: (info) => (
+        cell: (info: CellContext<DocType, unknown>) => (
           <Popover
             triggerNode={
               <BreadCrumb
@@ -430,7 +541,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
       {
         accessorKey: 'more',
         header: () => '',
-        cell: (info) => {
+        cell: (info: CellContext<DocType, unknown>) => {
           const options = getAllOptions(info);
           return options.length > 0 ? (
             <PopupMenu
@@ -462,7 +573,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
     () => [
       {
         accessorKey: 'name',
-        cell: (info) => <Doc doc={info.row.original} />,
+        cell: (info) => <Doc doc={info.row.original} isFolder={isRootDir} />,
       },
     ],
     [],
@@ -470,23 +581,30 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
 
   // Get props for Datagrid component
   const dataGridProps = useDataGrid<DocType>({
-    apiEnum: ApiEnum.GetInfiniteChannelFiles,
+    apiEnum:
+      applyDocumentSearch === ''
+        ? ApiEnum.GetInfiniteChannelFiles
+        : ApiEnum.GetChannelDocDeepSearch,
     isInfiniteQuery: true,
     payload: {
       channelId,
-      params: {
-        folderId: items.length === 1 ? undefined : items[items.length - 1].id,
-        sort: filters?.sort ? filters?.sort.split(':')[0] : undefined,
-        order: filters?.sort ? filters?.sort.split(':')[1] : undefined,
-        isFolder: docType ? !!(docType.value === 'folder') : undefined,
-        byTitle: documentSearch === '' ? documentSearch : applyDocumentSearch,
-        owners: (filters?.docOwnerCheckbox || []).map(
-          (owner: any) => owner.name,
-        ),
-        type: (filters?.docTypeCheckbox || []).map(
-          (type: any) => type.paramKey,
-        ),
-      },
+      params:
+        applyDocumentSearch === ''
+          ? {
+              rootFolderId: items.length > 1 ? items[1].id : undefined,
+              folderId:
+                items.length < 3 ? undefined : items[items.length - 1].id,
+              sort: filters?.sort ? filters?.sort.split(':')[0] : undefined,
+              order: filters?.sort ? filters?.sort.split(':')[1] : undefined,
+              isFolder: docType ? !!(docType.value === 'folder') : undefined,
+              owners: (filters?.docOwnerCheckbox || []).map(
+                (owner: any) => owner.name,
+              ),
+              type: (filters?.docTypeCheckbox || []).map(
+                (type: any) => type.paramKey,
+              ),
+            }
+          : { q: applyDocumentSearch },
     },
     isEnabled: !isLoading,
     loadingGrid: (
@@ -496,11 +614,16 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
       />
     ),
     dataGridProps: {
-      columns: view === 'LIST' ? columnsListView : columnsGridView,
+      columns:
+        view === 'LIST'
+          ? applyDocumentSearch === ''
+            ? columnsListView
+            : columnsDeepSearchListView
+          : columnsGridView,
       isRowSelectionEnabled: false,
       view,
       onRowClick: (e, table, virtualRow, isDoubleClick) => {
-        if (virtualRow.original.isFolder && isDoubleClick) {
+        if ((isRootDir || virtualRow.original.isFolder) && isDoubleClick) {
           // If double click on folder then navigate to that folder
           appendItem({
             id: virtualRow.original.id,
@@ -553,6 +676,17 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
       setValue('applyDocumentSearch', '');
     }
   }, [documentSearch, applyDocumentSearch]);
+
+  // Hook to set rootfolder information in filters store to be consumed by document owners api call in filter by owners
+  useEffect(() => {
+    if (items.length > 1) {
+      setRootFolderId(items[1].id);
+    } else {
+      if (items.length > 1) {
+        setRootFolderId(undefined);
+      }
+    }
+  }, [items]);
 
   // Component to render before connection.
   const NoConnection = () =>
@@ -647,12 +781,19 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
         ref={fileInputRef}
         multiple={true}
         onChange={async (e: any) => {
-          // Id of root folder
-          const rootFolderId =
-            items.length <= 1 ? '' : items[items.length - 1].id;
+          // Id of parent folder
+          const parentFolderId =
+            items.length <= 1 ? '' : items[items.length - 1].id.toString();
+
+          // Id of root folderId
+          const rootFolderId = items.length > 1 ? items[1].id.toString() : '';
 
           // Collection file with mapped parent folder id
-          const files: { file: File; parentFolderId: string }[] = [];
+          const files: {
+            file: File;
+            parentFolderId: string;
+            rootFolderId: string;
+          }[] = [];
 
           setJobTitle('Upload in progress...');
 
@@ -661,10 +802,10 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
 
           for (const file of Array.from(e.target.files) as File[]) {
             const isFile = await isThisAFile(file);
-            files.push({ file, parentFolderId: rootFolderId });
+            files.push({ file, parentFolderId, rootFolderId });
             jobs[`upload-job-${index}`] = {
               id: `upload-job-${index}`,
-              jobData: { file, parentFolderId: rootFolderId },
+              jobData: { file, parentFolderId },
               progress: isFile ? 0 : 100,
               status: isFile
                 ? BackgroundJobStatusEnum.YetToStart
@@ -678,8 +819,10 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
                 jobComment: string,
               ) => (
                 <div className="flex gap-2 items-center">
-                  <Icon name={getIconFromMime(jobData?.file.type)} />
-                  <span className="flex-grow">
+                  <div className="w-6 h-6">
+                    <Icon name={getIconFromMime(jobData?.file.type)} />
+                  </div>
+                  <span className="items-center flex-grow trunc">
                     {jobData?.file.name}{' '}
                     {jobComment && (
                       <span className="text-xxs font-medium text-neutral-500">
@@ -713,11 +856,17 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
           } = {};
 
           // Id of root folder
-          const rootFolderId =
+          const parentFolderIdOriginal =
             items.length <= 1 ? '' : items[items.length - 1].id;
 
+          const rootFolderId = items.length > 1 ? items[1].id : '';
+
           // Collection file with mapped parent folder id
-          const files: { file: File; parentFolderId: string }[] = [];
+          const files: {
+            file: File;
+            parentFolderId: string;
+            rootFolderId: string;
+          }[] = [];
 
           const allFiles: File[] = Array.from(e.target.files);
 
@@ -758,7 +907,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
 
           for (const file of allFiles) {
             const folderNames = file.webkitRelativePath.split('/').slice(0, -1);
-            let parentFolderId = rootFolderId;
+            let parentFolderId = parentFolderIdOriginal;
 
             // Process each folder in sequence
             for (const folderName of folderNames) {
@@ -767,6 +916,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
                   const response: any = await createFolderMutation.mutateAsync({
                     channelId: channelId,
                     remoteFolderId: parentFolderId.toString(),
+                    rootFolderId,
                     name: folderName,
                   } as any);
 
@@ -785,7 +935,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
               }
             }
 
-            files.push({ file, parentFolderId });
+            files.push({ file, parentFolderId, rootFolderId });
           }
 
           setJobs(
@@ -835,6 +985,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
                         className="px-4 py-2 gap-1 h-10"
                         leftIconClassName="text-white focus:text-white group-focus:text-white"
                         leftIconHoverColor="text-white"
+                        disabled={isRootDir}
                         size={Size.Small}
                       />
                     }
@@ -907,6 +1058,8 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
                 control={control}
                 watch={watch}
                 view={view}
+                hideFilter={isRootDir}
+                hideSort={isRootDir}
                 changeView={(view) => setView(view)}
               />
             )}
@@ -920,19 +1073,18 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
         <EntitySelectModal
           isOpen={isOpen}
           closeModal={closeModal}
-          onSelect={(entity: any, callback: () => void) =>
+          onSelect={(entity: any, callback: () => void) => {
             updateConnectionMutation.mutate(
               {
                 channelId: channelId,
-                folderId: entity[0].id,
-                name: entity[0].name,
+                connections: entity,
                 orgProviderId: availableAccount?.orgProviderId,
               } as any,
               {
                 onSettled: callback,
                 onSuccess: () => {
                   successToastConfig({
-                    content: `${entity[0].name} connected successfully`,
+                    content: `Connected successfully`,
                   });
                   refetch();
                 },
@@ -942,8 +1094,8 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
                   });
                 },
               },
-            )
-          }
+            );
+          }}
           q={{ orgProviderId: availableAccount?.orgProviderId }}
           integrationType={integrationType}
         />

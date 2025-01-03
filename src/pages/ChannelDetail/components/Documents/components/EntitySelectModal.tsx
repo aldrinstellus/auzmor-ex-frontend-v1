@@ -27,7 +27,9 @@ interface IEntitySelectModalProps {
 
 interface IForm {
   entitySearch: string;
-  folderId: string;
+  directoryId: string;
+  driveId: string;
+  parentFolderId: string;
 }
 
 const EntitySelectModal: FC<IEntitySelectModalProps> = ({
@@ -40,10 +42,15 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
 }) => {
   const { channelId } = useParams();
   const { control, watch, setValue } = useForm<IForm>({
-    defaultValues: { entitySearch: '', folderId: '' },
+    defaultValues: { entitySearch: '', directoryId: '', parentFolderId: '' },
   });
   const [totalRows, setTotalRows] = useState<number>(0);
-  const [entitySearch, folderId] = watch(['entitySearch', 'folderId']);
+  const [entitySearch, directoryId, driveId, parentFolderId] = watch([
+    'entitySearch',
+    'directoryId',
+    'driveId',
+    'parentFolderId',
+  ]);
   const debouncedSearchValue = useDebounce(entitySearch || '', 500);
   const [onSelectLoading, setOnSelectLoading] = useState(false);
 
@@ -79,7 +86,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
         ),
         cell: (info) => (
           <div className="flex gap-2 font-medium text-neutral-900 leading-6">
-            {integrationType === DocIntegrationEnum.Sharepoint ? (
+            {!!!directoryId ? (
               <SiteIcon name={info.getValue() as string} />
             ) : (
               <Icon name="folder" />
@@ -102,7 +109,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
         size: 120,
       },
     ],
-    [totalRows],
+    [totalRows, directoryId],
   );
 
   const dataGridProps = useDataGrid({
@@ -110,32 +117,40 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
     isInfiniteQuery: false,
     payload: {
       channelId: channelId,
+      directoryId,
+      driveId,
       params: {
-        q: debouncedSearchValue,
-        folderId: folderId,
+        name: debouncedSearchValue,
+        parentFolderId,
         ...q,
       },
     },
     dataGridProps: {
       columns,
+      className: 'overflow-y-auto',
       view: 'LIST',
       isRowSelectionEnabled: true,
       onRowClick: (e, table, virtualRow, isDoubleClick) => {
-        if (
-          isDoubleClick &&
-          integrationType === DocIntegrationEnum.GoogleDrive
-        ) {
-          setValue('folderId', virtualRow.original.id);
-          table.setRowSelection(() => ({}));
+        if (isDoubleClick) {
+          const directoryId = virtualRow.original.directoryId;
+          let driveId = virtualRow.original.rootFolderId;
+          let folderId = virtualRow.original.folderId;
+          if (driveId === null) {
+            driveId = folderId;
+            folderId = '';
+          }
+          setValue('directoryId', directoryId);
+          setValue('driveId', driveId);
+          setValue('parentFolderId', folderId);
         } else {
-          table.setRowSelection((param) => {
-            if (!!!param[virtualRow.index]) {
+          if (directoryId && driveId) {
+            table.setRowSelection((param) => {
               return {
+                ...param,
                 [virtualRow.index]: !!!param[virtualRow.index],
               };
-            }
-            return {};
-          });
+            });
+          }
         }
       },
       height: 312,

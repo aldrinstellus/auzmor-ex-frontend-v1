@@ -22,6 +22,7 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({}) => {
   const { channelId } = useParams();
   const [filePreview, openFilePreview, closeFilePreview, filePreviewProps] =
     useModal();
+  const isRootDir = items.length === 1;
 
   const columns = React.useMemo<ColumnDef<Doc>[]>(
     () => [
@@ -36,7 +37,7 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({}) => {
             >
               <Icon
                 name={
-                  info.row.original.isFolder
+                  isRootDir || info.row.original.isFolder
                     ? 'folder'
                     : getIconFromMime(info.row.original.mimeType)
                 }
@@ -68,7 +69,8 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({}) => {
     payload: {
       channelId,
       params: {
-        folderId: items.length === 1 ? undefined : items[items.length - 1].id,
+        rootFolderId: items.length > 1 ? items[1].id : undefined,
+        folderId: items.length < 3 ? undefined : items[items.length - 1].id,
         sort: 'external_updated_at',
         limit: 5,
       },
@@ -85,7 +87,7 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({}) => {
       isRowSelectionEnabled: false,
       view: 'GRID',
       onRowClick: (e, table, virtualRow, isDoubleClick) => {
-        if (virtualRow.original.isFolder && isDoubleClick) {
+        if ((virtualRow.original.isFolder || isRootDir) && isDoubleClick) {
           appendItem({
             id: virtualRow.original.id,
             label: virtualRow?.original?.name,

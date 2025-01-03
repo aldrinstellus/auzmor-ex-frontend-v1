@@ -10,11 +10,15 @@ import { isFiltersEmpty } from 'utils/misc';
 // To list out all rirectories / sites
 const getChannelDirectories = async (payload: {
   channelId: string;
+  directoryId?: string;
+  driveId?: string;
   params?: Record<string, any>;
 }) => {
   const response = await apiService
     .get(
-      `/channels/${payload.channelId}/directories`,
+      `/channels/${payload.channelId}/directories${
+        payload.directoryId ? `/${payload.directoryId}/folders` : ''
+      }${payload.driveId ? `/${payload.driveId}` : ''}`,
       isFiltersEmpty(payload.params || {}),
     )
     .catch((_e) => {
@@ -26,15 +30,18 @@ const getChannelDirectories = async (payload: {
 // To connect folder / site to channel
 export const updateChannelDocumentConnection = async (payload: {
   channelId: string;
-  folderId: string;
-  name: string;
+  connections: Array<{
+    directoryId: string;
+    rootFolderId: string;
+    folderId: string;
+    name: string;
+  }>;
   orgProviderId: string;
 }) => {
   return await apiService.put(
     `/channels/${payload.channelId}/connect`,
     isFiltersEmpty({
-      folderId: payload.folderId,
-      name: payload.name,
+      connections: payload.connections,
       orgProviderId: payload.orgProviderId,
     }),
   );
@@ -122,11 +129,14 @@ export const createChannelDocFolder = async ({
 // Get Channel doc owner list
 export const getChannelDocOwners = async ({
   channelId,
+  rootFolderId,
 }: {
   channelId: string;
+  rootFolderId: string;
 }) => {
   const response = await apiService.get(
     `/channels/${channelId}/document/owners`,
+    { rootFolderId },
   );
   return response?.data?.result?.data?.owners;
 };
@@ -190,15 +200,29 @@ export const getChannelDocDownloadUrl = async (payload: {
 };
 
 // Search channel document
-export const getChannelDocDeepSearch = async (payload: {
-  channelId: string;
-  params: Record<string, any>;
-}) => {
-  const response = await apiService.get(
-    `/channels/${payload.channelId}/search`,
-    { ...payload.params },
-  );
-  return (response as any)?.data?.result?.data;
+export const getChannelDocDeepSearch = async (
+  context: QueryFunctionContext<
+    (Record<string, any> | undefined | string)[],
+    any
+  >,
+  payload: {
+    channelId: string;
+    params: Record<string, any>;
+  },
+) => {
+  let response = null;
+  try {
+    if (!!!context.pageParam) {
+      response = await apiService.get(`/channels/${payload.channelId}/search`, {
+        ...payload.params,
+      });
+    } else {
+      response = await apiService.get(context.pageParam);
+    }
+  } catch (e) {
+    return [];
+  }
+  return response;
 };
 
 // Trigger manual sync
@@ -307,10 +331,13 @@ export const useChannelFilePreview = (
 };
 
 // Get channel doc owners
-export const useChannelDocOwners = (channelId: string) => {
+export const useChannelDocOwners = (payload: {
+  channelId: string;
+  rootFolderId: string;
+}) => {
   return useQuery({
-    queryKey: ['channel-doc-owners', channelId],
-    queryFn: () => getChannelDocOwners({ channelId }),
+    queryKey: ['channel-doc-owners', payload],
+    queryFn: () => getChannelDocOwners(payload),
   });
 };
 
@@ -319,9 +346,20 @@ export const useChannelDocDeepSearch = (
   payload: { channelId: string; params: Record<string, any> },
   options: Record<string, any>,
 ) => {
-  return useQuery({
-    queryKey: ['channel-doc-deep-search', payload.channelId],
-    queryFn: () => getChannelDocDeepSearch(payload),
+  return useInfiniteQuery({
+    queryKey: ['channel-doc-deep-search', payload],
+    queryFn: (context) => getChannelDocDeepSearch(context, payload),
+    getNextPageParam: (lastPage: any) => {
+      const pageDataLen = lastPage?.data?.result?.data?.length;
+      const pageLimit = lastPage?.data?.result?.paging?.limit;
+      if (pageDataLen < pageLimit) {
+        return null;
+      }
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
     ...options,
   });
 };

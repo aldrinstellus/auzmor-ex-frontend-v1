@@ -28,15 +28,17 @@ const DocSearch: FC<IDocSearchProps> = ({
   const documentSearch = watch('documentSearch');
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { getApi } = usePermissions();
-  const useChannelFiles = getApi(ApiEnum.GetChannelFiles);
+  const useChannelDocDeepSearch = getApi(ApiEnum.GetChannelDocDeepSearch);
   const { channelId } = useParams();
   const documentSearchDebounceValue = useDebounce(documentSearch, 100);
 
   // Api call: Get search results
-  const { data: documents, isLoading } = useChannelFiles({
+  const { data, isLoading } = useChannelDocDeepSearch({
     channelId,
-    params: { byTitle: documentSearchDebounceValue },
+    params: { q: documentSearchDebounceValue || '' },
   });
+  const documents =
+    data?.pages?.flatMap((page: { data: any }) => page.data.result.data) ?? [];
 
   useEffect(() => {
     const elem = document.getElementById(

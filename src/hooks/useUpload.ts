@@ -272,6 +272,7 @@ export const useUpload = () => {
 export interface IUploadUrlPayload {
   fileName: string;
   parentFolderId: string;
+  rootFolderId: string;
 }
 export interface IUploadUrlResponse {
   status: string;
@@ -343,15 +344,16 @@ export const useChannelDocUpload = (channelId: string) => {
   };
 
   const uploadMedia = async (
-    fileList: { parentFolderId: string; file: File }[],
+    fileList: { rootFolderId: string; parentFolderId: string; file: File }[],
   ) => {
     setShow(true);
     const uploadedFiles: IMedia[] = [];
     const files: IUploadUrlPayload[] = [];
-    fileList.forEach(({ file, parentFolderId }) => {
+    fileList.forEach(({ file, parentFolderId, rootFolderId }) => {
       files.push({
         fileName: file?.name,
         parentFolderId,
+        rootFolderId,
       });
     });
     files.forEach((file: IUploadUrlPayload, index: number) => {
