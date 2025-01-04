@@ -113,17 +113,23 @@ const getChannelFilePreview = async (payload: {
 // Create folder in channel documents
 export const createChannelDocFolder = async ({
   channelId,
+  rootFolderId,
   remoteFolderId,
   name,
 }: {
   channelId: string;
+  rootFolderId: string;
   remoteFolderId: string;
   name: string;
 }) => {
-  return await apiService.post(`/channels/${channelId}/folder`, {
-    remoteFolderId,
-    name,
-  });
+  return await apiService.post(
+    `/channels/${channelId}/folder`,
+    isFiltersEmpty({
+      rootFolderId,
+      remoteFolderId,
+      name,
+    }),
+  );
 };
 
 // Get Channel doc owner list

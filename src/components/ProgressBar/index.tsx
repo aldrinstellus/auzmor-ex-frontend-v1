@@ -9,6 +9,7 @@ type AppProps = {
   className?: string;
   barClassName?: string;
   barFilledClassName?: string;
+  isLoading?: boolean;
 };
 
 const ProgressBar: FC<AppProps> = ({
@@ -19,6 +20,7 @@ const ProgressBar: FC<AppProps> = ({
   className = '',
   barClassName = '',
   barFilledClassName = '',
+  isLoading = false,
 }) => {
   const ratio = completed / (total || 1);
 
@@ -31,6 +33,7 @@ const ProgressBar: FC<AppProps> = ({
     () =>
       clsx({
         'relative h-[3px] w-[80px] rounded-full bg-neutral-400': true,
+        'overflow-hidden': isLoading,
         [barClassName]: true,
       }),
     [barClassName],
@@ -45,11 +48,31 @@ const ProgressBar: FC<AppProps> = ({
     [barFilledClassName],
   );
 
+  const barFilledLoadingStyle = useMemo(
+    () =>
+      clsx({
+        'absolute left-0 top-0 bottom-0 h-[3px] bg-white rounded-full w-1/3 animate-slide':
+          true,
+        [barFilledClassName]: true,
+      }),
+    [barFilledClassName],
+  );
+
   return (
     <div className={style}>
-      <div className={barStyle}>
-        <div className={barFilledStyle} style={{ width: `${ratio * 100}%` }} />
-      </div>
+      {isLoading ? (
+        <div className={barStyle}>
+          <div className={barFilledLoadingStyle} />
+        </div>
+      ) : (
+        <div className={barStyle}>
+          <div
+            className={barFilledStyle}
+            style={{ width: `${ratio * 100}%` }}
+          />
+        </div>
+      )}
+
       {customLabel || (
         <div className="text-xxs text-white">
           {completed} of {total} {suffix}

@@ -30,6 +30,7 @@ export type Doc = {
   pathWithId: Record<string, string>;
   externalCreatedAt: string;
   externalUpdatedAt: string;
+  externalModifiedBy: string;
   syncedAt: string;
   createdAt: string;
   updatedAt: string;

@@ -177,6 +177,15 @@ module.exports = {
       transitionDuration: {
         default: '200ms',
       },
+      keyframes: {
+        slide: {
+          '0%': { left: 0 },
+          '100%': { left: '100%' },
+        },
+      },
+      animation: {
+        slide: 'slide 1s linear infinite',
+      },
     },
     plugins: [],
   },

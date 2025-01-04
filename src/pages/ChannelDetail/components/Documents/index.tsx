@@ -43,6 +43,7 @@ import moment from 'moment';
 import { useChannelDocUpload } from 'hooks/useUpload';
 import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
 import {
+  BackgroundJob,
   BackgroundJobStatusEnum,
   useBackgroundJobStore,
 } from 'stores/backgroundJobStore';
@@ -767,6 +768,76 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
     return items;
   }, [dataGridProps.rowSelection]);
 
+  // Its a functional component that gives File upload job rendered
+  const fileUploadJobRenderer = useCallback(
+    (
+      id: string,
+      jobData: { parentFolderId: string; file: File },
+      progress: number,
+      status: BackgroundJobStatusEnum,
+      jobComment: string,
+    ) => (
+      <div className="flex gap-2 items-center">
+        <div className="w-6 h-6">
+          <Icon name={getIconFromMime(jobData?.file.type)} />
+        </div>
+        <span className="items-center flex-grow trunc">
+          <span>{jobData?.file.name}</span>&nbsp;
+          {jobComment && (
+            <span className="text-xxs font-medium text-neutral-500">
+              ({jobComment})
+            </span>
+          )}
+        </span>
+        <div className="flex items-center">
+          {getIconFromStatus(status, progress)}
+        </div>
+      </div>
+    ),
+    [],
+  );
+
+  // Its a functional component that gives Folder upload job rendered
+  const folderUploadJobRenderer = useCallback((jobs: BackgroundJob[]) => {
+    let completed = 0;
+    let total = 0;
+    let status = BackgroundJobStatusEnum.YetToStart;
+    let completeJobCount = 0;
+    jobs.forEach((job) => {
+      completed += job.progress;
+      total += 100;
+      if (job.progress === 100) {
+        completeJobCount += 1;
+      }
+    });
+    const progress = Math.floor((completed * 100) / total);
+    if (progress > 0 && progress < 100) {
+      status = BackgroundJobStatusEnum.Running;
+    } else if (progress === 100) {
+      status = BackgroundJobStatusEnum.CompletedSuccessfully;
+    }
+
+    if (jobs?.length) {
+      return (
+        <div className="flex gap-2 items-center">
+          <Icon name="folder" hover={false} />
+          <span className="flex-grow">
+            {jobs[0].jobData?.file?.webkitRelativePath?.split('/')[0]}{' '}
+          </span>
+          <span className="text-neutral-500 text-xxs font-medium">
+            {completeJobCount} of {Math.floor(total / 100)}
+          </span>
+          {getIconFromStatus(status, progress)}
+        </div>
+      );
+    }
+    return (
+      <div className="flex w-full h-full items-center justify-center h-ful">
+        <Spinner />
+      </div>
+    );
+  }, []);
+
   return isLoading ? (
     <Card className="flex flex-col gap-6 p-8 pb-16 w-full justify-center bg-white overflow-hidden">
       <p className="font-bold text-2xl text-neutral-900">Documents</p>
@@ -811,28 +882,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
                 ? BackgroundJobStatusEnum.YetToStart
                 : BackgroundJobStatusEnum.Cancelled,
               jobComment: !isFile && 'File not found',
-              renderer: (
-                id: string,
-                jobData: { parentFolderId: string; file: File },
-                progress: number,
-                status: BackgroundJobStatusEnum,
-                jobComment: string,
-              ) => (
-                <div className="flex gap-2 items-center">
-                  <div className="w-6 h-6">
-                    <Icon name={getIconFromMime(jobData?.file.type)} />
-                  </div>
-                  <span className="items-center flex-grow trunc">
-                    {jobData?.file.name}{' '}
-                    {jobComment && (
-                      <span className="text-xxs font-medium text-neutral-500">
-                        ({jobComment})
-                      </span>
-                    )}
-                  </span>
-                  {getIconFromStatus(status, progress)}
-                </div>
-              ),
+              renderer: fileUploadJobRenderer,
             };
             index += 1;
           }
@@ -857,7 +907,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
 
           // Id of root folder
           const parentFolderIdOriginal =
-            items.length <= 1 ? '' : items[items.length - 1].id;
+            items.length <= 2 ? '' : items[items.length - 1].id;
 
           const rootFolderId = items.length > 1 ? items[1].id : '';
 
@@ -871,38 +921,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
           const allFiles: File[] = Array.from(e.target.files);
 
           setJobTitle('Analysing folder...');
-          setJobsRenderer((jobs) => {
-            let completed = 0;
-            let total = 0;
-            let status = BackgroundJobStatusEnum.YetToStart;
-            jobs.forEach((job) => {
-              completed += job.progress;
-              total += 100;
-            });
-            const progress = Math.floor((completed * 100) / total);
-            if (progress > 0 && progress < 100) {
-              status = BackgroundJobStatusEnum.Running;
-            } else if (progress === 100) {
-              status = BackgroundJobStatusEnum.CompletedSuccessfully;
-            }
-
-            if (jobs?.length) {
-              return (
-                <div className="flex gap-2 items-center">
-                  <Icon name="folder" hover={false} />
-                  <span className="flex-grow">
-                    {jobs[0].jobData?.file?.webkitRelativePath?.split('/')[0]}{' '}
-                  </span>
-                  {getIconFromStatus(status, progress)}
-                </div>
-              );
-            }
-            return (
-              <div className="flex w-full h-full items-center justify-center h-ful">
-                <Spinner />
-              </div>
-            );
-          });
+          setJobsRenderer(folderUploadJobRenderer);
           setShow(true);
 
           for (const file of allFiles) {
@@ -1107,8 +1126,12 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
           onSelect={(folderName) => {
             createFolderMutation.mutate({
               channelId: channelId,
+              rootFolderId:
+                items.length > 1 ? items[1].id.toString() : undefined,
               remoteFolderId:
-                items.length > 1 ? items[items.length - 1]?.id.toString() : '',
+                items.length <= 2
+                  ? undefined
+                  : items[items.length - 1].id.toString(),
               name: folderName,
             } as any);
             closeAddModal();

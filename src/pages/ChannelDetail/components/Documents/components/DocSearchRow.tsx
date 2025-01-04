@@ -27,8 +27,8 @@ const DocSearchRow = ({
           <HighlightText text={data?.name || ''} subString={searchQuery} />
         </div>
         <div className="text-xs">
-          Updated on {moment(data?.updatedAt).format('DD MMM YYYY')} by Megan
-          Berry
+          Updated on {moment(data?.updatedAt).format('DD MMM YYYY')}{' '}
+          {data?.externalModifiedBy && `by ${data?.externalModifiedBy}`}
         </div>
       </div>
     </div>

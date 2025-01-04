@@ -81,7 +81,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = ({ canEdit }) => {
     mutationFn: reSync,
     onMutate: () => {
       setVariant(BackgroundJobVariantEnum.ChannelDocumentSync);
-      setJobTitle('Syncing in progress...');
+      setJobTitle('Sync in progress');
       setIsExpanded(false);
       setShow(true);
     },
@@ -90,20 +90,20 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = ({ canEdit }) => {
       intervalId = setInterval(async () => {
         const response = await getSyncStatus({ channelId }).catch(() => {
           clearInterval(intervalId);
-          setJobTitle('Syncing failed');
+          setJobTitle('Sync failed');
         });
         if (response?.data?.result?.syncStatus === 'success') {
           clearInterval(intervalId);
-          setJobTitle('Syncing completed successfully');
+          setJobTitle('Sync successful');
         }
         if (response?.data?.result?.syncStatus === 'failed') {
           clearInterval(intervalId);
-          setJobTitle('Syncing failed');
+          setJobTitle('Sync failed');
         }
       }, 1000);
     },
     onError: () => {
-      setJobTitle('Syncing failed');
+      setJobTitle('Sync failed');
     },
   });
 

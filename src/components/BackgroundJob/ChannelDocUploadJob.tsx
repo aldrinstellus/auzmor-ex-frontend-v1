@@ -2,10 +2,7 @@ import { clsx } from 'clsx';
 import Icon from 'components/Icon';
 import ProgressBar from 'components/ProgressBar';
 import React, { FC, Fragment, useEffect, useState } from 'react';
-import {
-  BackgroundJobStatusEnum,
-  useBackgroundJobStore,
-} from 'stores/backgroundJobStore';
+import { useBackgroundJobStore } from 'stores/backgroundJobStore';
 
 interface IChannelDocUploadJobProps {}
 
@@ -36,25 +33,12 @@ const ChannelDocUploadJob: FC<IChannelDocUploadJobProps> = ({}) => {
     } else {
       setProgress(Math.floor((progress * 100) / total));
     }
-    setJobTitle(
-      `Uploading ${Math.floor(progress / 100)} out of ${Math.floor(
-        total / 100,
-      )} files`,
-    );
+    setJobTitle(`${Math.floor((total - progress) / 100)} Uploads pending`);
 
     if (Math.floor((progress * 100) / total) === 100) {
-      let success = 0;
-      let totalItems = 0;
-      jobKeys.forEach((key) => {
-        if (
-          jobs[key].status === BackgroundJobStatusEnum.CompletedSuccessfully
-        ) {
-          success += 1;
-        }
-        totalItems += 1;
-      });
+      setIsExpanded(false);
       setShowProgressbar(false);
-      setJobTitle(`${success} out of ${totalItems} uploads completed`);
+      setJobTitle(`${total / 100} Uploads complete`);
     }
   }, [jobs]);
 

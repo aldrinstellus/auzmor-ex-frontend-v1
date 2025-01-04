@@ -12,7 +12,7 @@ export enum BackgroundJobStatusEnum {
   CompletedSuccessfully = 'COMPLETED_SUCCESSFULLY',
 }
 
-type BackgroundJob = {
+export type BackgroundJob = {
   id: string;
   jobData: Record<string, any>;
   progress: number;
