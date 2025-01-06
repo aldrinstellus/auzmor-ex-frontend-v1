@@ -339,6 +339,7 @@ export const useChannelDocUpload = (channelId: string) => {
     externalUrl: string;
     mimeType: string;
     size: number;
+    rootFolderId: string;
   }) => {
     apiService.post(`/channels/${channelId}/file/upload`, payload);
   };
@@ -390,6 +391,7 @@ export const useChannelDocUpload = (channelId: string) => {
                   externalUrl: response?.webUrl,
                   mimeType: response?.file?.mimeType,
                   size: response?.size,
+                  rootFolderId: file.rootFolderId,
                 }).then(() => {
                   updateJobProgress(
                     jobId,

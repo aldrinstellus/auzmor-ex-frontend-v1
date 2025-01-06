@@ -43,9 +43,9 @@ const ChannelDocUploadJob: FC<IChannelDocUploadJobProps> = ({}) => {
   }, [jobs]);
 
   const contentStyle = clsx({
-    'flex flex-col gap-4 w-full overflow-y-auto px-4 h-0 transition-all duration-300':
+    'flex flex-col w-full overflow-y-auto px-4 transition-all duration-300 !max-h-[168px]':
       true,
-    '!h-[168px] py-3': isExpanded,
+    'h-0': !isExpanded,
   });
 
   return (

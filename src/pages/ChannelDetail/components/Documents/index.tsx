@@ -777,7 +777,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
       status: BackgroundJobStatusEnum,
       jobComment: string,
     ) => (
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-2 items-center py-3">
         <div className="w-6 h-6">
           <Icon name={getIconFromMime(jobData?.file.type)} />
         </div>
@@ -819,7 +819,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
 
     if (jobs?.length) {
       return (
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-2 items-center py-3">
           <Icon name="folder" hover={false} />
           <span className="flex-grow">
             {jobs[0].jobData?.file?.webkitRelativePath?.split('/')[0]}{' '}
@@ -854,7 +854,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
         onChange={async (e: any) => {
           // Id of parent folder
           const parentFolderId =
-            items.length <= 1 ? '' : items[items.length - 1].id.toString();
+            items.length <= 2 ? '' : items[items.length - 1].id.toString();
 
           // Id of root folderId
           const rootFolderId = items.length > 1 ? items[1].id.toString() : '';
@@ -935,7 +935,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
                   const response: any = await createFolderMutation.mutateAsync({
                     channelId: channelId,
                     remoteFolderId: parentFolderId.toString(),
-                    rootFolderId,
+                    rootFolderId: rootFolderId.toString(),
                     name: folderName,
                   } as any);
 
