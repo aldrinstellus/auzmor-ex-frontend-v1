@@ -577,7 +577,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
         cell: (info) => <Doc doc={info.row.original} isFolder={isRootDir} />,
       },
     ],
-    [],
+    [isRootDir],
   );
 
   // Get props for Datagrid component
