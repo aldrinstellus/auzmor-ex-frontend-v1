@@ -4,7 +4,6 @@ import React, {
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -37,7 +36,6 @@ import DocumentPathProvider, {
   DocumentPathContext,
 } from 'contexts/DocumentPathContext';
 import RecentlyAddedEntities from './components/RecentlyAddedEntities';
-import ActionMenu from './components/ActionMenu';
 import Avatar from 'components/Avatar';
 import Skeleton from 'react-loading-skeleton';
 import FilePreviewModal from './components/FilePreviewModal';
@@ -170,18 +168,18 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
   });
 
   // Api call: Handle rename file / folder
-  const handleRename = async (name: string) => {
-    if (selectedItems[0].isFolder) {
+  const handleRename = async (name: string, meta: DocType) => {
+    if (meta.isFolder) {
       renameChannelFolderMutation.mutate({
         channelId,
         name,
-        folderId: selectedItems[0].id,
+        folderId: meta.id,
       } as any);
     } else {
       renameChannelFileMutation.mutate({
         channelId,
         name,
-        fileId: selectedItems[0].id,
+        fileId: meta.id,
       } as any);
     }
   };
@@ -226,7 +224,10 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
         label: 'Rename',
         onClick: (e: Event) => {
           e.stopPropagation();
-          showRenameModal({ name: info?.row?.original?.name });
+          showRenameModal({
+            name: info?.row?.original?.name,
+            meta: info?.row?.original,
+          });
         },
         dataTestId: 'folder-menu',
         className: '!px-6 !py-2',
@@ -297,54 +298,6 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
   const columnsListView = React.useMemo<ColumnDef<DocType>[]>(
     () =>
       [
-        // {
-        //   id: 'select',
-        //   header: ({ table }) => (
-        //     <Layout
-        //       fields={[
-        //         {
-        //           type: FieldType.Checkbox,
-        //           name: `selectAll`,
-        //           inputClassName: '!w-4 !h-4 text-white',
-        //           control,
-        //           dataTestId: `select-all`,
-        //           checked: table.getIsAllRowsSelected(),
-        //           indeterminate: table.getIsSomeRowsSelected(),
-        //           onChange: (e: any) => {
-        //             e.stopPropagation();
-        //             table.getToggleAllRowsSelectedHandler();
-        //           },
-        //         },
-        //       ]}
-        //       className={`items-center group-hover/row:flex ${
-        //         table.getIsAllRowsSelected() ? 'flex' : 'hidden'
-        //       }`}
-        //     />
-        //   ),
-        //   cell: ({ row }: CellContext<DocType, unknown>) => (
-        //     <Layout
-        //       fields={[
-        //         {
-        //           type: FieldType.Checkbox,
-        //           name: `selectAll`,
-        //           inputClassName: '!w-4 !h-4 text-white',
-        //           control,
-        //           dataTestId: `select-all`,
-        //           checked: row.getIsSelected(),
-        //           indeterminate: row.getIsSomeSelected(),
-        //           onChange: (e: any) => {
-        //             e.stopPropagation();
-        //             row.getToggleSelectedHandler();
-        //           },
-        //         },
-        //       ]}
-        //       className={`items-center group-hover/row:flex ${
-        //         row.getIsSelected() ? 'flex' : 'hidden'
-        //       }`}
-        //     />
-        //   ),
-        //   size: 16,
-        // },
         {
           accessorKey: 'name',
           header: () => (
@@ -759,17 +712,6 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
       <NoDataFound hideClearBtn labelHeader="No documents found" />
     );
 
-  // Selected items to be used for action menu
-  const selectedItems = useMemo(() => {
-    const items: any = [];
-    Object.keys(dataGridProps.rowSelection).forEach((index) => {
-      if (!!dataGridProps.rowSelection[index]) {
-        items.push(dataGridProps.flatData[index]);
-      }
-    });
-    return items;
-  }, [dataGridProps.rowSelection]);
-
   // Its a functional component that gives File upload job rendered
   const fileUploadJobRenderer = useCallback(
     (
@@ -1063,27 +1005,14 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
           <Fragment>
             <RecentlyAddedEntities />
             <p className="text-base font-bold text-neutral-900">All files</p>
-            {dataGridProps.isRowSelected ? (
-              <ActionMenu
-                selectedItems={selectedItems}
-                view={view}
-                channelData={channelData}
-                changeView={(view) => setView(view)}
-                onDeselect={() => {
-                  dataGridProps.setRowSelection({});
-                }}
-                onRename={handleRename}
-              />
-            ) : (
-              <FilterMenuDocument
-                control={control}
-                watch={watch}
-                view={view}
-                hideFilter={isRootDir}
-                hideSort={isRootDir}
-                changeView={(view) => setView(view)}
-              />
-            )}
+            <FilterMenuDocument
+              control={control}
+              watch={watch}
+              view={view}
+              hideFilter={isRootDir}
+              hideSort={isRootDir}
+              changeView={(view) => setView(view)}
+            />
             <DataGrid {...dataGridProps} />
           </Fragment>
         ) : (
@@ -1157,13 +1086,13 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
           isOpen={renameModal}
           closeModal={closeRenameModal}
           defaultName={renameModalProps?.name}
-          onSave={handleRename}
+          onSave={(name) => handleRename(name, renameModalProps?.meta)}
         />
       )}
       <ConfirmationBox
         open={confirm}
         onClose={closeConfirm}
-        title={`Delete ${selectedItems.length > 1 ? 'files' : 'file'}?`}
+        title={`Delete file?`}
         description={
           <span>Are you sure you want to delete? This cannot be undone</span>
         }
