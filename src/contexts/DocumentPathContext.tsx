@@ -27,12 +27,14 @@ export const DocumentPathContext = createContext<
 
 interface IDocumentPathProviderProps {
   children: ReactNode;
+  defaultItem?: Item;
 }
 
-const DocumentPathProvider: FC<IDocumentPathProviderProps> = ({ children }) => {
-  const [items, setItems] = useState<Item[]>([
-    { id: 'root', label: 'Documents' },
-  ]);
+const DocumentPathProvider: FC<IDocumentPathProviderProps> = ({
+  children,
+  defaultItem = { id: 'root', label: 'Documents' },
+}) => {
+  const [items, setItems] = useState<Item[]>([defaultItem]);
 
   const appendItem = (folder: Item) => {
     setItems([...items, folder]);

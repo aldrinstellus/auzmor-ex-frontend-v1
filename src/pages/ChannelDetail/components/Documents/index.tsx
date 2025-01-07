@@ -33,7 +33,9 @@ import FilterMenuDocument from './components/FilterMenuDocument';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import BreadCrumb, { BreadCrumbVariantEnum } from 'components/BreadCrumb';
-import { DocumentPathContext } from 'contexts/DocumentPathContext';
+import DocumentPathProvider, {
+  DocumentPathContext,
+} from 'contexts/DocumentPathContext';
 import RecentlyAddedEntities from './components/RecentlyAddedEntities';
 import ActionMenu from './components/ActionMenu';
 import Avatar from 'components/Avatar';
@@ -521,7 +523,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
               <div className="flex p-3 bg-primary-50 rounded-9xl border border-primary-50 shadow">
                 <BreadCrumb
                   items={getMappedLocation(info?.row?.original)}
-                  className="hover:text-primary-500 hover:underline min-w-max"
+                  labelClassName="hover:text-primary-500 hover:underline min-w-max"
                   onItemClick={(item) => {
                     const items = getMappedLocation(info?.row?.original);
                     const sliceIndex = items.findIndex(
@@ -1089,35 +1091,40 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
         )}
       </Card>
       {isOpen && (
-        <EntitySelectModal
-          isOpen={isOpen}
-          closeModal={closeModal}
-          onSelect={(entity: any, callback: () => void) => {
-            updateConnectionMutation.mutate(
-              {
-                channelId: channelId,
-                connections: entity,
-                orgProviderId: availableAccount?.orgProviderId,
-              } as any,
-              {
-                onSettled: callback,
-                onSuccess: () => {
-                  successToastConfig({
-                    content: `Connected successfully`,
-                  });
-                  refetch();
+        <DocumentPathProvider defaultItem={{ id: 'root', label: 'Sites' }}>
+          <EntitySelectModal
+            isOpen={isOpen}
+            closeModal={closeModal}
+            onSelect={(entity: any, callback: () => void) => {
+              updateConnectionMutation.mutate(
+                {
+                  channelId: channelId,
+                  connections: entity,
+                  orgProviderId: availableAccount?.orgProviderId,
+                } as any,
+                {
+                  onSettled: callback,
+                  onSuccess: () => {
+                    successToastConfig({
+                      content: `Connected successfully`,
+                    });
+                    refetch();
+                    queryClient.invalidateQueries(['get-channel-files'], {
+                      exact: false,
+                    });
+                  },
+                  onError: () => {
+                    failureToastConfig({
+                      content: 'Fail to connect, Try again!',
+                    });
+                  },
                 },
-                onError: () => {
-                  failureToastConfig({
-                    content: 'Fail to connect, Try again!',
-                  });
-                },
-              },
-            );
-          }}
-          q={{ orgProviderId: availableAccount?.orgProviderId }}
-          integrationType={integrationType}
-        />
+              );
+            }}
+            q={{ orgProviderId: availableAccount?.orgProviderId }}
+            integrationType={integrationType}
+          />
+        </DocumentPathProvider>
       )}
       {isAddModalOpen && (
         <AddFolderModal
