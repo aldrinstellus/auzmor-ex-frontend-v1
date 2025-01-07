@@ -9,6 +9,8 @@ import Divider from 'components/Divider';
 import Avatar from 'components/Avatar';
 import Spinner from 'components/Spinner';
 import moment from 'moment';
+import { downloadFromUrl } from 'utils/misc';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 
 interface IFilePreviewProps {
   file: Doc;
@@ -20,13 +22,13 @@ const FilePreview: FC<IFilePreviewProps> = ({ file, open, closeModal }) => {
   const { getApi } = usePermissions();
   const { channelId } = useParams();
 
+  const getChannelDocDownloadUrl = getApi(ApiEnum.GetChannelDocDownloadUrl);
+
   const useChannelFilePreview = getApi(ApiEnum.GetChannelFilePreview);
   const { data, isLoading } = useChannelFilePreview({
     channelId,
     fileId: file.id,
   });
-
-  console.log(file);
 
   return (
     <Modal
@@ -39,7 +41,28 @@ const FilePreview: FC<IFilePreviewProps> = ({ file, open, closeModal }) => {
           {file.name}
         </div>
         <div className="flex absolute gap-3 right-4">
-          <Icon name="download" color="text-neutral-900" />
+          <Icon
+            name="download"
+            color="text-neutral-900"
+            onClick={() => {
+              getChannelDocDownloadUrl({
+                channelId,
+                itemId: file.id,
+              })
+                .then(({ data }: Record<string, any>) => {
+                  downloadFromUrl(
+                    data?.result?.data?.downloadUrl,
+                    data?.result?.data?.name,
+                  );
+                })
+                .catch(() => {
+                  failureToastConfig({
+                    content: `Failed to download ${file?.name}`,
+                    dataTestId: 'file-download-toaster',
+                  });
+                });
+            }}
+          />
           <a
             href={data?.data?.result?.launchURL}
             rel="noreferrer"
