@@ -2,20 +2,30 @@ import Icon from 'components/Icon';
 import PopupMenu from 'components/PopupMenu';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Item } from 'contexts/DocumentPathContext';
+import clsx from 'clsx';
 
 interface IChannelDocBreadcrumbProps {
   items: Item[];
   width?: number | '100%' | '100vw' | '100vh';
+  iconSize?: number;
+  labelClassName?: string;
   onItemClick?: (item: Item) => void;
 }
 
 const ChannelDocBreadcrumb: FC<IChannelDocBreadcrumbProps> = ({
   items,
   width = 600,
+  iconSize = 20,
+  labelClassName = '',
   onItemClick = () => {},
 }) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const [popupItemIndex, setPopupItemIndex] = useState<number>(0);
+  const labelStyle = clsx({
+    'flex text-2xl font-medium text-neutral-500 cursor-pointer truncate max-w-[240px]':
+      true,
+    [labelClassName]: true,
+  });
 
   useEffect(() => {
     if (ref.current) {
@@ -52,7 +62,7 @@ const ChannelDocBreadcrumb: FC<IChannelDocBreadcrumbProps> = ({
       {items.slice(popupItemIndex).map((each, index) => (
         <div key={each.id} className="flex items-center gap-2">
           <div
-            className={`flex text-2xl font-medium text-neutral-500 cursor-pointer truncate max-w-[240px] ${
+            className={`${labelStyle} ${
               index === items.slice(popupItemIndex).length - 1 &&
               'font-bold text-neutral-900 cursor-default'
             }`}
@@ -61,7 +71,7 @@ const ChannelDocBreadcrumb: FC<IChannelDocBreadcrumbProps> = ({
             {each.label}
           </div>
           {index < items.slice(popupItemIndex).length - 1 && (
-            <Icon name="arrowRight" size={20} hover={false} />
+            <Icon name="arrowRight" size={iconSize} hover={false} />
           )}
         </div>
       ))}

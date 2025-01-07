@@ -4,7 +4,7 @@ import DataGrid from 'components/DataGrid';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import { useDataGrid } from 'hooks/useDataGrid';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { DocIntegrationEnum } from '..';
@@ -15,6 +15,8 @@ import { useDebounce } from 'hooks/useDebounce';
 import { getInitials } from 'utils/misc';
 import NoDataFound from 'components/NoDataFound';
 import moment from 'moment';
+import BreadCrumb, { BreadCrumbVariantEnum } from 'components/BreadCrumb';
+import { DocumentPathContext } from 'contexts/DocumentPathContext';
 
 interface IEntitySelectModalProps {
   isOpen: boolean;
@@ -27,9 +29,6 @@ interface IEntitySelectModalProps {
 
 interface IForm {
   entitySearch: string;
-  directoryId: string;
-  driveId: string;
-  parentFolderId: string;
 }
 
 const EntitySelectModal: FC<IEntitySelectModalProps> = ({
@@ -41,18 +40,23 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
   q,
 }) => {
   const { channelId } = useParams();
-  const { control, watch, setValue } = useForm<IForm>({
-    defaultValues: { entitySearch: '', directoryId: '', parentFolderId: '' },
+  const { control, watch } = useForm<IForm>({
+    defaultValues: { entitySearch: '' },
   });
   const [totalRows, setTotalRows] = useState<number>(0);
-  const [entitySearch, directoryId, driveId, parentFolderId] = watch([
-    'entitySearch',
-    'directoryId',
-    'driveId',
-    'parentFolderId',
-  ]);
+  const [entitySearch] = watch(['entitySearch']);
   const debouncedSearchValue = useDebounce(entitySearch || '', 500);
   const [onSelectLoading, setOnSelectLoading] = useState(false);
+  const { items, appendItem, sliceItems } = useContext(DocumentPathContext);
+
+  const directoryId = items?.length >= 2 ? items[1]?.meta?.directoryId : '';
+  const driveId =
+    !!(items?.length >= 3) &&
+    (items[2]?.meta?.rootFolderId || items[2]?.meta?.folderId);
+  const parentFolderId =
+    items?.length >= 4 ? items[items.length - 1]?.meta?.folderId : '';
+
+  console.log(directoryId, driveId, parentFolderId, items);
 
   const integrationHeadingMapping = {
     [DocIntegrationEnum.GoogleDrive]: {
@@ -139,9 +143,11 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
             driveId = folderId;
             folderId = '';
           }
-          setValue('directoryId', directoryId);
-          setValue('driveId', driveId);
-          setValue('parentFolderId', folderId);
+          appendItem({
+            id: `${directoryId}-${driveId || ''}-${folderId || ''}`,
+            label: virtualRow.original.name,
+            meta: virtualRow.original,
+          });
         } else {
           if (directoryId && driveId) {
             table.setRowSelection((param) => {
@@ -188,6 +194,15 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
             },
           ]}
         />
+        {!!(items.length > 1) && (
+          <BreadCrumb
+            items={items}
+            onItemClick={(item) => sliceItems(item.id)}
+            variant={BreadCrumbVariantEnum.ChannelDoc}
+            iconSize={16}
+            labelClassName="!text-base"
+          />
+        )}
         <DataGrid {...dataGridProps} />
       </div>
 

@@ -12,7 +12,8 @@ interface IBreadCrumbProps {
   variant?: BreadCrumbVariantEnum;
   items: Item[];
   width?: number | '100%' | '100vw' | '100vh';
-  className?: string;
+  labelClassName?: string;
+  iconSize?: number;
   onItemClick?: (item: Item) => void;
 }
 
@@ -20,7 +21,8 @@ const BreadCrumb: FC<IBreadCrumbProps> = ({
   variant = BreadCrumbVariantEnum.Classic,
   items,
   width,
-  className,
+  labelClassName,
+  iconSize,
   onItemClick = () => {},
 }) => {
   const Component = useMemo(() => {
@@ -37,7 +39,8 @@ const BreadCrumb: FC<IBreadCrumbProps> = ({
       items={items}
       width={width}
       onItemClick={onItemClick}
-      className={className}
+      labelClassName={labelClassName}
+      iconSize={iconSize}
     />
   );
 };
