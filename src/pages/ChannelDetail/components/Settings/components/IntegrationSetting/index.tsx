@@ -92,13 +92,25 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = ({ canEdit }) => {
           clearInterval(intervalId);
           setJobTitle('Sync failed');
         });
-        if (response?.data?.result?.syncStatus === 'success') {
-          clearInterval(intervalId);
-          setJobTitle('Sync successful');
-        }
-        if (response?.data?.result?.syncStatus === 'failed') {
-          clearInterval(intervalId);
-          setJobTitle('Sync failed');
+        const syncResults = response?.data?.result?.data;
+        if (!!syncResults?.length) {
+          let successCount = 0;
+          let failCount = 0;
+          syncResults.forEach((each: { syncStatus: string }) => {
+            if (each.syncStatus === 'success') {
+              successCount += 1;
+            } else if (each.syncStatus === 'failed') {
+              failCount += 1;
+            }
+          });
+          if (successCount + failCount === syncResults?.length) {
+            clearInterval(intervalId);
+            if (successCount === syncResults.length) {
+              setJobTitle('Sync successful');
+            } else {
+              setJobTitle('Sync failed');
+            }
+          }
         }
       }, 1000);
     },
