@@ -1109,6 +1109,9 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
                       content: `Connected successfully`,
                     });
                     refetch();
+                    queryClient.invalidateQueries(['get-channel-files'], {
+                      exact: false,
+                    });
                   },
                   onError: () => {
                     failureToastConfig({
