@@ -122,7 +122,14 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
   const createFolderMutation = useMutation({
     mutationKey: ['create-channel-doc-folder'],
     mutationFn: createChannelDocFolder,
-    onSuccess: () => {
+    onSuccess: async (response: any) => {
+      await queryClient.invalidateQueries(['get-channel-files'], {
+        exact: false,
+      });
+      const folder = response?.result?.data;
+      if (folder) {
+        appendItem({ id: folder.id, label: folder.name, meta: folder });
+      }
       successToastConfig({ content: 'Folder created successfully' });
     },
     onError: () => {
