@@ -159,6 +159,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = ({ canEdit }) => {
       className: '!px-6 !py-2',
     },
   ].filter((each) => {
+    if (!canEdit) return false;
     if (
       (each.dataTestId === 'disconnect' || each.dataTestId === 're-sync') &&
       !isBaseFolderSet
@@ -199,35 +200,39 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = ({ canEdit }) => {
               Last sync: 14th july 2024
             </div>
           )}
-          <div className="flex gap-6 w-full">
-            {isConnectionMade && !isBaseFolderSet && (
-              <Button
-                label="Select existing"
-                variant={ButtonVariant.Secondary}
-                size={Size.Small}
-                onClick={openModal}
-                className="h-9"
-              />
-            )}
-            {!isConnectionMade && (
-              <Button
-                label="Connect"
-                size={Size.Small}
-                onClick={() =>
-                  window.location.assign(getLearnUrl('/settings/market-place'))
-                }
-                className="h-9"
-              />
-            )}
-            {integrationType !== DocIntegrationEnum.Sharepoint && (
-              <Button
-                label="Add new"
-                leftIcon="plus"
-                size={Size.Small}
-                onClick={() => {}}
-              />
-            )}
-          </div>
+          {canEdit && (
+            <div className="flex gap-6 w-full">
+              {isConnectionMade && !isBaseFolderSet && (
+                <Button
+                  label="Select existing"
+                  variant={ButtonVariant.Secondary}
+                  size={Size.Small}
+                  onClick={openModal}
+                  className="h-9"
+                />
+              )}
+              {!isConnectionMade && (
+                <Button
+                  label="Connect"
+                  size={Size.Small}
+                  onClick={() =>
+                    window.location.assign(
+                      getLearnUrl('/settings/market-place'),
+                    )
+                  }
+                  className="h-9"
+                />
+              )}
+              {integrationType !== DocIntegrationEnum.Sharepoint && (
+                <Button
+                  label="Add new"
+                  leftIcon="plus"
+                  size={Size.Small}
+                  onClick={() => {}}
+                />
+              )}
+            </div>
+          )}
         </div>
         {!!popOptions.length && (
           <div className="relative">

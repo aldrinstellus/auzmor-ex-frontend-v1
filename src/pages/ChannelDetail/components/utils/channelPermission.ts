@@ -186,7 +186,6 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanAccessDocumentsTab,
               ChannelPermissionEnum.CanAccessHomeTab,
               ChannelPermissionEnum.CanAccessSettingsTab,
-              ChannelPermissionEnum.CanConnectChannelDoc,
               ChannelPermissionEnum.CanCreateNewChannelDoc,
             ];
           }
@@ -220,7 +219,6 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanAccessDocumentsTab,
               ChannelPermissionEnum.CanAccessHomeTab,
               ChannelPermissionEnum.CanAccessSettingsTab,
-              ChannelPermissionEnum.CanConnectChannelDoc,
               ChannelPermissionEnum.CanCreateNewChannelDoc,
             ];
           }

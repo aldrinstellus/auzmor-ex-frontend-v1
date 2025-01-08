@@ -140,16 +140,59 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
   // Initialise rename file mutation
   const renameChannelFileMutation = useMutation({
     mutationFn: getApi(ApiEnum.RenameChannelFile),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['get-channel-files'], {
-        exact: false,
+    onMutate: (data: { channelId: string; fileId: string; name: string }) => {
+      const payload = {
+        channelId: channelId,
+        params:
+          applyDocumentSearch === ''
+            ? {
+                rootFolderId: items.length > 1 ? items[1].id : undefined,
+                folderId:
+                  items.length < 3 ? undefined : items[items.length - 1].id,
+                sort: filters?.sort ? filters?.sort.split(':')[0] : undefined,
+                order: filters?.sort ? filters?.sort.split(':')[1] : undefined,
+                isFolder: docType ? !!(docType.value === 'folder') : undefined,
+                owners: (filters?.docOwnerCheckbox || []).map(
+                  (owner: any) => owner.name,
+                ),
+                type: (filters?.docTypeCheckbox || []).map(
+                  (type: any) => type.paramKey,
+                ),
+              }
+            : { q: applyDocumentSearch },
+      };
+      const previousData: any = queryClient.getQueryData([
+        'get-channel-files',
+        payload,
+      ]);
+
+      const newData = Object.assign(previousData);
+
+      newData?.pages?.forEach((each: any) => {
+        each?.data?.result?.data.forEach((eachDoc: DocType) => {
+          if (eachDoc.id === data.fileId) {
+            eachDoc.name = data.name;
+          }
+        });
       });
+
+      queryClient.setQueryData(['get-channel-files', payload], (old: any) => ({
+        ...old,
+        ...newData,
+      }));
+
+      return { previousData };
+    },
+    onSuccess: async () => {
       successToastConfig({ content: 'File renamed successfully' });
-      dataGridProps.setRowSelection({});
     },
     onError: () => {
       failureToastConfig({ content: 'File rename failed' });
     },
+    onSettled: async () =>
+      await queryClient.invalidateQueries(['get-channel-files'], {
+        exact: false,
+      }),
   });
 
   // Initialise rename folder mutation
