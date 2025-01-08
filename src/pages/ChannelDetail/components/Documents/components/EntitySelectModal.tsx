@@ -56,8 +56,6 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
   const parentFolderId =
     items?.length >= 4 ? items[items.length - 1]?.meta?.folderId : '';
 
-  console.log(directoryId, driveId, parentFolderId, items);
-
   const integrationHeadingMapping = {
     [DocIntegrationEnum.GoogleDrive]: {
       headerText: headerText || 'File Picker- Google drive',
@@ -90,7 +88,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
         ),
         cell: (info) => (
           <div className="flex gap-2 font-medium text-neutral-900 leading-6">
-            {!!!directoryId ? (
+            {!info.row?.original?.folderId ? (
               <SiteIcon name={info.getValue() as string} />
             ) : (
               <Icon name="folder" />
@@ -149,7 +147,11 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
             meta: virtualRow.original,
           });
         } else {
-          if (directoryId && driveId) {
+          if (
+            virtualRow.original?.directoryId &&
+            virtualRow.original?.rootFolderId &&
+            virtualRow.original?.folderId
+          ) {
             table.setRowSelection((param) => {
               return {
                 ...param,
@@ -194,7 +196,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
             },
           ]}
         />
-        {!!(items.length > 1) && (
+        {!!(items.length > 1) && !!!debouncedSearchValue && (
           <BreadCrumb
             items={items}
             onItemClick={(item) => sliceItems(item.id)}
