@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 interface IHighlightTextProps {
   text: string;
-  subString: string;
+  subString?: string;
   className?: string;
 }
 

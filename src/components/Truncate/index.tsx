@@ -4,6 +4,7 @@ import { FC, useEffect, useMemo, useRef, useState } from 'react';
 
 interface ITruncateProps {
   text: string;
+  textRenderer?: (text: string) => React.ReactNode;
   className?: string;
   dataTestId?: string;
   onClick?: () => void;
@@ -13,6 +14,7 @@ interface ITruncateProps {
 
 const Truncate: FC<ITruncateProps> = ({
   text,
+  textRenderer,
   className = '',
   dataTestId,
   onClick,
@@ -70,7 +72,7 @@ const Truncate: FC<ITruncateProps> = ({
         onClick={onClick}
         ref={textElementRef}
       >
-        {text}
+        {textRenderer ? textRenderer(text) : text}
       </p>
     </Tooltip>
   );

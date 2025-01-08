@@ -14,6 +14,7 @@ import './style.css';
 import useNavigate from 'hooks/useNavigation';
 import Cart from './Cart';
 import PopupMenu from 'components/PopupMenu';
+import GlobalSearch from 'components/GlobalSearch';
 
 interface INavbarLxpProps {}
 
@@ -264,6 +265,9 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
               </div>
               <ul className="flex items-center gap-[19px]">
                 <div className="w-[1px] h-5 bg-[#e5e5e5]"></div>
+                <li>
+                  <GlobalSearch />
+                </li>
                 <li>
                   <div title={t('learn.helpAndSupportTitle')}>
                     <IconButton

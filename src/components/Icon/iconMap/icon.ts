@@ -31,7 +31,7 @@ import ArrowLeftIcon from '../components/ArrowLeft';
 import BookmarkOutline from '../components/Bookmark';
 import CopyLink from '../components/CopyLink';
 import DeleteIcon from '../components/Delete';
-import OrangeHashtagIcon from '../components/OrangeHashtag';
+import HashtagIcon from '../components/Hashtag';
 import MailIcon from '../components/Mail';
 import SlackIcon from '../components/Slack';
 import CarouselLeftIcon from '../components/CarouselLeft';
@@ -199,6 +199,8 @@ import RefreshCircleIcon from '../components/RefreshCircle';
 import UploadIcon from '../components/Upload';
 import AudioFileIcon from '../components/AudioFile';
 import Notification2Icon from '../components/Notification2';
+import Search2Icon from '../components/Search2';
+import TeamIcon from '../components/Team';
 
 export const icon = {
   add: Add,
@@ -341,7 +343,7 @@ export const icon = {
   noteFavourite: NoteFavouriteIcon,
   notification: NotificationIcon,
   notification2: Notification2Icon,
-  orangeHashtag: OrangeHashtagIcon,
+  hashtag: HashtagIcon,
   outOfOffice: OutOfOfficeIcon,
   pause: PauseIcon,
   pdf: PdfIcon,
@@ -365,6 +367,7 @@ export const icon = {
   restInPeace: RestInPeaceIcon,
   rotateLeft: RotateLeft,
   search: Search,
+  search2: Search2Icon,
   security: Security,
   seekForward: SeekForwardIcon,
   send: Send,
@@ -380,6 +383,7 @@ export const icon = {
   support: Support,
   supportReaction: SupportReaction,
   tag: Tag,
+  team: TeamIcon,
   teacher: TeacherIcon,
   threeDots: ThreeDots,
   tickCircle: TickCircleIcon,

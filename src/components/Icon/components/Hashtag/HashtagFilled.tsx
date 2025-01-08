@@ -1,6 +1,6 @@
 import { SVGProps } from 'react';
 
-const SvgOrangeHashtagFilled = (props: SVGProps<SVGSVGElement>) => (
+const SvgHashtagFilled = (props: SVGProps<SVGSVGElement>) => (
   <svg
     width={60}
     height={60}
@@ -20,4 +20,4 @@ const SvgOrangeHashtagFilled = (props: SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default SvgOrangeHashtagFilled;
+export default SvgHashtagFilled;

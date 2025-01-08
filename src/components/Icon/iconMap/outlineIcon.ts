@@ -19,6 +19,7 @@ import SvgSpeakerOutline from '../components/Speaker/SpeakerOutline';
 import SvgDraftOutline from '../components/Draft/DraftOutline';
 import SvgArrowSwapOutline from '../components/ArrowSwap/ArrowSwapOutline';
 import SvgArrowLeftOutline from '../components/ArrowLeft/ArrowLeftOutline';
+import SvgHashtagOutline from '../components/Hashtag/HashtagOutline';
 import SvgMailOutline from '../components/Mail/MailOutline';
 import SvgSearchOutline from '../components/Search/SearchOutline';
 import SvgFilterLinearOutline from '../components/FilterLinear/FilterLinearOutline';
@@ -169,6 +170,7 @@ export const outlineIcon = {
   globalOutline: SvgGlobalOutline,
   gridOutline: SvgGridOutline,
   groupOutline: SvgGroupOutline,
+  hashtagOutline: SvgHashtagOutline,
   homeOutline: SvgHomeOutline,
   iconLinearOutline: SvgIconLinearOutline,
   imageOutline: SvgImageOutline,

@@ -20,7 +20,7 @@ import SvgUsersFilled from '../components/Users/UsersFilled';
 import SvgSpeakerFilled from '../components/Speaker/SpeakerFilled';
 import SvgDraftFilled from '../components/Draft/DraftFilled';
 import SvgArrowLeftFilled from '../components/ArrowLeft/ArrowLeftFilled';
-import SvgOrangeHashtagFilled from '../components/OrangeHashtag/HashtagFilled';
+import SvgHashtagFilled from '../components/Hashtag/HashtagFilled';
 import SvgSlackFilled from '../components/Slack/SlackFilled';
 import SvgCarouselLeftFilled from '../components/CarouselLeft/CarouselLeftFilled';
 import SvgCarouselRightFilled from '../components/CarouselRight/CarouselRightFilled';
@@ -146,7 +146,7 @@ export const filledIcon = {
   gearFilled: SvgGearFilled,
   globalFilled: SvgGlobalFilled,
   groupFilled: SvgGroupFilled,
-  hashtagFilled: SvgOrangeHashtagFilled,
+  hashtagFilled: SvgHashtagFilled,
   homeFilled: SvgHomeFilled,
   iconLinearFilled: SvgIconLinearFilled,
   imageFilled: SvgImageFilled,

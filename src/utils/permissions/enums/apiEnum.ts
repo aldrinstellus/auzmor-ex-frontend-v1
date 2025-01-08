@@ -155,6 +155,11 @@ export enum ApiEnum {
   CreateReaction = 'CREATE_REACTION',
   DeleteReaction = 'DELETE_REACTION',
 
+  //search
+  GetSearchResults = 'GET_SEARCH_RESULTS',
+  GetRecentSearchResults = 'GET_RECENT_SEARCH_RESULTS',
+  DeleteRecentSearchResult = 'DELETE_RECENT_SEARCH_RESULT',
+
   //skills
   GetSkills = 'GET_SKILLS',
 
