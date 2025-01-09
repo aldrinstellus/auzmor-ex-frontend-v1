@@ -11,7 +11,8 @@ export enum ChannelPermissionEnum {
   CanManageChannelRequests = 'CAN_MANAGE_CHANNEL_REQUESTS',
 
   CanConnectChannelDoc = 'CAN_CONNECT_CHANNEL_DOC',
-  CanCreateNewChannelDoc = 'CAN_CREATE_NEW_CHANNEL_DOC',
+  CanEditChannelDoc = 'CAN_EDIT_CHANNEL_DOC',
+  CanDownloadDocuments = 'CAN_DOWNLOAD_DOCUMENTS',
 
   CanArchive = 'CAN_ARCHIVE',
   CanAccessHomeTab = 'CAN_ACCESS_HOME_TAB',
@@ -28,6 +29,14 @@ export const getChannelPermissions: (
   isChannelJoined: boolean,
   channelRole: CHANNEL_ROLE,
   isAdmin: boolean,
+  channelRestriction?: {
+    canComment: boolean;
+    canDownloadDocuments: boolean;
+    canEditDocuments: boolean;
+    canMakeAnnouncements: boolean;
+    canPost: boolean;
+    enableDocuments: boolean;
+  },
 ) => ChannelPermissionEnum[] = (
   isLxp,
   isLearner,
@@ -35,9 +44,19 @@ export const getChannelPermissions: (
   isChannelJoined,
   channelRole,
   isAdmin,
+  channelRestriction,
 ) => {
   let channelPermissions: ChannelPermissionEnum[] = [];
   if (isLxp) {
+    const { canDownloadDocuments, canEditDocuments, enableDocuments } =
+      channelRestriction || {
+        canComment: false,
+        canDownloadDocuments: false,
+        canEditDocuments: false,
+        canMakeAnnouncements: false,
+        canPost: false,
+        enableDocuments: false,
+      };
     if (!isLearner) {
       if (channelPrivacy === ChannelVisibilityEnum.Public) {
         if (!isChannelJoined) {
@@ -55,7 +74,8 @@ export const getChannelPermissions: (
             ChannelPermissionEnum.CanAccessDocumentsTab,
             ChannelPermissionEnum.CanAccessSettingsTab,
             ChannelPermissionEnum.CanConnectChannelDoc,
-            ChannelPermissionEnum.CanCreateNewChannelDoc,
+            ChannelPermissionEnum.CanEditChannelDoc,
+            ChannelPermissionEnum.CanDownloadDocuments,
           ];
         } else {
           if (channelRole === CHANNEL_ROLE.Member) {
@@ -73,7 +93,8 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanAccessDocumentsTab,
               ChannelPermissionEnum.CanAccessSettingsTab,
               ChannelPermissionEnum.CanConnectChannelDoc,
-              ChannelPermissionEnum.CanCreateNewChannelDoc,
+              ChannelPermissionEnum.CanEditChannelDoc,
+              ChannelPermissionEnum.CanDownloadDocuments,
             ];
           } else if (channelRole === CHANNEL_ROLE.Admin) {
             // 3 -> LXP -> Admin view - > Public channel -> Joined -> Channel Role -> Channel Admin
@@ -90,7 +111,8 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanAccessDocumentsTab,
               ChannelPermissionEnum.CanAccessSettingsTab,
               ChannelPermissionEnum.CanConnectChannelDoc,
-              ChannelPermissionEnum.CanCreateNewChannelDoc,
+              ChannelPermissionEnum.CanEditChannelDoc,
+              ChannelPermissionEnum.CanDownloadDocuments,
             ];
           }
         }
@@ -110,7 +132,8 @@ export const getChannelPermissions: (
             ChannelPermissionEnum.CanAccessDocumentsTab,
             ChannelPermissionEnum.CanAccessSettingsTab,
             ChannelPermissionEnum.CanConnectChannelDoc,
-            ChannelPermissionEnum.CanCreateNewChannelDoc,
+            ChannelPermissionEnum.CanEditChannelDoc,
+            ChannelPermissionEnum.CanDownloadDocuments,
           ];
         } else {
           if (channelRole === CHANNEL_ROLE.Member) {
@@ -129,7 +152,8 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanAccessDocumentsTab,
               ChannelPermissionEnum.CanAccessSettingsTab,
               ChannelPermissionEnum.CanConnectChannelDoc,
-              ChannelPermissionEnum.CanCreateNewChannelDoc,
+              ChannelPermissionEnum.CanEditChannelDoc,
+              ChannelPermissionEnum.CanDownloadDocuments,
             ];
           } else if (channelRole === CHANNEL_ROLE.Admin) {
             // 6 -> LXP -> Admin view - > Private channel -> Joined -> Channel Role -> Channel Admin
@@ -147,7 +171,8 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanAccessDocumentsTab,
               ChannelPermissionEnum.CanAccessSettingsTab,
               ChannelPermissionEnum.CanConnectChannelDoc,
-              ChannelPermissionEnum.CanCreateNewChannelDoc,
+              ChannelPermissionEnum.CanEditChannelDoc,
+              ChannelPermissionEnum.CanDownloadDocuments,
             ];
           }
         }
@@ -170,7 +195,26 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanAccessMembersTab,
               ChannelPermissionEnum.CanAccessDocumentsTab,
               ChannelPermissionEnum.CanAccessSettingsTab,
-            ];
+              ChannelPermissionEnum.CanEditChannelDoc,
+              ChannelPermissionEnum.CanDownloadDocuments,
+            ].filter((each) => {
+              if (
+                each === ChannelPermissionEnum.CanEditChannelDoc &&
+                !canEditDocuments
+              )
+                return false;
+              if (
+                each === ChannelPermissionEnum.CanAccessDocumentsTab &&
+                !enableDocuments
+              )
+                return false;
+              if (
+                each === ChannelPermissionEnum.CanDownloadDocuments &&
+                !canDownloadDocuments
+              )
+                return false;
+              return true;
+            });
           } else if (channelRole === CHANNEL_ROLE.Admin) {
             // 9 -> LXP -> Learner view - > Public channel -> Joined -> Channel Role -> Channel Admin
             channelPermissions = [
@@ -186,7 +230,8 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanAccessDocumentsTab,
               ChannelPermissionEnum.CanAccessHomeTab,
               ChannelPermissionEnum.CanAccessSettingsTab,
-              ChannelPermissionEnum.CanCreateNewChannelDoc,
+              ChannelPermissionEnum.CanEditChannelDoc,
+              ChannelPermissionEnum.CanDownloadDocuments,
             ];
           }
         }
@@ -203,7 +248,26 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanAccessSettingsTab,
               ChannelPermissionEnum.CanAccessMembersTab,
               ChannelPermissionEnum.CanAccessDocumentsTab,
-            ];
+              ChannelPermissionEnum.CanEditChannelDoc,
+              ChannelPermissionEnum.CanDownloadDocuments,
+            ].filter((each) => {
+              if (
+                each === ChannelPermissionEnum.CanEditChannelDoc &&
+                !canEditDocuments
+              )
+                return false;
+              if (
+                each === ChannelPermissionEnum.CanAccessDocumentsTab &&
+                !enableDocuments
+              )
+                return false;
+              if (
+                each === ChannelPermissionEnum.CanDownloadDocuments &&
+                !canDownloadDocuments
+              )
+                return false;
+              return true;
+            });
           } else if (channelRole === CHANNEL_ROLE.Admin) {
             // 12 -> LXP -> Learner view - > Private channel -> Joined -> Channel Role -> Channel Admin
             channelPermissions = [
@@ -219,7 +283,8 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanAccessDocumentsTab,
               ChannelPermissionEnum.CanAccessHomeTab,
               ChannelPermissionEnum.CanAccessSettingsTab,
-              ChannelPermissionEnum.CanCreateNewChannelDoc,
+              ChannelPermissionEnum.CanEditChannelDoc,
+              ChannelPermissionEnum.CanDownloadDocuments,
             ];
           }
         }
@@ -255,7 +320,7 @@ export const getChannelPermissions: (
             ChannelPermissionEnum.CanAccessHomeTab,
             ChannelPermissionEnum.CanAccessSettingsTab,
             ChannelPermissionEnum.CanConnectChannelDoc,
-            ChannelPermissionEnum.CanCreateNewChannelDoc,
+            ChannelPermissionEnum.CanEditChannelDoc,
           ];
         }
       }
@@ -292,7 +357,7 @@ export const getChannelPermissions: (
             ChannelPermissionEnum.CanAccessHomeTab,
             ChannelPermissionEnum.CanAccessSettingsTab,
             ChannelPermissionEnum.CanConnectChannelDoc,
-            ChannelPermissionEnum.CanCreateNewChannelDoc,
+            ChannelPermissionEnum.CanEditChannelDoc,
           ];
         }
       }

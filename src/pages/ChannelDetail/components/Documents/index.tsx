@@ -50,7 +50,7 @@ import {
 } from 'stores/backgroundJobStore';
 import queryClient from 'utils/queryClient';
 import { downloadFromUrl, getLearnUrl, isThisAFile } from 'utils/misc';
-import { IChannel, useChannelStore } from 'stores/channelStore';
+import { useChannelStore } from 'stores/channelStore';
 import RenameChannelDocModal from './components/RenameChannelDocModal';
 import ConfirmationBox from 'components/ConfirmationBox';
 import DocSearch from './components/DocSearch';
@@ -70,11 +70,10 @@ export interface IForm {
 }
 
 interface IDocumentProps {
-  channelData: IChannel;
   permissions: ChannelPermissionEnum[];
 }
 
-const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
+const Document: FC<IDocumentProps> = ({ permissions }) => {
   const [isOpen, openModal, closeModal] = useModal();
   const [isAddModalOpen, openAddModal, closeAddModal] = useModal();
   const [totalRows, setTotalRows] = useState<number>(0);
@@ -268,7 +267,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
   // A function that decides what options to show on each row of documents
   const getAllOptions = useCallback((info: CellContext<DocType, unknown>) => {
     const showDownload =
-      !!channelData?.settings?.restriction?.canDownloadDocuments &&
+      permissions.includes(ChannelPermissionEnum.CanDownloadDocuments) &&
       !!info?.row?.original?.downloadable &&
       !!!info?.row?.original?.isFolder;
     return [
@@ -1050,7 +1049,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
                 onClick={(doc) => setItems(getMappedLocation(doc))}
               />
               {permissions.includes(
-                ChannelPermissionEnum.CanCreateNewChannelDoc,
+                ChannelPermissionEnum.CanEditChannelDoc,
               ) && (
                 <div className="relative">
                   <PopupMenu

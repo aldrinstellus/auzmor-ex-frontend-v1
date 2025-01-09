@@ -73,15 +73,8 @@ const ChannelDetail: FC<AppProps> = ({
     isChannelJoined,
     channelData?.member?.role,
     isAdmin,
-  ).filter((permission) => {
-    if (
-      permission === ChannelPermissionEnum.CanAccessDocumentsTab &&
-      !!!channelData?.settings?.restriction?.enableDocuments
-    ) {
-      return false;
-    }
-    return true;
-  });
+    channelData?.settings?.restriction,
+  );
 
   if (isLoading && !channelData) {
     return <PageLoader />;
@@ -203,7 +196,7 @@ const ChannelDetail: FC<AppProps> = ({
       dataTestId: 'channel-document-tab',
       tabContent: showBanner(ChannelDetailTabsEnum.Documents) || (
         <DocumentPathProvider>
-          <Document permissions={permissions} channelData={channelData} />
+          <Document permissions={permissions} />
         </DocumentPathProvider>
       ),
       path: `/channels/${channelId}/documents`,
