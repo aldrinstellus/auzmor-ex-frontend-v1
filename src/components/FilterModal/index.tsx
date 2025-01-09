@@ -147,7 +147,6 @@ const FilterModal: FC<IFilterModalProps> = ({
     visibility: ChannelVisibilityEnum.All,
     docTypeCheckbox: [],
     docOwnerCheckbox: [],
-    docModifiedRadio: [],
     roles: [],
     byPeople: [],
     channelRequestStatus: [],

@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -54,6 +55,7 @@ import RenameChannelDocModal from './components/RenameChannelDocModal';
 import ConfirmationBox from 'components/ConfirmationBox';
 import DocSearch from './components/DocSearch';
 import Popover from 'components/Popover';
+import { parseNumber } from 'react-advanced-cropper';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
@@ -533,7 +535,6 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
                       (eachItem) => eachItem.id === item.id,
                     );
                     if (sliceIndex >= 0) {
-                      console.log(items.slice(0, sliceIndex));
                       setItems(items.slice(0, sliceIndex + 1));
                     }
                   }}
@@ -585,6 +586,63 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
     [isRootDir],
   );
 
+  // Its a function to parse modified on filter that maps string to respected date param oo api
+  const parseModifiedOnFilter = useMemo(() => {
+    if (filters?.docModifiedRadio?.includes('custom')) {
+      const [start, end] = filters?.docModifiedRadio
+        .replace('custom:', '')
+        .split('-');
+      if (parseNumber(start) && parseNumber(end)) {
+        return {
+          modifiedAfter: start,
+          modifiedBefore: end,
+        };
+      }
+    }
+    if (filters?.docModifiedRadio) {
+      switch (filters.docModifiedRadio) {
+        case 'Today':
+          return {
+            modifiedAfter: moment().startOf('day').valueOf(),
+            modifiedBefore: moment().endOf('day').valueOf(),
+          };
+        case 'Last 7 days':
+          return {
+            modifiedAfter: moment()
+              .subtract(7, 'days')
+              .startOf('day')
+              .valueOf(),
+            modifiedBefore: moment().endOf('day').valueOf(),
+          };
+        case 'Last 30 days':
+          return {
+            modifiedAfter: moment()
+              .subtract(30, 'days')
+              .startOf('day')
+              .valueOf(),
+            modifiedBefore: moment().endOf('day').valueOf(),
+          };
+        case 'This year':
+          return {
+            modifiedAfter: moment().startOf('year').valueOf(),
+            modifiedBefore: moment().endOf('day').valueOf(),
+          };
+        case 'Last year':
+          return {
+            modifiedAfter: moment()
+              .subtract(1, 'year')
+              .startOf('year')
+              .valueOf(),
+            modifiedBefore: moment()
+              .subtract(1, 'year')
+              .endOf('year')
+              .valueOf(),
+          };
+      }
+    }
+    return {};
+  }, [filters]);
+
   // Get props for Datagrid component
   const dataGridProps = useDataGrid<DocType>({
     apiEnum:
@@ -609,6 +667,7 @@ const Document: FC<IDocumentProps> = ({ channelData, permissions }) => {
               type: (filters?.docTypeCheckbox || []).map(
                 (type: any) => type.paramKey,
               ),
+              ...parseModifiedOnFilter,
             }
           : { q: applyDocumentSearch },
     },

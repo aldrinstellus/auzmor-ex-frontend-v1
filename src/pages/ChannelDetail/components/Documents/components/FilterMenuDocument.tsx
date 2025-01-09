@@ -15,6 +15,7 @@ import Icon from 'components/Icon';
 import { getIconFromMime } from './Doc';
 import { IForm } from '..';
 import moment from 'moment';
+import { parseNumber } from 'react-advanced-cropper';
 
 export enum FilterKey {
   departments = 'departments',
@@ -61,7 +62,6 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
     !!filters?.docModifiedRadio;
 
   useEffect(() => {
-    console.log(filters);
     if (filters) {
       Object.keys(filters).forEach((key: string) => {
         if (!!filters[key] && filters[key].length === 0) {
@@ -161,6 +161,17 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
       dataTestId: 'sortBy-size',
     },
   ];
+
+  const parseModifiedOn = (value: string) => {
+    if (value.includes('custom')) {
+      const [start, end] = value.replace('custom:', '').split('-');
+      return `${moment(parseNumber(start)).format('DD MMM YYYY')} - ${moment(
+        parseNumber(end),
+      ).format('DD MMM YYYY')}`;
+    } else {
+      return value;
+    }
+  };
 
   return (
     <>
@@ -343,9 +354,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
                       <span className="text-neutral-500 font-medium">
                         Modified on{' '}
                         <span className="text-primary-500 font-bold">
-                          {moment(filters.docModifiedRadio).format(
-                            'MMMM DD, YYYY',
-                          )}
+                          {parseModifiedOn(filters.docModifiedRadio)}
                         </span>
                       </span>
                       <Icon name="close" size={16} />
@@ -392,7 +401,14 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
             docModifiedRadio: filters?.docModifiedRadio,
           }}
           onApply={(appliedFilters) => {
-            setFilters(appliedFilters);
+            setFilters({
+              ...appliedFilters,
+              docModifiedRadio: appliedFilters.docModifiedRadio.includes(
+                'undefined',
+              )
+                ? undefined
+                : appliedFilters.docModifiedRadio,
+            });
             closeFilterModal();
           }}
           onClear={() => {
