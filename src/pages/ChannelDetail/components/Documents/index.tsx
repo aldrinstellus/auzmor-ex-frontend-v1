@@ -106,7 +106,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     'documentSearch',
   ]);
   const getChannelDocDownloadUrl = getApi(ApiEnum.GetChannelDocDownloadUrl);
-  const deleteChannelDoc = getApi(ApiEnum.DeleteChannelDoc);
 
   // Api call: Check connection status
   const useChannelDocumentStatus = getApi(ApiEnum.GetChannelDocumentStatus);
@@ -145,62 +144,44 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     mutationFn: updateConnection,
   });
 
+  // Api call: Delete doc mutation
+  const deleteChannelDoc = getApi(ApiEnum.DeleteChannelDoc);
+  const deleteChannelDocMutation = useMutation({
+    mutationFn: deleteChannelDoc,
+    onSuccess: () => {
+      successToastConfig({
+        content: `“${deleteDocProps?.doc?.name}” file deleted`,
+      });
+    },
+    onError: () => {
+      failureToastConfig({
+        content: `Failed to delete ${deleteDocProps?.doc?.name}`,
+        dataTestId: 'file-delete-toaster',
+      });
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries(['get-channel-files'], {
+        exact: false,
+      });
+      closeConfirm();
+    },
+  });
+
   // Initialise rename file mutation
   const renameChannelFileMutation = useMutation({
     mutationFn: getApi(ApiEnum.RenameChannelFile),
-    onMutate: (data: { channelId: string; fileId: string; name: string }) => {
-      const payload = {
-        channelId: channelId,
-        params:
-          applyDocumentSearch === ''
-            ? {
-                rootFolderId: items.length > 1 ? items[1].id : undefined,
-                folderId:
-                  items.length < 3 ? undefined : items[items.length - 1].id,
-                sort: filters?.sort ? filters?.sort.split(':')[0] : undefined,
-                order: filters?.sort ? filters?.sort.split(':')[1] : undefined,
-                isFolder: docType ? !!(docType.value === 'folder') : undefined,
-                owners: (filters?.docOwnerCheckbox || []).map(
-                  (owner: any) => owner.name,
-                ),
-                type: (filters?.docTypeCheckbox || []).map(
-                  (type: any) => type.paramKey,
-                ),
-              }
-            : { q: applyDocumentSearch },
-      };
-      const previousData: any = queryClient.getQueryData([
-        'get-channel-files',
-        payload,
-      ]);
-
-      const newData = Object.assign(previousData);
-
-      newData?.pages?.forEach((each: any) => {
-        each?.data?.result?.data.forEach((eachDoc: DocType) => {
-          if (eachDoc.id === data.fileId) {
-            eachDoc.name = data.name;
-          }
-        });
-      });
-
-      queryClient.setQueryData(['get-channel-files', payload], (old: any) => ({
-        ...old,
-        ...newData,
-      }));
-
-      return { previousData };
-    },
     onSuccess: async () => {
       successToastConfig({ content: 'File renamed successfully' });
     },
     onError: () => {
       failureToastConfig({ content: 'File rename failed' });
     },
-    onSettled: async () =>
+    onSettled: async () => {
       await queryClient.invalidateQueries(['get-channel-files'], {
         exact: false,
       }),
+        closeRenameModal();
+    },
   });
 
   // Initialise rename folder mutation
@@ -233,25 +214,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         fileId: meta.id,
       } as any);
     }
-  };
-
-  // Api call: delete document
-  const handleDeleteDoc = async () => {
-    closeConfirm();
-    try {
-      await deleteChannelDoc({ channelId, itemId: deleteDocProps?.doc.id });
-      successToastConfig({
-        content: `“${deleteDocProps?.doc?.name}” file deleted`,
-      });
-    } catch (e) {
-      failureToastConfig({
-        content: `Failed to delete ${deleteDocProps?.doc?.name}`,
-        dataTestId: 'file-delete-toaster',
-      });
-    }
-    await queryClient.invalidateQueries(['get-channel-files'], {
-      exact: false,
-    });
   };
 
   // State management flags
@@ -1195,6 +1157,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       )}
       {renameModal && (
         <RenameChannelDocModal
+          isLoading={renameChannelFileMutation.isLoading}
           isOpen={renameModal}
           closeModal={closeRenameModal}
           defaultName={renameModalProps?.name}
@@ -1202,6 +1165,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         />
       )}
       <ConfirmationBox
+        isLoading={deleteChannelDocMutation.isLoading}
         open={confirm}
         onClose={closeConfirm}
         title={`Delete file?`}
@@ -1211,7 +1175,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         success={{
           label: 'Delete',
           className: 'bg-red-500 text-white ',
-          onSubmit: handleDeleteDoc,
+          onSubmit: () =>
+            deleteChannelDocMutation.mutate({
+              channelId,
+              itemId: deleteDocProps?.doc.id,
+            } as any),
         }}
         discard={{
           label: 'Cancel',

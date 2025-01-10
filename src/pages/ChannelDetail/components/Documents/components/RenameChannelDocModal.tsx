@@ -10,6 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 interface IRenameChannelDocModalProps {
   defaultName: string;
   isOpen: boolean;
+  isLoading?: boolean;
   closeModal: () => void;
   onSave: (name: string) => void;
 }
@@ -21,6 +22,7 @@ interface IForm {
 const RenameChannelDocModal: FC<IRenameChannelDocModalProps> = ({
   defaultName,
   isOpen,
+  isLoading = false,
   closeModal,
   onSave,
 }) => {
@@ -70,14 +72,13 @@ const RenameChannelDocModal: FC<IRenameChannelDocModalProps> = ({
           variant={ButtonVariant.Secondary}
           onClick={closeModal}
           size={Size.Small}
+          disabled={isLoading}
         />
         <Button
           label={'Okay'}
-          onClick={() => {
-            onSave(getValues('name'));
-            closeModal();
-          }}
-          disabled={false}
+          onClick={() => onSave(getValues('name'))}
+          disabled={isLoading}
+          loading={isLoading}
           size={Size.Small}
         />
       </div>
