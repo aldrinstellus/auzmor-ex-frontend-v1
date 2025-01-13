@@ -22,7 +22,8 @@ const ProgressTrackerWidget: FC<IProgressTrackerWidgetProps> = ({
 
   const useProgressTracker = getApi(ApiEnum.GetProgressTracker);
   const { data, isLoading } = useProgressTracker({ enabled: isLxp });
-  const trackerData = data?.data.result?.data || [];
+  const resultData = data?.data.result?.data || [];
+  const trackerData = resultData.filter((item: any) => item.my_enrollment);
 
   const style = useMemo(
     () => clsx({ 'min-w-[240px]': true, [className]: true }),
