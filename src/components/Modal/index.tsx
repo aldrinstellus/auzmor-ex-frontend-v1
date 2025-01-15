@@ -12,6 +12,8 @@ export type ModalProps = {
   className?: string;
   showModalCloseBtn?: boolean;
   dataTestId?: string;
+  wrapperClassName?: string;
+  onKeyDown?: (e: React.KeyboardEvent) => void;
 };
 
 const Modal: FC<ModalProps> = ({
@@ -21,6 +23,8 @@ const Modal: FC<ModalProps> = ({
   className = 'max-w-xl',
   showModalCloseBtn = false,
   dataTestId = '',
+  wrapperClassName = '',
+  onKeyDown,
 }) => {
   const panelStyle = clsx(
     {
@@ -31,6 +35,11 @@ const Modal: FC<ModalProps> = ({
       [className]: true,
     },
   );
+  const wrapperStyle = clsx({
+    'flex justify-center min-w-full': true,
+    [wrapperClassName]: true,
+  });
+
   return (
     <>
       {ReactDOM.createPortal(
@@ -38,11 +47,9 @@ const Modal: FC<ModalProps> = ({
           <div
             className="z-[999] flex items-center justify-center fixed left-0 right-0 top-0 bottom-0 backdrop-blur-sm bg-black/60"
             onClick={closeModal}
+            onKeyDown={onKeyDown}
           >
-            <div
-              className="flex justify-center min-w-full"
-              data-testid={dataTestId}
-            >
+            <div className={wrapperStyle} data-testid={dataTestId}>
               {showModalCloseBtn && (
                 <div
                   className={`${panelStyle} fixed bg-transparent overflow-visible`}

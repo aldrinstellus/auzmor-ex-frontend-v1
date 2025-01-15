@@ -40,7 +40,21 @@
     "searchAriaLabel": "search",
     "searchPlaceholder": "Search name, channel, team, document etc.,",
     "noResultsHint": "We're a little lost. Can you give us a hint?",
-    "connectStorageHint": "Please connect storage documents to search within first."
+    "connectStorageHint": "Please connect storage documents to search within first.",
+    "modules": {
+      "app": "Apps",
+      "people": "People",
+      "team": "Teams",
+      "channel": "Channels",
+      "document": "Documents",
+      "event": "Events",
+      "course": "Courses",
+      "path": "Paths",
+      "recent": "Recent searches",
+      "forum": "Forums",
+      "task": "Tasks",
+      "mentorship": "Mentorship"
+    }
   },
   "SubscriptionBanner": {
     "productNameLearn": "Auzmor Learn",

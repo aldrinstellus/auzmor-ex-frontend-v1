@@ -1,0 +1,169 @@
+import Layout, { FieldType } from 'components/Form';
+import Icon from 'components/Icon';
+import { useDebounce } from 'hooks/useDebounce';
+import SearchResults from './SearchResults';
+import { FC, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+
+import { useTranslation } from 'react-i18next';
+import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { usePermissions } from 'hooks/usePermissions';
+import { ISearchResultGroup, ISearchResultType } from 'interfaces/search';
+import Modal from 'components/Modal';
+
+export interface ISearchModalProps {
+  onClose?: () => void;
+}
+
+const SearchModal: FC<ISearchModalProps> = ({ onClose }) => {
+  const { getApi } = usePermissions();
+  const { t } = useTranslation('components', { keyPrefix: 'GlobalSearch' });
+
+  const { control, watch, setValue } = useForm<{ globalSearch: string }>({
+    defaultValues: { globalSearch: '' },
+  });
+
+  const globalSearch = watch('globalSearch');
+  const debouncedSearchQuery = useDebounce(globalSearch, 200);
+
+  const showRecentSearchResults = debouncedSearchQuery?.length === 0;
+
+  const getSearchResults = getApi(ApiEnum.GetSearchResults);
+  const getRecentSearchTerms = getApi(ApiEnum.GetRecentSearchTerms);
+  const getRecentClickedResults = getApi(ApiEnum.GetRecentClickedResults);
+
+  const { data: searchResultsData, isLoading: isSearchResultsFetching } =
+    getSearchResults(
+      {
+        q: debouncedSearchQuery,
+        limit: 5,
+      },
+      { enabled: !showRecentSearchResults },
+    );
+
+  const { data: documentSearchResultsData } = getSearchResults(
+    {
+      q: debouncedSearchQuery,
+      limit: 5,
+      module: 'document',
+    },
+    { enabled: !showRecentSearchResults },
+  );
+
+  const {
+    data: recentSearchTermsData,
+    isLoading: isRecentSearchTermsFetching,
+  } = getRecentSearchTerms(
+    {
+      limit: 5,
+    },
+    { enabled: showRecentSearchResults },
+  );
+
+  const {
+    data: recentClickedResultsData,
+    isLoading: isRecentClickedResultsFetching,
+  } = getRecentClickedResults(
+    {
+      limit: 5,
+    },
+    { enabled: showRecentSearchResults },
+  );
+
+  const isLoading = showRecentSearchResults
+    ? isRecentClickedResultsFetching || isRecentSearchTermsFetching
+    : isSearchResultsFetching;
+
+  const searchResults: ISearchResultGroup[] = showRecentSearchResults
+    ? [
+        {
+          module: ISearchResultType.RECENT,
+          name: t('modules.recent'),
+          results: recentClickedResultsData?.result?.data || [],
+        },
+        {
+          module: ISearchResultType.KEYWORD,
+          name: '',
+          results: recentSearchTermsData?.result?.data || [],
+        },
+      ]
+    : [
+        ...(searchResultsData?.result?.data || []),
+        ...(documentSearchResultsData?.results?.data?.filter(
+          (item: ISearchResultGroup) =>
+            item.module === ISearchResultType.DOCUMENT,
+        ) || []),
+      ].map((item: ISearchResultGroup) => ({
+        ...item,
+        name: t(`modules.${item.module}`),
+      }));
+
+  console.log({ searchResults });
+
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+
+  useEffect(() => setSelectedIndex(-1), [globalSearch]);
+
+  const fields = [
+    {
+      type: FieldType.Input,
+      control,
+      name: 'globalSearch',
+      dataTestId: 'global-search',
+      className: 'w-full',
+      placeholder: t('searchPlaceholder'),
+      inputClassName: 'border-none !p-0 rounded-none text-sm font-medium',
+      autofocus: true,
+      clearIcon: <Icon name="closeCircle" size={16} className="-mr-3" />,
+      isClearable: true,
+    },
+  ];
+
+  const handleKeyDown = (e: any) => {
+    let totalItems = 0;
+    searchResults.forEach(
+      (eachEntity: any) => (totalItems += eachEntity.results.length),
+    );
+
+    if (e.key === 'ArrowDown') {
+      // Move selection down, loop back to the top if at the end
+      setSelectedIndex((prevIndex: number) => (prevIndex + 1) % totalItems);
+    } else if (e.key === 'ArrowUp') {
+      // Move selection up, loop back to the bottom if at the start
+      setSelectedIndex((prevIndex) =>
+        prevIndex === 0 ? totalItems - 1 : prevIndex - 1,
+      );
+    } else if (e.key === 'Enter') {
+      document.getElementById(`search-item-${selectedIndex}`)?.click();
+    }
+  };
+
+  return (
+    <Modal
+      open={true}
+      className="max-w-[700px] flex flex-col gap-2 !bg-transparent relative"
+      wrapperClassName="-mt-[20%]"
+      onKeyDown={handleKeyDown}
+      closeModal={onClose}
+    >
+      <div className="flex flex-grow items-center w-full h-[60px] px-3 py-3 gap-3 bg-white rounded-[10px] shadow">
+        <Icon name="search" hover={false} size={24} />
+        <div className="flex grow">
+          <Layout fields={fields} className="w-full" />
+        </div>
+      </div>
+      <div className="absolute w-full bg-white rounded-[8px] shadow px-3 top-[68px] py-4">
+        <SearchResults
+          searchResults={searchResults}
+          searchQuery={debouncedSearchQuery}
+          isLoading={isLoading}
+          onClose={onClose}
+          selectedIndex={selectedIndex}
+          updateSearchQuery={(value: string) => setValue('globalSearch', value)}
+        />
+      </div>
+    </Modal>
+  );
+};
+
+export default SearchModal;
