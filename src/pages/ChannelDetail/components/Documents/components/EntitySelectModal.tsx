@@ -4,7 +4,7 @@ import DataGrid from 'components/DataGrid';
 import Modal from 'components/Modal';
 import Header from 'components/ModalHeader';
 import { useDataGrid } from 'hooks/useDataGrid';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { DocIntegrationEnum } from '..';
@@ -35,7 +35,6 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
   isOpen,
   closeModal,
   onSelect,
-  integrationType = DocIntegrationEnum.GoogleDrive,
   headerText,
   q,
 }) => {
@@ -57,17 +56,32 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
     items?.length >= 4 ? items[items.length - 1]?.meta?.folderId : '';
 
   const integrationHeadingMapping = {
-    [DocIntegrationEnum.GoogleDrive]: {
-      headerText: headerText || 'File Picker- Google drive',
-      placeholder: 'Select a google drive folder',
-      btnLabel: 'Select folder',
-    },
-    [DocIntegrationEnum.Sharepoint]: {
+    site: {
       headerText: headerText || 'Select base site',
       placeholder: 'Search a sharepoint site',
       btnLabel: 'Select site',
     },
+    drive: {
+      headerText: headerText || 'Select base drive',
+      placeholder: 'Search a sharepoint drive',
+      btnLabel: 'Select drive',
+    },
+    folder: {
+      headerText: headerText || 'Select base folder',
+      placeholder: 'Search a sharepoint folder',
+      btnLabel: 'Select folder',
+    },
   };
+
+  const headings: 'site' | 'drive' | 'folder' = useMemo(() => {
+    if (driveId) {
+      return 'folder';
+    } else if (directoryId) {
+      return 'drive';
+    } else {
+      return 'site';
+    }
+  }, [driveId, directoryId]);
 
   const SiteIcon: FC<{ name: string }> = ({ name }) => {
     return (
@@ -174,7 +188,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
     <Modal open={isOpen}>
       {/* Header */}
       <Header
-        title={integrationHeadingMapping[integrationType].headerText}
+        title={integrationHeadingMapping[headings].headerText}
         onClose={closeModal}
       />
 
@@ -186,8 +200,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
               type: FieldType.Input,
               control,
               name: 'entitySearch',
-              placeholder:
-                integrationHeadingMapping[integrationType].placeholder,
+              placeholder: integrationHeadingMapping[headings].placeholder,
               dataTestId: `entitySearch-search`,
               inputClassName: 'text-sm py-[9px]',
               autofocus: true,
@@ -217,7 +230,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
           size={Size.Small}
         />
         <Button
-          label={integrationHeadingMapping[integrationType].btnLabel}
+          label={integrationHeadingMapping[headings].btnLabel}
           variant={ButtonVariant.Primary}
           onClick={() => {
             setOnSelectLoading(true);
