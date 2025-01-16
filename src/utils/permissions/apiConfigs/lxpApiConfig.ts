@@ -169,12 +169,19 @@ export const apiConfigLxp = {
   [ApiEnum.DeleteReaction]: { [Default]: queries.deleteReaction },
 
   //search
-  [ApiEnum.GetSearchResults]: { [Default]: queries.useSearchResults },
-  [ApiEnum.GetRecentSearchResults]: {
-    [Default]: queries.useRecentSearchResults,
+  [ApiEnum.GetSearchResults]: {
+    [Learner]: queries.useLearnerSearchResults,
+    [Default]: queries.useSearchResults,
   },
-  [ApiEnum.DeleteRecentSearchResult]: {
-    [Default]: queries.deleteRecentSearchResult,
+  [ApiEnum.GetRecentClickedResults]: {
+    [Default]: queries.useRecentClickedResults,
+  },
+  [ApiEnum.GetRecentSearchTerms]: {
+    [Default]: queries.useRecentSearchTerms,
+  },
+  [ApiEnum.ClickSearchResult]: { [Default]: queries.clickSearchResult },
+  [ApiEnum.DeleteRecentSearchTerm]: {
+    [Default]: queries.deleteRecentSearchTerm,
   },
 
   //submissions

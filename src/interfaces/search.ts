@@ -8,6 +8,7 @@ export enum ISearchResultType {
   MENTORSHIP = 'mentorship',
   PATH = 'path',
   PEOPLE = 'people',
+  RECENT = 'recent',
   TASK = 'task',
   TEAM = 'team',
 }

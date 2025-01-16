@@ -125,7 +125,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = ({ canEdit }) => {
   const { data: syncStatus, isLoading } = useChannelDocSyncStatus({
     channelId,
   });
-  const connectedDriveStatus = syncStatus?.data?.result?.data;
+  const connectedDriveStatus = syncStatus?.data?.result?.data || [];
 
   const isBaseFolderSet = statusResponse?.status === 'ACTIVE';
   const isConnectionMade =

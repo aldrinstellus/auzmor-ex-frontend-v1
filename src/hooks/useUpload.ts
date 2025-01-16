@@ -9,6 +9,7 @@ import {
   useBackgroundJobStore,
 } from 'stores/backgroundJobStore';
 import Icon from 'components/Icon';
+import queryClient from 'utils/queryClient';
 
 export enum UploadStatus {
   YetToStart = 'YET_TO_START',
@@ -400,6 +401,15 @@ export const useChannelDocUpload = (channelId: string) => {
                     100,
                     BackgroundJobStatusEnum.CompletedSuccessfully,
                   );
+                  queryClient.invalidateQueries(['get-channel-files'], {
+                    exact: false,
+                  });
+                  // Remove below timeout once BE fix immediate update.
+                  setTimeout(() => {
+                    queryClient.invalidateQueries(['get-channel-files'], {
+                      exact: false,
+                    });
+                  }, 2000);
                 });
               });
             })
