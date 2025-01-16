@@ -56,6 +56,7 @@ import ConfirmationBox from 'components/ConfirmationBox';
 import DocSearch from './components/DocSearch';
 import Popover from 'components/Popover';
 import { parseNumber } from 'react-advanced-cropper';
+import { getExtension, trimExtension } from '../utils';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
@@ -210,7 +211,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     } else {
       renameChannelFileMutation.mutate({
         channelId,
-        name,
+        name: `${name}${getExtension(meta.name)}`,
         fileId: meta.id,
       } as any);
     }
@@ -238,7 +239,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         onClick: (e: Event) => {
           e.stopPropagation();
           showRenameModal({
-            name: info?.row?.original?.name,
+            name: !!info?.row?.original?.isFolder
+              ? info?.row?.original?.name
+              : trimExtension(info?.row?.original?.name),
             meta: info?.row?.original,
           });
         },
