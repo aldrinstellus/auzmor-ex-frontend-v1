@@ -170,7 +170,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   // Initialise rename file mutation
   const renameChannelFileMutation = useMutation({
     mutationFn: getApi(ApiEnum.RenameChannelFile),
-    onSuccess: async () => {
+    onSuccess: () => {
       successToastConfig({ content: 'File renamed successfully' });
     },
     onError: () => {
@@ -187,15 +187,17 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   // Initialise rename folder mutation
   const renameChannelFolderMutation = useMutation({
     mutationFn: getApi(ApiEnum.RenameChannelFolder),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries(['get-channel-files'], {
-        exact: false,
-      });
+    onSuccess: () => {
       successToastConfig({ content: 'Folder renamed successfully' });
-      dataGridProps.setRowSelection({});
     },
     onError: () => {
       failureToastConfig({ content: 'Folder rename failed' });
+    },
+    onSettled: async () => {
+      await queryClient.invalidateQueries(['get-channel-files'], {
+        exact: false,
+      });
+      closeRenameModal();
     },
   });
 
@@ -1157,7 +1159,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       )}
       {renameModal && (
         <RenameChannelDocModal
-          isLoading={renameChannelFileMutation.isLoading}
+          isLoading={
+            renameChannelFileMutation.isLoading ||
+            renameChannelFolderMutation.isLoading
+          }
           isOpen={renameModal}
           closeModal={closeRenameModal}
           defaultName={renameModalProps?.name}
