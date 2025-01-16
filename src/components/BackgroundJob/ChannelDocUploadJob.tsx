@@ -3,7 +3,6 @@ import Icon from 'components/Icon';
 import ProgressBar from 'components/ProgressBar';
 import React, { FC, Fragment, useEffect, useState } from 'react';
 import { useBackgroundJobStore } from 'stores/backgroundJobStore';
-import queryClient from 'utils/queryClient';
 
 interface IChannelDocUploadJobProps {}
 
@@ -21,8 +20,6 @@ const ChannelDocUploadJob: FC<IChannelDocUploadJobProps> = ({}) => {
     reset,
   } = useBackgroundJobStore();
 
-  const [completedPercentage, setCompletedPercentage] = useState(0);
-
   useEffect(() => {
     let progress = 0;
     let total = 0;
@@ -37,7 +34,6 @@ const ChannelDocUploadJob: FC<IChannelDocUploadJobProps> = ({}) => {
       setProgress(Math.floor((progress * 100) / total));
     }
     setJobTitle(`${Math.floor((total - progress) / 100)} Uploads pending`);
-    setCompletedPercentage(Math.floor(progress / 100));
 
     if (Math.floor((progress * 100) / total) === 100) {
       setIsExpanded(false);
@@ -45,10 +41,6 @@ const ChannelDocUploadJob: FC<IChannelDocUploadJobProps> = ({}) => {
       setJobTitle(`${total / 100} Uploads complete`);
     }
   }, [jobs]);
-
-  useEffect(() => {
-    queryClient.invalidateQueries(['get-channel-files'], { exact: false });
-  }, [completedPercentage]);
 
   const contentStyle = clsx({
     'flex flex-col w-full overflow-y-auto px-4 transition-all duration-300 !max-h-[168px]':
