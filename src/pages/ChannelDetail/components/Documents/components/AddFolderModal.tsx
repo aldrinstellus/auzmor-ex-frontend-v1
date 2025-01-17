@@ -11,6 +11,7 @@ interface IAddFolderModalProps {
   isOpen: boolean;
   closeModal: () => void;
   onSelect: (folderName: string) => void;
+  isLoading: boolean;
 }
 
 interface IForm {
@@ -21,6 +22,7 @@ const AddFolderModal: FC<IAddFolderModalProps> = ({
   isOpen,
   closeModal,
   onSelect,
+  isLoading,
 }) => {
   const schema = yup.object({
     folderName: yup
@@ -71,7 +73,8 @@ const AddFolderModal: FC<IAddFolderModalProps> = ({
         <Button
           label={'save'}
           onClick={handleSubmit(onSubmit)}
-          disabled={false}
+          disabled={isLoading}
+          loading={isLoading}
           size={Size.Small}
         />
       </div>
