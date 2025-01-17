@@ -35,6 +35,7 @@ const FilePreview: FC<IFilePreviewProps> = ({ file, open, closeModal }) => {
       open={open}
       closeModal={closeModal}
       className="!w-[65vw] flex flex-col h-[80vh]"
+      showModalCloseBtn
     >
       <div className="flex items-center relative p-6">
         <div className="flex flex-grow justify-center items-start text-center">

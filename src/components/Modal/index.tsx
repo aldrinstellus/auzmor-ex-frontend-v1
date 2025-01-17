@@ -4,6 +4,7 @@ import './styles.css';
 import { CSSTransition } from 'react-transition-group';
 import clsx from 'clsx';
 import Icon from 'components/Icon';
+import IconWrapper from 'components/Icon/components/IconWrapper';
 
 export type ModalProps = {
   open: boolean;
@@ -54,12 +55,14 @@ const Modal: FC<ModalProps> = ({
                 <div
                   className={`${panelStyle} fixed bg-transparent overflow-visible`}
                 >
-                  <Icon
-                    name="close"
-                    className="absolute -top-6 -right-6"
-                    color="text-white"
-                    onClick={closeModal}
-                  />
+                  <IconWrapper className="absolute -right-8">
+                    <Icon
+                      name="close"
+                      color="text-primary-500"
+                      onClick={closeModal}
+                      size={14}
+                    />
+                  </IconWrapper>
                 </div>
               )}
               <div className={panelStyle} onClick={(e) => e.stopPropagation()}>
