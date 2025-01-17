@@ -13,6 +13,20 @@ const getChannelDirectories = async (payload: {
   driveId?: string;
   params?: Record<string, any>;
 }) => {
+  const getId = (directory: {
+    directoryId: string;
+    rootFolderId?: string;
+    folderId?: string;
+  }) => {
+    let id = directory.directoryId;
+    if (directory.rootFolderId) {
+      id = `${id}-${directory.rootFolderId}`;
+    }
+    if (directory.folderId) {
+      id = `${id}-${directory.folderId}`;
+    }
+    return id;
+  };
   const response = await apiService
     .get(
       `/channels/${payload.channelId}/directories${
@@ -23,7 +37,18 @@ const getChannelDirectories = async (payload: {
     .catch((e) => {
       throw e;
     });
-  return (response as any)?.data?.result?.data;
+  const directories = ((response as any)?.data?.result?.data || []).map(
+    (each: {
+      directoryId: string;
+      rootFolderId?: string;
+      folderId?: string;
+    }) => ({
+      ...each,
+      id: getId(each),
+    }),
+  );
+
+  return directories;
 };
 
 // To connect folder / site to channel

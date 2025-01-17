@@ -59,9 +59,10 @@ const DocSearch: FC<IDocSearchProps> = ({
   }
 
   const style = clsx({
-    'absolute flex flex-col gap-[15px] w-full px-3 py-4 bg-white overflow-auto top-full mt-2 rounded-7xl border border-[#E7EDF6] transition-all duration-100 opacity-0 max-h-[212px] z-10 pointer-events-none':
+    'absolute flex flex-col gap-[15px] w-full px-3 py-4 bg-white overflow-auto top-full mt-2 rounded-7xl border border-[#E7EDF6] transition-all duration-100 opacity-0 max-h-[212px] z-10 hidden':
       true,
-    'group-focus-within/searchdoc:opacity-100 pointer-events-auto': true,
+    'group-focus-within/searchdoc:opacity-100 group-focus-within/searchdoc:flex':
+      true,
   });
   return (
     <div className="flex relative group/searchdoc">

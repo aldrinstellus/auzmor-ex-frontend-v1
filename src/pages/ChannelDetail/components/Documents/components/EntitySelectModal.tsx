@@ -47,6 +47,11 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
   const debouncedSearchValue = useDebounce(entitySearch || '', 500);
   const [onSelectLoading, setOnSelectLoading] = useState(false);
   const { items, appendItem, sliceItems } = useContext(DocumentPathContext);
+  const [selectedItems, setSelectedItems] = useState<{
+    directory?: Record<string, any>;
+    drive?: Record<string, any>;
+    folders?: Record<string, any>[];
+  } | null>(null);
 
   const directoryId = items?.length >= 2 ? items[1]?.meta?.directoryId : '';
   const driveId =
@@ -67,9 +72,9 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
       btnLabel: 'Select drive',
     },
     folder: {
-      headerText: headerText || 'Select base folder',
-      placeholder: 'Search a sharepoint folder',
-      btnLabel: 'Select folder',
+      headerText: headerText || 'Select base folders',
+      placeholder: 'Search a sharepoint folders',
+      btnLabel: 'Select folders',
     },
   };
 
@@ -146,33 +151,48 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
       className: 'overflow-y-auto',
       view: 'LIST',
       isRowSelectionEnabled: true,
+      enableMultiRowSelection: directoryId && directoryId,
+      getRowId: (row) => row.id,
       onRowClick: (e, table, virtualRow, isDoubleClick) => {
-        if (isDoubleClick) {
-          const directoryId = virtualRow.original.directoryId;
-          let driveId = virtualRow.original.rootFolderId;
-          let folderId = virtualRow.original.folderId;
-          if (driveId === null) {
-            driveId = folderId;
-            folderId = '';
-          }
-          appendItem({
-            id: `${directoryId}-${driveId || ''}-${folderId || ''}`,
-            label: virtualRow.original.name,
-            meta: virtualRow.original,
+        if (headings === 'site') {
+          setSelectedItems({
+            directory: virtualRow.original,
+            drive: undefined,
+            folders: [],
+          });
+        } else if (headings === 'drive') {
+          setSelectedItems({
+            directory: selectedItems?.directory,
+            drive: virtualRow.original,
+            folders: [],
           });
         } else {
           if (
-            virtualRow.original?.directoryId &&
-            virtualRow.original?.rootFolderId &&
-            virtualRow.original?.folderId
+            (selectedItems?.folders || [])?.findIndex(
+              (folder) => folder.id === virtualRow.original.id,
+            ) > -1
           ) {
-            table.setRowSelection((param) => {
-              return {
-                ...param,
-                [virtualRow.index]: !!!param[virtualRow.index],
-              };
+            setSelectedItems({
+              ...selectedItems,
+              folders: [
+                ...(selectedItems?.folders || []).filter(
+                  (folder) => folder.id !== virtualRow.original.id,
+                ),
+              ],
+            });
+          } else {
+            setSelectedItems({
+              ...selectedItems,
+              folders: [...(selectedItems?.folders || []), virtualRow.original],
             });
           }
+        }
+        if (isDoubleClick) {
+          appendItem({
+            id: virtualRow.original.id,
+            label: virtualRow.original.name,
+            meta: virtualRow.original,
+          });
         }
       },
       height: 312,
@@ -183,6 +203,23 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
   useEffect(() => {
     setTotalRows((dataGridProps?.flatData || []).length);
   }, [dataGridProps.flatData]);
+
+  useEffect(() => {
+    if (dataGridProps?.tableRef?.current) {
+      const selectedDirectoryId = selectedItems?.directory?.id;
+      const selectedDiriveId = selectedItems?.drive?.id;
+      const selectedFolderId = Object.fromEntries(
+        (selectedItems?.folders || [])
+          .map((each: any) => each.id)
+          .map((id) => [id, true]),
+      );
+      (dataGridProps?.tableRef?.current as Table<any>)?.setRowSelection(() => ({
+        [selectedDirectoryId]: true,
+        [selectedDiriveId]: true,
+        ...selectedFolderId,
+      }));
+    }
+  }, [selectedItems]);
 
   return (
     <Modal open={isOpen}>
@@ -229,30 +266,71 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
           onClick={closeModal}
           size={Size.Small}
         />
-        <Button
-          label={integrationHeadingMapping[headings].btnLabel}
-          variant={ButtonVariant.Primary}
-          onClick={() => {
-            setOnSelectLoading(true);
-            onSelect(
-              Object.keys(
-                (dataGridProps.tableRef?.current as Table<any>).getState()
-                  .rowSelection,
-              ).map((i) => dataGridProps.flatData[i]),
-              () => {
+
+        {headings === 'site' && (
+          <Button
+            label={integrationHeadingMapping[headings].btnLabel}
+            variant={ButtonVariant.Primary}
+            onClick={() => {
+              if (selectedItems?.directory) {
+                appendItem({
+                  id: selectedItems.directory.id,
+                  label: selectedItems.directory.name,
+                  meta: selectedItems.directory,
+                });
+              }
+            }}
+            loading={dataGridProps.isLoading || onSelectLoading}
+            disabled={
+              dataGridProps.isLoading ||
+              onSelectLoading ||
+              !selectedItems?.directory
+            }
+            size={Size.Small}
+          />
+        )}
+        {headings === 'drive' && (
+          <Button
+            label={integrationHeadingMapping[headings].btnLabel}
+            variant={ButtonVariant.Primary}
+            onClick={() => {
+              if (selectedItems?.drive) {
+                appendItem({
+                  id: selectedItems.drive.id,
+                  label: selectedItems.drive.name,
+                  meta: selectedItems.drive,
+                });
+              }
+            }}
+            loading={dataGridProps.isLoading || onSelectLoading}
+            disabled={
+              dataGridProps.isLoading ||
+              onSelectLoading ||
+              !selectedItems?.drive
+            }
+            size={Size.Small}
+          />
+        )}
+        {headings === 'folder' && (
+          <Button
+            label={integrationHeadingMapping[headings].btnLabel}
+            variant={ButtonVariant.Primary}
+            onClick={() => {
+              setOnSelectLoading(true);
+              onSelect(selectedItems?.folders || [], () => {
                 setOnSelectLoading(false);
                 closeModal();
-              },
-            );
-          }}
-          loading={dataGridProps.isLoading || onSelectLoading}
-          disabled={
-            dataGridProps.isLoading ||
-            !dataGridProps.isRowSelected ||
-            onSelectLoading
-          }
-          size={Size.Small}
-        />
+              });
+            }}
+            loading={dataGridProps.isLoading || onSelectLoading}
+            disabled={
+              dataGridProps.isLoading ||
+              onSelectLoading ||
+              !(selectedItems?.folders || []).length
+            }
+            size={Size.Small}
+          />
+        )}
       </div>
     </Modal>
   );

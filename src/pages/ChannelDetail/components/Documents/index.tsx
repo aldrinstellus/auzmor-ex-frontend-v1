@@ -333,6 +333,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                       : getIconFromMime(info.row.original.mimeType)
                   }
                   className="!w-6"
+                  hover={false}
                 />
               </div>
               <span className="break-all truncate w-full">
@@ -661,20 +662,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             label: virtualRow?.original?.name,
             meta: virtualRow.original,
           });
-          // table.setRowSelection({});
           return;
         } else if (!!!virtualRow.original.isFolder && isDoubleClick) {
           openFilePreview(virtualRow.original);
           return;
-        }
-        if (!isDoubleClick) {
-          // If single click select file / folder
-          // table.setRowSelection((param) => {
-          //   return {
-          //     ...param,
-          //     [virtualRow.index]: !!!param[virtualRow.index],
-          //   };
-          // });
         }
       },
       noDataFound: (

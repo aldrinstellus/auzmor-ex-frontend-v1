@@ -12,6 +12,7 @@ type DataGridType<T> = {
   loadingRowCount?: number;
   loadingGrid?: ReactNode;
   isEnabled?: boolean;
+  selectedItems?: RowSelectionState;
   dataGridProps: IDataGridProps<T>;
 };
 
@@ -21,7 +22,9 @@ export const useDataGrid = <T extends object>({
 }: DataGridType<T>) => {
   const { getApi } = usePermissions();
   const tableContainerRef = useRef<HTMLDivElement>(null);
-  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>(
+    rest?.selectedItems || {},
+  );
   const [isRowSelected, setIsRowSelected] = useState<boolean>(false);
   const tableRef = useRef<any>(null);
   const { apiEnum, payload, isInfiniteQuery, isEnabled, loadingGrid } = rest;

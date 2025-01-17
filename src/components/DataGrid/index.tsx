@@ -45,6 +45,12 @@ export interface IDataGridProps<T> {
   trDataClassName?: string;
   view?: 'LIST' | 'GRID';
   noDataFound: JSX.Element;
+  enableMultiRowSelection?: boolean;
+  getRowId?: (
+    originalRow: T,
+    index: number,
+    parent?: Row<T> | undefined,
+  ) => string;
 }
 
 const DataGrid = <T extends object>({
@@ -65,6 +71,8 @@ const DataGrid = <T extends object>({
   trDataClassName = '',
   view = 'LIST',
   noDataFound,
+  enableMultiRowSelection,
+  getRowId,
 }: IDataGridProps<T>) => {
   const { ref, inView } = useInView();
   const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null);
@@ -83,6 +91,8 @@ const DataGrid = <T extends object>({
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
     debugTable: true,
+    enableMultiRowSelection,
+    getRowId,
   });
 
   if (tableRef) {
@@ -143,7 +153,7 @@ const DataGrid = <T extends object>({
       const timeout = setTimeout(() => {
         onRowClick(e, table, row, false);
         setClickTimeout(null);
-      }, 200); // 200ms delay to distinguish single and double-click
+      }, 300); // 300ms delay to distinguish single and double-click
       setClickTimeout(timeout);
     }
   };
