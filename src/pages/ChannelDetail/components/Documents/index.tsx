@@ -131,11 +131,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       if (folder) {
         appendItem({ id: folder.id, label: folder.name, meta: folder });
       }
-      successToastConfig({ content: 'Folder created successfully' });
+      successToastConfig({ content: 'New folder added successfully' });
     },
     onError: () => {
       failureToastConfig({ content: 'Folder creation failed' });
     },
+    onSettled: closeAddModal,
   });
 
   // Api call: Connect site / folder
@@ -1129,6 +1130,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         <AddFolderModal
           isOpen={isAddModalOpen}
           closeModal={closeAddModal}
+          isLoading={createFolderMutation.isLoading}
           onSelect={(folderName) => {
             createFolderMutation.mutate({
               channelId: channelId,
@@ -1140,7 +1142,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                   : items[items.length - 1].id.toString(),
               name: folderName,
             } as any);
-            closeAddModal();
           }}
         />
       )}
