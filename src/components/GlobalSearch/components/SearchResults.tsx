@@ -21,6 +21,9 @@ import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import moment from 'moment';
 import useAuth from 'hooks/useAuth';
 import { useTranslation } from 'react-i18next';
+import IconButton, {
+  Variant as IconButtonVariant,
+} from 'components/IconButton';
 
 interface ISearchResultsProps {
   searchResults: ISearchResultGroup[];
@@ -231,7 +234,12 @@ const SearchResults: FC<ISearchResultsProps> = ({
         return (
           <div className="flex gap-1.5 items-center w-full overflow-hidden">
             <div className="flex items-center justify-center">
-              <Icon name="team" size={24} hover={false} />
+              <Icon
+                name="team"
+                size={24}
+                hover={false}
+                color="!text-neutral-500"
+              />
             </div>
             <div className="min-w-0">
               <Truncate
@@ -343,7 +351,12 @@ const SearchResults: FC<ISearchResultsProps> = ({
       case ISearchResultType.KEYWORD:
         return (
           <div className="flex items-center gap-2 w-full overflow-hidden">
-            <Icon name="clock" size={14} color="!text-[#FF3366]" />
+            <Icon
+              name="clock"
+              size={14}
+              color="!text-primary-500"
+              hover={false}
+            />
             <Truncate text={result.term} className={textStyles} />
           </div>
         );
@@ -380,7 +393,6 @@ const SearchResults: FC<ISearchResultsProps> = ({
           </p>
         }
         illustration="noSearchResultFound"
-        illustrationClassName="h-[121px]"
         dataTestId="globalsearch-noDataFound"
       />
     );
@@ -429,7 +441,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
                       <li
                         id={`search-item-${index}`}
                         key={`search-item-${index}`}
-                        className={`flex px-3 py-[4px] gap-2 items-center group hover:bg-primary-50 cursor-pointer ${
+                        className={`flex px-3 py-[4px] gap-2 items-center group/result hover:bg-primary-50 cursor-pointer ${
                           index === selectedIndex && 'bg-primary-50'
                         }`}
                         onClick={() => handleItemClick(entityType, result)}
@@ -446,11 +458,12 @@ const SearchResults: FC<ISearchResultsProps> = ({
                       >
                         {getEntityRenderer(result, entityType, isRecent)}
                         {isRecent ? (
-                          <Icon
-                            name="close"
-                            className="hidden group-hover:block p-[2px]"
-                            size={16}
-                            color="!text-neutral-900 hover:!text-primary-500"
+                          <IconButton
+                            icon={'close'}
+                            className="hidden group-hover/result:block !rounded-none !p-0.5"
+                            color="!text-black hover:!text-primary-500"
+                            size={12}
+                            variant={IconButtonVariant.Secondary}
                             onClick={(e) => {
                               e.stopPropagation();
                               if (entity.module === ISearchResultType.KEYWORD)

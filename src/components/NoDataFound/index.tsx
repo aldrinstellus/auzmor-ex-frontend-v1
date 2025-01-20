@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import Button, { Variant } from 'components/Button';
-import NoSearchResultFound from 'images/noSearchResultFound.svg';
+import Icon from 'components/Icon';
 import { FC, ReactNode } from 'react';
 
 interface INoDataFoundProps {
@@ -18,11 +18,19 @@ interface INoDataFoundProps {
 }
 
 const illustrationMap: Record<string, any> = {
-  noResult: require('images/noResult.png'),
-  noResultAlt: require('images/noResultAlt.png'),
-  noDocumentFound: require('images/noDocumentSearch.png'),
-  noChannelFound: require('images/notFound.png'),
-  noSearchResultFound: NoSearchResultFound,
+  noResult: { type: 'image', src: require('images/noResult.png') },
+  noResultAlt: { type: 'image', src: require('images/noResultAlt.png') },
+  noDocumentFound: {
+    type: 'image',
+    src: require('images/noDocumentSearch.png'),
+  },
+  noChannelFound: { type: 'image', src: require('images/notFound.png') },
+  noSearchResultFound: {
+    type: 'icon',
+    src: 'noResultFound',
+    size: 121,
+    color: '!text-primary-500',
+  },
 };
 
 const NoDataFound: FC<INoDataFoundProps> = ({
@@ -46,7 +54,16 @@ const NoDataFound: FC<INoDataFoundProps> = ({
   return (
     <div className={style}>
       <div className={illustrationStyle}>
-        <img src={illustrationMap[illustration]} alt="No Data Found" />
+        {illustrationMap[illustration]?.type === 'image' ? (
+          <img src={illustrationMap[illustration].src} alt="No Data Found" />
+        ) : null}
+        {illustrationMap[illustration]?.type === 'icon' ? (
+          <Icon
+            name={illustrationMap[illustration].src}
+            size={illustrationMap[illustration].size}
+            color={illustrationMap[illustration].color}
+          />
+        ) : null}
       </div>
       {!hideText && (
         <div className="text-center">

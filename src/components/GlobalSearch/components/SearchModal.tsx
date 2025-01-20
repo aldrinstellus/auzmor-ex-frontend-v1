@@ -147,20 +147,20 @@ const SearchModal: FC<ISearchModalProps> = ({ onClose }) => {
   return (
     <Modal
       open={true}
-      className="max-w-[700px] flex flex-col gap-2 !bg-transparent relative"
-      wrapperClassName="-mt-[20%]"
-      maskClassName="backdrop-blur-none"
+      className="fixed max-w-[700px] flex flex-col gap-2 !bg-transparent"
+      wrapperClassName="h-[440px]"
+      maskClassName="!backdrop-blur-none"
       onKeyDown={handleKeyDown}
       closeModal={onClose}
     >
-      <div className="flex flex-grow items-center w-full h-[60px] px-3 py-3 gap-3 bg-white rounded-[10px] shadow">
+      <div className="flex items-center w-full h-[60px] px-3 py-3 gap-3 bg-white rounded-[10px] shadow">
         <Icon name="search" hover={false} size={24} />
         <div className="flex grow">
           <Layout fields={fields} className="w-full" />
         </div>
       </div>
       {!hideSearchResults && (
-        <div className="absolute w-full bg-white rounded-[8px] shadow pr-3 top-[68px] py-4">
+        <div className="w-full bg-white rounded-[8px] shadow pr-3 py-4">
           <SearchResults
             searchResults={searchResults}
             searchQuery={debouncedSearchQuery}
