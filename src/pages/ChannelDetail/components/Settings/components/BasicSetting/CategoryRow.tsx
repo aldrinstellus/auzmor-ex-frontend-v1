@@ -147,7 +147,7 @@ const CategoryRow: FC<AppProps> = ({ channelData, canEdit }) => {
       border={false}
       labelContainerClassName="!w-[416px]"
       rowWrapperClassName="items-center"
-      editModeWrapperClassName="!w-auto"
+      editModeWrapperClassName="!w-auto flex-grow"
     />
   );
 };

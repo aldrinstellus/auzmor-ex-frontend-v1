@@ -107,7 +107,7 @@ const DescriptionRow: FC<AppProps> = ({ channelData, canEdit }) => {
       editButtonsClassName="pt-4"
       labelContainerClassName="!w-[416px]"
       rowWrapperClassName="items-center"
-      editModeWrapperClassName="!w-auto"
+      editModeWrapperClassName="!w-auto flex-grow"
     />
   );
 };
