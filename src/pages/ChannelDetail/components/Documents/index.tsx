@@ -679,6 +679,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         <NoDataFound
           labelHeader="No documents found"
           clearBtnLabel="Upload now"
+          hideClearBtn={isRootDir}
           onClearSearch={() => fileInputRef?.current?.click()}
         />
       ),
