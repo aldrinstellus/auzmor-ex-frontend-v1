@@ -20,6 +20,8 @@ import {
 import { getLearnUrl } from 'utils/misc';
 import moment from 'moment';
 import DocumentPathProvider from 'contexts/DocumentPathContext';
+import queryClient from 'utils/queryClient';
+import Spinner from 'components/Spinner';
 
 interface IIntegrationSettingProps {}
 
@@ -72,6 +74,9 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
   const deleteConnectionMutation = useMutation({
     mutationKey: ['delete-channel-connection', channelId],
     mutationFn: deleteConnection,
+    onSettled: () => {
+      refetch();
+    },
   });
 
   // API call: Re-sync
@@ -209,7 +214,10 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
         </div>
         <div className="flex flex-col gap-3 flex-grow">
           {isConnectionMade && isBaseFolderSet && lastSynced && (
-            <div className="flex gap-2 text-xs text-neutral-700 font-medium">
+            <div className="flex gap-2 text-xs text-neutral-700 font-medium items-center">
+              {deleteConnectionMutation.isLoading && (
+                <Spinner className="!w-4 !h-4" />
+              )}{' '}
               Last sync: {moment(lastSynced).format('Do MMM YYYY')}
             </div>
           )}
@@ -271,17 +279,19 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
               updateConnectionMutation.mutate(
                 {
                   channelId: channelId,
-                  folderId: entity[0].id,
-                  name: entity[0].name,
+                  connections: entity,
                   orgProviderId: availableAccount?.orgProviderId,
                 } as any,
                 {
                   onSettled: callback,
                   onSuccess: () => {
                     successToastConfig({
-                      content: `${entity[0].name} connected successfully`,
+                      content: `Connected successfully`,
                     });
                     refetch();
+                    queryClient.invalidateQueries(['get-channel-files'], {
+                      exact: false,
+                    });
                   },
                   onError: () => {
                     failureToastConfig({
