@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
 import { Switch } from '@headlessui/react';
+import clsx from 'clsx';
 
 type SwitchToggleProps = {
   defaultValue?: boolean;
@@ -19,6 +20,13 @@ const SwitchToggle: FC<SwitchToggleProps> = ({
   className = '',
 }) => {
   const [checked, setChecked] = useState(defaultValue);
+  const style = clsx({
+    ['bg-gray-200 relative inline-flex h-5 w-10 items-center rounded-full']:
+      true,
+    [color]: checked,
+    '!bg-[#e5e7eb]': disabled,
+    [className]: true,
+  });
   return (
     <Switch
       data-testid={dataTestId}
@@ -27,9 +35,7 @@ const SwitchToggle: FC<SwitchToggleProps> = ({
         setChecked(checked);
         onChange(checked, setChecked);
       }}
-      className={`${
-        checked ? color : 'bg-gray-200'
-      } relative inline-flex h-5 w-10 items-center rounded-full ${className}`}
+      className={style}
       disabled={disabled}
     >
       <span

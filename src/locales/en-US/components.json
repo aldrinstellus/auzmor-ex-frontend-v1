@@ -38,9 +38,12 @@
   },
   "GlobalSearch": {
     "searchAriaLabel": "search",
-    "searchPlaceholder": "Search name, channel, team, document etc.,",
+    "searchPlaceholder": "Search people, courses, channel, page, document etc.,",
     "noResultsHint": "We're a little lost. Can you give us a hint?",
     "connectStorageHint": "Please connect storage documents to search within first.",
+    "noDataFoundHeader": "No results found for \"{{searchQuery}}\"",
+    "noDataFoundMessageLine1": "Sorry we can't find what you are looking for.",
+    "noDataFoundMessageLine2": "Please try using a different query.",
     "modules": {
       "app": "Apps",
       "people": "People",

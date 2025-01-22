@@ -20,6 +20,10 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import moment from 'moment';
 import useAuth from 'hooks/useAuth';
+import { useTranslation } from 'react-i18next';
+import IconButton, {
+  Variant as IconButtonVariant,
+} from 'components/IconButton';
 
 interface ISearchResultsProps {
   searchResults: ISearchResultGroup[];
@@ -36,6 +40,32 @@ const getFormattedDate = (datestr: string, timezone: string | undefined) => {
     .format('MMM DD, YYYY')}`;
 };
 
+function getSourceType(entityType: ISearchResultType): string {
+  switch (entityType) {
+    case ISearchResultType.APP:
+      return 'App';
+    case ISearchResultType.CHANNEL:
+      return 'Channel';
+    case ISearchResultType.DOCUMENT:
+      return 'Document';
+    case ISearchResultType.COURSE:
+      return 'Course';
+    case ISearchResultType.EVENT:
+      return 'Event';
+    case ISearchResultType.PATH:
+      return 'Path';
+    case ISearchResultType.PEOPLE:
+      return 'User';
+    case ISearchResultType.TEAM:
+      return 'Team';
+    default:
+      return (
+        entityType?.charAt(0).toUpperCase() +
+        entityType?.slice(1)?.toLowerCase()
+      );
+  }
+}
+
 const SearchResults: FC<ISearchResultsProps> = ({
   searchResults,
   searchQuery,
@@ -44,6 +74,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
   selectedIndex = -1,
   updateSearchQuery,
 }) => {
+  const { t } = useTranslation('components', { keyPrefix: 'GlobalSearch' });
   const navigate = useNavigate();
   const { getApi } = usePermissions();
   const itemRefs = useRef<Array<HTMLLIElement>>([]);
@@ -68,6 +99,16 @@ const SearchResults: FC<ISearchResultsProps> = ({
     },
   });
 
+  const deleteRecentClickedResultApi = getApi(
+    ApiEnum.DeleteRecentClickedResult,
+  );
+  const deleteRecentClickedResultMutation = useMutation({
+    mutationFn: deleteRecentClickedResultApi,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(['global-recent-clicked-results']);
+    },
+  });
+
   useEffect(() => {
     if (itemRefs.current[selectedIndex]) {
       itemRefs.current[selectedIndex].scrollIntoView({
@@ -87,9 +128,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
     } else {
       await clickSearchResultMutation.mutateAsync({
         sourceId: entity.id,
-        sourceType:
-          entityType?.charAt(0).toUpperCase() +
-          entityType?.slice(1)?.toLowerCase(),
+        sourceType: getSourceType(entityType),
       });
     }
     switch (entityType) {
@@ -137,7 +176,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
     switch (entityType) {
       case ISearchResultType.PEOPLE:
         return (
-          <div className="flex gap-1.5 items-center overflow-hidden">
+          <div className="flex gap-1.5 items-center w-full overflow-hidden">
             <Avatar
               name={result.fullName}
               image={result.imageUrl}
@@ -165,7 +204,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
         );
       case ISearchResultType.CHANNEL:
         return (
-          <div className="flex gap-1.5 items-center overflow-hidden">
+          <div className="flex gap-1.5 items-center w-full overflow-hidden">
             <div className="flex items-center justify-center border-1 border-neutral-200 rounded-full h-[24px] w-[24px] shrink-0">
               <Icon
                 name="hashtagOutline"
@@ -193,9 +232,14 @@ const SearchResults: FC<ISearchResultsProps> = ({
         );
       case ISearchResultType.TEAM:
         return (
-          <div className="flex gap-1.5 items-center overflow-hidden">
+          <div className="flex gap-1.5 items-center w-full overflow-hidden">
             <div className="flex items-center justify-center">
-              <Icon name="team" size={24} hover={false} />
+              <Icon
+                name="team"
+                size={24}
+                hover={false}
+                color="!text-neutral-500"
+              />
             </div>
             <div className="min-w-0">
               <Truncate
@@ -209,14 +253,14 @@ const SearchResults: FC<ISearchResultsProps> = ({
             <div className="flex gap-2 items-center">
               <div className="flex w-[3px] h-[3px] bg-neutral-500 rounded-full" />
               <div className="text-xs text-neutral-500">
-                {`${result.totalMembers} members`}
+                {`${result.membersCount} members`}
               </div>
             </div>
           </div>
         );
       case ISearchResultType.APP:
         return (
-          <div className="flex gap-1.5 items-center overflow-hidden">
+          <div className="flex gap-1.5 items-center w-full overflow-hidden">
             <img
               className="object-cover h-[24px] w-[24px] rounded-full "
               src={result.imageUrl || DefaultAppIcon}
@@ -246,7 +290,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
           ? 'folder'
           : getIconFromMime(result?.mimeType);
         return (
-          <div className="flex gap-1.5 items-center overflow-hidden">
+          <div className="flex gap-1.5 items-center w-full overflow-hidden">
             <Icon name={iconName} size={24} hover={false} />
             <div className="min-w-0">
               <Truncate
@@ -272,7 +316,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
       case ISearchResultType.PATH:
       case ISearchResultType.EVENT:
         return (
-          <div className="flex gap-1.5 items-center overflow-hidden">
+          <div className="flex gap-1.5 items-center w-full overflow-hidden">
             {result?.imageUrl ? (
               <img
                 className="object-cover h-[24px] w-[24px] rounded border-1 border-white"
@@ -307,25 +351,18 @@ const SearchResults: FC<ISearchResultsProps> = ({
       case ISearchResultType.KEYWORD:
         return (
           <div className="flex items-center gap-2 w-full overflow-hidden">
-            <div className="flex items-center gap-2 grow">
-              <Icon name="clock" size={14} color="!text-[#FF3366]" />
-              <Truncate text={result.term} className={textStyles} />
-            </div>
             <Icon
-              name="close"
-              className="hidden group-hover:block p-[2px]"
-              size={16}
-              color="!text-neutral-900"
-              onClick={(e) => {
-                e.stopPropagation();
-                deleteRecentSearchTermMutation.mutate(result.id);
-              }}
+              name="clock"
+              size={14}
+              color="!text-primary-500"
+              hover={false}
             />
+            <Truncate text={result.term} className={textStyles} />
           </div>
         );
       default:
         return (
-          <div className="overflow-hidden">
+          <div className="w-full overflow-hidden">
             <Truncate
               text={result.name}
               className={textStyles}
@@ -347,13 +384,17 @@ const SearchResults: FC<ISearchResultsProps> = ({
         className="py-4 w-full"
         searchString={searchQuery}
         onClearSearch={() => updateSearchQuery('')}
+        labelHeader={
+          <p className="text-base">{t('noDataFoundHeader', { searchQuery })}</p>
+        }
         message={
-          <p className="text-neutral-900">
-            Sorry we can&apos;t find the what you are looking for.
-            <br /> Please try using a different query.
+          <p className="text-neutral-900 text-xs leading-normal tracking-[0.3px]">
+            {t('noDataFoundMessageLine1')}
+            <br />
+            {t('noDataFoundMessageLine2')}
           </p>
         }
-        illustrationClassName="h-[121px]"
+        illustration="noSearchResultFound"
         dataTestId="globalsearch-noDataFound"
       />
     );
@@ -361,9 +402,10 @@ const SearchResults: FC<ISearchResultsProps> = ({
 
   return (
     <div
-      className="max-h-[320px] overflow-y-auto 
+      className="max-h-[325px] overflow-y-auto 
       [&::-webkit-scrollbar]:w-2.5
-      [&::-webkit-scrollbar-thumb]:bg-neutral-500
+      [&::-webkit-scrollbar-thumb]:bg-neutral-400
+      [&::-webkit-scrollbar-thumb:hover]:bg-neutral-500
       [&::-webkit-scrollbar-track]:bg-neutral-200"
     >
       {isLoading ? (
@@ -372,14 +414,19 @@ const SearchResults: FC<ISearchResultsProps> = ({
         </div>
       ) : (
         <ul className="flex flex-col gap-3">
-          {searchResults.map((entity, entityIndex) =>
-            entity.results.length > 0 ? (
+          {searchResults.map((entity, entityIndex) => {
+            const isRecent =
+              entity.module === ISearchResultType.RECENT ||
+              entity.module === ISearchResultType.KEYWORD;
+            return entity.results.length > 0 ? (
               <li
                 key={entity.module}
-                className="flex flex-col gap-1.5 justify-center"
+                className={`flex flex-col ${
+                  isRecent ? 'gap-3' : 'gap-1.5 pb-0.5'
+                } justify-center`}
               >
                 {entity.name ? (
-                  <div className="text-[#666F8B] text-xs font-bold leading-4 pl-3">
+                  <div className="text-[#666F8B] text-xs font-bold leading-5 pl-3">
                     {entity.name}
                   </div>
                 ) : null}
@@ -390,9 +437,6 @@ const SearchResults: FC<ISearchResultsProps> = ({
                         searchResults.slice(0, entityIndex),
                         (entity) => entity.results.length,
                       ) + resultIndex;
-                    const isRecent =
-                      entity.module === ISearchResultType.RECENT ||
-                      entity.module === ISearchResultType.KEYWORD;
                     const entityType =
                       isRecent && result?.sourceType
                         ? (result.sourceType.toLowerCase() as ISearchResultType)
@@ -401,7 +445,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
                       <li
                         id={`search-item-${index}`}
                         key={`search-item-${index}`}
-                        className={`flex px-3 py-[4px] gap-2 items-center group hover:bg-primary-50 cursor-pointer ${
+                        className={`flex px-3 py-[4px] gap-2 items-center group/result hover:bg-primary-50 cursor-pointer ${
                           index === selectedIndex && 'bg-primary-50'
                         }`}
                         onClick={() => handleItemClick(entityType, result)}
@@ -417,13 +461,33 @@ const SearchResults: FC<ISearchResultsProps> = ({
                         aria-selected={selectedIndex === index}
                       >
                         {getEntityRenderer(result, entityType, isRecent)}
+                        {isRecent ? (
+                          <IconButton
+                            icon={'close'}
+                            className="hidden group-hover/result:block !rounded-none !p-0.5"
+                            color="!text-black hover:!text-primary-500"
+                            size={12}
+                            variant={IconButtonVariant.Secondary}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (entity.module === ISearchResultType.KEYWORD)
+                                deleteRecentSearchTermMutation.mutate(
+                                  result.id,
+                                );
+                              else
+                                deleteRecentClickedResultMutation.mutate(
+                                  result.result_clicked_id,
+                                );
+                            }}
+                          />
+                        ) : null}
                       </li>
                     );
                   })}
                 </ul>
               </li>
-            ) : null,
-          )}
+            ) : null;
+          })}
         </ul>
       )}
     </div>

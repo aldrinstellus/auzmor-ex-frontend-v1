@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import Button, { Variant } from 'components/Button';
+import Icon from 'components/Icon';
 import { FC, ReactNode } from 'react';
 
 interface INoDataFoundProps {
@@ -17,10 +18,19 @@ interface INoDataFoundProps {
 }
 
 const illustrationMap: Record<string, any> = {
-  noResult: require('images/noResult.png'),
-  noResultAlt: require('images/noResultAlt.png'),
-  noDocumentFound: require('images/noDocumentSearch.png'),
-  noChannelFound: require('images/notFound.png'),
+  noResult: { type: 'image', src: require('images/noResult.png') },
+  noResultAlt: { type: 'image', src: require('images/noResultAlt.png') },
+  noDocumentFound: {
+    type: 'image',
+    src: require('images/noDocumentSearch.png'),
+  },
+  noChannelFound: { type: 'image', src: require('images/notFound.png') },
+  noSearchResultFound: {
+    type: 'icon',
+    src: 'noResultFound',
+    size: 121,
+    color: '!text-primary-500',
+  },
 };
 
 const NoDataFound: FC<INoDataFoundProps> = ({
@@ -44,12 +54,21 @@ const NoDataFound: FC<INoDataFoundProps> = ({
   return (
     <div className={style}>
       <div className={illustrationStyle}>
-        <img src={illustrationMap[illustration]} alt="No Data Found" />
+        {illustrationMap[illustration]?.type === 'image' ? (
+          <img src={illustrationMap[illustration].src} alt="No Data Found" />
+        ) : null}
+        {illustrationMap[illustration]?.type === 'icon' ? (
+          <Icon
+            name={illustrationMap[illustration].src}
+            size={illustrationMap[illustration].size}
+            color={illustrationMap[illustration].color}
+          />
+        ) : null}
       </div>
       {!hideText && (
         <div className="text-center">
           <div
-            className="mt-8 text-lg font-bold text-neutral-900"
+            className="mt-6 text-lg font-bold text-neutral-900"
             data-testid={`${dataTestId}-noresult-found`}
           >
             {labelHeader}
@@ -58,7 +77,7 @@ const NoDataFound: FC<INoDataFoundProps> = ({
                 !!searchString ? `for '${searchString}'` : ''
               }`}
           </div>
-          <div className="text-sm text-gray-500 mt-2">{message}</div>
+          <div className="text-sm text-gray-500 mt-4">{message}</div>
         </div>
       )}
 
@@ -69,7 +88,8 @@ const NoDataFound: FC<INoDataFoundProps> = ({
             variant={Variant.Secondary}
             onClick={onClearSearch}
             dataTestId={`${dataTestId}-clear-applied-filter`}
-            labelClassName="text-neutral-900 font-bold group-hover:text-primary-600"
+            className="focus:border-black"
+            labelClassName="text-sm text-neutral-900 font-bold group-hover:text-primary-600"
           />
         </div>
       )}

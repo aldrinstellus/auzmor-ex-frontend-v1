@@ -53,6 +53,10 @@ export const deleteRecentSearchTerm = async (id: string) => {
   return await apiService.delete(`search/terms/${id}`);
 };
 
+export const deleteRecentClickedResult = async (id: string) => {
+  return await apiService.delete(`search/results/clicked/${id}`);
+};
+
 // ------------------ React Query -----------------------
 
 export const useSearchResults = (

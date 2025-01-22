@@ -14,10 +14,15 @@ import Skeleton from 'react-loading-skeleton';
 import FilePreviewModal from './FilePreviewModal';
 import useModal from 'hooks/useModal';
 import Truncate from 'components/Truncate';
+import { ChannelPermissionEnum } from '../../utils/channelPermission';
 
-interface IRecentlyAddedEntitiesProps {}
+interface IRecentlyAddedEntitiesProps {
+  permissions: ChannelPermissionEnum[];
+}
 
-const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({}) => {
+const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({
+  permissions,
+}) => {
   const { items, appendItem } = useContext(DocumentPathContext);
   const { channelId } = useParams();
   const [filePreview, openFilePreview, closeFilePreview, filePreviewProps] =
@@ -118,6 +123,10 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({}) => {
         <FilePreviewModal
           file={(filePreviewProps as Doc) || {}}
           open={filePreview}
+          canDownload={
+            permissions.includes(ChannelPermissionEnum.CanDownloadDocuments) &&
+            !!filePreviewProps?.downloadable
+          }
           closeModal={closeFilePreview}
         />
       )}

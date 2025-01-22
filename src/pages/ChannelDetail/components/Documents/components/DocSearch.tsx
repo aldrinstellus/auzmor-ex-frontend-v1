@@ -33,12 +33,13 @@ const DocSearch: FC<IDocSearchProps> = ({
   const documentSearchDebounceValue = useDebounce(documentSearch, 500);
 
   // Api call: Get search results
-  const { data, isLoading } = useChannelDocDeepSearch({
+  const { data, isLoading, isError } = useChannelDocDeepSearch({
     channelId,
     params: { q: documentSearchDebounceValue || '' },
   });
-  const documents =
-    data?.pages?.flatMap((page: { data: any }) => page.data.result.data) ?? [];
+  const documents = isError
+    ? []
+    : data?.pages?.flatMap((page: { data: any }) => page?.data?.result?.data);
 
   useEffect(() => {
     const elem = document.getElementById(

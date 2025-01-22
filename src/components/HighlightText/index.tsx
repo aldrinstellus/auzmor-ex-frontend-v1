@@ -9,7 +9,7 @@ interface IHighlightTextProps {
 const HighlightText: FC<IHighlightTextProps> = ({
   text,
   subString,
-  className = 'text-red-500 font-bold',
+  className = 'text-primary-500 font-bold',
 }) => {
   if (!subString) {
     return <span>{text}</span>;

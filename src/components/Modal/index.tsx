@@ -14,6 +14,7 @@ export type ModalProps = {
   showModalCloseBtn?: boolean;
   dataTestId?: string;
   wrapperClassName?: string;
+  maskClassName?: string;
   onKeyDown?: (e: React.KeyboardEvent) => void;
 };
 
@@ -25,8 +26,20 @@ const Modal: FC<ModalProps> = ({
   showModalCloseBtn = false,
   dataTestId = '',
   wrapperClassName = '',
+  maskClassName = '',
   onKeyDown,
 }) => {
+  const style = clsx({
+    'z-[999] flex items-center justify-center fixed left-0 right-0 top-0 bottom-0 backdrop-blur-sm bg-black/60':
+      true,
+    [maskClassName]: true,
+  });
+
+  const wrapperStyle = clsx({
+    'flex justify-center min-w-full': true,
+    [wrapperClassName]: true,
+  });
+
   const panelStyle = clsx(
     {
       'w-full transform bg-white text-left align-middle rounded-9xl shadow modalContent':
@@ -36,20 +49,12 @@ const Modal: FC<ModalProps> = ({
       [className]: true,
     },
   );
-  const wrapperStyle = clsx({
-    'flex justify-center min-w-full': true,
-    [wrapperClassName]: true,
-  });
 
   return (
     <>
       {ReactDOM.createPortal(
         <CSSTransition in={open} timeout={200} classNames="modal" unmountOnExit>
-          <div
-            className="z-[999] flex items-center justify-center fixed left-0 right-0 top-0 bottom-0 backdrop-blur-sm bg-black/60"
-            onClick={closeModal}
-            onKeyDown={onKeyDown}
-          >
+          <div className={style} onClick={closeModal} onKeyDown={onKeyDown}>
             <div className={wrapperStyle} data-testid={dataTestId}>
               {showModalCloseBtn && (
                 <div

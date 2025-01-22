@@ -20,7 +20,9 @@ const SearchModal: FC<ISearchModalProps> = ({ onClose }) => {
   const { getApi } = usePermissions();
   const { t } = useTranslation('components', { keyPrefix: 'GlobalSearch' });
 
-  const { control, watch, setValue } = useForm<{ globalSearch: string }>({
+  const { control, watch, setValue, setFocus } = useForm<{
+    globalSearch: string;
+  }>({
     defaultValues: { globalSearch: '' },
   });
 
@@ -111,7 +113,7 @@ const SearchModal: FC<ISearchModalProps> = ({ onClose }) => {
       dataTestId: 'global-search',
       className: 'w-full',
       placeholder: t('searchPlaceholder'),
-      inputClassName: 'border-none !p-0 rounded-none text-sm font-medium',
+      inputClassName: 'border-none !p-0 rounded-none text-base font-medium',
       autofocus: true,
       clearIcon: <Icon name="closeCircle" size={16} className="-mr-3" />,
       isClearable: true,
@@ -119,10 +121,17 @@ const SearchModal: FC<ISearchModalProps> = ({ onClose }) => {
   ];
 
   const handleKeyDown = (e: any) => {
-    let totalItems = 0;
-    searchResults.forEach(
-      (eachEntity: any) => (totalItems += eachEntity.results.length),
-    );
+    if (e.key === 'Enter') {
+      document.getElementById(`search-item-${selectedIndex}`)?.click();
+      return;
+    }
+
+    const totalItems = sumBy(searchResults, (entity) => entity.results.length);
+
+    if (totalItems === 0) {
+      setSelectedIndex(-1);
+      return;
+    }
 
     if (e.key === 'ArrowDown') {
       // Move selection down, loop back to the top if at the end
@@ -132,8 +141,6 @@ const SearchModal: FC<ISearchModalProps> = ({ onClose }) => {
       setSelectedIndex((prevIndex) =>
         prevIndex === 0 ? totalItems - 1 : prevIndex - 1,
       );
-    } else if (e.key === 'Enter') {
-      document.getElementById(`search-item-${selectedIndex}`)?.click();
     }
   };
 
@@ -145,28 +152,30 @@ const SearchModal: FC<ISearchModalProps> = ({ onClose }) => {
   return (
     <Modal
       open={true}
-      className="max-w-[700px] flex flex-col gap-2 !bg-transparent relative"
-      wrapperClassName="-mt-[20%]"
+      className="fixed max-w-[700px] flex flex-col gap-2 !bg-transparent"
+      wrapperClassName="h-[440px]"
+      maskClassName="!backdrop-blur-none"
       onKeyDown={handleKeyDown}
       closeModal={onClose}
     >
-      <div className="flex flex-grow items-center w-full h-[60px] px-3 py-3 gap-3 bg-white rounded-[10px] shadow">
+      <div className="flex items-center w-full h-[60px] px-3 py-3 gap-3 bg-white rounded-[10px] shadow">
         <Icon name="search" hover={false} size={24} />
         <div className="flex grow">
           <Layout fields={fields} className="w-full" />
         </div>
       </div>
       {!hideSearchResults && (
-        <div className="absolute w-full bg-white rounded-[8px] shadow pr-3 top-[68px] py-4">
+        <div className="w-full bg-white rounded-[8px] shadow pr-3 py-4">
           <SearchResults
             searchResults={searchResults}
             searchQuery={debouncedSearchQuery}
             isLoading={isLoading}
             onClose={onClose}
             selectedIndex={selectedIndex}
-            updateSearchQuery={(value: string) =>
-              setValue('globalSearch', value)
-            }
+            updateSearchQuery={(value: string) => {
+              setValue('globalSearch', value);
+              setFocus('globalSearch');
+            }}
           />
         </div>
       )}

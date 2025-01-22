@@ -14,7 +14,7 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
     <div data-testid="global-search">
       <IconButton
         icon="search2"
-        size={20}
+        size={24}
         dataTestId="global-search-icon"
         ariaLabel={t('search')}
         onClick={openModal}

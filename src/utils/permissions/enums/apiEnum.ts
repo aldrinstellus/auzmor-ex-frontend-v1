@@ -161,6 +161,7 @@ export enum ApiEnum {
   GetRecentSearchTerms = 'GET_RECENT_SEARCH_TERMS',
   ClickSearchResult = 'CLICK_SEARCH_RESULT',
   DeleteRecentSearchTerm = 'DELETE_RECENT_SEARCH_TERM',
+  DeleteRecentClickedResult = 'DELETE_RECENT_CLICKED_RESULT',
 
   //skills
   GetSkills = 'GET_SKILLS',

@@ -19,6 +19,7 @@ const DocSearchRow = ({
   return (
     <div
       className="flex gap-2 items-center hover:bg-primary-50 cursor-pointer"
+      onPointerDown={(e) => e.preventDefault()}
       onClick={() => onClick(data)}
     >
       <Icon name={iconName} />

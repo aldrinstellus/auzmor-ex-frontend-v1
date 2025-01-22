@@ -183,6 +183,9 @@ export const apiConfigLxp = {
   [ApiEnum.DeleteRecentSearchTerm]: {
     [Default]: queries.deleteRecentSearchTerm,
   },
+  [ApiEnum.DeleteRecentClickedResult]: {
+    [Default]: queries.deleteRecentClickedResult,
+  },
 
   //submissions
   [ApiEnum.GetEvaluations]: { [Default]: queries.useGetEvaluation },

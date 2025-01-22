@@ -201,6 +201,7 @@ import AudioFileIcon from '../components/AudioFile';
 import Notification2Icon from '../components/Notification2';
 import Search2Icon from '../components/Search2';
 import TeamIcon from '../components/Team';
+import NoResultFoundIcon from '../components/NoResultFound';
 
 export const icon = {
   add: Add,
@@ -340,6 +341,7 @@ export const icon = {
   more: MoreIcon,
   mute: MuteIcon,
   news: NewsIcon,
+  noResultFound: NoResultFoundIcon,
   noteFavourite: NoteFavouriteIcon,
   notification: NotificationIcon,
   notification2: Notification2Icon,
