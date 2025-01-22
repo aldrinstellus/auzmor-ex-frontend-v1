@@ -39,7 +39,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
   q,
 }) => {
   const { channelId } = useParams();
-  const { control, watch } = useForm<IForm>({
+  const { control, watch, resetField } = useForm<IForm>({
     defaultValues: { entitySearch: '' },
   });
   const [totalRows, setTotalRows] = useState<number>(0);
@@ -193,6 +193,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
             label: virtualRow.original.name,
             meta: virtualRow.original,
           });
+          resetField('entitySearch');
         }
       },
       height: 312,
@@ -279,6 +280,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
                   meta: selectedItems.directory,
                 });
               }
+              resetField('entitySearch');
             }}
             disabled={
               dataGridProps.isLoading ||
@@ -300,6 +302,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
                   meta: selectedItems.drive,
                 });
               }
+              resetField('entitySearch');
             }}
             disabled={
               dataGridProps.isLoading ||
@@ -319,6 +322,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
                 setOnSelectLoading(false);
                 closeModal();
               });
+              resetField('entitySearch');
             }}
             loading={onSelectLoading}
             disabled={
