@@ -19,6 +19,7 @@ import {
 } from 'stores/backgroundJobStore';
 import { getLearnUrl } from 'utils/misc';
 import moment from 'moment';
+import DocumentPathProvider from 'contexts/DocumentPathContext';
 
 interface IIntegrationSettingProps {}
 
@@ -262,36 +263,38 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
       </Card>
 
       {isOpen && (
-        <EntitySelectModal
-          isOpen={isOpen}
-          closeModal={closeModal}
-          onSelect={(entity: any, callback: () => void) =>
-            updateConnectionMutation.mutate(
-              {
-                channelId: channelId,
-                folderId: entity[0].id,
-                name: entity[0].name,
-                orgProviderId: availableAccount?.orgProviderId,
-              } as any,
-              {
-                onSettled: callback,
-                onSuccess: () => {
-                  successToastConfig({
-                    content: `${entity[0].name} connected successfully`,
-                  });
-                  refetch();
+        <DocumentPathProvider defaultItem={{ id: 'root', label: 'Sites' }}>
+          <EntitySelectModal
+            isOpen={isOpen}
+            closeModal={closeModal}
+            onSelect={(entity: any, callback: () => void) =>
+              updateConnectionMutation.mutate(
+                {
+                  channelId: channelId,
+                  folderId: entity[0].id,
+                  name: entity[0].name,
+                  orgProviderId: availableAccount?.orgProviderId,
+                } as any,
+                {
+                  onSettled: callback,
+                  onSuccess: () => {
+                    successToastConfig({
+                      content: `${entity[0].name} connected successfully`,
+                    });
+                    refetch();
+                  },
+                  onError: () => {
+                    failureToastConfig({
+                      content: 'Fail to connect, Try again!',
+                    });
+                  },
                 },
-                onError: () => {
-                  failureToastConfig({
-                    content: 'Fail to connect, Try again!',
-                  });
-                },
-              },
-            )
-          }
-          q={{ orgProviderId: availableAccount?.orgProviderId }}
-          integrationType={integrationType}
-        />
+              )
+            }
+            q={{ orgProviderId: availableAccount?.orgProviderId }}
+            integrationType={integrationType}
+          />
+        </DocumentPathProvider>
       )}
     </div>
   );
