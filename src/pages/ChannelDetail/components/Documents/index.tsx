@@ -1074,7 +1074,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         </div>
         {isBaseFolderSet ? (
           <Fragment>
-            <RecentlyAddedEntities />
+            <RecentlyAddedEntities permissions={permissions} />
             <p className="text-base font-bold text-neutral-900">All files</p>
             <FilterMenuDocument
               control={control}
@@ -1149,6 +1149,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         <FilePreviewModal
           file={(filePreviewProps as DocType) || {}}
           open={filePreview}
+          canDownload={
+            permissions.includes(ChannelPermissionEnum.CanDownloadDocuments) &&
+            !!filePreviewProps?.downloadable
+          }
           closeModal={closeFilePreview}
         />
       )}

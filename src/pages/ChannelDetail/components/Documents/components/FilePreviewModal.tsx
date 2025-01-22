@@ -15,10 +15,16 @@ import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 interface IFilePreviewProps {
   file: Doc;
   open: boolean;
+  canDownload: boolean;
   closeModal: () => void;
 }
 
-const FilePreview: FC<IFilePreviewProps> = ({ file, open, closeModal }) => {
+const FilePreview: FC<IFilePreviewProps> = ({
+  file,
+  open,
+  canDownload = false,
+  closeModal,
+}) => {
   const { getApi } = usePermissions();
   const { channelId } = useParams();
 
@@ -42,28 +48,30 @@ const FilePreview: FC<IFilePreviewProps> = ({ file, open, closeModal }) => {
           {file.name}
         </div>
         <div className="flex absolute gap-3 right-4">
-          <Icon
-            name="download"
-            color="text-neutral-900"
-            onClick={() => {
-              getChannelDocDownloadUrl({
-                channelId,
-                itemId: file.id,
-              })
-                .then(({ data }: Record<string, any>) => {
-                  downloadFromUrl(
-                    data?.result?.data?.downloadUrl,
-                    data?.result?.data?.name,
-                  );
+          {canDownload && (
+            <Icon
+              name="download"
+              color="text-neutral-900"
+              onClick={() => {
+                getChannelDocDownloadUrl({
+                  channelId,
+                  itemId: file.id,
                 })
-                .catch(() => {
-                  failureToastConfig({
-                    content: `Failed to download ${file?.name}`,
-                    dataTestId: 'file-download-toaster',
+                  .then(({ data }: Record<string, any>) => {
+                    downloadFromUrl(
+                      data?.result?.data?.downloadUrl,
+                      data?.result?.data?.name,
+                    );
+                  })
+                  .catch(() => {
+                    failureToastConfig({
+                      content: `Failed to download ${file?.name}`,
+                      dataTestId: 'file-download-toaster',
+                    });
                   });
-                });
-            }}
-          />
+              }}
+            />
+          )}
           <a
             href={data?.data?.result?.launchURL}
             rel="noreferrer"
