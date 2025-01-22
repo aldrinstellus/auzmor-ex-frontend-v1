@@ -403,9 +403,9 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
           onApply={(appliedFilters) => {
             setFilters({
               ...appliedFilters,
-              docModifiedRadio: appliedFilters.docModifiedRadio.includes(
-                'undefined',
-              )
+              docModifiedRadio: (
+                appliedFilters?.docModifiedRadio || []
+              ).includes('undefined')
                 ? undefined
                 : appliedFilters.docModifiedRadio,
             });
