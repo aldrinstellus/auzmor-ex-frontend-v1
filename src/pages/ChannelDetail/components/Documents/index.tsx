@@ -236,6 +236,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       permissions.includes(ChannelPermissionEnum.CanDownloadDocuments) &&
       !!info?.row?.original?.downloadable &&
       !!!info?.row?.original?.isFolder;
+    const canRename = permissions.includes(
+      ChannelPermissionEnum.CanRenameDocuments,
+    );
+    const canDelete = permissions.includes(
+      ChannelPermissionEnum.CanDeleteDocuments,
+    );
     return [
       {
         label: 'Rename',
@@ -250,7 +256,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         },
         dataTestId: 'folder-menu',
         className: '!px-6 !py-2',
-        isHidden: false,
+        isHidden: !canRename,
       },
       {
         label: 'Remove from starred',
@@ -293,7 +299,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         },
         dataTestId: 'folder-menu',
         className: '!px-6 !py-2 [&_*]:text-red-500',
-        isHidden: false,
+        isHidden: !canDelete,
       },
     ].filter((option) => !option?.isHidden) as any as IMenuItem[];
   }, []);

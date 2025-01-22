@@ -252,7 +252,7 @@ export const getChannelDocDeepSearch = async (
       response = await apiService.get(context.pageParam);
     }
   } catch (e) {
-    return [];
+    throw e;
   }
   return response;
 };
