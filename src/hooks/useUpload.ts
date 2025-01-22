@@ -343,7 +343,7 @@ export const useChannelDocUpload = (channelId: string) => {
     rootFolderId: string;
     parentFolderId: string;
   }) => {
-    apiService.post(`/channels/${channelId}/file/upload`, payload);
+    await apiService.post(`/channels/${channelId}/file/upload`, payload);
   };
 
   const uploadMedia = async (
@@ -404,12 +404,6 @@ export const useChannelDocUpload = (channelId: string) => {
                   queryClient.invalidateQueries(['get-channel-files'], {
                     exact: false,
                   });
-                  // Remove below timeout once BE fix immediate update.
-                  setTimeout(() => {
-                    queryClient.invalidateQueries(['get-channel-files'], {
-                      exact: false,
-                    });
-                  }, 2000);
                 });
               });
             })
