@@ -154,6 +154,17 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
       enableMultiRowSelection: directoryId && directoryId,
       getRowId: (row) => row.id,
       onRowClick: (e, table, virtualRow, isDoubleClick) => {
+        if (isDoubleClick) {
+          appendItem({
+            id: virtualRow.original.id,
+            label: virtualRow.original.name,
+            meta: virtualRow.original,
+          });
+          resetField('entitySearch');
+          if (headings === 'folder') {
+            return;
+          }
+        }
         if (headings === 'site') {
           setSelectedItems({
             directory: virtualRow.original,
@@ -186,14 +197,6 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
               folders: [...(selectedItems?.folders || []), virtualRow.original],
             });
           }
-        }
-        if (isDoubleClick) {
-          appendItem({
-            id: virtualRow.original.id,
-            label: virtualRow.original.name,
-            meta: virtualRow.original,
-          });
-          resetField('entitySearch');
         }
       },
       height: 312,
