@@ -397,9 +397,13 @@ export const useChannelDocDeepSearch = (
 };
 
 // Get sync status
-export const useChannelDocSyncStatus = (payload: { channelId: string }) => {
+export const useChannelDocSyncStatus = (
+  payload: { channelId: string },
+  options: Record<string, any>,
+) => {
   return useQuery({
     queryKey: ['channel-doc-sync-status', payload],
     queryFn: () => getChannelDocumentSyncStatus(payload),
+    ...options,
   });
 };

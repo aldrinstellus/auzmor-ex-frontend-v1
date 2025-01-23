@@ -46,6 +46,7 @@ import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
 import {
   BackgroundJob,
   BackgroundJobStatusEnum,
+  BackgroundJobVariantEnum,
   useBackgroundJobStore,
 } from 'stores/backgroundJobStore';
 import queryClient from 'utils/queryClient';
@@ -97,8 +98,16 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const { uploadMedia } = useChannelDocUpload(channelId);
   const { filters } = useAppliedFiltersStore();
   const { setRootFolderId } = useChannelStore();
-  const { setJobs, getIconFromStatus, setJobTitle, setJobsRenderer, setShow } =
-    useBackgroundJobStore();
+  const {
+    setJobs,
+    getIconFromStatus,
+    setJobTitle,
+    setJobsRenderer,
+    setShow,
+    setIsExpanded,
+    setVariant,
+    reset,
+  } = useBackgroundJobStore();
   const folderInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [docType, applyDocumentSearch, documentSearch] = watch([
@@ -219,6 +228,28 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       } as any);
     }
   };
+
+  // Api call: get sync status
+  const useChannelDocSyncStatus = getApi(ApiEnum.UseChannelDocSyncStatus);
+  useChannelDocSyncStatus(
+    {
+      channelId,
+    },
+    {
+      onSuccess: (data: any) => {
+        const syncResults = data?.data?.result?.data;
+        if (!!syncResults?.length) {
+          const isSynced = !syncResults.some(
+            (each: { syncStatus: string }) =>
+              each.syncStatus !== 'success' && each.syncStatus !== 'failed',
+          );
+          if (!isSynced) {
+            handleSyncing();
+          }
+        }
+      },
+    },
+  );
 
   // State management flags
   const isBaseFolderSet = statusResponse?.status === 'ACTIVE';
@@ -856,6 +887,43 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     );
   }, []);
 
+  const handleSyncing = () => {
+    reset();
+    setJobTitle('Sync in progress');
+    setIsExpanded(false);
+    setShow(true);
+    setVariant(BackgroundJobVariantEnum.ChannelDocumentSync);
+    let intervalId: any = null;
+    intervalId = setInterval(async () => {
+      const response = await getApi(ApiEnum.GetChannelDocSyncStatus)({
+        channelId,
+      }).catch(() => {
+        clearInterval(intervalId);
+        setJobTitle('Sync failed');
+      });
+      const syncResults = response?.data?.result?.data;
+      if (!!syncResults?.length) {
+        let successCount = 0;
+        let failCount = 0;
+        syncResults.forEach((each: { syncStatus: string }) => {
+          if (each.syncStatus === 'success') {
+            successCount += 1;
+          } else if (each.syncStatus === 'failed') {
+            failCount += 1;
+          }
+        });
+        if (successCount + failCount === syncResults?.length) {
+          clearInterval(intervalId);
+          if (successCount === syncResults.length) {
+            setJobTitle('Sync successful');
+          } else {
+            setJobTitle('Sync failed');
+          }
+        }
+      }
+    }, 1000);
+  };
+
   return isLoading ? (
     <Card className="flex flex-col gap-6 p-8 pb-16 w-full justify-center bg-white overflow-hidden">
       <p className="font-bold text-2xl text-neutral-900">Documents</p>
@@ -1112,6 +1180,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 {
                   onSettled: callback,
                   onSuccess: () => {
+                    handleSyncing();
                     successToastConfig({
                       content: `Connected successfully`,
                     });
