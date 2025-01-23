@@ -633,7 +633,7 @@ const Apps: FC<IAppsProps> = () => {
             color="!text-white"
             hoverColor="text-white"
             size={IconSize.ExtraLarge}
-            className="fixed bottom-[78px] right-[max(8%,calc(50%-720px))] p-[15px] z-50 hover:!text-white"
+            className="absolute bottom-[78px] right-[max(5%,calc(50%-720px))] p-[15px] z-50 hover:!text-white"
             dataTestId="app-add-app-cta"
           />
         )}
