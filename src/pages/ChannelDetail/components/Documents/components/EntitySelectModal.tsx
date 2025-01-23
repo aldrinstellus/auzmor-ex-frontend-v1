@@ -194,7 +194,14 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
           } else {
             setSelectedItems({
               ...selectedItems,
-              folders: [...(selectedItems?.folders || []), virtualRow.original],
+              folders: [
+                ...(selectedItems?.folders || []),
+                {
+                  ...virtualRow.original,
+                  parentFolderId:
+                    items.length > 3 ? items.at(-1)?.meta?.folderId : undefined,
+                },
+              ],
             });
           }
         }
