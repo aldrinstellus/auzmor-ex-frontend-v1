@@ -3,6 +3,7 @@ import PopupMenu from 'components/PopupMenu';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Item } from 'contexts/DocumentPathContext';
 import clsx from 'clsx';
+import Truncate from 'components/Truncate';
 
 interface IChannelDocBreadcrumbProps {
   items: Item[];
@@ -73,7 +74,7 @@ const ChannelDocBreadcrumb: FC<IChannelDocBreadcrumbProps> = ({
             }`}
             onClick={() => handleItemClick(each)}
           >
-            {each.label}
+            <Truncate text={each.label} className="max-w-[240px]" />
           </div>
           {index < items.slice(popupItemIndex).length - 1 && (
             <Icon name="arrowRight" size={iconSize} hover={false} />
