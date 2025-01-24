@@ -23,7 +23,7 @@ import { useDataGrid } from 'hooks/useDataGrid';
 import Icon from 'components/Icon';
 import PopupMenu, { IMenuItem } from 'components/PopupMenu';
 import { usePermissions } from 'hooks/usePermissions';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import Spinner from 'components/Spinner';
 import { ChannelPermissionEnum } from '../utils/channelPermission';
@@ -58,6 +58,7 @@ import DocSearch from './components/DocSearch';
 import Popover from 'components/Popover';
 import { parseNumber } from 'react-advanced-cropper';
 import { getExtension, trimExtension } from '../utils';
+import { getChannelDocDownloadUrl } from 'queries/learn';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
@@ -115,7 +116,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     'applyDocumentSearch',
     'documentSearch',
   ]);
-  const getChannelDocDownloadUrl = getApi(ApiEnum.GetChannelDocDownloadUrl);
+  const useCurrentUser = getApi(ApiEnum.GetMe);
+  const { data: currentUser } = useCurrentUser();
 
   // Api call: Check connection status
   const useChannelDocumentStatus = getApi(ApiEnum.GetChannelDocumentStatus);
@@ -260,6 +262,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const integrationType: DocIntegrationEnum = DocIntegrationEnum.Sharepoint;
   const availableAccount = statusResponse?.availableAccounts[0];
   const isRootDir = items.length === 1;
+  const reAuthorizeForAdmin =
+    statusResponse?.expiryDetails?.expired &&
+    permissions.includes(ChannelPermissionEnum.CanReauthorize);
+  const reAuthorizeForOthers =
+    statusResponse?.expiryDetails?.expired &&
+    !permissions.includes(ChannelPermissionEnum.CanReauthorize);
 
   // A function that decides what options to show on each row of documents
   const getAllOptions = useCallback((info: CellContext<DocType, unknown>) => {
@@ -1069,6 +1077,39 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         }}
       />
       <Card className="flex flex-col gap-6 p-8 pb-16 w-full justify-center bg-white">
+        {reAuthorizeForAdmin && (
+          <div className="flex gap-2 w-full p-2 border border-orange-400 bg-orange-50 items-center">
+            <Icon name="warning" />
+            <span className="text-neutral-600 text-sm font-medium">
+              The credentials for SharePoint have expired. Please log in again
+              to continue.{' '}
+              <Link
+                to={getLearnUrl('/settings/market-place')}
+                className="text-orange-400 text-sm font-bold underline"
+              >
+                Reauthorize
+              </Link>
+            </span>
+          </div>
+        )}
+        {reAuthorizeForOthers && (
+          <div className="flex gap-2 w-full p-2 border border-orange-400 bg-orange-50 items-center">
+            <Icon name="warning" />
+            <span className="text-neutral-600 text-sm font-medium">
+              There is a sync issue with SharePoint. Please contact{' '}
+              <Link
+                to={
+                  `mailto:${currentUser?.result?.data?.org?.primaryAdmin?.email}` ||
+                  ''
+                }
+                className="underline"
+              >
+                {currentUser?.result?.data?.org?.primaryAdmin?.email || ''}
+              </Link>{' '}
+              or support team to resolve this.
+            </span>
+          </div>
+        )}
         <div className="flex justify-between">
           <BreadCrumb
             variant={BreadCrumbVariantEnum.ChannelDoc}

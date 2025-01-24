@@ -203,6 +203,7 @@ import Search2Icon from '../components/Search2';
 import TeamIcon from '../components/Team';
 import NoResultFoundIcon from '../components/NoResultFound';
 import CloseCircle2Icon from '../components/CloseCircle2';
+import WarningIcon from '../components/Warning';
 
 export const icon = {
   add: Add,
@@ -412,4 +413,5 @@ export const icon = {
   xlsx: XlsIcon,
   zoomIn: ZoomInIcon,
   zoomOut: ZoomOutIcon,
+  warning: WarningIcon,
 };

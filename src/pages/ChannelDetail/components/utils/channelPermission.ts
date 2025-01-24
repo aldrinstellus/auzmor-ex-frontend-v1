@@ -15,6 +15,7 @@ export enum ChannelPermissionEnum {
   CanDownloadDocuments = 'CAN_DOWNLOAD_DOCUMENTS',
   CanRenameDocuments = 'CAN_RENAME_DOCUMENTS',
   CanDeleteDocuments = 'CAN_DELETE_DOCUMENTS',
+  CanReauthorize = 'CAN_REAUTHORIZE',
 
   CanArchive = 'CAN_ARCHIVE',
   CanAccessHomeTab = 'CAN_ACCESS_HOME_TAB',
@@ -80,6 +81,7 @@ export const getChannelPermissions: (
             ChannelPermissionEnum.CanDownloadDocuments,
             ChannelPermissionEnum.CanRenameDocuments,
             ChannelPermissionEnum.CanDeleteDocuments,
+            ChannelPermissionEnum.CanReauthorize,
           ];
         } else {
           if (channelRole === CHANNEL_ROLE.Member) {
@@ -101,6 +103,7 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanDownloadDocuments,
               ChannelPermissionEnum.CanRenameDocuments,
               ChannelPermissionEnum.CanDeleteDocuments,
+              ChannelPermissionEnum.CanReauthorize,
             ];
           } else if (channelRole === CHANNEL_ROLE.Admin) {
             // 3 -> LXP -> Admin view - > Public channel -> Joined -> Channel Role -> Channel Admin
@@ -121,6 +124,7 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanDownloadDocuments,
               ChannelPermissionEnum.CanRenameDocuments,
               ChannelPermissionEnum.CanDeleteDocuments,
+              ChannelPermissionEnum.CanReauthorize,
             ];
           }
         }
@@ -144,6 +148,7 @@ export const getChannelPermissions: (
             ChannelPermissionEnum.CanDownloadDocuments,
             ChannelPermissionEnum.CanRenameDocuments,
             ChannelPermissionEnum.CanDeleteDocuments,
+            ChannelPermissionEnum.CanReauthorize,
           ];
         } else {
           if (channelRole === CHANNEL_ROLE.Member) {
@@ -166,6 +171,7 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanDownloadDocuments,
               ChannelPermissionEnum.CanRenameDocuments,
               ChannelPermissionEnum.CanDeleteDocuments,
+              ChannelPermissionEnum.CanReauthorize,
             ];
           } else if (channelRole === CHANNEL_ROLE.Admin) {
             // 6 -> LXP -> Admin view - > Private channel -> Joined -> Channel Role -> Channel Admin
@@ -187,6 +193,7 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanDownloadDocuments,
               ChannelPermissionEnum.CanRenameDocuments,
               ChannelPermissionEnum.CanDeleteDocuments,
+              ChannelPermissionEnum.CanReauthorize,
             ];
           }
         }
