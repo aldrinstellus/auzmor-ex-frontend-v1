@@ -7,7 +7,7 @@ type State = {
 
 type Actions = {
   getFilter: (key: string) => any;
-  setFilters: (filters: { [key: string]: any }) => void;
+  setFilters: (filters: { [key: string]: any } | null) => void;
   updateFilter: (key: string, value: any) => void;
   clearFilters: () => void;
 };

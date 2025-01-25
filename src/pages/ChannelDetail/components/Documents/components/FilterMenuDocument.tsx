@@ -10,12 +10,14 @@ import Sort from 'components/Sort';
 import PopupMenu from 'components/PopupMenu';
 import Layout, { FieldType } from 'components/Form';
 import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
-import { Control, UseFormWatch } from 'react-hook-form';
+import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
 import Icon from 'components/Icon';
 import { getIconFromMime } from './Doc';
 import { IForm } from '..';
 import moment from 'moment';
 import { parseNumber } from 'react-advanced-cropper';
+import Button, { Variant as ButtonVariant } from 'components/Button';
+import { isTrim } from '../../utils';
 
 export enum FilterKey {
   departments = 'departments',
@@ -26,22 +28,26 @@ export enum FilterKey {
 interface IFilterMenu {
   control: Control<IForm, any>;
   watch: UseFormWatch<IForm>;
+  setValue: UseFormSetValue<IForm>;
   dataTestIdSort?: string;
   dataTestIdFilter?: string;
   view: 'LIST' | 'GRID';
   hideFilter?: boolean;
   hideSort?: boolean;
+  showTitleFilter?: boolean;
   changeView: (view: 'LIST' | 'GRID') => void;
 }
 
 const FilterMenuDocument: FC<IFilterMenu> = ({
   control,
   watch,
+  setValue,
   dataTestIdSort,
   dataTestIdFilter,
   view,
   hideFilter = false,
   hideSort = false,
+  showTitleFilter = true,
   changeView,
 }) => {
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
@@ -54,7 +60,14 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
     deleteParam,
     parseParams,
   } = useURLParams();
-  const docType = watch('docType');
+  const [docType, recentlyModified, byTitle] = watch([
+    'docType',
+    'recentlyModified',
+    'byTitle',
+  ]);
+  const selectedButtonClassName = '!bg-primary-50 text-primary-500 text-sm';
+  const regularButtonClassName =
+    '!text-neutral-500 text-sm hover:border hover:border-primary-500 focus:border focus:border-primary-500';
 
   const isFilterApplied =
     !!filters?.docTypeCheckbox?.length ||
@@ -177,7 +190,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
     <>
       <div className="flex flex-col gap-6">
         <div className="flex justify-between items-center h-9">
-          <div>
+          <div className="flex gap-4 items-center">
             <Layout
               fields={[
                 {
@@ -213,6 +226,28 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
                 },
               ]}
             />
+            {false && (
+              <Button
+                variant={ButtonVariant.Secondary}
+                label={isTrim('Recently modified')}
+                className={`capitalize ${
+                  !!recentlyModified
+                    ? selectedButtonClassName
+                    : regularButtonClassName
+                }`}
+                onClick={() => setValue('recentlyModified', !recentlyModified)}
+              />
+            )}
+            {showTitleFilter && !hideFilter && (
+              <Button
+                variant={ButtonVariant.Secondary}
+                label={isTrim('Title only')}
+                className={`capitalize ${
+                  !!byTitle ? selectedButtonClassName : regularButtonClassName
+                }`}
+                onClick={() => setValue('byTitle', !byTitle)}
+              />
+            )}
           </div>
           <div className="flex space-x-2 justify-center items-center relative">
             <div className="flex relative">

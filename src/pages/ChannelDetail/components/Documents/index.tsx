@@ -70,6 +70,8 @@ export interface IForm {
   documentSearch: string;
   docType?: Record<string, any>;
   applyDocumentSearch: string;
+  byTitle?: boolean;
+  recentlyModified?: boolean;
 }
 
 interface IDocumentProps {
@@ -111,10 +113,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   } = useBackgroundJobStore();
   const folderInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [docType, applyDocumentSearch, documentSearch] = watch([
+  const [docType, applyDocumentSearch, documentSearch, byTitle] = watch([
     'docType',
     'applyDocumentSearch',
     'documentSearch',
+    'byTitle',
   ]);
   const useCurrentUser = getApi(ApiEnum.GetMe);
   const { data: currentUser } = useCurrentUser();
@@ -665,24 +668,28 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     isInfiniteQuery: true,
     payload: {
       channelId,
-      params:
-        applyDocumentSearch === ''
+      params: {
+        sort: filters?.sort ? filters?.sort.split(':')[0] : undefined,
+        order: filters?.sort ? filters?.sort.split(':')[1] : undefined,
+        isFolder: docType ? !!(docType.value === 'folder') : undefined,
+        owners: (filters?.docOwnerCheckbox || []).map(
+          (owner: any) => owner.name,
+        ),
+        type: (filters?.docTypeCheckbox || []).map(
+          (type: any) => type.paramKey,
+        ),
+        ...parseModifiedOnFilter,
+        ...(applyDocumentSearch === ''
           ? {
               rootFolderId: items.length > 1 ? items[1].id : undefined,
               folderId:
                 items.length < 3 ? undefined : items[items.length - 1].id,
-              sort: filters?.sort ? filters?.sort.split(':')[0] : undefined,
-              order: filters?.sort ? filters?.sort.split(':')[1] : undefined,
-              isFolder: docType ? !!(docType.value === 'folder') : undefined,
-              owners: (filters?.docOwnerCheckbox || []).map(
-                (owner: any) => owner.name,
-              ),
-              type: (filters?.docTypeCheckbox || []).map(
-                (type: any) => type.paramKey,
-              ),
-              ...parseModifiedOnFilter,
             }
-          : { q: applyDocumentSearch },
+          : {
+              q: !byTitle ? applyDocumentSearch : undefined,
+              byTitle: byTitle ? applyDocumentSearch : undefined,
+            }),
+      },
     },
     isEnabled: !isLoading,
     loadingGrid: (
@@ -1198,9 +1205,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             <FilterMenuDocument
               control={control}
               watch={watch}
+              setValue={setValue}
               view={view}
               hideFilter={isRootDir}
               hideSort={isRootDir}
+              showTitleFilter={applyDocumentSearch !== ''}
               changeView={(view) => setView(view)}
             />
             <DataGrid {...dataGridProps} />
