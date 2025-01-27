@@ -49,7 +49,7 @@ const ChannelDetail: FC<AppProps> = ({
   const { prevRoute } = state || {};
   const { t } = useTranslation('channelDetail');
   const { isChannelJoined } = useChannelRole(channelId);
-  const { isAdmin, isLearner } = useRole();
+  const { isAdmin, isLearner, isSuperAdmin } = useRole();
   const { isLxp } = useProduct();
 
   if (!channelId) {
@@ -73,6 +73,7 @@ const ChannelDetail: FC<AppProps> = ({
     isChannelJoined,
     channelData?.member?.role,
     isAdmin,
+    isSuperAdmin,
     channelData?.settings?.restriction,
   );
 
