@@ -62,13 +62,17 @@ export const updateChannelDocumentConnection = async (payload: {
   }>;
   orgProviderId: string;
 }) => {
-  return await apiService.put(
-    `/channels/${payload.channelId}/connect`,
-    isFiltersEmpty({
-      connections: payload.connections,
-      orgProviderId: payload.orgProviderId,
-    }),
-  );
+  return await apiService
+    .put(
+      `/channels/${payload.channelId}/connect`,
+      isFiltersEmpty({
+        connections: payload.connections,
+        orgProviderId: payload.orgProviderId,
+      }),
+    )
+    .catch((e) => {
+      throw e;
+    });
 };
 
 // To get files based on params
@@ -178,10 +182,11 @@ export const deleteChannelDoc = async (payload: {
   channelId: string;
   itemId: string;
 }) => {
-  const response = await apiService.delete(
-    `/channels/${payload.channelId}/files/${payload.itemId}`,
-  );
-  return response;
+  return await apiService
+    .delete(`/channels/${payload.channelId}/files/${payload.itemId}`)
+    .catch((e) => {
+      throw e;
+    });
 };
 
 // Rename channel file document
@@ -190,11 +195,13 @@ export const renameChannelFile = async (payload: {
   fileId: string;
   name: string;
 }) => {
-  const response = await apiService.patch(
-    `/channels/${payload.channelId}/files/${payload.fileId}`,
-    { name: payload.name },
-  );
-  return response;
+  return await apiService
+    .patch(`/channels/${payload.channelId}/files/${payload.fileId}`, {
+      name: payload.name,
+    })
+    .catch((e) => {
+      throw e;
+    });
 };
 
 // Rename channel folder document
@@ -203,11 +210,13 @@ export const renameChannelFolder = async (payload: {
   folderId: string;
   name: string;
 }) => {
-  const response = await apiService.patch(
-    `/channels/${payload.channelId}/folders/${payload.folderId}`,
-    { name: payload.name },
-  );
-  return response;
+  return await apiService
+    .patch(`/channels/${payload.channelId}/folders/${payload.folderId}`, {
+      name: payload.name,
+    })
+    .catch((e) => {
+      throw e;
+    });
 };
 
 // Delete channel doc connection
