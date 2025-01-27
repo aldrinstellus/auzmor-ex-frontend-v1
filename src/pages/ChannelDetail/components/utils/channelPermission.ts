@@ -90,6 +90,11 @@ export const getChannelPermissions: (
               !isSuperAdmin
             )
               return false;
+            if (
+              permission === ChannelPermissionEnum.CanReauthorize &&
+              !isSuperAdmin
+            )
+              return false;
             return true;
           });
         } else {
@@ -119,7 +124,11 @@ export const getChannelPermissions: (
                 !isSuperAdmin
               )
                 return false;
-              return true;
+              if (
+                permission === ChannelPermissionEnum.CanReauthorize &&
+                !isSuperAdmin
+              )
+                return true;
             });
           } else if (channelRole === CHANNEL_ROLE.Admin) {
             // 3 -> LXP -> Admin view - > Public channel -> Joined -> Channel Role -> Channel Admin
@@ -147,7 +156,11 @@ export const getChannelPermissions: (
                 !isSuperAdmin
               )
                 return false;
-              return true;
+              if (
+                permission === ChannelPermissionEnum.CanReauthorize &&
+                !isSuperAdmin
+              )
+                return true;
             });
           }
         }
@@ -178,7 +191,11 @@ export const getChannelPermissions: (
               !isSuperAdmin
             )
               return false;
-            return true;
+            if (
+              permission === ChannelPermissionEnum.CanReauthorize &&
+              !isSuperAdmin
+            )
+              return true;
           });
         } else {
           if (channelRole === CHANNEL_ROLE.Member) {
@@ -208,7 +225,11 @@ export const getChannelPermissions: (
                 !isSuperAdmin
               )
                 return false;
-              return true;
+              if (
+                permission === ChannelPermissionEnum.CanReauthorize &&
+                !isSuperAdmin
+              )
+                return true;
             });
           } else if (channelRole === CHANNEL_ROLE.Admin) {
             // 6 -> LXP -> Admin view - > Private channel -> Joined -> Channel Role -> Channel Admin
@@ -237,7 +258,11 @@ export const getChannelPermissions: (
                 !isSuperAdmin
               )
                 return false;
-              return true;
+              if (
+                permission === ChannelPermissionEnum.CanReauthorize &&
+                !isSuperAdmin
+              )
+                return true;
             });
           }
         }
