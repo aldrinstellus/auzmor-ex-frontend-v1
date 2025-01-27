@@ -17,6 +17,7 @@ import NoDataFound from 'components/NoDataFound';
 import moment from 'moment';
 import BreadCrumb, { BreadCrumbVariantEnum } from 'components/BreadCrumb';
 import { DocumentPathContext } from 'contexts/DocumentPathContext';
+import { useTranslation } from 'react-i18next';
 
 interface IEntitySelectModalProps {
   isOpen: boolean;
@@ -38,6 +39,10 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
   headerText,
   q,
 }) => {
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'documentTab',
+  });
+  const { t: tc } = useTranslation('common');
   const { channelId } = useParams();
   const { control, watch, resetField } = useForm<IForm>({
     defaultValues: { entitySearch: '' },
@@ -62,19 +67,19 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
 
   const integrationHeadingMapping = {
     site: {
-      headerText: headerText || 'Select base site',
-      placeholder: 'Search a sharepoint site',
-      btnLabel: 'Select site',
+      headerText: headerText || t('selectBaseSite'),
+      placeholder: t('searchSitePlaceholder'),
+      btnLabel: t('selectSiteCTA'),
     },
     drive: {
-      headerText: headerText || 'Select base drive',
-      placeholder: 'Search a sharepoint drive',
-      btnLabel: 'Select drive',
+      headerText: headerText || t('selectBaseDrive'),
+      placeholder: t('searchDrivePlaceholder'),
+      btnLabel: t('selectDriveCTA'),
     },
     folder: {
-      headerText: headerText || 'Select base folders',
-      placeholder: 'Search a sharepoint folders',
-      btnLabel: 'Select folders',
+      headerText: headerText || t('selectBaseFolder'),
+      placeholder: t('searchFolderPlaceholder'),
+      btnLabel: t('selectFolderCTA'),
     },
   };
 
@@ -102,7 +107,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
         accessorKey: 'name',
         header: () => (
           <div className="font-bold text-neutral-500">
-            File Name ({totalRows})
+            {t('nameColumn', { totalRows })}
           </div>
         ),
         cell: (info) => (
@@ -120,7 +125,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
       {
         accessorKey: 'createdAt',
         header: () => (
-          <div className="font-bold text-neutral-500">Created At</div>
+          <div className="font-bold text-neutral-500">{t('createdAt')}</div>
         ),
         cell: (info) => (
           <span>
@@ -272,7 +277,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
       {/* Footer */}
       <div className="flex gap-4 justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
         <Button
-          label="Cancel"
+          label={tc('cancel')}
           variant={ButtonVariant.Secondary}
           onClick={closeModal}
           size={Size.Small}
