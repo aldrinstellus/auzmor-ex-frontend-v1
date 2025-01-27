@@ -329,19 +329,8 @@ export const useChannelDocUpload = (channelId: string) => {
   };
 
   const finishUpload = async (payload: {
-    fileName: string;
-    etag: string;
-    id: string;
-    ownerName: string;
-    externalModifiedBy: string;
-    externalCreatedAt: string;
-    externalUpdatedAt: string;
-    externalParentId: string;
-    externalUrl: string;
-    mimeType: string;
-    size: number;
+    uploadResponse: string;
     rootFolderId: string;
-    parentFolderId: string;
   }) => {
     await apiService.post(`/channels/${channelId}/file/upload`, payload);
   };
@@ -381,20 +370,8 @@ export const useChannelDocUpload = (channelId: string) => {
                   BackgroundJobStatusEnum.CompletedSuccessfully,
                 );
                 finishUpload({
-                  fileName: response?.name,
-                  etag: response?.eTag.match(/\{([A-F0-9\-]+)\}/)[1],
-                  id: response?.id,
-                  ownerName: response?.createdBy?.user?.displayName,
-                  externalModifiedBy:
-                    response?.lastModifiedBy?.user?.displayName,
-                  externalCreatedAt: response?.createdDateTime,
-                  externalUpdatedAt: response?.lastModifiedDateTime,
-                  externalParentId: response?.parentReference?.id,
-                  externalUrl: response?.webUrl,
-                  mimeType: response?.file?.mimeType,
-                  size: response?.size,
+                  uploadResponse: JSON.stringify(response),
                   rootFolderId: file.rootFolderId,
-                  parentFolderId: file.parentFolderId,
                 }).then(() => {
                   updateJobProgress(
                     jobId,
