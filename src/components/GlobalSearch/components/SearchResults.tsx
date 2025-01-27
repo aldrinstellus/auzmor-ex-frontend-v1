@@ -7,7 +7,7 @@ import {
   ISearchResultType,
 } from 'interfaces/search';
 import { sumBy } from 'lodash';
-import React, { FC, useEffect, useRef } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import useNavigate from 'hooks/useNavigation';
 import { getLearnUrl } from 'utils/misc';
@@ -25,6 +25,7 @@ import IconButton, {
   Variant as IconButtonVariant,
 } from 'components/IconButton';
 import useRole from 'hooks/useRole';
+import Spinner from 'components/Spinner';
 
 interface ISearchResultsProps {
   searchResults: ISearchResultGroup[];
@@ -33,6 +34,12 @@ interface ISearchResultsProps {
   onClose?: () => void;
   selectedIndex?: number;
   updateSearchQuery: (query: string) => void;
+}
+
+interface IDeletedResult {
+  module: ISearchResultType;
+  id: string;
+  resultClickedId: string;
 }
 
 const getFormattedDate = (datestr: string, timezone: string | undefined) => {
@@ -79,6 +86,10 @@ const SearchResults: FC<ISearchResultsProps> = ({
   const navigate = useNavigate();
   const { getApi } = usePermissions();
   const itemRefs = useRef<Array<HTMLLIElement>>([]);
+
+  const [deletedResult, setDeletedResult] = useState<IDeletedResult | null>(
+    null,
+  );
   const { user } = useAuth();
   const { isAdmin } = useRole();
 
@@ -99,6 +110,9 @@ const SearchResults: FC<ISearchResultsProps> = ({
     onSuccess: async () => {
       await queryClient.invalidateQueries(['global-recent-search-terms']);
     },
+    onSettled: () => {
+      setDeletedResult(null);
+    },
   });
 
   const deleteRecentClickedResultApi = getApi(
@@ -109,7 +123,22 @@ const SearchResults: FC<ISearchResultsProps> = ({
     onSuccess: async () => {
       await queryClient.invalidateQueries(['global-recent-clicked-results']);
     },
+    onSettled: () => {
+      setDeletedResult(null);
+    },
   });
+
+  const isDeleting =
+    deleteRecentSearchTermMutation.isLoading ||
+    deleteRecentClickedResultMutation.isLoading;
+
+  function isResultDeleted(result: ISearchResult) {
+    if (deletedResult?.module === ISearchResultType.KEYWORD) {
+      return deletedResult?.id === result.id;
+    } else {
+      return deletedResult?.resultClickedId === result.resultClickedId;
+    }
+  }
 
   useEffect(() => {
     if (itemRefs.current[selectedIndex]) {
@@ -485,15 +514,20 @@ const SearchResults: FC<ISearchResultsProps> = ({
                         aria-selected={selectedIndex === index}
                       >
                         {getEntityRenderer(result, entityType, isRecent)}
-                        {isRecent ? (
+                        {isRecent && !isDeleting ? (
                           <IconButton
                             icon={'close'}
                             className="hidden group-hover/result:block !rounded-none !p-0.5"
-                            color="!text-black hover:!text-primary-500"
+                            color="!text-black hover:!text-black"
                             size={12}
                             variant={IconButtonVariant.Secondary}
                             onClick={(e) => {
                               e.stopPropagation();
+                              setDeletedResult({
+                                module: entity.module,
+                                id: result.id,
+                                resultClickedId: result.resultClickedId,
+                              });
                               if (entity.module === ISearchResultType.KEYWORD)
                                 deleteRecentSearchTermMutation.mutate(
                                   result.id,
@@ -504,6 +538,11 @@ const SearchResults: FC<ISearchResultsProps> = ({
                                 );
                             }}
                           />
+                        ) : null}
+                        {isRecent && isDeleting && isResultDeleted(result) ? (
+                          <div className="relative w-4 h-4">
+                            <Spinner className="absolute -top-1 -right-1 !text-black" />
+                          </div>
                         ) : null}
                       </li>
                     );

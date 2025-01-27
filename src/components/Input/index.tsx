@@ -220,7 +220,7 @@ const Input: FC<InputProps> = ({
           />
           {isClearable && !!field.value && (
             <div
-              className="absolute right-2 p-2"
+              className="absolute group right-1 p-1 w-6"
               onClick={() => field.onChange('')}
             >
               {clearIcon || (

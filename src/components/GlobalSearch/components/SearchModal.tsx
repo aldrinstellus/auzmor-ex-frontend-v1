@@ -115,7 +115,14 @@ const SearchModal: FC<ISearchModalProps> = ({ onClose }) => {
       placeholder: t('searchPlaceholder'),
       inputClassName: 'border-none !p-0 rounded-none text-base font-medium',
       autofocus: true,
-      clearIcon: <Icon name="closeCircle2" size={16} className="-mr-3" />,
+      clearIcon: (
+        <Icon
+          name="closeCircle2"
+          size={16}
+          className="-mr-1"
+          color="!text-neutral-500"
+        />
+      ),
       isClearable: true,
     },
   ];
@@ -158,7 +165,7 @@ const SearchModal: FC<ISearchModalProps> = ({ onClose }) => {
       onKeyDown={handleKeyDown}
       closeModal={onClose}
     >
-      <div className="flex items-center w-full h-[60px] px-3 py-3 gap-3 bg-white rounded-[10px] shadow">
+      <div className="flex items-center w-full h-[60px] px-3 pr-1 py-3 gap-3 bg-white rounded-[10px] shadow">
         <Icon name="search" hover={false} size={24} />
         <div className="flex grow">
           <Layout fields={fields} className="w-full" />
