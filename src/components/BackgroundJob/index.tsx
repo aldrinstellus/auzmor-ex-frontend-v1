@@ -12,7 +12,7 @@ interface IindexProps {}
 
 const BackgroundJob: FC<IindexProps> = ({}) => {
   const [right, setRight] = useState<number>(2);
-  const { variant } = useBackgroundJobStore();
+  const { config } = useBackgroundJobStore();
 
   useEffect(() => {
     try {
@@ -31,7 +31,7 @@ const BackgroundJob: FC<IindexProps> = ({}) => {
   });
 
   const Job: any = useMemo(() => {
-    switch (variant) {
+    switch (config.variant) {
       case BackgroundJobVariantEnum.ChannelDocumentUpload:
         return ChannelDocUploadJob;
       case BackgroundJobVariantEnum.ChannelDocumentSync:
@@ -39,7 +39,7 @@ const BackgroundJob: FC<IindexProps> = ({}) => {
       default:
         return <></>;
     }
-  }, [variant]);
+  }, [config]);
 
   return (
     <div

@@ -23,7 +23,7 @@ const AppShell: FC<IAppShellProps> = ({ children }) => {
   const { pathname } = useLocation();
   const { isLxp } = useProduct();
   const { user } = useAuth();
-  const { show: showBackgroundJobs } = useBackgroundJobStore();
+  const { config: backgroundJobConfig } = useBackgroundJobStore();
 
   const wraperStyle = clsx({
     'flex w-full justify-center': true,
@@ -59,7 +59,7 @@ const AppShell: FC<IAppShellProps> = ({ children }) => {
         <div className={wraperStyle}>
           <div className={containerStyle}>
             {children}
-            {showBackgroundJobs && <BackgroundJob />}
+            {backgroundJobConfig.show && <BackgroundJob />}
           </div>
         </div>
         {showJobProgress && <JobProgress />}

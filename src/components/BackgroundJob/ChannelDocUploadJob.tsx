@@ -9,13 +9,12 @@ interface IChannelDocUploadJobProps {}
 const ChannelDocUploadJob: FC<IChannelDocUploadJobProps> = ({}) => {
   const [showProgressbar, setShowProgressbar] = useState(true);
   const {
-    isExpanded,
+    config,
     jobTitle,
     progress,
     jobs,
     setJobTitle,
     setProgress,
-    jobsRenderer,
     setIsExpanded,
     reset,
   } = useBackgroundJobStore();
@@ -45,7 +44,7 @@ const ChannelDocUploadJob: FC<IChannelDocUploadJobProps> = ({}) => {
   const contentStyle = clsx({
     'flex flex-col w-full overflow-y-auto px-4 transition-all duration-300 !max-h-[168px]':
       true,
-    'h-0': !isExpanded,
+    'h-0': !config.isExpanded,
   });
 
   return (
@@ -58,8 +57,11 @@ const ChannelDocUploadJob: FC<IChannelDocUploadJobProps> = ({}) => {
           <Icon
             name="arrowDown"
             size={24}
-            onClick={() => setIsExpanded(!isExpanded)}
-            className={clsx({ 'rotate-0': isExpanded, '-rotate-180': true })}
+            onClick={() => setIsExpanded(!config.isExpanded)}
+            className={clsx({
+              'rotate-0': config.isExpanded,
+              '-rotate-180': true,
+            })}
           />
           {progress === 100 && <Icon name="close" size={20} onClick={reset} />}
         </div>
@@ -78,8 +80,8 @@ const ChannelDocUploadJob: FC<IChannelDocUploadJobProps> = ({}) => {
         )}
       </div>
       <div className={contentStyle}>
-        {jobsRenderer
-          ? jobsRenderer(Object.keys(jobs).map((key) => jobs[key]))
+        {config.jobsRenderer
+          ? config.jobsRenderer(Object.keys(jobs).map((key) => jobs[key]))
           : Object.keys(jobs).map((key) => (
               <Fragment key={key}>
                 {jobs[key].renderer(

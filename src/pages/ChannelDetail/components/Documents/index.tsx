@@ -101,16 +101,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const { uploadMedia } = useChannelDocUpload(channelId);
   const { filters } = useAppliedFiltersStore();
   const { setRootFolderId } = useChannelStore();
-  const {
-    setJobs,
-    getIconFromStatus,
-    setJobTitle,
-    setJobsRenderer,
-    setShow,
-    setIsExpanded,
-    setVariant,
-    reset,
-  } = useBackgroundJobStore();
+  const { config, setConfig, setJobs, getIconFromStatus, setJobTitle, reset } =
+    useBackgroundJobStore();
   const folderInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [docType, applyDocumentSearch, documentSearch, byTitle] = watch([
@@ -765,6 +757,19 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     }
   }, [items]);
 
+  // Reset sync jobs on unmount
+  useEffect(
+    () => () => {
+      if (
+        config.variant === BackgroundJobVariantEnum.ChannelDocumentSync &&
+        !!config.show
+      ) {
+        reset();
+      }
+    },
+    [],
+  );
+
   // Component to render before connection.
   const NoConnection = () =>
     permissions.includes(ChannelPermissionEnum.CanConnectChannelDoc) ? (
@@ -906,9 +911,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const handleSyncing = () => {
     reset();
     setJobTitle('Sync in progress');
-    setIsExpanded(false);
-    setShow(true);
-    setVariant(BackgroundJobVariantEnum.ChannelDocumentSync);
+    setConfig({
+      variant: BackgroundJobVariantEnum.ChannelDocumentSync,
+      show: true,
+      isExpanded: false,
+    });
     let intervalId: any = null;
     intervalId = setInterval(async () => {
       const response = await getApi(ApiEnum.GetChannelDocSyncStatus)({
@@ -968,7 +975,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             rootFolderId: string;
           }[] = [];
 
-          setJobTitle('Upload in progress...');
+          setConfig({
+            variant: BackgroundJobVariantEnum.ChannelDocumentUpload,
+            show: true,
+            isExpanded: false,
+          });
 
           let index = 0;
           const jobs: { [key: string]: any } = {};
@@ -1022,9 +1033,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
 
           const allFiles: File[] = Array.from(e.target.files);
 
+          setConfig({
+            variant: BackgroundJobVariantEnum.ChannelDocumentUpload,
+            show: true,
+            isExpanded: false,
+            jobsRenderer: folderUploadJobRenderer,
+          });
           setJobTitle('Analysing folder...');
-          setJobsRenderer(folderUploadJobRenderer);
-          setShow(true);
 
           for (const file of allFiles) {
             const folderNames = file.webkitRelativePath.split('/').slice(0, -1);

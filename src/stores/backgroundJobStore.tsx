@@ -33,16 +33,19 @@ export enum BackgroundJobVariantEnum {
 }
 
 interface IBackgroundJobState {
-  variant: BackgroundJobVariantEnum;
-  show: boolean;
+  config: {
+    variant: BackgroundJobVariantEnum;
+    show: boolean;
+    isExpanded: boolean;
+    jobsRenderer?: (jobs: BackgroundJob[]) => ReactNode;
+  };
   jobTitle: string;
   progress: number;
-  isExpanded: boolean;
   jobs: Record<string, BackgroundJob>;
-  jobsRenderer?: (jobs: BackgroundJob[]) => ReactNode;
 }
 
 interface IBackgroundJobActions {
+  setConfig: (config: IBackgroundJobState['config']) => void;
   setVariant: (variant: BackgroundJobVariantEnum) => void;
   setShow: (flag: boolean) => void;
   setJobTitle: (title: string) => void;
@@ -61,26 +64,34 @@ interface IBackgroundJobActions {
     status: BackgroundJobStatusEnum,
     progress: number,
   ) => ReactNode;
+  getConfig: () => IBackgroundJobState['config'];
   reset: () => void;
 }
 
 export const useBackgroundJobStore = create<
   IBackgroundJobState & IBackgroundJobActions
 >((set, get) => ({
-  variant: BackgroundJobVariantEnum.ChannelDocumentUpload,
-  show: false,
-  jobTitle: 'Uploading in progress',
-  progress: 75,
-  isExpanded: false,
+  config: {
+    variant: BackgroundJobVariantEnum.ChannelDocumentUpload,
+    show: false,
+    isExpanded: false,
+  },
+  jobTitle: '',
+  progress: 0,
   jobs: {},
 
-  setVariant: (variant) => set({ variant }),
-  setShow: (flag) => set({ show: flag }),
+  setConfig: (newConfig) => set(() => ({ config: { ...newConfig } })),
+  setVariant: (variant) =>
+    set(({ config }) => ({ config: { ...config, variant } })),
+  setShow: (flag) =>
+    set(({ config }) => ({ config: { ...config, show: flag } })),
   setJobTitle: (title) => set({ jobTitle: title }),
   setProgress: (progress) => set({ progress: progress }),
-  setIsExpanded: (flag) => set({ isExpanded: flag }),
+  setIsExpanded: (flag) =>
+    set(({ config }) => ({ config: { ...config, isExpanded: flag } })),
   setJobs: (jobs) => set({ jobs }),
-  setJobsRenderer: (renderer) => set({ jobsRenderer: renderer }),
+  setJobsRenderer: (renderer) =>
+    set(({ config }) => ({ config: { ...config, jobsRenderer: renderer } })),
   getJob: (jobId) => get().jobs[jobId],
   updateJob: (job) => set(({ jobs }) => ({ jobs: { ...jobs, [job.id]: job } })),
   updateJobProgress: (jobId, progress, status) =>
@@ -133,14 +144,17 @@ export const useBackgroundJobStore = create<
         );
     }
   },
+  getConfig: () => get().config,
   reset: () =>
     set({
-      variant: BackgroundJobVariantEnum.ChannelDocumentUpload,
-      show: false,
+      config: {
+        variant: BackgroundJobVariantEnum.ChannelDocumentUpload,
+        show: false,
+        isExpanded: false,
+        jobsRenderer: () => <></>,
+      },
       jobTitle: '',
       progress: 0,
-      isExpanded: true,
       jobs: {},
-      jobsRenderer: undefined,
     }),
 }));
