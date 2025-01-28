@@ -8,6 +8,7 @@ import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { useMutation } from '@tanstack/react-query';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import queryClient from 'utils/queryClient';
+import { useTranslation } from 'react-i18next';
 
 type AppProps = {
   data: IChannel;
@@ -15,6 +16,9 @@ type AppProps = {
 };
 
 const DocVisibilityRow: FC<AppProps> = ({ data, canEdit }) => {
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'documentSetting.docVisibilityRow',
+  });
   const { channelId = '' } = useParams();
   const { getApi } = usePermissions();
   const updateChannel = getApi(ApiEnum.UpdateChannel);
@@ -45,7 +49,7 @@ const DocVisibilityRow: FC<AppProps> = ({ data, canEdit }) => {
         bgColor: '!bg-red-50',
       }}
       isEditButton={false}
-      label={<div className="my-6">Show/Hide Documents</div>}
+      label={<div className="my-6">{t('title')}</div>}
       isEditMode={true}
       value={!!data.settings?.restriction?.enableDocuments}
       dataTestId=""

@@ -18,6 +18,7 @@ import moment from 'moment';
 import { parseNumber } from 'react-advanced-cropper';
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import { isTrim } from '../../utils';
+import { useTranslation } from 'react-i18next';
 
 export enum FilterKey {
   departments = 'departments',
@@ -50,6 +51,12 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
   showTitleFilter = true,
   changeView,
 }) => {
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'documentTab',
+  });
+  const { t: ts } = useTranslation('components', {
+    keyPrefix: 'Sort',
+  });
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const { filters, setFilters, updateFilter, clearFilters } =
     useAppliedFiltersStore();
@@ -138,12 +145,12 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
   const menuItems = [
     {
       icon: 'list',
-      label: 'List',
+      label: t('list'),
       onClick: () => changeView('LIST'),
     },
     {
       icon: 'grid',
-      label: 'Grid',
+      label: t('grid'),
       onClick: () => changeView('GRID'),
     },
   ];
@@ -151,25 +158,25 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
   const sortOptions = [
     {
       icon: 'sortByAcs',
-      label: 'A to Z',
+      label: ts('aToZ'),
       key: 'name:asc',
       dataTestId: 'sortBy-asc',
     },
     {
       icon: 'sortByDesc',
-      label: 'Z to A',
+      label: ts('zToA'),
       key: 'name:desc',
       dataTestId: 'sortBy-desc',
     },
     {
       icon: 'calendar',
-      label: 'Date modified',
+      label: ts('dateModified'),
       key: 'external_updated_at',
       dataTestId: 'sortby-dateadded',
     },
     {
       icon: 'vuesax',
-      label: 'Size',
+      label: ts('size'),
       key: 'size:asc',
       dataTestId: 'sortBy-size',
     },
@@ -202,7 +209,8 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
                       value: 'file',
                       render: () => (
                         <div className="flex gap-2 font-medium text-xs">
-                          <Icon name={getIconFromMime()} size={16} /> File
+                          <Icon name={getIconFromMime()} size={16} />{' '}
+                          {t('file')}
                         </div>
                       ),
                     },
@@ -210,7 +218,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
                       value: 'folder',
                       render: () => (
                         <div className="flex gap-2 font-medium text-xs op">
-                          <Icon name="folder" size={16} /> Folder
+                          <Icon name="folder" size={16} /> {t('folder')}
                         </div>
                       ),
                     },
@@ -219,7 +227,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
                   suffixIcon: !!docType && <></>,
                   isClearable: !!docType,
                   clearIcon: <Icon name="close" size={16} />,
-                  placeholder: 'Type',
+                  placeholder: 'Select',
                   showSearch: false,
                   selectClassName:
                     '[&>span.ant-select-clear]:!opacity-100 [&>span.ant-select-clear]:!w-4 [&>span.ant-select-clear]:!h-4 [&>span.ant-select-clear]:!-mt-2 [&>div.ant-select-selector]:!h-9 [&>div.ant-select-selection-placeholder]:!h-9 [&_input]:!h-9 [&_input]:!p-0 [&_span.ant-select-selection-placeholder]:!pl-0',
@@ -241,7 +249,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
             {showTitleFilter && !hideFilter && (
               <Button
                 variant={ButtonVariant.Secondary}
-                label={isTrim('Title only')}
+                label={t('titleOnlyCTA')}
                 className={`capitalize ${
                   !!byTitle ? selectedButtonClassName : regularButtonClassName
                 }`}

@@ -116,6 +116,78 @@
       "rejectSuccess": "Request to join channel rejected successfully"
     }
   },
+  "documentTab": {
+    "title": "Documents",
+    "reAuthorizeForAdmin": "The credentials for SharePoint have expired. Please log in again to continue ",
+    "reAuthorizeCTA": "Reauthorize",
+    "reAuthorizeForOthersFirstHalf": "There is a sync issue with SharePoint. Please contact ",
+    "reAuthorizeForOthersSecondHalf": "or support team to resolve this.",
+    "addNewPopupLabelCTA": "New",
+    "addNewPopupBanner": "Add new",
+    "uploadNewPopupBanner": "Upload new",
+    "folder": "Folder",
+    "file": "File",
+    "recentlyAdded": "Recently added",
+    "lastUpdated": "Last Updated",
+    "addedOn": "added {{date}}",
+    "updated": "updated {{date}}",
+    "updatedOn": "Updated on {{date}}",
+    "updatedBy": "by {{name}}",
+    "docSearchPlaceholder": "Search documents",
+    "allItemTitle": "All files",
+    "titleOnlyCTA": "Title only",
+    "list": "List",
+    "grid": "Grid",
+    "activateFolder": "Activate folder",
+    "activateFolderDescription": "Activate your preferred site from sharepoint to create, share and collaborate on files and folders in this channel.",
+    "selectExistingCTA": "Select existing",
+    "enableIntegration": "Enable integrations to view your files",
+    "enableIntegrationDescription": "To view your files here, you need to enable SharePoint integration",
+    "sharepointCTA": "SharePoint",
+    "noDataFound": "No documents found",
+    "selectBaseSite": "Select base site",
+    "searchSitePlaceholder": "Search a sharepoint site",
+    "selectSiteCTA": "Select site",
+    "selectBaseDrive": "Select base drive",
+    "searchDrivePlaceholder": "Search a sharepoint drive",
+    "selectDriveCTA": "Select drive",
+    "selectBaseFolder": "Select base folders",
+    "searchFolderPlaceholder": "Search a sharepoint folders",
+    "selectFolderCTA": "Select folders",
+    "nameColumn": "File Name {{totalRows}}",
+    "createdAt": "Created At",
+    "addFolderTitle": "Add new folder",
+    "folderNameInputLabel": "Folder name",
+    "folderNameInputPlaceholder": "Type folder name",
+    "emptyFolderNameError": "Folder name can not ne empty",
+    "charLimitFolderNameError": "Folder name can not exceed {{limit}} character",
+    "rename": "Rename",
+    "download": "Download",
+    "owner": "Owner",
+    "location": "Location",
+    "renameInputPlaceholder": "Type new name",
+    "emptyRenameError": "Name can not ne empty",
+    "charLimitRenameError": "Name can not exceed {{limit}} character",
+    "deleteBoxTitle": "Delete file?",
+    "deleteDescription": "Are you sure you want to delete? This cannot be undone",
+    "createFolder": {
+      "success": "New folder added successfully",
+      "failure": "Folder creation failed"
+    },
+    "deleteFile": {
+      "success": "“{{name}}” file deleted",
+      "failure": "Failed to delete {{name}}"
+    },
+    "renameFile": {
+      "success": "File renamed successfully",
+      "failure": "File rename failed"
+    },
+    "renameFolder": {
+      "success": "Folder renamed successfully",
+      "failure": "Folder rename failed"
+    },
+    "accessDenied": "Access Denied"
+  },
   "memberTab": {
     "title": "Members",
     "addMemberCTA": "Add Member",
@@ -187,6 +259,25 @@
       "canPostDescription": "Anyone can post and comment.",
       "canCommentDescription": "Anyone can post and comment, but announcements are restricted to admins.",
       "canAnnouncementDescription": "Anyone can comment, but announcements are restricted to admins."
+    },
+    "integrationSetting": {
+      "title": "Integration settings",
+      "activated": "Activated",
+      "description": "Choose your preferred folder that will be used to create, share, and collaborate on files and folders in this channel.",
+      "lastSync": "Last sync: {{date}}",
+      "connect": "Connect",
+      "disConnect": "Disconnect",
+      "reSync": "Re-sync"
+    },
+    "documentSetting": {
+      "title": "Document settings",
+      "docVisibilityRow": {
+        "title": "Show/Hide Documents"
+      },
+      "uploadControlRow": {
+        "title": "Who Can Upload Documents"
+      },
+      "DocAccessLevelRow": {}
     }
   }
 }

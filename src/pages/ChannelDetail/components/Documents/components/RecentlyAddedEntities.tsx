@@ -15,6 +15,7 @@ import FilePreviewModal from './FilePreviewModal';
 import useModal from 'hooks/useModal';
 import Truncate from 'components/Truncate';
 import { ChannelPermissionEnum } from '../../utils/channelPermission';
+import { useTranslation } from 'react-i18next';
 
 interface IRecentlyAddedEntitiesProps {
   permissions: ChannelPermissionEnum[];
@@ -23,6 +24,9 @@ interface IRecentlyAddedEntitiesProps {
 const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({
   permissions,
 }) => {
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'documentTab',
+  });
   const { items, appendItem } = useContext(DocumentPathContext);
   const { channelId } = useParams();
   const [filePreview, openFilePreview, closeFilePreview, filePreviewProps] =
@@ -54,12 +58,13 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({
                 text={info.row.original?.name}
                 className="text-xs font-medium text-neutral-900 w-[176px]"
               />
-              <div className="text-xxs font-medium text-neutral-500">
-                added{' '}
-                {info.row.original.externalCreatedAt
-                  ? humanizeTime(info.row.original.externalCreatedAt)
-                  : 'while ago'}
-              </div>
+              {info?.row?.original?.externalCreatedAt && (
+                <div className="text-xxs font-medium text-neutral-500">
+                  {t('addedOn', {
+                    date: humanizeTime(info.row.original.externalCreatedAt),
+                  })}
+                </div>
+              )}
             </div>
           </div>
         ),
@@ -112,7 +117,9 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({
 
   return (
     <div className="flex flex-col gap-6">
-      <p className="text-base font-bold text-neutral-900">Recently added</p>
+      <p className="text-base font-bold text-neutral-900">
+        {t('recentlyAdded')}
+      </p>
       <div className="flex gap-6">
         <DataGrid
           {...dataGridProps}

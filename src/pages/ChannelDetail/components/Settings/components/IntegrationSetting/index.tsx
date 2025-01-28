@@ -22,10 +22,12 @@ import moment from 'moment';
 import DocumentPathProvider from 'contexts/DocumentPathContext';
 import queryClient from 'utils/queryClient';
 import Spinner from 'components/Spinner';
+import { useTranslation } from 'react-i18next';
 
 interface IIntegrationSettingProps {}
 
 const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
+  const { t } = useTranslation('channelDetail');
   const { getApi } = usePermissions();
   const { channelId } = useParams();
   const [isOpen, openModal, closeModal] = useModal();
@@ -39,7 +41,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
     },
     [DocIntegrationEnum.Sharepoint]: {
       icon: 'sharePoint',
-      label: 'Sharepoint',
+      label: t('sharepointCTA'),
     },
   };
 
@@ -155,7 +157,9 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
       label: (
         <div className="flex items-center gap-2.5">
           <Icon name="lock-open" size={16} color="text-neutral-900" />
-          <span className="font-medium text-xs">Disconnect</span>
+          <span className="font-medium text-xs">
+            {t('setting.integrationSetting.disConnect')}
+          </span>
         </div>
       ),
       onClick: () => {
@@ -168,7 +172,9 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
       label: (
         <div className="flex items-center gap-2.5">
           <Icon name="refreshCircle" size={16} color="text-neutral-900" />
-          <span className="font-medium text-xs">Re-sync</span>
+          <span className="font-medium text-xs">
+            {t('setting.integrationSetting.reSync')}
+          </span>
         </div>
       ),
       onClick: () => {
@@ -190,7 +196,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
   return (
     <div className="flex flex-col gap-3">
       <Header
-        title="Integration settings"
+        title={t('setting.integrationSetting.title')}
         dataTestId="integration-settings"
         className="!mb-0"
       />
@@ -203,13 +209,12 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
             </span>
             {isConnectionMade && (
               <div className="text-primary-500 font-bold text-xxs bg-primary-50 px-3 py-1 border border-primary-500 rounded-xl">
-                Activated
+                {t('setting.integrationSetting.activated')}
               </div>
             )}
           </div>
           <p className="text-xs">
-            Choose your preferred folder that will be used to create, share, and
-            collaborate on files and folders in this channel.
+            {t('setting.integrationSetting.description')}
           </p>
         </div>
         <div className="flex flex-col gap-3 flex-grow">
@@ -218,13 +223,15 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
               {deleteConnectionMutation.isLoading && (
                 <Spinner className="!w-4 !h-4" />
               )}{' '}
-              Last sync: {moment(lastSynced).format('Do MMM YYYY')}
+              {t('setting.integrationSetting.lastSync', {
+                date: moment(lastSynced).format('Do MMM YYYY'),
+              })}
             </div>
           )}
           <div className="flex gap-6 w-full">
             {isConnectionMade && !isBaseFolderSet && (
               <Button
-                label="Select existing"
+                label={t('selectExistingCTA')}
                 variant={ButtonVariant.Secondary}
                 size={Size.Small}
                 onClick={openModal}
@@ -233,7 +240,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
             )}
             {!isConnectionMade && (
               <Button
-                label="Connect"
+                label={t('setting.integrationSetting.connect')}
                 size={Size.Small}
                 onClick={() =>
                   window.location.assign(getLearnUrl('/settings/market-place'))
@@ -243,7 +250,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
             )}
             {integrationType !== DocIntegrationEnum.Sharepoint && (
               <Button
-                label="Add new"
+                label={t('addNewPopupBanner')}
                 leftIcon="plus"
                 size={Size.Small}
                 onClick={() => {}}

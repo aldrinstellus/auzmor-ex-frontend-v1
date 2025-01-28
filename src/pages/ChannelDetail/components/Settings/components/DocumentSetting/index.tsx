@@ -5,6 +5,7 @@ import { IChannel } from 'stores/channelStore';
 import DocVisibilityRow from './DocVisibilityRow';
 import UploadControlRow from './UploadControlRow';
 import DocAccessLevelRow from './DocAccessLevelRow';
+import { useTranslation } from 'react-i18next';
 
 type DocumentSettingProps = {
   channelData: IChannel;
@@ -15,10 +16,13 @@ const DocumentSetting: FC<DocumentSettingProps> = ({
   channelData,
   canEdit,
 }) => {
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'documentSetting',
+  });
   return (
     <div className="flex flex-col gap-3">
       <Header
-        title="Document settings"
+        title={t('title')}
         dataTestId="privacy-settings"
         className="!mb-0"
       />

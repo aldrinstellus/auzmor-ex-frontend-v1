@@ -3,6 +3,7 @@ import { getIconFromMime } from './Doc';
 import Icon from 'components/Icon';
 import moment from 'moment';
 import HighlightText from 'components/HighlightText';
+import { useTranslation } from 'react-i18next';
 
 type DocSearchProps = {
   data: Doc;
@@ -15,6 +16,9 @@ const DocSearchRow = ({
   searchQuery = '',
   onClick = () => {},
 }: DocSearchProps) => {
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'documentTab',
+  });
   const iconName = data?.isFolder ? 'folder' : getIconFromMime(data?.mimeType);
   return (
     <div
@@ -28,8 +32,11 @@ const DocSearchRow = ({
           <HighlightText text={data?.name || ''} subString={searchQuery} />
         </div>
         <div className="text-xs">
-          Updated on {moment(data?.updatedAt).format('DD MMM YYYY')}{' '}
-          {data?.externalModifiedBy && `by ${data?.externalModifiedBy}`}
+          {t('updatedOn', {
+            date: moment(data?.updatedAt).format('DD MMM YYYY'),
+          })}
+          {data?.externalModifiedBy &&
+            t('updatedBy', { name: data?.externalModifiedBy })}
         </div>
       </div>
     </div>

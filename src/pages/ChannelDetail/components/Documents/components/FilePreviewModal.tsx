@@ -11,6 +11,7 @@ import Spinner from 'components/Spinner';
 import moment from 'moment';
 import { downloadFromUrl } from 'utils/misc';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import { useTranslation } from 'react-i18next';
 
 interface IFilePreviewProps {
   file: Doc;
@@ -25,6 +26,9 @@ const FilePreview: FC<IFilePreviewProps> = ({
   canDownload = false,
   closeModal,
 }) => {
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'documentTab',
+  });
   const { getApi } = usePermissions();
   const { channelId } = useParams();
 
@@ -85,22 +89,16 @@ const FilePreview: FC<IFilePreviewProps> = ({
       <div className="flex rounded-9xl p-6 gap-2 items-center mx-4 mt-4 bg-[#F0F6FE]">
         <Avatar size={40} name={file.ownerName} image={file.ownerImage} />
         <div className="flex flex-grow justify-between">
-          <div className="flex flex-col">
-            <div className="text-sm font-bold text-neutral-900">
-              {file.ownerName}
-            </div>
-            {/* <div className="text-xs text-[#384D6F]">
-              Customer Success Manager
-            </div> */}
+          <div className="flex flex-col text-sm font-bold text-neutral-900">
+            {file.ownerName}
           </div>
           <div className="flex flex-col items-end">
             <div className="text-xs text-[#384D6F]">
-              Last Updated:{' '}
+              {t('lastUpdated')}:{' '}
               <span>
                 {moment(file.externalUpdatedAt).format('MMM DD, YYYY')}
               </span>
             </div>
-            {/* <div className="text-xs text-[#384D6F]">8 min read</div> */}
           </div>
         </div>
       </div>

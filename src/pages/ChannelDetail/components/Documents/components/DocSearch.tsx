@@ -11,6 +11,7 @@ import DocSearchRow from './DocSearchRow';
 import { Doc } from 'interfaces';
 import Skeleton from 'react-loading-skeleton';
 import NoDataFound from 'components/NoDataFound';
+import { useTranslation } from 'react-i18next';
 
 interface IDocSearchProps {
   control: Control<IForm, any>;
@@ -25,6 +26,9 @@ const DocSearch: FC<IDocSearchProps> = ({
   onEnter,
   onClick,
 }) => {
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'documentTab',
+  });
   const documentSearch = watch('documentSearch');
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { getApi } = usePermissions();
@@ -74,7 +78,7 @@ const DocSearch: FC<IDocSearchProps> = ({
             id: 'document-deep-search-input',
             control,
             name: 'documentSearch',
-            placeholder: 'Search documents',
+            placeholder: t('docSearchPlaceholder'),
             inputClassName: 'text-sm !py-2 h-10',
             leftIcon: 'search',
             isClearable: true,

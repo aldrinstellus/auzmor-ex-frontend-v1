@@ -108,6 +108,7 @@ const ChannelDetail: FC<AppProps> = ({
     );
 
   const showBanner = (tab: ChannelDetailTabsEnum) => {
+    console.log(permissions);
     switch (tab) {
       case ChannelDetailTabsEnum.Home:
         if (permissions.includes(ChannelPermissionEnum.CanAccessHomeTab)) {

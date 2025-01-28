@@ -128,7 +128,8 @@ export const getChannelPermissions: (
                 permission === ChannelPermissionEnum.CanReauthorize &&
                 !isSuperAdmin
               )
-                return true;
+                return false;
+              return true;
             });
           } else if (channelRole === CHANNEL_ROLE.Admin) {
             // 3 -> LXP -> Admin view - > Public channel -> Joined -> Channel Role -> Channel Admin
@@ -160,7 +161,8 @@ export const getChannelPermissions: (
                 permission === ChannelPermissionEnum.CanReauthorize &&
                 !isSuperAdmin
               )
-                return true;
+                return false;
+              return true;
             });
           }
         }
@@ -195,7 +197,8 @@ export const getChannelPermissions: (
               permission === ChannelPermissionEnum.CanReauthorize &&
               !isSuperAdmin
             )
-              return true;
+              return false;
+            return true;
           });
         } else {
           if (channelRole === CHANNEL_ROLE.Member) {
@@ -229,7 +232,8 @@ export const getChannelPermissions: (
                 permission === ChannelPermissionEnum.CanReauthorize &&
                 !isSuperAdmin
               )
-                return true;
+                return false;
+              return true;
             });
           } else if (channelRole === CHANNEL_ROLE.Admin) {
             // 6 -> LXP -> Admin view - > Private channel -> Joined -> Channel Role -> Channel Admin
@@ -262,7 +266,8 @@ export const getChannelPermissions: (
                 permission === ChannelPermissionEnum.CanReauthorize &&
                 !isSuperAdmin
               )
-                return true;
+                return false;
+              return true;
             });
           }
         }
