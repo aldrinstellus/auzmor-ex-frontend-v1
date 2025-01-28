@@ -137,20 +137,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const createFolderMutation = useMutation({
     mutationKey: ['create-channel-doc-folder'],
     mutationFn: createChannelDocFolder,
-    onSuccess: async (response: any) => {
-      await queryClient.invalidateQueries(['get-channel-files'], {
-        exact: false,
-      });
-      const folder = response?.result?.data;
-      if (folder) {
-        appendItem({ id: folder.id, label: folder.name, meta: folder });
-      }
-      successToastConfig({ content: 'New folder added successfully' });
-    },
-    onError: () => {
-      failureToastConfig({ content: 'Folder creation failed' });
-    },
-    onSettled: closeAddModal,
   });
 
   // Api call: Connect site / folder
@@ -1048,12 +1034,27 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             for (const folderName of folderNames) {
               if (!folders[folderName]) {
                 try {
-                  const response: any = await createFolderMutation.mutateAsync({
-                    channelId: channelId,
-                    remoteFolderId: parentFolderId.toString(),
-                    rootFolderId: rootFolderId.toString(),
-                    name: folderName,
-                  } as any);
+                  const response: any = await createFolderMutation.mutateAsync(
+                    {
+                      channelId: channelId,
+                      remoteFolderId: parentFolderId.toString(),
+                      rootFolderId: rootFolderId.toString(),
+                      name: folderName,
+                    } as any,
+                    {
+                      onSuccess: async () => {
+                        await queryClient.invalidateQueries(
+                          ['get-channel-files'],
+                          {
+                            exact: false,
+                          },
+                        );
+                      },
+                      onError: (e) => {
+                        throw e;
+                      },
+                    },
+                  );
 
                   const folderId = (response?.result?.data?.id).toString();
                   folders[folderName] = { id: folderId, parentFolderId };
@@ -1278,16 +1279,40 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           closeModal={closeAddModal}
           isLoading={createFolderMutation.isLoading}
           onSelect={(folderName) => {
-            createFolderMutation.mutate({
-              channelId: channelId,
-              rootFolderId:
-                items.length > 1 ? items[1].id.toString() : undefined,
-              remoteFolderId:
-                items.length <= 2
-                  ? undefined
-                  : items[items.length - 1].id.toString(),
-              name: folderName,
-            } as any);
+            createFolderMutation.mutate(
+              {
+                channelId: channelId,
+                rootFolderId:
+                  items.length > 1 ? items[1].id.toString() : undefined,
+                remoteFolderId:
+                  items.length <= 2
+                    ? undefined
+                    : items[items.length - 1].id.toString(),
+                name: folderName,
+              } as any,
+              {
+                onSuccess: async (response: any) => {
+                  await queryClient.invalidateQueries(['get-channel-files'], {
+                    exact: false,
+                  });
+                  const folder = response?.result?.data;
+                  if (folder) {
+                    appendItem({
+                      id: folder.id,
+                      label: folder.name,
+                      meta: folder,
+                    });
+                  }
+                  successToastConfig({
+                    content: 'New folder added successfully',
+                  });
+                },
+                onError: () => {
+                  failureToastConfig({ content: 'Folder creation failed' });
+                },
+                onSettled: closeAddModal,
+              },
+            );
           }}
         />
       )}
