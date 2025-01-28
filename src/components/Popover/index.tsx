@@ -20,6 +20,7 @@ type AppProps = {
     close: any,
   ) => ReactElement<any, string | JSXElementConstructor<any>>;
   triggerNodeClassName?: string;
+  wrapperClassName?: string;
 };
 
 const Popover = forwardRef(
@@ -31,6 +32,7 @@ const Popover = forwardRef(
       className = 'right-0',
       contentRenderer,
       triggerNodeClassName = '',
+      wrapperClassName = '',
     }: AppProps,
     ref: ForwardedRef<HTMLButtonElement>,
   ) => {
@@ -41,9 +43,10 @@ const Popover = forwardRef(
     const triggerNodeStyle = clsx({
       [triggerNodeClassName]: true,
     });
+    const wrapperStyle = clsx({ relative: true, [wrapperClassName]: true });
 
     return (
-      <HUIPopover className="relative">
+      <HUIPopover className={wrapperStyle}>
         {({ open }) => (
           <>
             <HUIPopover.Button className={triggerNodeStyle} ref={ref}>

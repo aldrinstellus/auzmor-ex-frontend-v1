@@ -1,0 +1,20 @@
+import { SVGProps } from 'react';
+
+const SvgFileUploadOutline = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <path
+      d="M15.5 4V3.5H15H5H4.5V4V20V20.5H5H19H19.5V20V8V7.5H19H15.5V4ZM20.5 20.993L20.5 20.9965C20.5005 21.0622 20.488 21.1273 20.4633 21.1881C20.4386 21.249 20.4022 21.3043 20.356 21.3511C20.3099 21.3979 20.2551 21.4351 20.1946 21.4606C20.1345 21.486 20.0701 21.4994 20.0049 21.5H3.99511C3.8643 21.4987 3.73917 21.4462 3.64659 21.3538C3.55408 21.2613 3.50147 21.1364 3.5 21.0057V2.992C3.5 2.72341 3.71987 2.5 3.999 2.5H15.7929L20.5 7.20711L20.5 20.993ZM13 11.5H12.5V12V15.5H11.5V12V11.5H11H9.20711L12 8.70711L14.7929 11.5H13Z"
+      fill="currentColor"
+      stroke="currentColor"
+    />
+  </svg>
+);
+
+export default SvgFileUploadOutline;

@@ -1,9 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import apiService from 'utils/apiService';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getType } from 'utils/misc';
 import { IMedia, EntityType } from 'interfaces';
+import {
+  BackgroundJobStatusEnum,
+  useBackgroundJobStore,
+} from 'stores/backgroundJobStore';
+import Icon from 'components/Icon';
+import queryClient from 'utils/queryClient';
 
 export enum UploadStatus {
   YetToStart = 'YET_TO_START',
@@ -261,5 +267,148 @@ export const useUpload = () => {
     uploadStatus,
     useUploadCoverImage,
     removeCoverImage,
+  };
+};
+
+export interface IUploadUrlPayload {
+  fileName: string;
+  parentFolderId: string;
+  rootFolderId: string;
+}
+export interface IUploadUrlResponse {
+  status: string;
+  name: string;
+  uploadURL: string;
+}
+
+export const useChannelDocUpload = (channelId: string) => {
+  const { getJob, setShow, updateJobProgress, updateJob } =
+    useBackgroundJobStore();
+
+  const getUploadUrl = async (payload: IUploadUrlPayload) =>
+    await apiService.get(`/channels/${channelId}/file/uploadUrl`, payload);
+
+  const uploadToSharepoint = async (
+    res: IUploadUrlResponse,
+    file: File,
+    jobId: string,
+  ) => {
+    try {
+      const uploadUrl = res.uploadURL;
+      const chunkSize = 5 * 1024 * 1024; // 5 MB
+      const totalBytes = file.size;
+      let offset = 0;
+      let lastResponse = null;
+      const totalSteps = Math.floor(totalBytes / chunkSize);
+      while (offset < totalBytes) {
+        const completedsteps = Math.floor(offset / chunkSize);
+        const chunk = file.slice(offset, offset + chunkSize);
+        const startByte = offset;
+        const endByte = offset + chunk.size - 1;
+
+        const headers = {
+          'Content-Range': `bytes ${startByte}-${endByte}/${totalBytes}`,
+        };
+
+        const response = await fetch(uploadUrl, {
+          method: 'PUT',
+          headers,
+          body: chunk,
+        });
+        lastResponse = await response.json();
+        offset += chunk.size;
+        updateJobProgress(
+          jobId,
+          Math.round((completedsteps * 100) / totalSteps),
+        );
+      }
+      return lastResponse;
+    } catch (e) {
+      throw e;
+    }
+  };
+
+  const finishUpload = async (payload: {
+    uploadResponse: string;
+    rootFolderId: string;
+  }) => {
+    await apiService.post(`/channels/${channelId}/file/upload`, payload);
+  };
+
+  const uploadMedia = async (
+    fileList: { rootFolderId: string; parentFolderId: string; file: File }[],
+  ) => {
+    setShow(true);
+    const uploadedFiles: IMedia[] = [];
+    const files: IUploadUrlPayload[] = [];
+    fileList.forEach(({ file, parentFolderId, rootFolderId }) => {
+      files.push({
+        fileName: file?.name,
+        parentFolderId,
+        rootFolderId,
+      });
+    });
+    files.forEach((file: IUploadUrlPayload, index: number) => {
+      const jobId = `upload-job-${index}`;
+      const job = getJob(jobId);
+      if (!!job && job.status === BackgroundJobStatusEnum.YetToStart) {
+        try {
+          getUploadUrl(file)
+            .then((response) => {
+              updateJobProgress(jobId, 0, BackgroundJobStatusEnum.Running);
+              uploadToSharepoint(
+                (response as any).data.result as IUploadUrlResponse,
+                fileList.find(
+                  ({ file }) =>
+                    file.name === (response as any).data.result.name,
+                )!.file,
+                jobId,
+              ).then((response) => {
+                updateJobProgress(
+                  jobId,
+                  100,
+                  BackgroundJobStatusEnum.CompletedSuccessfully,
+                );
+                finishUpload({
+                  uploadResponse: JSON.stringify(response),
+                  rootFolderId: file.rootFolderId,
+                }).then(() => {
+                  updateJobProgress(
+                    jobId,
+                    100,
+                    BackgroundJobStatusEnum.CompletedSuccessfully,
+                  );
+                  queryClient.invalidateQueries(['get-channel-files'], {
+                    exact: false,
+                  });
+                });
+              });
+            })
+            .catch((e) => {
+              updateJob({
+                ...job,
+                progress: 100,
+                status: BackgroundJobStatusEnum.Error,
+                jobComment: 'Upload failed',
+              });
+              console.log(e);
+            });
+        } catch (e) {
+          updateJob({
+            ...job,
+            progress: 100,
+            status: BackgroundJobStatusEnum.Error,
+            jobComment: 'Upload failed',
+          });
+          console.log(e);
+        }
+      }
+    });
+
+    return uploadedFiles;
+  };
+
+  return {
+    uploadMedia,
   };
 };

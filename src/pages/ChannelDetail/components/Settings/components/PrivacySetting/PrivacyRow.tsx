@@ -119,6 +119,8 @@ const PrivacyRow: FC<AppProps> = ({ data, canEdit }) => {
         </div>
       }
       className="!pt-2"
+      labelContainerClassName="!w-[416px]"
+      editModeWrapperClassName="!w-auto"
     />
   );
 };

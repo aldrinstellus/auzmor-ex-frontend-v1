@@ -47,6 +47,7 @@ export type InputProps = {
   onRightIconClick?: (e: MouseEvent<HTMLDivElement>) => void;
   onEnter?: any;
   customLabelRightElement?: ReactElement;
+  clearIcon?: ReactNode | null;
   isClearable?: boolean;
   required?: boolean;
   showCounter?: boolean;
@@ -82,6 +83,7 @@ const Input: FC<InputProps> = ({
   onRightIconClick,
   onEnter,
   customLabelRightElement,
+  clearIcon = null,
   isClearable = false,
   showCounter,
   maxLength,
@@ -217,13 +219,13 @@ const Input: FC<InputProps> = ({
             autoComplete={autocomplete}
           />
           {isClearable && !!field.value && (
-            <div className="absolute right-2 p-2">
-              <Icon
-                name="close"
-                size={16}
-                className="rounded-7xl bg-white"
-                onClick={() => field.onChange('')}
-              />
+            <div
+              className="absolute group right-1 p-1 w-6"
+              onClick={() => field.onChange('')}
+            >
+              {clearIcon || (
+                <Icon name="close" size={16} className="rounded-7xl bg-white" />
+              )}
             </div>
           )}
         </div>

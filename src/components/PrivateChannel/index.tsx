@@ -125,10 +125,14 @@ const PrivateChannelBanner: FC<IChannelBannerProps> = ({
 
   return (
     <Card>
-      <div className="flex flex-col items-center justify-center p-8 ">
-        <img src={PrivateChannelImage} alt="private channel banner" />
+      <div className="flex flex-col items-center justify-center p-6 ">
+        <img
+          className="max-w-[400px]"
+          src={PrivateChannelImage}
+          alt="private channel banner"
+        />
         <div
-          className="text-2xl font-bold mt-8 mb-4"
+          className="text-base font-bold mt-8 mb-4"
           data-testid={'channel--privacynote'}
         >
           {t('privateChannel.bannerHeader')}
@@ -137,6 +141,7 @@ const PrivateChannelBanner: FC<IChannelBannerProps> = ({
           <Button
             label={t('publicChannel.joinRequestCTA')}
             variant={Variant.Primary}
+            className="text-sm"
             onClick={() => inviteYourselfMutation.mutate()}
             loading={inviteYourselfMutation.isLoading}
             data-testid="channel-invite-your-self"
@@ -149,6 +154,7 @@ const PrivateChannelBanner: FC<IChannelBannerProps> = ({
                 : t('privateChannel.joinRequestCTA')
             }
             variant={isRequested ? Variant.Danger : Variant.Primary}
+            className="text-sm"
             onClick={
               isRequested
                 ? () =>
@@ -167,7 +173,7 @@ const PrivateChannelBanner: FC<IChannelBannerProps> = ({
           />
         )}
         <div
-          className="text-neutral-500 mt-[80px] underline  mb-4 text-sm font-semibold"
+          className="text-neutral-500 mt-12 mb-4 text-sm font-semibold"
           data-testid={'channel-admin-list'}
         >
           {t('privateChannel.bannerFotter')}
@@ -176,6 +182,7 @@ const PrivateChannelBanner: FC<IChannelBannerProps> = ({
           users={admins}
           showCount={CHIPS_COUNT}
           dataTestId={'channel-admin-list-'}
+          avatarClassName="text-sm py-[7px]"
         />
       </div>
     </Card>

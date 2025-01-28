@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react';
+import { FC, MouseEventHandler, ReactNode } from 'react';
 import clsx from 'clsx';
 
 export type CardProps = {
@@ -6,7 +6,7 @@ export type CardProps = {
   className?: string;
   dataTestId?: string;
   shadowOnHover?: boolean;
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLDivElement>;
 };
 
 const Card: FC<CardProps> = ({

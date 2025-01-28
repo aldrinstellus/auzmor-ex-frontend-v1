@@ -145,6 +145,9 @@ const CategoryRow: FC<AppProps> = ({ channelData, canEdit }) => {
       onCancel={reset}
       onSave={handleSubmit(onSubmit)}
       border={false}
+      labelContainerClassName="!w-[416px]"
+      rowWrapperClassName="items-center"
+      editModeWrapperClassName="!w-auto flex-grow"
     />
   );
 };

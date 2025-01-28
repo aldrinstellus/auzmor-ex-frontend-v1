@@ -12,6 +12,7 @@ import {
 import './styles.css';
 import { IUpdateAboutMe } from './AboutMe';
 import { FC } from 'react';
+import clsx from 'clsx';
 
 export type HeaderProps = {
   title: string;
@@ -25,6 +26,7 @@ export type HeaderProps = {
   setInitialSkills?: () => void;
   isLoading?: boolean;
   reset?: UseFormReset<IUpdateAboutMe>;
+  className?: string;
 };
 
 const Header: FC<HeaderProps> = ({
@@ -39,9 +41,14 @@ const Header: FC<HeaderProps> = ({
   setInitialSkills,
   isLoading,
   reset,
+  className = '',
 }) => {
+  const style = clsx({
+    'flex justify-between items-center mb-3': true,
+    [className]: true,
+  });
   return (
-    <div className="flex justify-between items-center mb-3">
+    <div className={style}>
       <div
         className="text-neutral-900 font-bold text-lg"
         data-testid={dataTestId}

@@ -6,7 +6,7 @@ import DocSearchRow from 'pages/ChannelDetail/components/Documents/components/Do
 import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { DocType } from 'interfaces';
+import { Doc } from 'interfaces';
 import useNavigate from 'hooks/useNavigation';
 import useAuth from 'hooks/useAuth';
 import { useTranslation } from 'react-i18next';
@@ -62,7 +62,7 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
     !isLoading && isSynced,
   );
   const documents = (documentData?.data?.result?.data || []).map(
-    (document: DocType) => ({ optionType: OptionType.Document, ...document }),
+    (document: Doc) => ({ optionType: OptionType.Document, ...document }),
   );
 
   const options = [...documents];

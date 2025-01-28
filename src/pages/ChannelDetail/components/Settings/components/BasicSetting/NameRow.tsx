@@ -105,6 +105,9 @@ const NameRow: FC<AppProps> = ({ data, canEdit }) => {
       onCancel={reset}
       onSave={handleSubmit(onSubmit)}
       editButtonsClassName="pt-4"
+      labelContainerClassName="!w-[416px]"
+      rowWrapperClassName="items-center"
+      editModeWrapperClassName="!w-auto flex-grow"
     />
   );
 };

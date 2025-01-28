@@ -79,12 +79,12 @@ export const createFolder: (variables: {
   return await apiService.post('/storage/folders', { name, folderId });
 };
 
-export const useFiles = (q: Record<string, string | null>) => {
-  return useQuery({
-    queryKey: ['get-storage-files', q],
-    queryFn: () => getFiles(q),
-  });
-};
+// export const useFiles = (q: Record<string, string | null>) => {
+//   return useQuery({
+//     queryKey: ['get-storage-files', q],
+//     queryFn: () => getFiles(q),
+//   });
+// };
 
 export const useFolders = (q: Record<string, string | null>) => {
   return useQuery({

@@ -11,6 +11,8 @@ import useProduct from 'hooks/useProduct';
 import NavbarLxp from 'components/NavbarLxp';
 import useAuth from 'hooks/useAuth';
 import { FRONTEND_VIEWS } from 'interfaces';
+import BackgroundJob from 'components/BackgroundJob';
+import { useBackgroundJobStore } from 'stores/backgroundJobStore';
 
 export interface IAppShellProps {
   children: ReactNode;
@@ -21,13 +23,14 @@ const AppShell: FC<IAppShellProps> = ({ children }) => {
   const { pathname } = useLocation();
   const { isLxp } = useProduct();
   const { user } = useAuth();
+  const { show: showBackgroundJobs } = useBackgroundJobStore();
 
   const wraperStyle = clsx({
     'flex w-full justify-center': true,
     'px-14 pt-6': !isOrgChartMounted,
   });
   const containerStyle = clsx({
-    'w-full': true,
+    'w-full app-container': true,
     'max-w-[1440px]': !isOrgChartMounted,
     '!max-w-[1280px]': isLxp,
   });
@@ -54,7 +57,10 @@ const AppShell: FC<IAppShellProps> = ({ children }) => {
         className="h-[calc(100vh-78px)] overflow-y-auto"
       >
         <div className={wraperStyle}>
-          <div className={containerStyle}>{children}</div>
+          <div className={containerStyle}>
+            {children}
+            {showBackgroundJobs && <BackgroundJob />}
+          </div>
         </div>
         {showJobProgress && <JobProgress />}
       </main>

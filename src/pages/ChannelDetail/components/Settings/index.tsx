@@ -4,6 +4,8 @@ import { IChannel } from 'stores/channelStore';
 import PrivacySetting from './components/PrivacySetting';
 import BasicSettingSkeleton from './components/Skeletons/BasicSettingSkeleton';
 import { ChannelPermissionEnum } from '../utils/channelPermission';
+import IntegrationSetting from './components/IntegrationSetting';
+import DocumentSetting from './components/DocumentSetting';
 
 type AppProps = {
   channelData: IChannel;
@@ -13,7 +15,7 @@ type AppProps = {
 
 const Setting: FC<AppProps> = ({ channelData, isLoading, permissions }) => {
   return (
-    <>
+    <div className="flex flex-col gap-4">
       {isLoading ? (
         <BasicSettingSkeleton />
       ) : (
@@ -26,7 +28,14 @@ const Setting: FC<AppProps> = ({ channelData, isLoading, permissions }) => {
         canEdit={permissions.includes(ChannelPermissionEnum.CanEditSettings)}
         channelData={channelData}
       />
-    </>
+      {permissions.includes(ChannelPermissionEnum.CanConnectChannelDoc) && (
+        <IntegrationSetting />
+      )}
+      <DocumentSetting
+        canEdit={permissions.includes(ChannelPermissionEnum.CanEditSettings)}
+        channelData={channelData}
+      />
+    </div>
   );
 };
 

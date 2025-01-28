@@ -1,0 +1,12 @@
+.CircularProgressbar-path {
+  stroke: var(--primary-500);
+}
+.CircularProgressbar-trail {
+  stroke: #737373;
+}
+.CircularProgressbar-text {
+  fill: white;
+}
+/* .CircularProgressbar-background {
+  fill: green;
+} */

@@ -142,11 +142,11 @@ const ChannelImageModal: FC<AppProps> = ({
         closeBtnDataTestId={`-close`}
         onClose={closeModal}
       />
-      <div className="  flex justify-center  mb-2">
+      <div className="flex justify-center py-6">
         <div
           className={`inline-grid ${
             isCoverImg ? 'grid-cols-2' : 'grid-cols-3'
-          } gap-4`}
+          } gap-6`}
         >
           {channelImages.map((item) => (
             <div
@@ -163,8 +163,8 @@ const ChannelImageModal: FC<AppProps> = ({
             >
               {item.id === selectedImageId && (
                 <Icon
-                  name="tickCircle"
-                  className={`absolute ${
+                  name="tickCircleFilled"
+                  className={`absolute bg-white rounded-full ${
                     isCoverImg ? 'right-2 top-2' : '   right-6 '
                   }`}
                   color="text-primary-500"

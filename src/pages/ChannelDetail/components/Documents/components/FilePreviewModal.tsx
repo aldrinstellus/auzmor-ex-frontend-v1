@@ -1,64 +1,122 @@
 import React, { FC } from 'react';
-import { DocType } from 'interfaces';
 import Modal from 'components/Modal';
-import Icon from 'components/Icon';
-import Avatar from 'components/Avatar';
+import { Doc } from 'interfaces';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { useParams } from 'react-router-dom';
+import Icon from 'components/Icon';
+import Divider from 'components/Divider';
+import Avatar from 'components/Avatar';
+import Spinner from 'components/Spinner';
+import moment from 'moment';
+import { downloadFromUrl } from 'utils/misc';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 
 interface IFilePreviewProps {
-  file: DocType;
+  file: Doc;
   open: boolean;
+  canDownload: boolean;
   closeModal: () => void;
 }
 
-const FilePreview: FC<IFilePreviewProps> = ({ file, open, closeModal }) => {
+const FilePreview: FC<IFilePreviewProps> = ({
+  file,
+  open,
+  canDownload = false,
+  closeModal,
+}) => {
   const { getApi } = usePermissions();
-  const downloadFile = getApi(ApiEnum.DownloadStorageFile);
-  const thumbnailUrl = new URL(file.fileThumbnailUrl);
-  if (thumbnailUrl.searchParams.has('sz')) {
-    thumbnailUrl.searchParams.set('sz', 'w1440');
-  }
+  const { channelId } = useParams();
 
-  const user = file.createdBy;
+  const getChannelDocDownloadUrl = getApi(ApiEnum.GetChannelDocDownloadUrl);
+
+  const useChannelFilePreview = getApi(ApiEnum.GetChannelFilePreview);
+  const { data, isLoading } = useChannelFilePreview({
+    channelId,
+    fileId: file.id,
+  });
 
   return (
     <Modal
       open={open}
       closeModal={closeModal}
-      className="!w-[65vw] flex flex-col h-[80vh]"
+      className="!w-[65vw] flex flex-col h-[80vh] overflow-hidden"
+      showModalCloseBtn
     >
-      <div className="flex justify-center items-center border-b-1 p-6 relative">
-        <span className="text-sm text-neutral-900 font-semibold">
+      <div className="flex items-center relative p-6">
+        <div className="flex flex-grow justify-center items-start text-center">
           {file.name}
-        </span>
-        <div className="flex flex-row gap-3 absolute right-4">
-          <Icon
-            name="download"
-            color="text-neutral-800"
-            onClick={() => downloadFile(file.id || '')}
-          />
-          <Icon name="postBookmark" color="text-neutral-800" />
-          <Icon name="export" color="text-neutral-800" />
+        </div>
+        <div className="flex absolute gap-3 right-4">
+          {canDownload && (
+            <Icon
+              name="download"
+              color="text-neutral-900"
+              onClick={() => {
+                getChannelDocDownloadUrl({
+                  channelId,
+                  itemId: file.id,
+                })
+                  .then(({ data }: Record<string, any>) => {
+                    downloadFromUrl(
+                      data?.result?.data?.downloadUrl,
+                      data?.result?.data?.name,
+                    );
+                  })
+                  .catch(() => {
+                    failureToastConfig({
+                      content: `Failed to download ${file?.name}`,
+                      dataTestId: 'file-download-toaster',
+                    });
+                  });
+              }}
+            />
+          )}
+          <a
+            href={data?.data?.result?.launchURL}
+            rel="noreferrer"
+            target="_blank"
+          >
+            <Icon name="launch" color="text-neutral-900" />
+          </a>
         </div>
       </div>
-      {user?.name ? (
-        <div className="m-4 mb-2 p-4 flex flex-row items-left gap-2 bg-sky-50 text-sm rounded-[12px] ">
-          <Avatar
-            size={40}
-            name={user?.name || 'U'}
-            image={user?.profileImage}
-          />
-          <div className="flex flex-col justify-center">
-            <div className="text-sm font-bold">{user?.name}</div>
-            <div className="text-neutral-500 text-xs">
-              {user?.designation?.name}
+      <Divider />
+      <div className="flex rounded-9xl p-6 gap-2 items-center mx-4 mt-4 bg-[#F0F6FE]">
+        <Avatar size={40} name={file.ownerName} image={file.ownerImage} />
+        <div className="flex flex-grow justify-between">
+          <div className="flex flex-col">
+            <div className="text-sm font-bold text-neutral-900">
+              {file.ownerName}
             </div>
+            {/* <div className="text-xs text-[#384D6F]">
+              Customer Success Manager
+            </div> */}
+          </div>
+          <div className="flex flex-col items-end">
+            <div className="text-xs text-[#384D6F]">
+              Last Updated:{' '}
+              <span>
+                {moment(file.externalUpdatedAt).format('MMM DD, YYYY')}
+              </span>
+            </div>
+            {/* <div className="text-xs text-[#384D6F]">8 min read</div> */}
           </div>
         </div>
-      ) : null}
-      <div className="!w-full p-6 overflow-y-auto">
-        <img src={thumbnailUrl.toString()} alt="Thumbnail" />
+      </div>
+      <div className="flex items-center justify-center w-full h-full">
+        {isLoading ? (
+          <Spinner />
+        ) : (
+          <iframe
+            src={data?.data?.result?.previewURL}
+            className="w-full h-full mt-2"
+            allowFullScreen
+            allow="all"
+            name="iframe_a"
+            loading={isLoading}
+          />
+        )}
       </div>
     </Modal>
   );

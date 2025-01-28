@@ -20,7 +20,7 @@ import SvgUsersFilled from '../components/Users/UsersFilled';
 import SvgSpeakerFilled from '../components/Speaker/SpeakerFilled';
 import SvgDraftFilled from '../components/Draft/DraftFilled';
 import SvgArrowLeftFilled from '../components/ArrowLeft/ArrowLeftFilled';
-import SvgOrangeHashtagFilled from '../components/OrangeHashtag/HashtagFilled';
+import SvgHashtagFilled from '../components/Hashtag/HashtagFilled';
 import SvgSlackFilled from '../components/Slack/SlackFilled';
 import SvgCarouselLeftFilled from '../components/CarouselLeft/CarouselLeftFilled';
 import SvgCarouselRightFilled from '../components/CarouselRight/CarouselRightFilled';
@@ -94,6 +94,8 @@ import SvgMessageQuestionFilled from '../components/MessageQuestion/MessageQuest
 import SvgRadarFilled from '../components/Radar/RadarFilled';
 import SvgMedalStarFilled from '../components/MedalStar/MedalStarFilled';
 import SvgRestInPeaceFilled from '../components/RestInPeace/RestInPeaceFilled';
+import SvgMoreV2Filled from '../components/More/MoreV2Filled';
+import SvgAudioFilled from '../components/AudioFile/AudioFileFilled';
 
 export const filledIcon = {
   addCircleFilled: SvgAddCircleFilled,
@@ -101,6 +103,7 @@ export const filledIcon = {
   adminFilled: SvgAdminFilled,
   arrowLeftFilled: SvgArrowLeftFilled,
   arrowRightFilled: SvgArrowRightFilled,
+  audioFileFilled: SvgAudioFilled,
   calendarFilled: SvgCalendarFilled,
   calendarFilledTwo: SvgCalendarFilledTwo,
   carouselCloseFilled: SvgCarouselCloseFilled,
@@ -143,7 +146,7 @@ export const filledIcon = {
   gearFilled: SvgGearFilled,
   globalFilled: SvgGlobalFilled,
   groupFilled: SvgGroupFilled,
-  hashtagFilled: SvgOrangeHashtagFilled,
+  hashtagFilled: SvgHashtagFilled,
   homeFilled: SvgHomeFilled,
   iconLinearFilled: SvgIconLinearFilled,
   imageFilled: SvgImageFilled,
@@ -151,6 +154,7 @@ export const filledIcon = {
   infoCircleFilled: SvgInfoCircleFilled,
   insightfulFilled: SvgInsightfulFilled,
   launcherFilled: SvgLauncherFilled,
+  lifeBuoyFilled: SvgLifeBuoyFilled,
   likeFilled: SvgLikeFilled,
   likeIconFilled: SvgLikeIconFilled,
   linearLeftArrowFilled: SvgLinearLeftArrowFilled,
@@ -160,22 +164,28 @@ export const filledIcon = {
   loveFilled: SvgLoveFilled,
   magicStarFilled: SvgMagicStarFilled,
   maximizeFilled: SvgMaximizeFilled,
+  medalStarFilled: SvgMedalStarFilled,
   menuBoardFilled: SvgMenuBoardFilled,
+  messageQuestionFilled: SvgMessageQuestionFilled,
   micFilled: SvgMicFilled,
   moreFilled: SvgMoreFilled,
+  moreV2Filled: SvgMoreV2Filled,
   noteFavouriteFilled: SvgNoteFavouriteFilled,
   peopleFilled: SvgPeopleFilled,
   playFilled: SvgPlayFilled,
   postBookmarkFilled: PostBookMarkFilled,
   profileFilled: SvgProfileFilled,
   profileUserFilled: SvgProfileUserFilled,
+  radarFilled: SvgRadarFilled,
   replyFilled: SvgReplyFilled,
   repostFilled: SvgRepostFilled,
+  restInPeaceFilled: SvgRestInPeaceFilled,
   searchFilled: SvgSearchFilled,
   seekForwardFilled: SvgSeekForwardFilled,
   sendFilled: SvgSendFilled,
   settingFilled: SvgSettingFilled,
   settingThreeFilled: SvgSettingThreeFilled,
+  shoppingCartFilled: SvgShoppingCartFilled,
   slackFilled: SvgSlackFilled,
   speakerFilled: SvgSpeakerFilled,
   starFilled: SvgStarFilled,
@@ -184,13 +194,7 @@ export const filledIcon = {
   trashFilled: SvgTrashFilled,
   usersFilled: SvgUsersFilled,
   videoFilled: SvgVideoFilled,
-  zoomInFilled: SvgZoomInFilled,
   VideoPlayFilled: SvgVideoFilled,
+  zoomInFilled: SvgZoomInFilled,
   zoomOutFilled: SvgZoomOutFilled,
-  radarFilled: SvgRadarFilled,
-  lifeBuoyFilled: SvgLifeBuoyFilled,
-  shoppingCartFilled: SvgShoppingCartFilled,
-  messageQuestionFilled: SvgMessageQuestionFilled,
-  medalStarFilled: SvgMedalStarFilled,
-  restInPeaceFilled: SvgRestInPeaceFilled,
 };

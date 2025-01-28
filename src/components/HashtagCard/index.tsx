@@ -20,7 +20,7 @@ const HashtagCard: FC<HashtagCardProps> = (hashtag, count): ReactElement => {
             {getTextByCount(count)}
           </div>
         </div>
-        <Icon name="orangeHashtag" size={60} />
+        <Icon name="hashtag" size={60} />
       </div>
     </Card>
   );

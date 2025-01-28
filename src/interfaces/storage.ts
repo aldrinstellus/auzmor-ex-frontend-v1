@@ -11,4 +11,12 @@ export enum IDocType {
   PDF = 'PDF',
   FORM = 'FORM',
   XLS = 'XLS',
+  TXT = 'TXT',
+  PPT = 'PPT',
+  IMAGE = 'IMAGE',
+  VIDEO = 'VIDEO',
+  AUDIO = 'AUDIO',
+  ARCHIVE = 'ARCHIVE',
+  CSV = 'CSV',
+  JSON = 'JSON',
 }

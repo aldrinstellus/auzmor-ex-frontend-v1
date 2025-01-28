@@ -1,5 +1,3 @@
-import { IUser } from 'contexts/AuthContext';
-
 export enum EntityType {
   Post = 'POST',
   Comment = 'COMMENT',
@@ -13,24 +11,43 @@ export enum EntityType {
   UserImport = 'DOCUMENT',
 }
 
-export type DocType = {
-  id?: string;
-  remote_id?: string;
-  created_at?: string;
-  modifiedAt?: string;
-  createdBy?: IUser;
+export type Directory = { id: string; name: 'string' };
+
+export type Doc = {
+  id: string;
   name: string;
-  fileUrl: string;
-  fileThumbnailUrl: string;
-  size: number;
+  size: string;
   mimeType: string;
-  description?: string;
-  folder?: string;
-  permissions?: Array<Record<string, any>>;
-  drive?: string;
-  remote_created_at?: string;
-  remote_updated_at?: string;
-  remote_was_deleted?: boolean;
-  field_mappings?: any;
-  remote_data?: any;
+  parentId: string | null;
+  externalId: string;
+  externalUrl: string;
+  isFolder: boolean;
+  downloadable: boolean;
+  fileType: string;
+  ownerName: string;
+  ownerImage?: string;
+  path: string;
+  pathWithId: Record<string, string>;
+  externalCreatedAt: string;
+  externalUpdatedAt: string;
+  externalModifiedBy: string;
+  syncedAt: string;
+  createdAt: string;
+  updatedAt: string;
+  fileThumbnailUrl: string;
+};
+
+export type GetDirectoriesResponse = {
+  message: string;
+  code: number;
+  result: {
+    data: Array<Directory>;
+  };
+};
+export type GetFilesResponse = {
+  message: string;
+  code: number;
+  result: {
+    data: Array<Doc>;
+  };
 };

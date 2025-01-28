@@ -2,16 +2,17 @@ import { clsx } from 'clsx';
 import Card from 'components/Card';
 import Icon from 'components/Icon';
 import Truncate from 'components/Truncate';
-import React, { FC, useMemo, useState } from 'react';
-import useModal from 'hooks/useModal';
-import { DocType } from 'interfaces';
-import FilePreviewModal from './FilePreviewModal';
+import React, { FC, useMemo } from 'react';
+import { Doc as DocType } from 'interfaces';
+import Avatar from 'components/Avatar';
+import { humanizeTime } from 'utils/time';
 
 interface IDocProps {
-  file: DocType;
+  doc: DocType;
+  isFolder?: boolean;
 }
 
-export const getIconName = (mimeType?: string) => {
+export const getIconFromMime = (mimeType?: string) => {
   if (
     mimeType?.includes('image/') ||
     ['jpeg', 'jpg', 'png', 'svg'].includes(mimeType ?? '')
@@ -23,84 +24,108 @@ export const getIconName = (mimeType?: string) => {
   )
     return 'videoFile';
 
-  const MIME_TO_ICON: Record<string, string> = {
-    doc: 'doc',
-    docx: 'doc',
-    ppt: 'ppt',
-    pptx: 'ppt',
-    xls: 'xls',
-    xlsx: 'xls',
-    pdf: 'pdf',
-    'application/msword': 'doc',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+  const ICON_TO_MIME: Record<string, string[]> = {
+    doc: [
       'doc',
-    'application/pdf': 'pdf',
-    'application/vnd.ms-powerpoint': 'ppt',
-    'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+      'docx',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.google-apps.document',
+      'application/rtf',
+      'text/plain',
+      'application/wordperfect',
+    ],
+    ppt: [
       'ppt',
-    'application/vnd.google-apps.presentation': 'ppt',
-    'application/vnd.ms-excel': 'xls',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
-    'application/vnd.google-apps.spreadsheet': 'xls',
-    'application/vnd.google-apps.document': 'doc',
-    'application/vnd.google-apps.folder': 'folder',
-    'application/vnd.google-apps.form': 'form',
+      'pptx',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      'application/vnd.google-apps.presentation',
+      'application/vnd.ms-powerpoint.template.macroenabled.12',
+      'application/vnd.ms-powerpoint.addin.macroenabled.12',
+      'application/vnd.oasis.opendocument.presentation',
+    ],
+    xls: [
+      'xls',
+      'xlsx',
+      'application/vnd.ms-excel',
+      'application/vnd.google-apps.spreadsheet',
+      'application/vnd.ms-excel.sheet.macroenabled.12',
+      'application/vnd.oasis.opendocument.spreadsheet',
+    ],
+    pdf: [
+      'pdf',
+      'application/pdf',
+      'application/x-pdf',
+      'application/vnd.adobe.pdfxml',
+    ],
+    videoFile: ['application/mp4', 'application/vnd.apple.mpegurl'],
+    folder: ['application/vnd.google-apps.folder', 'inode/directory'],
+    form: [
+      'application/vnd.google-apps.form',
+      'application/x-www-form-urlencoded',
+    ],
   };
-  return MIME_TO_ICON[mimeType ?? ''] || 'file';
+
+  if (mimeType) {
+    for (const [key, values] of Object.entries(ICON_TO_MIME)) {
+      if (values.includes(mimeType)) {
+        return key;
+      }
+    }
+  }
+  return 'file';
 };
 
-const Doc: FC<IDocProps> = ({ file }) => {
-  const [filePreview, openFilePreview, closeFilePreview] = useModal(
-    false,
-    true,
-  );
-
-  const [imgSrc, setImgSrc] = useState<string | undefined>(
-    file.fileThumbnailUrl,
-  );
-  const onError = () => setImgSrc('');
-
+const Doc: FC<IDocProps> = ({ doc, isFolder }) => {
   const style = useMemo(
     () =>
       clsx({
-        'p-4 bg-white flex flex-col w-64 cursor-pointer gap-4': true,
+        'flex flex-col gap-2 p-3 rounded-9xl border border-neutral-200 min-w-[223px] cursor-pointer [&>*]:select-none shadow-none':
+          true,
       }),
     [],
   );
 
-  const iconName = getIconName(file.mimeType);
+  const iconName =
+    doc.isFolder || isFolder ? 'folder' : getIconFromMime(doc.mimeType);
   return (
-    <>
-      <Card
-        className={style}
-        onClick={() =>
-          imgSrc ? openFilePreview() : window.open(file.fileUrl, '_blank')
-        }
-      >
-        <div className="border border-neutral-300 overflow-hidden rounded-7xl w-full h-28">
-          {imgSrc ? (
-            <img src={imgSrc} onError={onError} alt="Image" />
-          ) : (
-            <div className="flex items-center justify-center h-full">
-              <Icon name={iconName} size={56} />
-            </div>
+    <Card className={style}>
+      <div className="flex justify-center items-center py-[15px] bg-neutral-100 rounded-md">
+        <Icon name={iconName} size={70} />
+      </div>
+      <div className="flex flex-col gap-1">
+        <Truncate
+          text={doc.name}
+          className="text-xs font-medium leading-[18px] w-[200px] text-neutral-900"
+        />
+        <div className="flex items-center gap-1">
+          {doc?.ownerName && (
+            <>
+              <div className="flex items-center gap-0.5">
+                <Avatar
+                  size={16}
+                  image={doc?.ownerImage}
+                  name={doc.ownerName}
+                />
+                <span className="text-xxs text-neutral-500 font-medium">
+                  {doc.ownerName}
+                </span>
+              </div>
+              <div className="flex w-[3px] h-[3px] bg-neutral-300"></div>
+            </>
+          )}
+          {doc?.externalUpdatedAt && (
+            <span className="text-xxs text-neutral-500 font-medium">
+              Updated{' '}
+              {doc.externalUpdatedAt
+                ? humanizeTime(doc.externalUpdatedAt)
+                : 'while ago'}
+            </span>
           )}
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 items-center flex">
-            <Icon name={iconName} />
-          </div>
-          <Truncate text={file.name} className="max-w-[190px] font-medium" />
-        </div>
-      </Card>
-      {filePreview && imgSrc && (
-        <FilePreviewModal
-          file={file}
-          open={filePreview}
-          closeModal={closeFilePreview}
-        />
-      )}
-    </>
+      </div>
+    </Card>
   );
 };
 

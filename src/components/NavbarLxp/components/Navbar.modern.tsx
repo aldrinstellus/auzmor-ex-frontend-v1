@@ -15,6 +15,7 @@ import SubscriptionBanner from 'components/AppShell/components/SubscriptionBanne
 import IconButton from 'components/IconButton';
 import useNavigate from 'hooks/useNavigation';
 import Cart from './Cart';
+import GlobalSearch from 'components/GlobalSearch';
 
 interface INavbarLxpProps {}
 
@@ -261,6 +262,9 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
               </div>
               <div className="w-[1px] h-5 bg-[#e5e5e5]"></div>
               <ul className="flex items-center gap-[10px]">
+                <li>
+                  <GlobalSearch />
+                </li>
                 <li>
                   <div title={t('learn.helpAndSupportTitle')}>
                     <IconButton

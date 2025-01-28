@@ -557,7 +557,9 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               <Button
                 label={isLxp ? t('join') : t('joinAsAdmin.label')}
                 dataTestId="invite-your-self-channel-cta"
-                className={isLxp ? '' : 'min-w-max !bg-transparent text-white'}
+                className={
+                  isLxp ? 'text-sm' : 'min-w-max !bg-transparent text-white'
+                }
                 variant={isLxp ? Variant.Primary : Variant.Secondary}
                 loading={inviteYourselfMutation.isLoading}
                 onClick={() => inviteYourselfMutation.mutate()}
@@ -567,7 +569,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               <Button
                 label={t('join')}
                 dataTestId="join-channel-cta"
-                className="min-w-max "
+                className="min-w-max text-sm"
                 loading={joinChannelMutation.isLoading}
                 onClick={() => joinChannelMutation.mutate(channelData.id)}
               />
@@ -576,6 +578,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               <Button
                 label={tc('privateChannel.joinRequestCTA')}
                 variant={Variant.Primary}
+                className="text-sm"
                 onClick={() => joinChannelMutation.mutate(channelData.id)}
                 loading={joinChannelMutation.isLoading}
                 data-testid={'channel-request-to-join'}
@@ -585,6 +588,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               <Button
                 label={tc('privateChannel.withdrawRequestCTA')}
                 variant={Variant.Danger}
+                className="text-sm"
                 onClick={() =>
                   withdrawJoinChannelRequest.mutate(
                     channelData.joinRequest!.id!,

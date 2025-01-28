@@ -32,6 +32,9 @@ type AppProps = {
   isEditMode?: boolean;
   className?: string;
   editButtonsClassName?: string;
+  labelContainerClassName?: string;
+  rowWrapperClassName?: string;
+  editModeWrapperClassName?: string;
 };
 
 const InfoRow = forwardRef(
@@ -50,12 +53,30 @@ const InfoRow = forwardRef(
       isEditMode = false,
       className = '',
       editButtonsClassName = '',
+      labelContainerClassName = '',
+      rowWrapperClassName = '',
+      editModeWrapperClassName = '',
     }: AppProps,
     ref: ForwardedRef<any>,
   ) => {
     const { t } = useTranslation('profile');
     const [isHovered, eventHandlers] = useHover();
     const [editMode, setEditMode] = useState(isEditMode);
+
+    const labelContainerStyle = clsx({
+      'flex items-center w-[200px]': true,
+      [labelContainerClassName]: true,
+    });
+
+    const rowWrapperStyle = clsx({
+      'flex items-start': true,
+      [rowWrapperClassName]: true,
+    });
+
+    const editModeStyle = clsx({
+      'flex items-center space-x-2 w-full': true,
+      [editModeWrapperClassName]: true,
+    });
 
     useImperativeHandle(ref, () => ({
       editMode,
@@ -72,8 +93,8 @@ const InfoRow = forwardRef(
           [className]: true,
         })}
       >
-        <div className="flex items-start">
-          <div className="flex items-center w-[200px]">
+        <div className={rowWrapperStyle}>
+          <div className={labelContainerStyle}>
             <IconWrapper
               type={Type.Square}
               className={icon.bgColor}
@@ -86,7 +107,7 @@ const InfoRow = forwardRef(
             </div>
           </div>
           {editMode ? (
-            <div className="flex items-center space-x-2 w-full">
+            <div className={editModeStyle}>
               <div className="w-full">{editNode}</div>
               {isEditButton && (
                 <div className={`flex items-center ${editButtonsClassName}`}>

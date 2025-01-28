@@ -24,11 +24,18 @@ export const documentOptions: ICheckboxListOption[] = [
       ],
       label: 'Document',
       icon: 'doc',
+      paramKey: 'Document',
     },
     datatestId: `document-${IDocType.DOCUMENT}`,
   },
   {
-    data: { id: 'pdf', value: ['application/pdf'], label: 'PDF', icon: 'pdf' },
+    data: {
+      id: 'pdf',
+      value: ['application/pdf'],
+      label: 'PDF',
+      icon: 'pdf',
+      paramKey: 'PDF',
+    },
     datatestId: `document-${IDocType.PDF}`,
   },
   {
@@ -41,8 +48,19 @@ export const documentOptions: ICheckboxListOption[] = [
       ],
       label: 'XLS',
       icon: 'xls',
+      paramKey: 'Spreadsheet',
     },
     datatestId: `document-${IDocType.XLS}`,
+  },
+  {
+    data: {
+      id: 'ppt',
+      value: [`ppt`, 'pptx'],
+      label: 'Presentation',
+      icon: 'ppt',
+      paramKey: 'Presentation',
+    },
+    datatestId: `document-${IDocType.PPT}`,
   },
   {
     data: {
@@ -50,18 +68,80 @@ export const documentOptions: ICheckboxListOption[] = [
       value: ['application/vnd.google-apps.form'],
       label: 'Form',
       icon: 'form',
+      paramKey: 'Form',
     },
     datatestId: `document-${IDocType.FORM}`,
   },
+  // {
+  //   data: {
+  //     id: 'text',
+  //     value: ['txt'],
+  //     label: 'Text',
+  //     icon: 'txt',
+  //     paramKey: 'Text',
+  //   },
+  //   datatestId: `document-${IDocType.TXT}`,
+  // },
   {
     data: {
-      id: 'folder',
-      value: ['application/vnd.google-apps.folder'],
-      label: 'Folder',
-      icon: 'folder',
+      id: 'image',
+      value: ['jpg', 'jpeg', 'png', 'gif', 'bmp'],
+      label: 'Image',
+      icon: 'imageFile',
+      paramKey: 'Image',
     },
-    datatestId: `document-${IDocType.FOLDER}`,
+    datatestId: `document-${IDocType.IMAGE}`,
   },
+  {
+    data: {
+      id: 'video',
+      value: ['mp4', '3gp', 'mkv', 'avi'],
+      label: 'Video',
+      icon: 'videoFile',
+      paramKey: 'Video',
+    },
+    datatestId: `document-${IDocType.VIDEO}`,
+  },
+  {
+    data: {
+      id: 'audio',
+      value: ['mp3', 'wav', 'flac'],
+      label: 'Audio',
+      icon: 'audioFile',
+      paramKey: 'Audio',
+    },
+    datatestId: `document-${IDocType.AUDIO}`,
+  },
+  // {
+  //   data: {
+  //     id: 'archive',
+  //     value: ['zip', 'rar', '7z', 'tar', 'gz'],
+  //     label: 'Archive',
+  //     icon: 'archive',
+  //     paramKey: 'Archive',
+  //   },
+  //   datatestId: `document-${IDocType.ARCHIVE}`,
+  // },
+  // {
+  //   data: {
+  //     id: 'csv',
+  //     value: ['csv'],
+  //     label: 'CSV',
+  //     icon: 'csv',
+  //     paramKey: 'CSV',
+  //   },
+  //   datatestId: `document-${IDocType.CSV}`,
+  // },
+  // {
+  //   data: {
+  //     id: 'json',
+  //     value: ['json'],
+  //     label: 'JSON',
+  //     icon: 'json',
+  //     paramKey: 'JSON',
+  //   },
+  //   datatestId: `document-${IDocType.JSON}`,
+  // },
 ];
 
 const DocumentType: FC<IVisibilityProps> = ({ control }) => {

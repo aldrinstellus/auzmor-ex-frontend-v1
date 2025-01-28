@@ -16,6 +16,7 @@ import useAuth from 'hooks/useAuth';
 import SubscriptionBanner from 'components/AppShell/components/SubscriptionBanner';
 import IconButton from 'components/IconButton';
 import useRole from 'hooks/useRole';
+import GlobalSearch from 'components/GlobalSearch';
 
 interface INavbarLxpProps {}
 
@@ -377,6 +378,9 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
               </ul>
               <ul className="flex items-center gap-[19px]">
                 <div className="w-[1px] h-5 bg-[#e5e5e5]"></div>
+                <li>
+                  <GlobalSearch />
+                </li>
                 <li>
                   <IconButton
                     icon="messageQuestionOutline"

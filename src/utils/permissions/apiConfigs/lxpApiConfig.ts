@@ -168,17 +168,23 @@ export const apiConfigLxp = {
   [ApiEnum.CreateReaction]: { [Default]: queries.createReaction },
   [ApiEnum.DeleteReaction]: { [Default]: queries.deleteReaction },
 
-  //storage
-  [ApiEnum.ConnectStorage]: { [Default]: queries.getLinkToken },
-  [ApiEnum.UpdateStorage]: { [Default]: queries.patchConfig },
-  [ApiEnum.GetStorageFiles]: { [Default]: queries.useFiles },
-  [ApiEnum.GetStorageFolders]: { [Default]: queries.useFolders },
-  [ApiEnum.SearchStorage]: { [Default]: queries.useDocument },
-  [ApiEnum.CreateStorageFolder]: { [Default]: queries.createFolder },
-  [ApiEnum.DownloadStorageFile]: { [Default]: queries.download },
-  [ApiEnum.GetStorageUsers]: { [Default]: queries.useGetStorageUser },
-  [ApiEnum.GetStorageConnectionStatus]: {
-    [Default]: queries.useConnectedStatus,
+  //search
+  [ApiEnum.GetSearchResults]: {
+    [Learner]: queries.useLearnerSearchResults,
+    [Default]: queries.useSearchResults,
+  },
+  [ApiEnum.GetRecentClickedResults]: {
+    [Default]: queries.useRecentClickedResults,
+  },
+  [ApiEnum.GetRecentSearchTerms]: {
+    [Default]: queries.useRecentSearchTerms,
+  },
+  [ApiEnum.ClickSearchResult]: { [Default]: queries.clickSearchResult },
+  [ApiEnum.DeleteRecentSearchTerm]: {
+    [Default]: queries.deleteRecentSearchTerm,
+  },
+  [ApiEnum.DeleteRecentClickedResult]: {
+    [Default]: queries.deleteRecentClickedResult,
   },
 
   //submissions
@@ -204,4 +210,51 @@ export const apiConfigLxp = {
   [ApiEnum.GetUser]: { [Default]: queries.useSingleUser },
   [ApiEnum.GetUserApi]: { [Default]: queries.getUser },
   [ApiEnum.GetMembers]: { [Default]: queries.useInfiniteMembers },
+
+  //channel-documents
+  [ApiEnum.GetChannelDirectories]: { [Default]: queries.useChannelDirectories },
+  [ApiEnum.UpdateChannelDocumentConnection]: {
+    [Default]: queries.updateChannelDocumentConnection,
+  },
+  [ApiEnum.GetChannelFiles]: { [Default]: queries.useChannelFiles },
+  [ApiEnum.GetInfiniteChannelFiles]: {
+    [Default]: queries.useInfiniteChannelFiles,
+  },
+  [ApiEnum.GetChannelDocumentStatus]: {
+    [Default]: queries.useChannelDocumentStatus,
+  },
+  [ApiEnum.GetChannelFilePreview]: {
+    [Default]: queries.useChannelFilePreview,
+  },
+  [ApiEnum.CreateChannelDocFolder]: {
+    [Default]: queries.createChannelDocFolder,
+  },
+  [ApiEnum.GetChannelDocOwners]: {
+    [Default]: queries.useChannelDocOwners,
+  },
+  [ApiEnum.DeleteChannelDoc]: {
+    [Default]: queries.deleteChannelDoc,
+  },
+  [ApiEnum.RenameChannelFile]: {
+    [Default]: queries.renameChannelFile,
+  },
+  [ApiEnum.RenameChannelFolder]: {
+    [Default]: queries.renameChannelFolder,
+  },
+  [ApiEnum.DeleteChannelDocConnection]: {
+    [Default]: queries.deleteChannelDocConnection,
+  },
+  [ApiEnum.GetChannelDocDownloadUrl]: {
+    [Default]: queries.getChannelDocDownloadUrl,
+  },
+  [ApiEnum.GetChannelDocDeepSearch]: {
+    [Default]: queries.useChannelDocDeepSearch,
+  },
+  [ApiEnum.ChannelDocSync]: { [Default]: queries.channelDocSync },
+  [ApiEnum.GetChannelDocSyncStatus]: {
+    [Default]: queries.getChannelDocumentSyncStatus,
+  },
+  [ApiEnum.UseChannelDocSyncStatus]: {
+    [Default]: queries.useChannelDocSyncStatus,
+  },
 };

@@ -39,6 +39,9 @@ export interface IChannel {
       canPost: boolean;
       canComment: boolean;
       canMakeAnnouncements: boolean;
+      canEditDocuments: boolean;
+      enableDocuments: boolean;
+      canDownloadDocuments: boolean;
     };
   };
   displayImage?: { original: string };
@@ -70,6 +73,7 @@ export interface IChannelRequest {
 
 type State = {
   channels: { [id: string]: IChannel };
+  rootFolderId?: string;
 };
 
 type Actions = {
@@ -78,11 +82,13 @@ type Actions = {
   setChannel: (channel: IChannel) => void;
   setChannels: (channels: { [key: string]: IChannel }) => void;
   updateChannel: (id: string, channel: IChannel) => void;
+  setRootFolderId: (rootFolderId?: string) => void;
 };
 
 export const useChannelStore = create<State & Actions>()(
   immer((set, get) => ({
     channels: {},
+    rootFolderId: '',
     getChannel: (id: string) => get().channels[id],
     getChannels: () => _.values(get().channels),
     setChannel: (channel: IChannel) =>
@@ -96,6 +102,10 @@ export const useChannelStore = create<State & Actions>()(
     updateChannel: (id: string, channel: IChannel) =>
       set((state) => {
         state.channels[id] = channel;
+      }),
+    setRootFolderId: (rootFolderId) =>
+      set((state) => {
+        state.rootFolderId = rootFolderId;
       }),
   })),
 );

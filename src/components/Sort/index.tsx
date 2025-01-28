@@ -103,7 +103,7 @@ const Sort: FC<ISortProps> = ({
     );
 
   return (
-    <div ref={sortRef}>
+    <div className="relative" ref={sortRef}>
       <PopupMenu
         controlled={controlled}
         triggerNode={
@@ -126,7 +126,7 @@ const Sort: FC<ISortProps> = ({
         title={renderTitle()}
         footer={renderFooter()}
         menuItems={menuItems}
-        className="right-60 w-[204px] top-12 border border-neutral-200"
+        className="right-[calc(100%-40px)] w-[204px] top-12 border border-neutral-200"
       />
     </div>
   );

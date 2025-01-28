@@ -155,6 +155,14 @@ export enum ApiEnum {
   CreateReaction = 'CREATE_REACTION',
   DeleteReaction = 'DELETE_REACTION',
 
+  //search
+  GetSearchResults = 'GET_SEARCH_RESULTS',
+  GetRecentClickedResults = 'GET_RECENT_CLICKED_RESULTS',
+  GetRecentSearchTerms = 'GET_RECENT_SEARCH_TERMS',
+  ClickSearchResult = 'CLICK_SEARCH_RESULT',
+  DeleteRecentSearchTerm = 'DELETE_RECENT_SEARCH_TERM',
+  DeleteRecentClickedResult = 'DELETE_RECENT_CLICKED_RESULT',
+
   //skills
   GetSkills = 'GET_SKILLS',
 
@@ -210,4 +218,24 @@ export enum ApiEnum {
   GetOrganizationChart = 'GET_ORGANIZATION_CHART',
   GetOrganizationChartApi = 'GET_ORGANIZATION_CHART_API',
   ResendInvitation = 'RESEND_INVITATION',
+
+  //channel-documents
+  GetChannelDirectories = 'GET_CHANNEL_DIRECTORIES',
+  UpdateChannelDocumentConnection = 'UPDATE_CHANNEL_DOCUMENT_CONNECTION',
+  GetChannelFiles = 'GET_CHANNEL_FILES',
+  GetInfiniteChannelFiles = 'GET_INFINITE_CHANNEL_FILES',
+  GetChannelDocumentStatus = 'GET_CHANNEL_DOCUMENT_STATUS',
+  GetChannelFilePreview = 'GET_CHANNEL_FILE_PREVIEW',
+  CreateChannelDocFolder = 'CREATE_CHANNEL_DOC_FOLDER',
+  GetChannelDocOwners = 'GET_CHANNEL_DOC_OWNERS',
+  UpdateChannelFileFinish = 'UPDATE_CHANNEL_FILE_FINISH',
+  DeleteChannelDoc = 'DELETE_CHANNEL_DOC',
+  RenameChannelFile = 'RENAME_CHANNEL_FILE',
+  RenameChannelFolder = 'RENAME_CHANNEL_FOLDER',
+  DeleteChannelDocConnection = 'DELETE_CHANNEL_DOC_CONNECTION',
+  GetChannelDocDownloadUrl = 'GET_CHANNEL_DOC_DOWNLOAD_URL',
+  GetChannelDocDeepSearch = 'GET_CHANNEL_DOC_DEEP_SEARCH',
+  ChannelDocSync = 'CHANNEL_DOC_SYNC',
+  GetChannelDocSyncStatus = 'GET_CHANNEL_DOC_SYNC_STATUS',
+  UseChannelDocSyncStatus = 'USE_CHANNEL_DOC_SYNC_STATUS',
 }

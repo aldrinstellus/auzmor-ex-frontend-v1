@@ -19,6 +19,7 @@ import SvgSpeakerOutline from '../components/Speaker/SpeakerOutline';
 import SvgDraftOutline from '../components/Draft/DraftOutline';
 import SvgArrowSwapOutline from '../components/ArrowSwap/ArrowSwapOutline';
 import SvgArrowLeftOutline from '../components/ArrowLeft/ArrowLeftOutline';
+import SvgHashtagOutline from '../components/Hashtag/HashtagOutline';
 import SvgMailOutline from '../components/Mail/MailOutline';
 import SvgSearchOutline from '../components/Search/SearchOutline';
 import SvgFilterLinearOutline from '../components/FilterLinear/FilterLinearOutline';
@@ -107,6 +108,13 @@ import SvgShoppingCartOutline from '../components/ShoppingCart/ShoppingCartOutli
 import SvgMessageQuestionOutline from '../components/MessageQuestion/MessageQuestionOutline';
 import SvgTeacherOutline from '../components/Teacher/TeacherOutline';
 import SvgVideoSquareOutline from '../components/VideoSquare/VideoSquareOutline';
+import SvgGridOutline from '../components/Grid/GridOutline';
+import SvgFileUploadOutline from '../components/FileUpload/FileUploadOutline';
+import SvgFolderUploadOutline from '../components/FolderUpload/FolderUploadOutline';
+import SvgVuesaxOutline from '../components/Vuesax/VuesaxOutline';
+import SvgUserTickOutline from '../components/UserTick/UserTickOutline';
+import SvgRefreshCircleOutline from '../components/RefreshCircle/RefreshCircleOutline';
+import SvgUploadOutline from '../components/Upload/UploadOutline';
 
 export const outlineIcon = {
   addCircleOutline: SvgAddCircleOutline,
@@ -151,14 +159,18 @@ export const outlineIcon = {
   eyeOutline: SvgEyeOutline,
   eyeSlashOutline: SvgEyeSlashOutline,
   feedOutline: SvgFeedOutline,
+  fileUploadOutline: SvgFileUploadOutline,
   filterLinearOutline: SvgFilterLinearOutline,
   focusOutline: SvgFocusOutline,
+  folderUpload: SvgFolderUploadOutline,
   fullScreenOutline: SvgFullScreenOutline,
   funnyOutline: SvgFunnyOutline,
   galleryOutline: SvgGalleryOutline,
   gearOutline: SvgGearOutline,
   globalOutline: SvgGlobalOutline,
+  gridOutline: SvgGridOutline,
   groupOutline: SvgGroupOutline,
+  hashtagOutline: SvgHashtagOutline,
   homeOutline: SvgHomeOutline,
   iconLinearOutline: SvgIconLinearOutline,
   imageOutline: SvgImageOutline,
@@ -190,6 +202,7 @@ export const outlineIcon = {
   profileOutline: SvgProfileOutline,
   profileUserOutline: SvgProfileUserOutline,
   redoOutline: SvgRedoOutline,
+  refreshCircleOutline: SvgRefreshCircleOutline,
   replyOutline: SvgReplyOutline,
   repostOutline: SvgRepostOutline,
   searchOutline: SvgSearchOutline,
@@ -208,12 +221,15 @@ export const outlineIcon = {
   threeDotsOutline: SvgThreeDotsOutline,
   tickCircleOutline: SvgTickCircleOutline,
   trashOutline: SvgTrashOutline,
+  uploadOutline: SvgUploadOutline,
   userManagementOutline: SvgUserManagementOutline,
   userRemoveOutline: SvgUserRemoveOutline,
   userRole: SvgUserRoleOutline,
   usersOutline: SvgUsersOutline,
+  userTick: SvgUserTickOutline,
   videoOutline: SvgVideoOutline,
   videoSquareOutline: SvgVideoSquareOutline,
+  vuesaxOutline: SvgVuesaxOutline,
   warningCirlceOutline: SvgWarningCircleOutline,
   websiteOutline: SvgWebsiteOutline,
   zoomInOutline: SvgZoomInOutline,
