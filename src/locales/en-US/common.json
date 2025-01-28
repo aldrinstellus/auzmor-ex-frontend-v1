@@ -9,5 +9,7 @@
   "loading": "Loading...",
   "show-results": "Showing {{count}} results",
   "notSpecified": "Not specified",
-  "authenticating": "Authenticating..."
+  "authenticating": "Authenticating...",
+  "okay": "Okay",
+  "delete": "Delete"
 }

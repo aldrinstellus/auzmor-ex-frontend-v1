@@ -166,6 +166,8 @@
     "updatedDate": "Updated Date",
     "sortBy": "Sort by",
     "clearSort": "Clear sort",
+    "dateModified": "Date modified",
+    "size": "Size",
     "sort": "sort"
   },
   "Reply": {

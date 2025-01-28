@@ -10,6 +10,7 @@ import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
 import queryClient from 'utils/queryClient';
+import { useTranslation } from 'react-i18next';
 
 type UploadControlRowProps = {
   data: IChannel;
@@ -17,6 +18,9 @@ type UploadControlRowProps = {
 };
 
 const UploadControlRow: FC<UploadControlRowProps> = ({ data, canEdit }) => {
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'documentSetting.uploadControlRow',
+  });
   const { channelId = '' } = useParams();
   const { getApi } = usePermissions();
   const updateChannel = getApi(ApiEnum.UpdateChannel);
@@ -115,7 +119,7 @@ const UploadControlRow: FC<UploadControlRowProps> = ({ data, canEdit }) => {
         bgColor: '!bg-red-50',
       }}
       isEditButton={false}
-      label={<div className="my-6">Who Can Upload Documents</div>}
+      label={<div className="my-6">{t('title')}</div>}
       isEditMode={true}
       value={data?.settings?.visibility}
       dataTestId=""

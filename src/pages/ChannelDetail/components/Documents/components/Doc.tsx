@@ -6,6 +6,7 @@ import React, { FC, useMemo } from 'react';
 import { Doc as DocType } from 'interfaces';
 import Avatar from 'components/Avatar';
 import { humanizeTime } from 'utils/time';
+import { useTranslation } from 'react-i18next';
 
 interface IDocProps {
   doc: DocType;
@@ -78,6 +79,9 @@ export const getIconFromMime = (mimeType?: string) => {
 };
 
 const Doc: FC<IDocProps> = ({ doc, isFolder }) => {
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'documentTab',
+  });
   const style = useMemo(
     () =>
       clsx({
@@ -117,10 +121,7 @@ const Doc: FC<IDocProps> = ({ doc, isFolder }) => {
           )}
           {doc?.externalUpdatedAt && (
             <span className="text-xxs text-neutral-500 font-medium">
-              Updated{' '}
-              {doc.externalUpdatedAt
-                ? humanizeTime(doc.externalUpdatedAt)
-                : 'while ago'}
+              {t('updated', { data: humanizeTime(doc.externalUpdatedAt) })}
             </span>
           )}
         </div>

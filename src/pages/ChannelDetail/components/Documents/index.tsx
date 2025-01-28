@@ -59,6 +59,7 @@ import Popover from 'components/Popover';
 import { parseNumber } from 'react-advanced-cropper';
 import { getExtension, trimExtension } from '../utils';
 import { getChannelDocDownloadUrl } from 'queries/learn';
+import { useTranslation } from 'react-i18next';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
@@ -79,6 +80,10 @@ interface IDocumentProps {
 }
 
 const Document: FC<IDocumentProps> = ({ permissions }) => {
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'documentTab',
+  });
+  const { t: tc } = useTranslation('common');
   const [isOpen, openModal, closeModal] = useModal();
   const [isAddModalOpen, openAddModal, closeAddModal] = useModal();
   const [totalRows, setTotalRows] = useState<number>(0);
@@ -152,14 +157,14 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     mutationFn: deleteChannelDoc,
     onSuccess: () => {
       successToastConfig({
-        content: `“${deleteDocProps?.doc?.name}” file deleted`,
+        content: t('deleteFile.success', { name: deleteDocProps?.doc?.name }),
       });
     },
     onError: (response: any) => {
       const failMessage =
         response?.response?.data?.errors[0]?.reason === 'ACCESS_DENIED'
-          ? 'Access Denied'
-          : `Failed to delete ${deleteDocProps?.doc?.name}`;
+          ? t('accessDenied')
+          : t('deleteFile.failure', { name: deleteDocProps?.doc?.name });
       failureToastConfig({
         content: failMessage,
         dataTestId: 'file-delete-toaster',
@@ -177,13 +182,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const renameChannelFileMutation = useMutation({
     mutationFn: getApi(ApiEnum.RenameChannelFile),
     onSuccess: () => {
-      successToastConfig({ content: 'File renamed successfully' });
+      successToastConfig({ content: t('renameFile.success') });
     },
     onError: (response: any) => {
       const failMessage =
         response?.response?.data?.errors[0]?.reason === 'ACCESS_DENIED'
-          ? 'Access Denied'
-          : 'File rename failed';
+          ? t('accessDenied')
+          : t('renameFile.failure');
       failureToastConfig({ content: failMessage });
     },
     onSettled: async () => {
@@ -198,13 +203,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const renameChannelFolderMutation = useMutation({
     mutationFn: getApi(ApiEnum.RenameChannelFolder),
     onSuccess: () => {
-      successToastConfig({ content: 'Folder renamed successfully' });
+      successToastConfig({ content: t('renameFolder.success') });
     },
     onError: (response: any) => {
       const failMessage =
         response?.response?.data?.errors[0]?.reason === 'ACCESS_DENIED'
-          ? 'Access Denied'
-          : 'Folder rename failed';
+          ? t('accessDenied')
+          : t('renameFolder.failure');
       failureToastConfig({ content: failMessage });
     },
     onSettled: async () => {
@@ -284,7 +289,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     );
     return [
       {
-        label: 'Rename',
+        label: t('rename'),
         onClick: (e: Event) => {
           e.stopPropagation();
           showRenameModal({
@@ -299,16 +304,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         isHidden: !canRename,
       },
       {
-        label: 'Remove from starred',
-        onClick: (e: Event) => {
-          e.stopPropagation();
-        },
-        dataTestId: 'folder-menu',
-        className: '!px-6 !py-2',
-        isHidden: true,
-      },
-      {
-        label: 'Download',
+        label: t('download'),
         onClick: async (e: Event) => {
           e.stopPropagation();
           try {
@@ -332,7 +328,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         isHidden: !showDownload,
       },
       {
-        label: 'Delete',
+        label: tc('delete'),
         onClick: (e: Event) => {
           e.stopPropagation();
           showConfirm({ doc: info?.row?.original });
@@ -347,7 +343,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   // A function to get formated props for location breadcrumb
   const getMappedLocation = (doc: DocType) => {
     let items = [
-      { id: 'root', label: 'Documents' },
+      { id: 'root', label: t('title') },
       ...Object.keys(doc?.pathWithId || {}).map((key) => ({
         id: doc?.pathWithId[key],
         label: key,
@@ -367,7 +363,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           accessorKey: 'name',
           header: () => (
             <div className="font-bold text-neutral-500">
-              File Name ({totalRows})
+              {t('nameColumn', { totalRows })}
             </div>
           ),
           cell: (info: CellContext<DocType, unknown>) => (
@@ -393,7 +389,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         },
         {
           accessorKey: 'ownerName',
-          header: () => <div className="font-bold text-neutral-500">Owner</div>,
+          header: () => (
+            <div className="font-bold text-neutral-500">{t('owner')}</div>
+          ),
           cell: (info: CellContext<DocType, unknown>) => (
             <div className="flex gap-2 items-center">
               <Avatar
@@ -409,7 +407,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         {
           accessorKey: 'modifiedAt',
           header: () => (
-            <div className="font-bold text-neutral-500">Last Updated</div>
+            <div className="font-bold text-neutral-500">{t('lastUpdated')}</div>
           ),
           cell: (info: CellContext<DocType, unknown>) => (
             <div className="flex gap-2 font-medium text-neutral-900 leading-6">
@@ -473,7 +471,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         accessorKey: 'name',
         header: () => (
           <div className="font-bold text-neutral-500">
-            File Name ({totalRows})
+            {t('nameColumn', { totalRows })}
           </div>
         ),
         cell: (info: CellContext<DocType, unknown>) => (
@@ -498,7 +496,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       },
       {
         accessorKey: 'ownerName',
-        header: () => <div className="font-bold text-neutral-500">Owner</div>,
+        header: () => (
+          <div className="font-bold text-neutral-500">{t('owner')}</div>
+        ),
         cell: (info: CellContext<DocType, unknown>) => (
           <div className="flex gap-2 items-center">
             <Avatar
@@ -514,7 +514,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       {
         accessorKey: 'modifiedAt',
         header: () => (
-          <div className="font-bold text-neutral-500">Last Updated</div>
+          <div className="font-bold text-neutral-500">{t('lastUpdated')}</div>
         ),
         cell: (info: CellContext<DocType, unknown>) => (
           <div className="flex gap-2 font-medium text-neutral-900 leading-6">
@@ -526,7 +526,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       {
         accessorKey: 'location',
         header: () => (
-          <div className="font-bold text-neutral-500">Location</div>
+          <div className="font-bold text-neutral-500">{t('location')}</div>
         ),
         cell: (info: CellContext<DocType, unknown>) => (
           <Popover
@@ -721,7 +721,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       },
       noDataFound: (
         <NoDataFound
-          labelHeader="No documents found"
+          labelHeader={t('noDataFound')}
           clearBtnLabel="Upload now"
           hideClearBtn={
             isRootDir ||
@@ -774,29 +774,20 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             <NoDataFound illustration="noChannelFound" hideClearBtn hideText />
             <div className="flex flex-col gap-4 justify-between">
               <p className="w-full text-2xl font-semibold text-neutral-900 text-center">
-                Activate folder
+                {t('activateFolder')}
               </p>
               <Divider />
               <p className="text-center text-lg font-medium text-neutral-900">
-                Activate your preferred site from sharepoint to create, share
-                and collaborate on files and folders in this channel.
+                {t('activateFolderDescription')}
               </p>
             </div>
             <div className="flex gap-6 w-full justify-center">
               <Button
-                label="Select existing"
+                label={t('selectExistingCTA')}
                 variant={ButtonVariant.Secondary}
                 size={Size.Small}
                 onClick={openModal}
               />
-              {integrationType !== DocIntegrationEnum.Sharepoint && (
-                <Button
-                  label="Add new"
-                  leftIcon="plus"
-                  size={Size.Small}
-                  onClick={openAddModal}
-                />
-              )}
             </div>
           </Fragment>
         ) : (
@@ -804,16 +795,15 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             <div className="flex flex-col w-full border border-neutral-200 rounded-7xl px-6 py-10 gap-10">
               <div className="flex flex-col gap-4">
                 <p className="font-bold text-neutral-900 text-center">
-                  Enable integrations to view your files
+                  {t('enableIntegration')}
                 </p>
                 <p className="text-neutral-900 text-center">
-                  To view your files here, you need to enable SharePoint
-                  integration
+                  {t('enableIntegrationDescription')}
                 </p>
               </div>
               <div className="flex justify-center">
                 <Button
-                  label="SharePoint"
+                  label={t('sharepointCTA')}
                   size={Size.Small}
                   variant={ButtonVariant.Secondary}
                   leftIcon={'sharePoint'}
@@ -830,7 +820,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         )}
       </Fragment>
     ) : (
-      <NoDataFound hideClearBtn labelHeader="No documents found" />
+      <NoDataFound hideClearBtn labelHeader={t('noDataFound')} />
     );
 
   // Its a functional component that gives File upload job rendered
@@ -942,7 +932,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
 
   return isLoading ? (
     <Card className="flex flex-col gap-6 p-8 pb-16 w-full justify-center bg-white overflow-hidden">
-      <p className="font-bold text-2xl text-neutral-900">Documents</p>
+      <p className="font-bold text-2xl text-neutral-900">{t('title')}</p>
       <Spinner className="flex w-full justify-center" />
     </Card>
   ) : (
@@ -1101,13 +1091,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           <div className="flex gap-2 w-full p-2 border border-orange-400 bg-orange-50 items-center">
             <Icon name="warning" />
             <span className="text-neutral-600 text-sm font-medium">
-              The credentials for SharePoint have expired. Please log in again
-              to continue.{' '}
+              {t('reAuthorizeForAdmin')}
               <Link
                 to={getLearnUrl('/settings/market-place')}
                 className="text-orange-400 text-sm font-bold underline"
               >
-                Reauthorize
+                {t('reAuthorizeCTA')}
               </Link>
             </span>
           </div>
@@ -1116,7 +1105,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           <div className="flex gap-2 w-full p-2 border border-orange-400 bg-orange-50 items-center">
             <Icon name="warning" />
             <span className="text-neutral-600 text-sm font-medium">
-              There is a sync issue with SharePoint. Please contact{' '}
+              {t('reAuthorizeForOthersFirstHalf')}
               <Link
                 to={
                   `mailto:${currentUser?.result?.data?.org?.primaryAdmin?.email}` ||
@@ -1126,7 +1115,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               >
                 {currentUser?.result?.data?.org?.primaryAdmin?.email || ''}
               </Link>{' '}
-              or support team to resolve this.
+              {t('reAuthorizeForOthersSecondHalf')}
             </span>
           </div>
         )}
@@ -1153,7 +1142,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                   <PopupMenu
                     triggerNode={
                       <Button
-                        label="New"
+                        label={t('addNewPopupLabelCTA')}
                         leftIcon="add"
                         className="px-4 py-2 gap-1 h-10"
                         leftIconClassName="text-white focus:text-white group-focus:text-white"
@@ -1166,7 +1155,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                       {
                         renderNode: (
                           <div className="bg-blue-50 px-6 text-xs font-medium text-neutral-500 py-2">
-                            Add new
+                            {t('addNewPopupBanner')}
                           </div>
                         ),
                         isBanner: true,
@@ -1174,7 +1163,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                       {
                         label: (
                           <div className="flex gap-2 items-center text-xs">
-                            <Icon name={'folder'} size={16} /> Folder
+                            <Icon name={'folder'} size={16} /> {t('folder')}
                           </div>
                         ),
                         onClick: openAddModal,
@@ -1182,7 +1171,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                       {
                         renderNode: (
                           <div className="bg-blue-50 px-6 text-xs font-medium text-neutral-500 py-2">
-                            Upload new
+                            {t('uploadNewPopupBanner')}
                           </div>
                         ),
                         isBanner: true,
@@ -1190,7 +1179,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                       {
                         label: (
                           <div className="flex gap-2.5 items-center text-xs">
-                            <Icon name={'fileUpload'} size={16} /> File
+                            <Icon name={'fileUpload'} size={16} /> {t('file')}
                           </div>
                         ),
                         onClick: () => fileInputRef?.current?.click(),
@@ -1198,7 +1187,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                       {
                         label: (
                           <div className="flex gap-2.5 items-center text-xs">
-                            <Icon name={'folderUpload'} size={16} /> Folder
+                            <Icon name={'folderUpload'} size={16} />{' '}
+                            {t('folder')}
                           </div>
                         ),
                         onClick: () => folderInputRef?.current?.click(),
@@ -1214,7 +1204,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         {isBaseFolderSet ? (
           <Fragment>
             <RecentlyAddedEntities permissions={permissions} />
-            <p className="text-base font-bold text-neutral-900">All files</p>
+            <p className="text-base font-bold text-neutral-900">
+              {t('allItemTitle')}
+            </p>
             <FilterMenuDocument
               control={control}
               watch={watch}
@@ -1343,12 +1335,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         isLoading={deleteChannelDocMutation.isLoading}
         open={confirm}
         onClose={closeConfirm}
-        title={`Delete file?`}
-        description={
-          <span>Are you sure you want to delete? This cannot be undone</span>
-        }
+        title={t('deleteBoxTitle')}
+        description={<span>{t('deleteDescription')}</span>}
         success={{
-          label: 'Delete',
+          label: tc('delete'),
           className: 'bg-red-500 text-white ',
           onSubmit: () =>
             deleteChannelDocMutation.mutate({
@@ -1357,7 +1347,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             } as any),
         }}
         discard={{
-          label: 'Cancel',
+          label: tc('cancel'),
           className: 'text-neutral-900 bg-white ',
           onCancel: closeConfirm,
         }}

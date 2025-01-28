@@ -6,6 +6,7 @@ import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useTranslation } from 'react-i18next';
 
 interface IRenameChannelDocModalProps {
   defaultName: string;
@@ -26,12 +27,16 @@ const RenameChannelDocModal: FC<IRenameChannelDocModalProps> = ({
   closeModal,
   onSave,
 }) => {
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'documentTab',
+  });
+  const { t: tc } = useTranslation('common');
   const schema = yup.object({
     folderName: yup
       .string()
       .trim()
-      .min(1, 'Name can not ne empty')
-      .max(250, 'Name can not exceed 250 character'),
+      .min(1, t('emptyRenameError'))
+      .max(250, t('charLimitRenameError', { limit: 250 })),
   });
 
   const {
@@ -46,7 +51,7 @@ const RenameChannelDocModal: FC<IRenameChannelDocModalProps> = ({
   return (
     <Modal open={isOpen}>
       {/* Header */}
-      <Header title="Rename" onClose={closeModal} />
+      <Header title={t('rename')} onClose={closeModal} />
 
       {/* Body */}
       <Layout
@@ -55,7 +60,7 @@ const RenameChannelDocModal: FC<IRenameChannelDocModalProps> = ({
             type: FieldType.Input,
             control,
             name: 'name',
-            placeholder: 'Type new name',
+            placeholder: t('renameInputPlaceholder'),
             dataTestId: `rename-input`,
             inputClassName: 'text-sm py-[9px]',
             className: 'p-6',
@@ -68,14 +73,14 @@ const RenameChannelDocModal: FC<IRenameChannelDocModalProps> = ({
       {/* Footer */}
       <div className="flex gap-4 justify-end items-center h-16 p-6 bg-blue-50 rounded-b-9xl">
         <Button
-          label="Cancel"
+          label={tc('cancel')}
           variant={ButtonVariant.Secondary}
           onClick={closeModal}
           size={Size.Small}
           disabled={isLoading}
         />
         <Button
-          label={'Okay'}
+          label={tc('okay')}
           onClick={() => onSave(getValues('name'))}
           disabled={isLoading}
           loading={isLoading}
