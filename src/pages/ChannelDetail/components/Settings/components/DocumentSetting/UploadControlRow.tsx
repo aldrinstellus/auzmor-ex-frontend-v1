@@ -19,7 +19,7 @@ type UploadControlRowProps = {
 
 const UploadControlRow: FC<UploadControlRowProps> = ({ data, canEdit }) => {
   const { t } = useTranslation('channelDetail', {
-    keyPrefix: 'documentSetting.uploadControlRow',
+    keyPrefix: 'setting.documentSetting.uploadControlRow',
   });
   const { channelId = '' } = useParams();
   const { getApi } = usePermissions();
@@ -70,16 +70,16 @@ const UploadControlRow: FC<UploadControlRowProps> = ({ data, canEdit }) => {
   const uploadSettingOptions: IRadioListOption[] = [
     {
       data: {
-        value: 'Anyone',
-        label: 'Anyone can upload documents',
+        value: t('anyone'),
+        label: t('anyoneDescription'),
         onChange: handleChange,
       },
       dataTestId: '',
     },
     {
       data: {
-        value: 'Channel Admins',
-        label: 'Only Channel Admins can upload documents',
+        value: t('channelAdmin'),
+        label: t('channelAdminDescription'),
         onChange: handleChange,
       },
       dataTestId: '',

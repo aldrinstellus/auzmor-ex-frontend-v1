@@ -186,6 +186,10 @@
       "success": "Folder renamed successfully",
       "failure": "Folder rename failed"
     },
+    "connectFolder": {
+      "success": "Connected successfully",
+      "failure": "Fail to connect, Try again!"
+    },
     "accessDenied": "Access Denied"
   },
   "memberTab": {
@@ -275,9 +279,19 @@
         "title": "Show/Hide Documents"
       },
       "uploadControlRow": {
-        "title": "Who Can Upload Documents"
+        "title": "Who Can Upload Documents",
+        "anyone": "Anyone",
+        "anyoneDescription": "Anyone can upload documents",
+        "channelAdmin": "Channel Admins",
+        "channelAdminDescription": "Only Channel Admins can upload documents"
       },
-      "DocAccessLevelRow": {}
+      "DocAccessLevelRow": {
+        "title": "Access level to members",
+        "viewer": "Viewer",
+        "viewerDescription": "Anyone in the channel can view the documents",
+        "cannotDownload": "Can’t download",
+        "cannotDownloadDescription": "Members can view but cannot download documents."
+      }
     }
   }
 }

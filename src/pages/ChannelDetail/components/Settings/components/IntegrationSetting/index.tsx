@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useRef } from 'react';
 import Header from 'components/ProfileInfo/components/Header';
 import Card from 'components/Card';
 import PopupMenu from 'components/PopupMenu';
@@ -31,8 +31,22 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
   const { getApi } = usePermissions();
   const { channelId } = useParams();
   const [isOpen, openModal, closeModal] = useModal();
-  const { setVariant, setShow, setJobTitle, setIsExpanded } =
-    useBackgroundJobStore();
+  const { config, setConfig, setJobTitle, reset } = useBackgroundJobStore();
+  const syncIntervalRef = useRef<any>(null);
+
+  useEffect(
+    () => () => {
+      if (
+        config.variant === BackgroundJobVariantEnum.ChannelDocumentSync &&
+        !!config.show &&
+        !!syncIntervalRef.current
+      ) {
+        clearInterval(syncIntervalRef.current);
+        reset();
+      }
+    },
+    [config.variant],
+  );
 
   const integrationMapping = {
     [DocIntegrationEnum.GoogleDrive]: {
@@ -41,7 +55,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
     },
     [DocIntegrationEnum.Sharepoint]: {
       icon: 'sharePoint',
-      label: t('sharepointCTA'),
+      label: t('documentTab.sharepointCTA'),
     },
   };
 
@@ -87,16 +101,17 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
   const reSyncMutation = useMutation({
     mutationFn: reSync,
     onMutate: () => {
-      setVariant(BackgroundJobVariantEnum.ChannelDocumentSync);
+      setConfig({
+        variant: BackgroundJobVariantEnum.ChannelDocumentSync,
+        show: true,
+        isExpanded: false,
+      });
       setJobTitle('Sync in progress');
-      setIsExpanded(false);
-      setShow(true);
     },
     onSuccess: async () => {
-      let intervalId: any = null;
-      intervalId = setInterval(async () => {
+      syncIntervalRef.current = setInterval(async () => {
         const response = await getSyncStatus({ channelId }).catch(() => {
-          clearInterval(intervalId);
+          clearInterval(syncIntervalRef.current);
           setJobTitle('Sync failed');
         });
         const syncResults = response?.data?.result?.data;
@@ -111,7 +126,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
             }
           });
           if (successCount + failCount === syncResults?.length) {
-            clearInterval(intervalId);
+            clearInterval(syncIntervalRef.current);
             if (successCount === syncResults.length) {
               setJobTitle('Sync successful');
             } else {
@@ -231,7 +246,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
           <div className="flex gap-6 w-full">
             {isConnectionMade && !isBaseFolderSet && (
               <Button
-                label={t('selectExistingCTA')}
+                label={t('documentTab.selectExistingCTA')}
                 variant={ButtonVariant.Secondary}
                 size={Size.Small}
                 onClick={openModal}
@@ -293,16 +308,21 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
                   onSettled: callback,
                   onSuccess: () => {
                     successToastConfig({
-                      content: `Connected successfully`,
+                      content: t('documentTab.connectFolder.success'),
                     });
                     refetch();
                     queryClient.invalidateQueries(['get-channel-files'], {
                       exact: false,
                     });
                   },
-                  onError: () => {
+                  onError: (response: any) => {
+                    const failMessage =
+                      response?.response?.data?.errors[0]?.reason ===
+                      'ACCESS_DENIED'
+                        ? t('documentTab.accessDenied')
+                        : t('documentTab.connectFolder.failure');
                     failureToastConfig({
-                      content: 'Fail to connect, Try again!',
+                      content: failMessage,
                     });
                   },
                 },

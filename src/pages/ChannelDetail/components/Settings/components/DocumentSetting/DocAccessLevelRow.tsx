@@ -10,6 +10,7 @@ import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
 import queryClient from 'utils/queryClient';
+import { useTranslation } from 'react-i18next';
 
 type DocAccessLevelRowProps = {
   data: IChannel;
@@ -17,6 +18,9 @@ type DocAccessLevelRowProps = {
 };
 
 const DocAccessLevelRow: FC<DocAccessLevelRowProps> = ({ data, canEdit }) => {
+  const { t } = useTranslation('channelDetail', {
+    keyPrefix: 'setting.documentSetting.DocAccessLevelRow',
+  });
   const { channelId = '' } = useParams();
   const { getApi } = usePermissions();
   const updateChannel = getApi(ApiEnum.UpdateChannel);
@@ -66,16 +70,16 @@ const DocAccessLevelRow: FC<DocAccessLevelRowProps> = ({ data, canEdit }) => {
   const uploadSettingOptions: IRadioListOption[] = [
     {
       data: {
-        value: 'Viewer',
-        label: 'Anyone in the channel can view the documents',
+        value: t('viewer'),
+        label: t('viewerDescription'),
         onChange: handleChange,
       },
       dataTestId: '',
     },
     {
       data: {
-        value: 'Can’t download',
-        label: 'Members can view but cannot download documents.',
+        value: t('cannotDownload'),
+        label: t('cannotDownloadDescription'),
         onChange: handleChange,
       },
       dataTestId: '',
@@ -115,7 +119,7 @@ const DocAccessLevelRow: FC<DocAccessLevelRowProps> = ({ data, canEdit }) => {
         bgColor: '!bg-teal-50',
       }}
       isEditButton={false}
-      label={<div className="my-6">Access level to members</div>}
+      label={<div className="my-6">{t('title')}</div>}
       isEditMode={true}
       value={data?.settings?.visibility}
       dataTestId=""

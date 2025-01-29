@@ -1257,7 +1257,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                   onSuccess: () => {
                     handleSyncing();
                     successToastConfig({
-                      content: `Connected successfully`,
+                      content: t('connectFolder.success'),
                     });
                     refetch();
                     queryClient.invalidateQueries(['get-channel-files'], {
@@ -1268,8 +1268,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                     const failMessage =
                       response?.response?.data?.errors[0]?.reason ===
                       'ACCESS_DENIED'
-                        ? 'Access Denied'
-                        : 'Fail to connect, Try again!';
+                        ? t('accessDenied')
+                        : t('connectFolder.failure');
                     failureToastConfig({
                       content: failMessage,
                     });

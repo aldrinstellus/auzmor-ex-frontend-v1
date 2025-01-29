@@ -17,7 +17,7 @@ type AppProps = {
 
 const DocVisibilityRow: FC<AppProps> = ({ data, canEdit }) => {
   const { t } = useTranslation('channelDetail', {
-    keyPrefix: 'documentSetting.docVisibilityRow',
+    keyPrefix: 'setting.documentSetting.docVisibilityRow',
   });
   const { channelId = '' } = useParams();
   const { getApi } = usePermissions();

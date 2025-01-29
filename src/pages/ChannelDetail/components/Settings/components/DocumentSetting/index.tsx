@@ -17,7 +17,7 @@ const DocumentSetting: FC<DocumentSettingProps> = ({
   canEdit,
 }) => {
   const { t } = useTranslation('channelDetail', {
-    keyPrefix: 'documentSetting',
+    keyPrefix: 'setting.documentSetting',
   });
   return (
     <div className="flex flex-col gap-3">
