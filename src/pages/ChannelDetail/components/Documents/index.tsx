@@ -262,11 +262,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const integrationType: DocIntegrationEnum = DocIntegrationEnum.Sharepoint;
   const availableAccount = statusResponse?.availableAccounts[0];
   const isRootDir = items.length === 1;
+  const isCredExpired = !!statusResponse?.expiryDetails?.expired;
   const reAuthorizeForAdmin =
-    statusResponse?.expiryDetails?.expired &&
-    permissions.includes(ChannelPermissionEnum.CanReauthorize);
+    isCredExpired && permissions.includes(ChannelPermissionEnum.CanReauthorize);
   const reAuthorizeForOthers =
-    statusResponse?.expiryDetails?.expired &&
+    isCredExpired &&
     !permissions.includes(ChannelPermissionEnum.CanReauthorize);
 
   // A function that decides what options to show on each row of documents
@@ -796,6 +796,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 variant={ButtonVariant.Secondary}
                 size={Size.Small}
                 onClick={openModal}
+                disabled={isCredExpired || isLoading}
               />
             </div>
           </Fragment>
