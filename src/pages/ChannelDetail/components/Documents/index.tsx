@@ -106,8 +106,15 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const { uploadMedia } = useChannelDocUpload(channelId);
   const { filters } = useAppliedFiltersStore();
   const { setRootFolderId } = useChannelStore();
-  const { config, setConfig, setJobs, getIconFromStatus, setJobTitle, reset } =
-    useBackgroundJobStore();
+  const {
+    config,
+    setConfig,
+    setJobs,
+    getIconFromStatus,
+    setJobTitle,
+    reset,
+    updateJob,
+  } = useBackgroundJobStore();
   const folderInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [docType, applyDocumentSearch, documentSearch, byTitle] = watch([
@@ -966,144 +973,105 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       <input
         id="input-file-upload"
         className="hidden"
+        disabled={isCredExpired}
         type="file"
         ref={fileInputRef}
         multiple={true}
         onChange={async (e: any) => {
-          // Id of parent folder
-          const parentFolderId =
-            items.length <= 2 ? '' : items[items.length - 1].id.toString();
+          try {
+            // Id of parent folder
+            const parentFolderId =
+              items.length <= 2 ? '' : items[items.length - 1].id.toString();
 
-          // Id of root folderId
-          const rootFolderId = items.length > 1 ? items[1].id.toString() : '';
+            // Id of root folderId
+            const rootFolderId = items.length > 1 ? items[1].id.toString() : '';
 
-          // Collection file with mapped parent folder id
-          const files: {
-            file: File;
-            parentFolderId: string;
-            rootFolderId: string;
-          }[] = [];
+            // Collection file with mapped parent folder id
+            const files: {
+              file: File;
+              parentFolderId: string;
+              rootFolderId: string;
+            }[] = [];
 
-          setConfig({
-            variant: BackgroundJobVariantEnum.ChannelDocumentUpload,
-            show: true,
-            isExpanded: false,
-          });
+            setConfig({
+              variant: BackgroundJobVariantEnum.ChannelDocumentUpload,
+              show: true,
+              isExpanded: false,
+            });
 
-          let index = 0;
-          const jobs: { [key: string]: any } = {};
+            let index = 0;
+            const jobs: { [key: string]: any } = {};
 
-          for (const file of Array.from(e.target.files) as File[]) {
-            const isFile = await isThisAFile(file);
-            files.push({ file, parentFolderId, rootFolderId });
-            jobs[`upload-job-${index}`] = {
-              id: `upload-job-${index}`,
-              jobData: { file, parentFolderId },
-              progress: isFile ? 0 : 100,
-              status: isFile
-                ? BackgroundJobStatusEnum.YetToStart
-                : BackgroundJobStatusEnum.Cancelled,
-              jobComment: !isFile && 'File not found',
-              renderer: fileUploadJobRenderer,
-            };
-            index += 1;
+            for (const file of Array.from(e.target.files) as File[]) {
+              const isFile = await isThisAFile(file);
+              files.push({ file, parentFolderId, rootFolderId });
+              jobs[`upload-job-${index}`] = {
+                id: `upload-job-${index}`,
+                jobData: { file, parentFolderId },
+                progress: isFile ? 0 : 100,
+                status: isFile
+                  ? BackgroundJobStatusEnum.YetToStart
+                  : BackgroundJobStatusEnum.Cancelled,
+                jobComment: !isFile && 'File not found',
+                renderer: fileUploadJobRenderer,
+              };
+              index += 1;
+            }
+
+            setJobs(jobs);
+
+            // Call your uploadMedia function here
+            uploadMedia(files);
+          } catch (e: any) {
+            const reason =
+              e?.response?.data?.errors[0]?.reason ||
+              'Something went wrong... try again!';
+            failureToastConfig({
+              content: reason,
+              dataTestId: 'file-delete-toaster',
+            });
+            reset();
           }
-
-          setJobs(jobs);
-
-          // Call your uploadMedia function here
-          uploadMedia(files);
         }}
       />
       <input
         id="input-folder-upload"
         className="hidden"
         type="file"
+        disabled={isCredExpired}
         ref={folderInputRef}
         multiple={true}
         onChange={async (e: any) => {
-          // Variable to store all new folder and respective ids and parent folder ids
-          const folders: {
-            [folderName: string]: { parentFolderId: string; id: string };
-          } = {};
+          try {
+            reset();
+            // Variable to store all new folder and respective ids and parent folder ids
+            const folders: {
+              [folderName: string]: { parentFolderId: string; id: string };
+            } = {};
 
-          // Id of root folder
-          const parentFolderIdOriginal =
-            items.length <= 2 ? '' : items[items.length - 1].id;
+            // Id of root folder
+            const parentFolderIdOriginal =
+              items.length <= 2 ? '' : items[items.length - 1].id;
+            const rootFolderId = items.length > 1 ? items[1].id : '';
 
-          const rootFolderId = items.length > 1 ? items[1].id : '';
-
-          // Collection file with mapped parent folder id
-          const files: {
-            file: File;
-            parentFolderId: string;
-            rootFolderId: string;
-          }[] = [];
-
-          const allFiles: File[] = Array.from(e.target.files);
-
-          setConfig({
-            variant: BackgroundJobVariantEnum.ChannelDocumentUpload,
-            show: true,
-            isExpanded: false,
-            jobsRenderer: folderUploadJobRenderer,
-          });
-          setJobTitle('Analysing folder...');
-
-          for (const file of allFiles) {
-            const folderNames = file.webkitRelativePath.split('/').slice(0, -1);
-            let parentFolderId = parentFolderIdOriginal;
-
-            // Process each folder in sequence
-            for (const folderName of folderNames) {
-              if (!folders[folderName]) {
-                try {
-                  const response: any = await createFolderMutation.mutateAsync(
-                    {
-                      channelId: channelId,
-                      remoteFolderId: parentFolderId.toString(),
-                      rootFolderId: rootFolderId.toString(),
-                      name: folderName,
-                    } as any,
-                    {
-                      onSuccess: async () => {
-                        await queryClient.invalidateQueries(
-                          ['get-channel-files'],
-                          {
-                            exact: false,
-                          },
-                        );
-                      },
-                      onError: (e) => {
-                        throw e;
-                      },
-                    },
-                  );
-
-                  const folderId = (response?.result?.data?.id).toString();
-                  folders[folderName] = { id: folderId, parentFolderId };
-                  parentFolderId = folderId; // Update parentFolderId for next folder
-                } catch (error) {
-                  console.error(
-                    `Error creating folder "${folderName}":`,
-                    error,
-                  );
-                  throw error; // Stop execution on error
-                }
-              } else {
-                parentFolderId = folders[folderName].id.toString();
-              }
+            // Collection file with mapped parent folder id
+            const files: {
+              file: File;
+              parentFolderId: string;
+              rootFolderId: string;
+            }[] = [];
+            const allFiles: File[] = Array.from(e.target.files);
+            for (const file of allFiles) {
+              const parentFolderId = parentFolderIdOriginal;
+              files.push({
+                file,
+                parentFolderId,
+                rootFolderId: `${rootFolderId}`,
+              });
             }
 
-            files.push({
-              file,
-              parentFolderId,
-              rootFolderId: `${rootFolderId}`,
-            });
-          }
-
-          setJobs(
-            Object.assign(
+            // Create jobs
+            const jobs = Object.assign(
               ...(files.map((each, index) => ({
                 [`upload-job-${index}`]: {
                   id: `upload-job-${index}`,
@@ -1113,11 +1081,86 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                   renderer: () => <></>,
                 },
               })) as [{ [key: string]: any }]),
-            ),
-          );
+            );
 
-          // Call your uploadMedia function here
-          uploadMedia(files);
+            // Set background job config
+            setConfig({
+              variant: BackgroundJobVariantEnum.ChannelDocumentUpload,
+              show: true,
+              isExpanded: false,
+              jobsRenderer: folderUploadJobRenderer,
+            });
+
+            // Set background jobs
+            setJobs(jobs);
+
+            // Iterate through folders and create folder.
+            for (const job of Object.values(jobs) as BackgroundJob[]) {
+              const folderNames = job.jobData.file.webkitRelativePath
+                .split('/')
+                .slice(0, -1);
+              let parentFolderId = parentFolderIdOriginal;
+
+              // Process each folder in sequence
+              for (const folderName of folderNames) {
+                if (!folders[folderName]) {
+                  const response: any = await createFolderMutation
+                    .mutateAsync(
+                      {
+                        channelId: channelId,
+                        remoteFolderId: parentFolderId.toString(),
+                        rootFolderId: rootFolderId.toString(),
+                        name: folderName,
+                      } as any,
+                      {
+                        onSuccess: async () => {
+                          await queryClient.invalidateQueries(
+                            ['get-channel-files'],
+                            {
+                              exact: false,
+                            },
+                          );
+                        },
+                      },
+                    )
+                    .catch((e) => {
+                      reset();
+                      throw e;
+                    });
+                  const folderId = (response?.result?.data?.id).toString();
+                  folders[folderName] = { id: folderId, parentFolderId };
+                  parentFolderId = folderId; // Update parentFolderId for next folder
+                } else {
+                  parentFolderId = folders[folderName].id.toString();
+                }
+                updateJob({
+                  ...job,
+                  jobData: {
+                    ...job.jobData,
+                    parentFolderId: folders[folderName].id.toString(),
+                  },
+                });
+                const fileIndex = parseInt(job?.id?.split('-').at(-1) || '-1');
+                if (fileIndex > -1) {
+                  files[fileIndex] = {
+                    ...files[fileIndex],
+                    parentFolderId: folders[folderName].id.toString(),
+                  };
+                }
+              }
+            }
+
+            // Call uploadMedia function here
+            uploadMedia(files);
+          } catch (e: any) {
+            const reason =
+              e?.response?.data?.errors[0]?.reason ||
+              'Something went wrong... try again!';
+            failureToastConfig({
+              content: reason,
+              dataTestId: 'file-delete-toaster',
+            });
+          }
         }}
       />
       <Card className="flex flex-col gap-6 p-8 pb-16 w-full justify-center bg-white">
@@ -1217,7 +1260,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                             <Icon name={'fileUpload'} size={16} /> {t('file')}
                           </div>
                         ),
-                        onClick: () => fileInputRef?.current?.click(),
+                        onClick: () => {
+                          reset();
+                          fileInputRef?.current?.click();
+                        },
                       },
                       {
                         label: (
@@ -1226,7 +1272,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                             {t('folder')}
                           </div>
                         ),
-                        onClick: () => folderInputRef?.current?.click(),
+                        onClick: () => {
+                          reset();
+                          folderInputRef?.current?.click();
+                        },
                       },
                     ]}
                     className="right-0 mt-2 top-full border-1 border-neutral-200 focus-visible:outline-none w-[247px]"

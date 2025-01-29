@@ -352,62 +352,50 @@ export const useChannelDocUpload = (channelId: string) => {
       const jobId = `upload-job-${index}`;
       const job = getJob(jobId);
       if (!!job && job.status === BackgroundJobStatusEnum.YetToStart) {
-        try {
-          getUploadUrl(file)
-            .then((response) => {
-              updateJobProgress(jobId, 0, BackgroundJobStatusEnum.Running);
-              uploadToSharepoint(
-                (response as any).data.result as IUploadUrlResponse,
-                fileList.find(
-                  ({ file }) =>
-                    file.name === (response as any).data.result.name,
-                )!.file,
+        getUploadUrl(file)
+          .then((response) => {
+            updateJobProgress(jobId, 0, BackgroundJobStatusEnum.Running);
+            uploadToSharepoint(
+              (response as any).data.result as IUploadUrlResponse,
+              fileList.find(
+                ({ file }) => file.name === (response as any).data.result.name,
+              )!.file,
+              jobId,
+            ).then((response) => {
+              updateJobProgress(
                 jobId,
-              ).then((response) => {
+                100,
+                BackgroundJobStatusEnum.CompletedSuccessfully,
+              );
+              finishUpload({
+                uploadResponse: JSON.stringify(response),
+                rootFolderId: file.rootFolderId,
+              }).then(() => {
                 updateJobProgress(
                   jobId,
                   100,
                   BackgroundJobStatusEnum.CompletedSuccessfully,
                 );
-                finishUpload({
-                  uploadResponse: JSON.stringify(response),
-                  rootFolderId: file.rootFolderId,
-                }).then(() => {
-                  updateJobProgress(
-                    jobId,
-                    100,
-                    BackgroundJobStatusEnum.CompletedSuccessfully,
-                  );
-                  queryClient.invalidateQueries(['get-channel-files'], {
-                    exact: false,
-                  });
+                queryClient.invalidateQueries(['get-channel-files'], {
+                  exact: false,
                 });
               });
-            })
-            .catch((e) => {
-              updateJob({
-                ...job,
-                progress: 100,
-                status: BackgroundJobStatusEnum.Error,
-                jobComment: 'Upload failed',
-              });
-              console.log(e);
             });
-        } catch (e) {
-          updateJob({
-            ...job,
-            progress: 100,
-            status: BackgroundJobStatusEnum.Error,
-            jobComment: 'Upload failed',
+          })
+          .catch((e) => {
+            const jobComment =
+              e?.response?.data?.errors[0]?.reason || 'Upload failed';
+            updateJob({
+              ...job,
+              progress: 100,
+              status: BackgroundJobStatusEnum.Error,
+              jobComment,
+            });
           });
-          console.log(e);
-        }
       }
     });
-
     return uploadedFiles;
   };
-
   return {
     uploadMedia,
   };
