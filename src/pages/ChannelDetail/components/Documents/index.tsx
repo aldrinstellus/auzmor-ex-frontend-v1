@@ -269,18 +269,32 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     isCredExpired &&
     !permissions.includes(ChannelPermissionEnum.CanReauthorize);
 
+  // Flags to disable / enable actions
+  const disableSelectExistingCTA = isCredExpired || isLoading;
+  const disableSharepointCTA = isCredExpired || isLoading;
+  const disableAddNewPopup = isRootDir || isCredExpired || isLoading;
+  const disableFilter = isRootDir || isCredExpired || isLoading;
+  const disableSort = isRootDir || isCredExpired || isLoading;
+  const showTitleFilter = applyDocumentSearch !== '';
+  const hideClearBtn =
+    isRootDir ||
+    !permissions.includes(ChannelPermissionEnum.CanEditChannelDoc) ||
+    isCredExpired ||
+    isLoading;
+
   // A function that decides what options to show on each row of documents
   const getAllOptions = useCallback((info: CellContext<DocType, unknown>) => {
     const showDownload =
+      !isCredExpired &&
       permissions.includes(ChannelPermissionEnum.CanDownloadDocuments) &&
       !!info?.row?.original?.downloadable &&
       !!!info?.row?.original?.isFolder;
-    const canRename = permissions.includes(
-      ChannelPermissionEnum.CanRenameDocuments,
-    );
-    const canDelete = permissions.includes(
-      ChannelPermissionEnum.CanDeleteDocuments,
-    );
+    const canRename =
+      !isCredExpired &&
+      permissions.includes(ChannelPermissionEnum.CanRenameDocuments);
+    const canDelete =
+      !isCredExpired &&
+      permissions.includes(ChannelPermissionEnum.CanDeleteDocuments);
     return [
       {
         label: t('rename'),
@@ -708,7 +722,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             meta: virtualRow.original,
           });
           return;
-        } else if (!!!virtualRow.original.isFolder && isDoubleClick) {
+        } else if (
+          !isCredExpired &&
+          !!!virtualRow.original.isFolder &&
+          isDoubleClick
+        ) {
           openFilePreview(virtualRow.original);
           return;
         }
@@ -717,10 +735,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         <NoDataFound
           labelHeader={t('noDataFound')}
           clearBtnLabel="Upload now"
-          hideClearBtn={
-            isRootDir ||
-            !permissions.includes(ChannelPermissionEnum.CanEditChannelDoc)
-          }
+          hideClearBtn={hideClearBtn}
           onClearSearch={() => fileInputRef?.current?.click()}
         />
       ),
@@ -796,7 +811,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 variant={ButtonVariant.Secondary}
                 size={Size.Small}
                 onClick={openModal}
-                disabled={isCredExpired || isLoading}
+                disabled={disableSelectExistingCTA}
               />
             </div>
           </Fragment>
@@ -823,6 +838,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                     )
                   }
                   className="flex !text-[#036b70] group-hover:border-neutral-900 hover:border-neutral-900"
+                  disabled={disableSharepointCTA}
                 />
               </div>
             </div>
@@ -1152,6 +1168,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                   setValue('applyDocumentSearch', value)
                 }
                 onClick={(doc) => setItems(getMappedLocation(doc))}
+                disable={isCredExpired || isLoading}
               />
               {permissions.includes(
                 ChannelPermissionEnum.CanEditChannelDoc,
@@ -1165,7 +1182,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                         className="px-4 py-2 gap-1 h-10"
                         leftIconClassName="text-white focus:text-white group-focus:text-white"
                         leftIconHoverColor="text-white"
-                        disabled={isRootDir}
+                        disabled={disableAddNewPopup}
                         size={Size.Small}
                       />
                     }
@@ -1221,7 +1238,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         </div>
         {isBaseFolderSet ? (
           <Fragment>
-            <RecentlyAddedEntities permissions={permissions} />
+            <RecentlyAddedEntities
+              permissions={permissions}
+              disableActions={isCredExpired}
+            />
             <p className="text-base font-bold text-neutral-900">
               {t('allItemTitle')}
             </p>
@@ -1230,9 +1250,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               watch={watch}
               setValue={setValue}
               view={view}
-              hideFilter={isRootDir}
-              hideSort={isRootDir}
-              showTitleFilter={applyDocumentSearch !== ''}
+              hideFilter={disableFilter}
+              hideSort={disableSort}
+              showTitleFilter={showTitleFilter}
               changeView={(view) => setView(view)}
             />
             <DataGrid {...dataGridProps} />

@@ -18,9 +18,11 @@ interface IDocSearchProps {
   watch: UseFormWatch<IForm>;
   onEnter: (documentSearchDebounceValue: string) => void;
   onClick: (doc: Doc) => void;
+  disable: boolean;
 }
 
 const DocSearch: FC<IDocSearchProps> = ({
+  disable,
   control,
   watch,
   onEnter,
@@ -83,6 +85,7 @@ const DocSearch: FC<IDocSearchProps> = ({
             leftIcon: 'search',
             isClearable: true,
             className: 'w-[480px] h-10',
+            disabled: disable,
           },
         ]}
         className="w-[480px]"

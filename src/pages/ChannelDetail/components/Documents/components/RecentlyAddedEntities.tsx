@@ -19,10 +19,12 @@ import { useTranslation } from 'react-i18next';
 
 interface IRecentlyAddedEntitiesProps {
   permissions: ChannelPermissionEnum[];
+  disableActions: boolean;
 }
 
 const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({
   permissions,
+  disableActions,
 }) => {
   const { t } = useTranslation('channelDetail', {
     keyPrefix: 'documentTab',
@@ -102,7 +104,11 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({
             id: virtualRow.original.id,
             label: virtualRow?.original?.name,
           });
-        } else if (!!!virtualRow.original.isFolder && isDoubleClick) {
+        } else if (
+          !disableActions &&
+          !!!virtualRow.original.isFolder &&
+          isDoubleClick
+        ) {
           openFilePreview(virtualRow.original);
           return;
         }
