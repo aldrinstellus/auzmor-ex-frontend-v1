@@ -236,3 +236,9 @@ export const groupByDate: <T>(
 
   return groupedItems;
 };
+
+export const getUtcMiliseconds = (localMillis: number) => {
+  const date = new Date(localMillis);
+  const utcMillis = localMillis - date.getTimezoneOffset() * 60000;
+  return utcMillis;
+};

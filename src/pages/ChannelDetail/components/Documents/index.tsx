@@ -60,6 +60,7 @@ import { parseNumber } from 'react-advanced-cropper';
 import { getExtension, trimExtension } from '../utils';
 import { getChannelDocDownloadUrl } from 'queries/learn';
 import { useTranslation } from 'react-i18next';
+import { getUtcMiliseconds } from 'utils/time';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
@@ -626,8 +627,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         .split('-');
       if (parseNumber(start) && parseNumber(end)) {
         return {
-          modifiedAfter: start,
-          modifiedBefore: end,
+          modifiedAfter: getUtcMiliseconds(start),
+          modifiedBefore: getUtcMiliseconds(end),
         };
       }
     }
@@ -635,40 +636,38 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       switch (filters.docModifiedRadio) {
         case 'Today':
           return {
-            modifiedAfter: moment().startOf('day').valueOf(),
-            modifiedBefore: moment().endOf('day').valueOf(),
+            modifiedAfter: getUtcMiliseconds(moment().startOf('day').valueOf()),
+            modifiedBefore: getUtcMiliseconds(moment().endOf('day').valueOf()),
           };
         case 'Last 7 days':
           return {
-            modifiedAfter: moment()
-              .subtract(7, 'days')
-              .startOf('day')
-              .valueOf(),
-            modifiedBefore: moment().endOf('day').valueOf(),
+            modifiedAfter: getUtcMiliseconds(
+              moment().subtract(7, 'days').startOf('day').valueOf(),
+            ),
+            modifiedBefore: getUtcMiliseconds(moment().endOf('day').valueOf()),
           };
         case 'Last 30 days':
           return {
-            modifiedAfter: moment()
-              .subtract(30, 'days')
-              .startOf('day')
-              .valueOf(),
-            modifiedBefore: moment().endOf('day').valueOf(),
+            modifiedAfter: getUtcMiliseconds(
+              moment().subtract(30, 'days').startOf('day').valueOf(),
+            ),
+            modifiedBefore: getUtcMiliseconds(moment().endOf('day').valueOf()),
           };
         case 'This year':
           return {
-            modifiedAfter: moment().startOf('year').valueOf(),
-            modifiedBefore: moment().endOf('day').valueOf(),
+            modifiedAfter: getUtcMiliseconds(
+              moment().startOf('year').valueOf(),
+            ),
+            modifiedBefore: getUtcMiliseconds(moment().endOf('day').valueOf()),
           };
         case 'Last year':
           return {
-            modifiedAfter: moment()
-              .subtract(1, 'year')
-              .startOf('year')
-              .valueOf(),
-            modifiedBefore: moment()
-              .subtract(1, 'year')
-              .endOf('year')
-              .valueOf(),
+            modifiedAfter: getUtcMiliseconds(
+              moment().subtract(1, 'year').startOf('year').valueOf(),
+            ),
+            modifiedBefore: getUtcMiliseconds(
+              moment().subtract(1, 'year').endOf('year').valueOf(),
+            ),
           };
       }
     }

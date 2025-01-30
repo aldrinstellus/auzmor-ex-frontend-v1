@@ -108,6 +108,11 @@ const DocumentModifed: FC<IChannelTypeProps> = ({
     },
   ];
 
+  console.log(customRange);
+  console.log(
+    dayjs(moment(customRange?.min).format('YYYY-MM-DD'), 'YYYY-MM-DD'),
+  );
+
   const documentModifiedFields = [
     {
       type: FieldType.Radio,
