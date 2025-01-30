@@ -71,7 +71,7 @@ const IconButton = ({
           [className]: true,
         },
       ),
-    [],
+    [className],
   );
 
   const borderStyle = useMemo(
@@ -86,7 +86,7 @@ const IconButton = ({
           [borderAroundClassName]: true,
         },
       ),
-    [],
+    [borderAroundClassName],
   );
 
   const getSize = () => {

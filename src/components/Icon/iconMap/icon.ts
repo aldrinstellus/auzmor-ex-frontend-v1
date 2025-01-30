@@ -204,6 +204,7 @@ import TeamIcon from '../components/Team';
 import NoResultFoundIcon from '../components/NoResultFound';
 import CloseCircle2Icon from '../components/CloseCircle2';
 import WarningIcon from '../components/Warning';
+import Close2Icon from '../components/Close2';
 
 export const icon = {
   add: Add,
@@ -239,6 +240,7 @@ export const icon = {
   clipboardClose: ClipboardCloseIcon,
   clock: ClockIcon,
   close: CloseIcon,
+  close2: Close2Icon,
   closeCircle: CloseCircleIcon,
   closeCircle2: CloseCircle2Icon,
   cloudAdd: CloudAddIcon,
