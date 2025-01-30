@@ -75,7 +75,11 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
 
   // Api call: Check connection status
   const useChannelDocumentStatus = getApi(ApiEnum.GetChannelDocumentStatus);
-  const { data: statusResponse, refetch } = useChannelDocumentStatus({
+  const {
+    data: statusResponse,
+    isLoading: channelDocumentStatusLoading,
+    refetch,
+  } = useChannelDocumentStatus({
     channelId,
   });
 
@@ -150,6 +154,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
         ),
       )
     : '';
+  const isCredExpired = !!statusResponse?.expiryDetails?.expired;
 
   const popOptions = [
     {
@@ -275,6 +280,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
                 size={Size.Small}
                 onClick={openModal}
                 className="h-9"
+                disabled={isCredExpired || channelDocumentStatusLoading}
               />
             )}
             {!isConnectionMade && (
@@ -285,6 +291,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
                   window.location.assign(getLearnUrl('/settings/market-place'))
                 }
                 className="h-9"
+                disabled={isCredExpired || channelDocumentStatusLoading}
               />
             )}
             {integrationType !== DocIntegrationEnum.Sharepoint && (
