@@ -462,8 +462,15 @@ const SearchResults: FC<ISearchResultsProps> = ({
       [&::-webkit-scrollbar-track]:bg-neutral-200"
     >
       {isLoading ? (
-        <div className="flex flex-col pl-3">
-          <Skeleton count={10} />
+        <div className="flex flex-col pl-3 gap-2 my-1">
+          {[...Array(10)].map((element) => (
+            <div className="flex gap-1.5 items-center h-4" key={element}>
+              <Skeleton width={16} />
+              <div className="grow">
+                <Skeleton />
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
         <ul className="flex flex-col gap-3">
@@ -507,43 +514,51 @@ const SearchResults: FC<ISearchResultsProps> = ({
                             ? handleItemClick(entityType, result)
                             : ''
                         }
-                        tabIndex={index === selectedIndex ? 0 : -1}
                         ref={(el: HTMLLIElement) =>
                           (itemRefs.current[index] = el)
                         }
                         aria-selected={selectedIndex === index}
                       >
                         {getEntityRenderer(result, entityType, isRecent)}
-                        {isRecent && !isDeleting ? (
-                          <IconButton
-                            icon={'close'}
-                            className="hidden group-hover/result:block !rounded-none !p-0.5"
-                            color="!text-black hover:!text-black"
-                            size={12}
-                            variant={IconButtonVariant.Secondary}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setDeletedResult({
-                                module: entity.module,
-                                id: result.id,
-                                resultClickedId: result.resultClickedId,
-                              });
-                              if (entity.module === ISearchResultType.KEYWORD)
-                                deleteRecentSearchTermMutation.mutate(
-                                  result.id,
-                                );
-                              else
-                                deleteRecentClickedResultMutation.mutate(
-                                  result.resultClickedId,
-                                );
-                            }}
-                          />
-                        ) : null}
-                        {isRecent && isDeleting && isResultDeleted(result) ? (
-                          <div className="relative w-4 h-4">
-                            <Spinner className="absolute -top-1 -right-1 !text-black" />
+                        {isRecent && (
+                          <div className="relative w-4 h-4 shrink-0">
+                            {!isDeleting ? (
+                              <IconButton
+                                icon={'close2'}
+                                className={`absolute -top-[1px] -right-[1px] ${
+                                  selectedIndex === index
+                                    ? 'visible'
+                                    : 'invisible'
+                                } group-hover/result:visible !rounded-none `}
+                                color="!text-neutral-900"
+                                iconClassName="group-hover:!text-red-500 group-focus:!text-red-500"
+                                size={18}
+                                variant={IconButtonVariant.Secondary}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setDeletedResult({
+                                    module: entity.module,
+                                    id: result.id,
+                                    resultClickedId: result.resultClickedId,
+                                  });
+                                  if (
+                                    entity.module === ISearchResultType.KEYWORD
+                                  )
+                                    deleteRecentSearchTermMutation.mutate(
+                                      result.id,
+                                    );
+                                  else
+                                    deleteRecentClickedResultMutation.mutate(
+                                      result.resultClickedId,
+                                    );
+                                }}
+                              />
+                            ) : null}
+                            {isDeleting && isResultDeleted(result) ? (
+                              <Spinner className="absolute -top-1 -right-1 !text-black" />
+                            ) : null}
                           </div>
-                        ) : null}
+                        )}
                       </li>
                     );
                   })}
