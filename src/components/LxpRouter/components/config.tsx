@@ -49,6 +49,12 @@ const routers = createBrowserRouter(
             }
           />
           <Route
+            path="/channels/:channelId/documents/:documentPath"
+            element={
+              <ChannelDetail activeTab={ChannelDetailTabsEnum.Documents} />
+            }
+          />
+          <Route
             path="/channels/:channelId/members"
             element={
               <ChannelDetail activeTab={ChannelDetailTabsEnum.Members} />
@@ -99,6 +105,12 @@ const routers = createBrowserRouter(
           <Route path="channels" element={<Channels />} />
           <Route
             path="channels/:channelId/documents"
+            element={
+              <ChannelDetail activeTab={ChannelDetailTabsEnum.Documents} />
+            }
+          />
+          <Route
+            path="channels/:channelId/documents/:documentPath"
             element={
               <ChannelDetail activeTab={ChannelDetailTabsEnum.Documents} />
             }
