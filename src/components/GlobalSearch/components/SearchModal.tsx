@@ -161,7 +161,7 @@ const SearchModal: FC<ISearchModalProps> = ({ onClose }) => {
       open={true}
       className="fixed max-w-[700px] flex flex-col gap-2 !bg-transparent"
       wrapperClassName="h-[440px]"
-      maskClassName="!backdrop-blur-none"
+      maskClassName="!backdrop-blur-none !bg-black/[.85]"
       onKeyDown={handleKeyDown}
       closeModal={onClose}
     >

@@ -37,13 +37,13 @@
     "audience": "Audience"
   },
   "GlobalSearch": {
-    "searchAriaLabel": "search",
-    "searchPlaceholder": "Search people, courses, channel, page, document etc.,",
+    "searchAriaLabel": "Search",
+    "searchPlaceholder": "Search trainings, people, teams, channels, documents, apps",
     "noResultsHint": "We're a little lost. Can you give us a hint?",
-    "connectStorageHint": "Please connect storage documents to search within first.",
+    "connectStorageHint": "Connect your storage to enable document search.",
     "noDataFoundHeader": "No results found for \"{{searchQuery}}\"",
-    "noDataFoundMessageLine1": "Sorry we can't find what you are looking for.",
-    "noDataFoundMessageLine2": "Please try using a different query.",
+    "noDataFoundMessageLine1": "Sorry, we can't find what you're looking for.",
+    "noDataFoundMessageLine2": "Please try using a different keyword.",
     "modules": {
       "app": "Apps",
       "people": "People",
@@ -53,7 +53,7 @@
       "event": "Events",
       "course": "Courses",
       "path": "Paths",
-      "recent": "Recent searches",
+      "recent": "Recent Searches",
       "forum": "Forums",
       "task": "Tasks",
       "mentorship": "Mentorship"
