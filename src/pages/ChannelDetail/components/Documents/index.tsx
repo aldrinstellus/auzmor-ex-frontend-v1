@@ -632,8 +632,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         .split('-');
       if (parseNumber(start) && parseNumber(end)) {
         return {
-          modifiedAfter: getUtcMiliseconds(start),
-          modifiedBefore: getUtcMiliseconds(end),
+          modifiedAfter: getUtcMiliseconds(parseNumber(start)),
+          modifiedBefore: getUtcMiliseconds(parseNumber(end)),
         };
       }
     }

@@ -464,10 +464,10 @@ const SearchResults: FC<ISearchResultsProps> = ({
       {isLoading ? (
         <div className="flex flex-col pl-3 gap-2 my-1">
           {[...Array(10)].map((element) => (
-            <div className="flex gap-1.5 items-center h-4" key={element}>
-              <Skeleton width={16} />
+            <div className="flex gap-1.5 items-center h-5" key={element}>
+              <Skeleton width={20} height={20} />
               <div className="grow">
-                <Skeleton />
+                <Skeleton height={20} />
               </div>
             </div>
           ))}
