@@ -1,4 +1,12 @@
-import { Fragment, MouseEventHandler, ReactNode, useState } from 'react';
+import clsx from 'clsx';
+import useProduct from 'hooks/useProduct';
+import {
+  Fragment,
+  MouseEventHandler,
+  ReactNode,
+  useMemo,
+  useState,
+} from 'react';
 import { PlacesType, Tooltip as ReactTooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 
@@ -29,14 +37,34 @@ const Tooltip = ({
   textClassName = '',
 }: TooltipProps) => {
   const id = Math.random().toString(16).slice(2);
+  const { isLxp } = useProduct();
   const [open, setOpen] = useState(false);
+
+  const style = useMemo(
+    () =>
+      clsx({
+        'border-1 border-neutral-200 shadow-md': isLxp,
+        [className]: true,
+      }),
+    [className, isLxp],
+  );
+
+  const arrowStyle = useMemo(
+    () =>
+      clsx({
+        'border-b-1 border-r-1 border-neutral-200': isLxp,
+      }),
+    [isLxp],
+  );
+
   return (
     <Fragment>
       {showTooltip && (
         <ReactTooltip
-          className={className}
+          className={style}
           id={`tooltip-${id}`}
           react-tooltip-arrow
+          classNameArrow={arrowStyle}
           anchorSelect={`#anchor-${id}`}
           clickable
           isOpen={open}
@@ -50,7 +78,7 @@ const Tooltip = ({
         data-tooltip-content={`${
           typeof tooltipContent === 'string' ? tooltipContent : ''
         }`}
-        data-tooltip-variant={variant}
+        data-tooltip-variant={isLxp ? Variant.Light : variant}
         data-tooltip-place={`${tooltipPosition}`}
         className={`${textClassName} inline`}
         onClick={onClick}

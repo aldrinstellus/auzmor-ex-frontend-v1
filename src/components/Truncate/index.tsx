@@ -4,6 +4,7 @@ import { FC, useEffect, useMemo, useRef, useState } from 'react';
 
 interface ITruncateProps {
   text: string;
+  maxLength?: number;
   textRenderer?: (text: string) => React.ReactNode;
   className?: string;
   dataTestId?: string;
@@ -14,6 +15,7 @@ interface ITruncateProps {
 
 const Truncate: FC<ITruncateProps> = ({
   text,
+  maxLength,
   textRenderer,
   className = '',
   dataTestId,
@@ -48,16 +50,23 @@ const Truncate: FC<ITruncateProps> = ({
       setIsOverflow(compare);
     }
   };
+
   useEffect(() => {
-    compareSize();
-    window.addEventListener('resize', compareSize);
-  }, []);
-  useEffect(
-    () => () => {
+    if (maxLength && text.length > maxLength) {
+      setIsOverflow(true);
+    } else {
+      compareSize();
+      window.addEventListener('resize', compareSize);
+    }
+    return () => {
       window.removeEventListener('resize', compareSize);
-    },
-    [],
-  );
+    };
+  }, [maxLength, text]);
+
+  const truncatedText =
+    maxLength && text.length > maxLength
+      ? `${text.slice(0, maxLength - 3)}...`
+      : text;
 
   return (
     <Tooltip
@@ -72,7 +81,7 @@ const Truncate: FC<ITruncateProps> = ({
         onClick={onClick}
         ref={textElementRef}
       >
-        {textRenderer ? textRenderer(text) : text}
+        {textRenderer ? textRenderer(truncatedText) : truncatedText}
       </p>
     </Tooltip>
   );
