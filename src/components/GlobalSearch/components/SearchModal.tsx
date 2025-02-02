@@ -6,6 +6,7 @@ import { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
 import { ISearchResultGroup, ISearchResultType } from 'interfaces/search';
@@ -14,11 +15,19 @@ import { sumBy } from 'lodash';
 
 export interface ISearchModalProps {
   onClose?: () => void;
+  isRecentSearchResultsFetching: boolean;
+  recentSearchResults: ISearchResultGroup[];
 }
 
-const SearchModal: FC<ISearchModalProps> = ({ onClose }) => {
+const SearchModal: FC<ISearchModalProps> = ({
+  onClose,
+  isRecentSearchResultsFetching,
+  recentSearchResults,
+}) => {
   const { getApi } = usePermissions();
   const { t } = useTranslation('components', { keyPrefix: 'GlobalSearch' });
+
+  const queryClient = useQueryClient();
 
   const { control, watch, setValue, setFocus } = useForm<{
     globalSearch: string;
@@ -32,8 +41,6 @@ const SearchModal: FC<ISearchModalProps> = ({ onClose }) => {
   const showRecentSearchResults = debouncedSearchQuery?.length === 0;
 
   const getSearchResults = getApi(ApiEnum.GetSearchResults);
-  const getRecentSearchTerms = getApi(ApiEnum.GetRecentSearchTerms);
-  const getRecentClickedResults = getApi(ApiEnum.GetRecentClickedResults);
 
   const { data: searchResultsData, isLoading: isSearchResultsFetching } =
     getSearchResults(
@@ -41,7 +48,12 @@ const SearchModal: FC<ISearchModalProps> = ({ onClose }) => {
         q: debouncedSearchQuery,
         limit: 5,
       },
-      { enabled: !showRecentSearchResults },
+      {
+        enabled: !showRecentSearchResults,
+        onSuccess: async () => {
+          await queryClient.invalidateQueries(['global-recent-search-terms']);
+        },
+      },
     );
 
   const { data: documentSearchResultsData } = getSearchResults(
@@ -50,46 +62,17 @@ const SearchModal: FC<ISearchModalProps> = ({ onClose }) => {
       limit: 5,
       module: 'document',
     },
-    { enabled: !showRecentSearchResults },
-  );
-
-  const {
-    data: recentSearchTermsData,
-    isLoading: isRecentSearchTermsFetching,
-  } = getRecentSearchTerms(
     {
-      limit: 5,
+      enabled: !showRecentSearchResults,
     },
-    { enabled: showRecentSearchResults },
-  );
-
-  const {
-    data: recentClickedResultsData,
-    isLoading: isRecentClickedResultsFetching,
-  } = getRecentClickedResults(
-    {
-      limit: 5,
-    },
-    { enabled: showRecentSearchResults },
   );
 
   const isLoading = showRecentSearchResults
-    ? isRecentClickedResultsFetching || isRecentSearchTermsFetching
+    ? isRecentSearchResultsFetching
     : isSearchResultsFetching;
 
   const searchResults: ISearchResultGroup[] = showRecentSearchResults
-    ? [
-        {
-          module: ISearchResultType.RECENT,
-          name: t('modules.recent'),
-          results: recentClickedResultsData?.result?.data || [],
-        },
-        {
-          module: ISearchResultType.KEYWORD,
-          name: '',
-          results: recentSearchTermsData?.result?.data || [],
-        },
-      ]
+    ? recentSearchResults
     : [
         ...(searchResultsData?.result?.data || []),
         ...(documentSearchResultsData?.results?.data?.filter(
@@ -113,7 +96,8 @@ const SearchModal: FC<ISearchModalProps> = ({ onClose }) => {
       dataTestId: 'global-search',
       className: 'w-full',
       placeholder: t('searchPlaceholder'),
-      inputClassName: 'border-none !p-0 rounded-none text-base font-medium',
+      inputClassName:
+        'border-none !p-0 rounded-none text-base font-medium mr-9',
       autofocus: true,
       clearIcon: (
         <Icon

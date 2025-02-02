@@ -20,7 +20,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import moment from 'moment';
 import useAuth from 'hooks/useAuth';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import IconButton, {
   Variant as IconButtonVariant,
 } from 'components/IconButton';
@@ -404,13 +404,21 @@ const SearchResults: FC<ISearchResultsProps> = ({
       case ISearchResultType.KEYWORD:
         return (
           <div className="flex items-center gap-2 w-full overflow-hidden">
-            <Icon
-              name="clock"
-              size={14}
-              color="!text-primary-500"
-              hover={false}
-            />
-            <Truncate text={result.term} className={textStyles} />
+            <div className="flex items-center justify-center shrink-0">
+              <Icon
+                name="clock"
+                size={14}
+                color="!text-primary-500"
+                hover={false}
+              />
+            </div>
+            <div className="min-w-0">
+              <Truncate
+                text={result.term}
+                toolTipClassName="max-w-lg break-words"
+                className={textStyles}
+              />
+            </div>
           </div>
         );
       default:
@@ -434,11 +442,25 @@ const SearchResults: FC<ISearchResultsProps> = ({
   ) {
     return (
       <NoDataFound
-        className="py-4 w-full"
+        className="p-4 pr-1 w-full flex flex-col items-center justify-center"
         searchString={searchQuery}
         onClearSearch={() => updateSearchQuery('')}
         labelHeader={
-          <p className="text-base">{t('noDataFoundHeader', { searchQuery })}</p>
+          <p className="flex justify-center text-base">
+            <Trans
+              t={t}
+              i18nKey="noDataFoundHeader"
+              components={{
+                searchQuery: (
+                  <Truncate
+                    text={searchQuery || ''}
+                    toolTipClassName="text-left !max-w-lg break-words"
+                    maxLength={30}
+                  />
+                ),
+              }}
+            />
+          </p>
         }
         message={
           <p className="text-neutral-900 text-xs leading-normal tracking-[0.3px]">

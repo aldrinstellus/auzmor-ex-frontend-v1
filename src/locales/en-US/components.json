@@ -41,7 +41,7 @@
     "searchPlaceholder": "Search trainings, people, teams, channels, documents, apps",
     "noResultsHint": "We're a little lost. Can you give us a hint?",
     "connectStorageHint": "Connect your storage to enable document search.",
-    "noDataFoundHeader": "No results found for \"{{searchQuery}}\"",
+    "noDataFoundHeader": "No results found for \"<searchQuery />\"",
     "noDataFoundMessageLine1": "Sorry, we can't find what you're looking for.",
     "noDataFoundMessageLine2": "Please try using a different keyword.",
     "modules": {
