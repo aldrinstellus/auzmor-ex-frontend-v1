@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import Modal from 'components/Modal';
-import { Doc } from 'interfaces';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { useParams } from 'react-router-dom';
@@ -12,16 +11,20 @@ import moment from 'moment';
 import { downloadFromUrl } from 'utils/misc';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { useTranslation } from 'react-i18next';
+import { Doc } from 'interfaces';
+import Skeleton from 'react-loading-skeleton';
 
 interface IFilePreviewProps {
-  file: Doc;
+  fileId: string;
+  rootFolderId: string;
   open: boolean;
   canDownload: boolean;
   closeModal: () => void;
 }
 
 const FilePreview: FC<IFilePreviewProps> = ({
-  file,
+  fileId,
+  rootFolderId,
   open,
   canDownload = false,
   closeModal,
@@ -34,11 +37,22 @@ const FilePreview: FC<IFilePreviewProps> = ({
 
   const getChannelDocDownloadUrl = getApi(ApiEnum.GetChannelDocDownloadUrl);
 
-  const useChannelFilePreview = getApi(ApiEnum.GetChannelFilePreview);
-  const { data, isLoading } = useChannelFilePreview({
+  const useChannelDocById = getApi(ApiEnum.UseChannelDocById);
+  const { data: fileData, isLoading: fileLoading } = useChannelDocById({
     channelId,
-    fileId: file.id,
+    fileId,
+    rootFolderId,
   });
+
+  const useChannelFilePreview = getApi(ApiEnum.GetChannelFilePreview);
+  const { data, isLoading: previewLoading } = useChannelFilePreview({
+    channelId,
+    fileId: fileId,
+  });
+
+  const isLoading = fileLoading || previewLoading;
+
+  const file = fileData?.data?.result?.data as Doc;
 
   return (
     <Modal
@@ -49,17 +63,17 @@ const FilePreview: FC<IFilePreviewProps> = ({
     >
       <div className="flex items-center relative p-6">
         <div className="flex flex-grow justify-center items-start text-center">
-          {file.name}
+          {fileLoading ? <Skeleton width={256} /> : file?.name || ''}
         </div>
         <div className="flex absolute gap-3 right-4">
-          {canDownload && (
+          {canDownload && !fileLoading && !!file.downloadable && (
             <Icon
               name="download"
               color="text-neutral-900"
               onClick={() => {
                 getChannelDocDownloadUrl({
                   channelId,
-                  itemId: file.id,
+                  itemId: fileId,
                 })
                   .then(({ data }: Record<string, any>) => {
                     downloadFromUrl(
@@ -69,7 +83,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
                   })
                   .catch(() => {
                     failureToastConfig({
-                      content: `Failed to download ${file?.name}`,
+                      content: `Failed to download ${file?.name || ''}`,
                       dataTestId: 'file-download-toaster',
                     });
                   });
@@ -86,19 +100,28 @@ const FilePreview: FC<IFilePreviewProps> = ({
         </div>
       </div>
       <Divider />
-      <div className="flex rounded-9xl p-6 gap-2 items-center mx-4 mt-4 bg-[#F0F6FE]">
-        <Avatar size={40} name={file.ownerName} image={file.ownerImage} />
+      <div className="flex rounded-9xl p-4 gap-2 items-center mx-4 mt-4 bg-[#F0F6FE]">
+        <Avatar
+          size={40}
+          name={file?.ownerName || ''}
+          image={file?.ownerImage || ''}
+          loading={fileLoading}
+        />
         <div className="flex flex-grow justify-between">
           <div className="flex flex-col text-sm font-bold text-neutral-900">
-            {file.ownerName}
+            {fileLoading ? <Skeleton /> : file?.ownerName || ''}
           </div>
           <div className="flex flex-col items-end">
-            <div className="text-xs text-[#384D6F]">
-              {t('lastUpdated')}:{' '}
-              <span>
-                {moment(file.externalUpdatedAt).format('MMM DD, YYYY')}
-              </span>
-            </div>
+            {fileLoading ? (
+              <Skeleton width={128} />
+            ) : (
+              <div className="flex text-xs text-[#384D6F]">
+                {t('lastUpdated')}:{' '}
+                <span>
+                  {moment(file?.externalUpdatedAt || '').format('MMM DD, YYYY')}
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>

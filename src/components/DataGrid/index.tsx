@@ -51,6 +51,7 @@ export interface IDataGridProps<T> {
     index: number,
     parent?: Row<T> | undefined,
   ) => string;
+  isDoubleClickAllowed?: boolean;
 }
 
 const DataGrid = <T extends object>({
@@ -73,6 +74,7 @@ const DataGrid = <T extends object>({
   noDataFound,
   enableMultiRowSelection,
   getRowId,
+  isDoubleClickAllowed = false,
 }: IDataGridProps<T>) => {
   const { ref, inView } = useInView();
   const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null);
@@ -143,18 +145,22 @@ const DataGrid = <T extends object>({
     table: Table<T>,
     row: Row<T>,
   ) => {
-    if (clickTimeout) {
-      // If a timeout is already set, clear it and trigger double-click
-      clearTimeout(clickTimeout);
-      setClickTimeout(null);
-      onRowClick(e, table, row, true);
-    } else {
-      // Set a timeout for single click detection
-      const timeout = setTimeout(() => {
-        onRowClick(e, table, row, false);
+    if (isDoubleClickAllowed) {
+      if (clickTimeout) {
+        // If a timeout is already set, clear it and trigger double-click
+        clearTimeout(clickTimeout);
         setClickTimeout(null);
-      }, 300); // 300ms delay to distinguish single and double-click
-      setClickTimeout(timeout);
+        onRowClick(e, table, row, true);
+      } else {
+        // Set a timeout for single click detection
+        const timeout = setTimeout(() => {
+          onRowClick(e, table, row, false);
+          setClickTimeout(null);
+        }, 300); // 300ms delay to distinguish single and double-click
+        setClickTimeout(timeout);
+      }
+    } else {
+      onRowClick(e, table, row, false);
     }
   };
 

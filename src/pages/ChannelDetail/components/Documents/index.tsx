@@ -50,7 +50,13 @@ import {
   useBackgroundJobStore,
 } from 'stores/backgroundJobStore';
 import queryClient from 'utils/queryClient';
-import { downloadFromUrl, getLearnUrl, isThisAFile } from 'utils/misc';
+import {
+  compressString,
+  decompressString,
+  downloadFromUrl,
+  getLearnUrl,
+  isThisAFile,
+} from 'utils/misc';
 import { useChannelStore } from 'stores/channelStore';
 import RenameChannelDocModal from './components/RenameChannelDocModal';
 import ConfirmationBox from 'components/ConfirmationBox';
@@ -61,6 +67,7 @@ import { getExtension, trimExtension } from '../utils';
 import { getChannelDocDownloadUrl } from 'queries/learn';
 import { useTranslation } from 'react-i18next';
 import { getUtcMiliseconds } from 'utils/time';
+import useNavigate from 'hooks/useNavigation';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
@@ -101,9 +108,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     },
   });
   const { getApi } = usePermissions();
-  const { channelId = '' } = useParams();
-  const { items, appendItem, sliceItems, setItems } =
-    useContext(DocumentPathContext);
+  const { channelId = '', documentPath = '' } = useParams();
+  const { items, setItems } = useContext(DocumentPathContext);
   const { uploadMedia } = useChannelDocUpload(channelId);
   const { filters } = useAppliedFiltersStore();
   const { setRootFolderId } = useChannelStore();
@@ -127,6 +133,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const useCurrentUser = getApi(ApiEnum.GetMe);
   const { data: currentUser } = useCurrentUser();
   const syncIntervalRef = useRef<any>(null);
+  const navigate = useNavigate();
 
   // Api call: Check connection status
   const useChannelDocumentStatus = getApi(ApiEnum.GetChannelDocumentStatus);
@@ -363,9 +370,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const getMappedLocation = (doc: DocType) => {
     let items = [
       { id: 'root', label: t('title') },
-      ...Object.keys(doc?.pathWithId || {}).map((key) => ({
-        id: doc?.pathWithId[key],
-        label: key,
+      ...(doc?.pathWithId || []).map((each) => ({
+        id: each.id,
+        label: each.name,
+        meta: each,
       })),
     ];
     if (!doc.isFolder) {
@@ -562,14 +570,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 <BreadCrumb
                   items={getMappedLocation(info?.row?.original)}
                   labelClassName="hover:text-primary-500 hover:underline min-w-max"
-                  onItemClick={(item) => {
-                    const items = getMappedLocation(info?.row?.original);
-                    const sliceIndex = items.findIndex(
-                      (eachItem) => eachItem.id === item.id,
+                  onItemClick={() => {
+                    const encodedPath = compressString(
+                      JSON.stringify(info?.row?.original.pathWithId),
                     );
-                    if (sliceIndex >= 0) {
-                      setItems(items.slice(0, sliceIndex + 1));
-                    }
+                    navigate(`/channels/${channelId}/documents/${encodedPath}`);
                   }}
                 />
               </div>
@@ -722,22 +727,15 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           : columnsGridView,
       isRowSelectionEnabled: false,
       view,
-      onRowClick: (e, table, virtualRow, isDoubleClick) => {
-        if ((isRootDir || virtualRow.original.isFolder) && isDoubleClick) {
-          // If double click on folder then navigate to that folder
-          appendItem({
-            id: virtualRow.original.id,
-            label: virtualRow?.original?.name,
-            meta: virtualRow.original,
-          });
-          return;
-        } else if (
-          !isCredExpired &&
-          !!!virtualRow.original.isFolder &&
-          isDoubleClick
+      onRowClick: (e, table, virtualRow) => {
+        if (
+          virtualRow.original.isFolder ||
+          (!!!virtualRow.original.isFolder && !isCredExpired)
         ) {
-          openFilePreview(virtualRow.original);
-          return;
+          const encodedPath = compressString(
+            JSON.stringify(virtualRow?.original.pathWithId),
+          );
+          navigate(`/channels/${channelId}/documents/${encodedPath}`);
         }
       },
       noDataFound: (
@@ -748,6 +746,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           onClearSearch={() => fileInputRef?.current?.click()}
         />
       ),
+      trDataClassName: isCredExpired ? '' : 'cursor-pointer',
     },
   });
 
@@ -782,6 +781,29 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       }
     }
   }, [items]);
+
+  useEffect(() => {
+    try {
+      if (documentPath) {
+        const items = [
+          { id: 'root', label: t('title') },
+          ...parseDocumentPath(),
+        ];
+        const pathWithId = JSON.parse(decompressString(documentPath)) || [];
+        if (pathWithId.at(-1).type === 'File') {
+          openFilePreview({ id: items.at(-1)?.id, pathWithId });
+          setItems(items.slice(0, -1));
+        } else {
+          setItems(items);
+        }
+      } else {
+        setItems([{ id: 'root', label: t('title') }]);
+      }
+    } catch (e) {
+      failureToastConfig({ content: 'Invalid document path' });
+      navigate(`/channels/${channelId}/documents`);
+    }
+  }, [documentPath]);
 
   // Reset sync jobs on unmount
   useEffect(
@@ -963,6 +985,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         }
       }
     }, 1000);
+  };
+
+  const parseDocumentPath = () => {
+    return (
+      (JSON.parse(decompressString(documentPath)) ||
+        []) as DocType['pathWithId']
+    ).map((each) => ({ id: each.id, label: each.name }));
   };
 
   return isLoading ? (
@@ -1202,7 +1231,24 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           <BreadCrumb
             variant={BreadCrumbVariantEnum.ChannelDoc}
             items={items}
-            onItemClick={(item) => sliceItems(item.id)}
+            onItemClick={(item) => {
+              const sliceIndex =
+                items.findIndex((folder) => folder.id === item.id) + 1;
+              const itemsToEncode = items.slice(1, sliceIndex);
+              const mappedItemsToEncode = itemsToEncode.map((each) => ({
+                id: each.id,
+                name: each.label,
+                type: 'Folder',
+              }));
+              const encodedPath = compressString(
+                JSON.stringify(mappedItemsToEncode),
+              );
+              if (!!mappedItemsToEncode.length) {
+                navigate(`/channels/${channelId}/documents/${encodedPath}`);
+              } else {
+                navigate(`/channels/${channelId}/documents`);
+              }
+            }}
           />
           {isBaseFolderSet && (
             <div className="flex gap-2 items-center">
@@ -1212,7 +1258,16 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 onEnter={(value: string) =>
                   setValue('applyDocumentSearch', value)
                 }
-                onClick={(doc) => setItems(getMappedLocation(doc))}
+                onClick={(doc) => {
+                  const encodedPath = compressString(
+                    JSON.stringify(doc.pathWithId),
+                  );
+                  if (!!doc?.pathWithId?.length) {
+                    navigate(`/channels/${channelId}/documents/${encodedPath}`);
+                  } else {
+                    navigate(`/channels/${channelId}/documents`);
+                  }
+                }}
                 disable={isCredExpired || isLoading}
               />
               {permissions.includes(
@@ -1289,10 +1344,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         </div>
         {isBaseFolderSet ? (
           <Fragment>
-            <RecentlyAddedEntities
-              permissions={permissions}
-              disableActions={isCredExpired}
-            />
+            <RecentlyAddedEntities disableActions={isCredExpired} />
             <p className="text-base font-bold text-neutral-900">
               {t('allItemTitle')}
             </p>
@@ -1306,7 +1358,16 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               showTitleFilter={showTitleFilter}
               changeView={(view) => setView(view)}
             />
-            <DataGrid {...dataGridProps} />
+            <DataGrid
+              {...dataGridProps}
+              flatData={dataGridProps.flatData.map((doc: any) => ({
+                ...doc,
+                pathWithId:
+                  items.length === 1
+                    ? [{ id: doc.id, name: doc.name, type: 'Folder' }]
+                    : doc.pathWithId,
+              }))}
+            />
           </Fragment>
         ) : (
           <NoConnection />
@@ -1378,11 +1439,25 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                   });
                   const folder = response?.result?.data;
                   if (folder) {
-                    appendItem({
-                      id: folder.id,
-                      label: folder.name,
-                      meta: folder,
-                    });
+                    const itemsToEncode = [
+                      ...items,
+                      { id: folder.id, label: folder.name, meta: folder },
+                    ].slice(1);
+                    const mappedItemsToEncode = itemsToEncode.map((each) => ({
+                      id: each.id,
+                      name: each.label,
+                      type: 'Folder',
+                    }));
+                    const encodedPath = compressString(
+                      JSON.stringify(mappedItemsToEncode),
+                    );
+                    if (!!mappedItemsToEncode.length) {
+                      navigate(
+                        `/channels/${channelId}/documents/${encodedPath}`,
+                      );
+                    } else {
+                      navigate(`/channels/${channelId}/documents`);
+                    }
                   }
                   successToastConfig({
                     content: 'New folder added successfully',
@@ -1399,13 +1474,28 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       )}
       {filePreview && (
         <FilePreviewModal
-          file={(filePreviewProps as DocType) || {}}
+          fileId={(filePreviewProps as DocType).id}
+          rootFolderId={(filePreviewProps as DocType).pathWithId[0].id}
           open={filePreview}
-          canDownload={
-            permissions.includes(ChannelPermissionEnum.CanDownloadDocuments) &&
-            !!filePreviewProps?.downloadable
-          }
-          closeModal={closeFilePreview}
+          canDownload={permissions.includes(
+            ChannelPermissionEnum.CanDownloadDocuments,
+          )}
+          closeModal={() => {
+            const mappedItemsToEncode = items.slice(1).map((each) => ({
+              id: each.id,
+              name: each.label,
+              type: 'Folder',
+            }));
+            const encodedPath = compressString(
+              JSON.stringify(mappedItemsToEncode),
+            );
+            if (!!mappedItemsToEncode.length) {
+              navigate(`/channels/${channelId}/documents/${encodedPath}`);
+            } else {
+              navigate(`/channels/${channelId}/documents`);
+            }
+            closeFilePreview();
+          }}
         />
       )}
       {renameModal && (

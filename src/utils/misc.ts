@@ -29,6 +29,7 @@ import {
   validDocumentFileTypes,
   validImageTypes,
 } from './constants';
+import pako from 'pako';
 
 export const toCamelCase = (str: string) => {
   return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
@@ -757,3 +758,17 @@ export const downloadFromUrl = async (url: string, fileName: string) => {
   anchor.click();
   document.body.removeChild(anchor);
 };
+
+export function compressString(input: string) {
+  const compressed = pako.deflate(input);
+  return encodeURIComponent(window.btoa(String.fromCharCode(...compressed)));
+}
+
+export function decompressString(encode: string) {
+  const compressed = window.atob(decodeURIComponent(encode));
+  const unit8 = new Uint8Array(
+    [...compressed].map((char) => char.charCodeAt(0)),
+  );
+  const decompressed = pako.inflate(unit8, { to: 'string' });
+  return decompressed;
+}
