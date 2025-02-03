@@ -245,7 +245,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
         className="!mb-0"
       />
       <Card shadowOnHover className="flex px-4 py-6 gap-4">
-        <div className="flex flex-col gap-1 w-[400px]">
+        <div className="flex w-[400px]">
           <div className="flex gap-2.5 items-center">
             <Icon name={integrationMapping[integrationType].icon} size={24} />
             <span className="text-sm text-neutral-500 font-bold">
@@ -257,9 +257,6 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
               </div>
             )}
           </div>
-          <p className="text-xs">
-            {t('setting.integrationSetting.description')}
-          </p>
         </div>
         <div className="flex flex-col gap-3 flex-grow">
           {isConnectionMade && isBaseFolderSet && lastSynced && (

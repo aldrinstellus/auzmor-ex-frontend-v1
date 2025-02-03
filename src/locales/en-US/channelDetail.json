@@ -138,20 +138,21 @@
     "titleOnlyCTA": "Title Only",
     "list": "List",
     "grid": "Grid",
-    "activateFolder": "Activate Folder",
+    "activateFolder": "Connect to SharePoint",
     "activateFolderDescription": "Connect your preferred SharePoint site to create, share, and collaborate on files and folders in this channel.",
-    "selectExistingCTA": "Select Existing",
+    "selectExistingCTA": "Select Folders",
     "enableIntegration": "Enable SharePoint to View Files",
-    "enableIntegrationDescription": "Connect SharePoint to access and manage files directly from this platform. View, upload, and organize documents seamlessly within your workspace.",
-    "sharepointCTA": "SharePoint",
-    "noDataFound": "No documents found.",
-    "selectBaseSite": "Select Base Site",
+    "enableIntegrationDescriptionLine1": "Connect SharePoint to access and manage files directly from this platform.",
+    "enableIntegrationDescriptionLine2": "View, upload, and organize documents seamlessly within your workspace.",
+    "sharepointCTA": "Connect SharePoint",
+    "noDataFound": "No documents found. Check back later or try another search.",
+    "selectBaseSite": "Select SharePoint Site",
     "searchSitePlaceholder": "Search a SharePoint site",
     "selectSiteCTA": "Select Site",
-    "selectBaseDrive": "Select Base Drive",
+    "selectBaseDrive": "Select Drive",
     "searchDrivePlaceholder": "Search a SharePoint drive",
     "selectDriveCTA": "Select Drive",
-    "selectBaseFolder": "Select Base Folders",
+    "selectBaseFolder": "Select Folders",
     "searchFolderPlaceholder": "Search SharePoint folders",
     "selectFolderCTA": "Select Folders",
     "nameColumn": "File Name ({{totalRows}})",
@@ -178,6 +179,10 @@
       "success": "File “{{name}}” deleted.",
       "failure": "Failed to delete {{name}}."
     },
+    "downloadFile": {
+      "success": "File downloaded successfully.",
+      "failure": "Failed to download {{name}}."
+    },
     "renameFile": {
       "success": "File renamed successfully.",
       "failure": "File rename failed."
@@ -190,7 +195,8 @@
       "success": "Connected successfully",
       "failure": "Failed to connect, Try again!"
     },
-    "accessDenied": "Access Denied"
+    "accessDenied": "Access Denied",
+    "backToDocuments": "Back to Documents"
   },
   "memberTab": {
     "title": "Members",
@@ -267,7 +273,6 @@
     "integrationSetting": {
       "title": "Integration Settings",
       "activated": "Activated",
-      "description": "Select a preferred folder for creating, sharing, and collaborating on files in this channel.",
       "lastSync": "Last sync: {{date}}",
       "connect": "Connect",
       "disConnect": "Disconnect",
@@ -276,21 +281,21 @@
     "documentSetting": {
       "title": "Document Settings",
       "docVisibilityRow": {
-        "title": "Show/Hide Documents"
+        "title": "Documents Section Visibility"
       },
       "uploadControlRow": {
         "title": "Who Can Upload Documents",
         "anyone": "Anyone",
-        "anyoneDescription": "Anyone can upload documents",
+        "anyoneDescription": "Anyone in the channel can upload documents",
         "channelAdmin": "Channel Admins",
         "channelAdminDescription": "Only Channel Admins can upload documents"
       },
       "DocAccessLevelRow": {
-        "title": "Access level to members",
-        "viewer": "Viewer",
-        "viewerDescription": "Anyone in the channel can view the documents",
-        "cannotDownload": "Can’t download",
-        "cannotDownloadDescription": "Members can view but cannot download documents."
+        "title": "Who Can Download Documents",
+        "anyone": "Anyone",
+        "anyoneDescription": "Anyone in the channel can download documents",
+        "channelAdmin": "Channel Admins",
+        "channelAdminDescription": "Only Channel Admins can download documents"
       }
     }
   }

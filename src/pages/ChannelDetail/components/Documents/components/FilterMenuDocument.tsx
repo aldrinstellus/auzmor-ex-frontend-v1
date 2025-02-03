@@ -74,7 +74,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
   ]);
   const selectedButtonClassName = '!bg-primary-50 text-primary-500 text-sm';
   const regularButtonClassName =
-    '!text-neutral-500 text-sm hover:border hover:border-primary-500 focus:border focus:border-primary-500';
+    '!text-neutral-500 text-sm hover:border hover:border-primary-500 focus:border focus:border-primary-500 !font-normal';
 
   const isFilterApplied =
     !!filters?.docTypeCheckbox?.length ||

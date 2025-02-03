@@ -48,6 +48,12 @@ const RenameChannelDocModal: FC<IRenameChannelDocModalProps> = ({
     resolver: yupResolver(schema),
   });
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      onSave(getValues('name'));
+    }
+  };
+
   return (
     <Modal open={isOpen}>
       {/* Header */}
@@ -66,6 +72,7 @@ const RenameChannelDocModal: FC<IRenameChannelDocModalProps> = ({
             className: 'p-6',
             error: errors.name?.message,
             autofocus: true,
+            onEnter: handleKeyDown,
           },
         ]}
       />

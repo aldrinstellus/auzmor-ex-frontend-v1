@@ -121,7 +121,7 @@ const Doc: FC<IDocProps> = ({ doc, isFolder }) => {
           )}
           {doc?.externalUpdatedAt && (
             <span className="text-xxs text-neutral-500 font-medium">
-              {t('updated', { data: humanizeTime(doc.externalUpdatedAt) })}
+              {t('updated', { date: humanizeTime(doc.externalUpdatedAt) })}
             </span>
           )}
         </div>

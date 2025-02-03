@@ -64,7 +64,6 @@ import DocSearch from './components/DocSearch';
 import Popover from 'components/Popover';
 import { parseNumber } from 'react-advanced-cropper';
 import { getExtension, trimExtension } from '../utils';
-import { getChannelDocDownloadUrl } from 'queries/learn';
 import { useTranslation } from 'react-i18next';
 import { getUtcMiliseconds } from 'utils/time';
 import useNavigate from 'hooks/useNavigation';
@@ -186,6 +185,36 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     },
   });
 
+  // Initialise download file mutation
+  const downloadChannelFile = getApi(ApiEnum.GetChannelDocDownloadUrl);
+  const downloadChannelFileMutation = useMutation({
+    mutationFn: (payload: {
+      channelId: string;
+      itemId: string;
+      name: string;
+    }) =>
+      downloadChannelFile({
+        channelId: payload.channelId,
+        itemId: payload.itemId,
+      }),
+    onSuccess(data: any) {
+      downloadFromUrl(
+        data?.data?.result?.data?.downloadUrl,
+        data?.data?.result?.data?.name,
+      );
+    },
+    onError(response: any, variables) {
+      const failMessage =
+        response?.response?.data?.errors[0]?.reason === 'ACCESS_DENIED'
+          ? t('accessDenied')
+          : t('downloadFile.failure', { name: variables?.name });
+      failureToastConfig({
+        content: failMessage,
+        dataTestId: 'file-download-toaster',
+      });
+    },
+  });
+
   // Initialise rename file mutation
   const renameChannelFileMutation = useMutation({
     mutationFn: getApi(ApiEnum.RenameChannelFile),
@@ -287,9 +316,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   // Flags to disable / enable actions
   const disableSelectExistingCTA = isCredExpired || isLoading;
   const disableSharepointCTA = isCredExpired || isLoading;
-  const disableAddNewPopup = isRootDir || isCredExpired || isLoading;
+  const hideAddNewPopup = isRootDir;
+  const disableAddNewPopup = isCredExpired || isLoading;
+  const hideFilterRow = isRootDir;
   const disableFilter = isCredExpired || isLoading;
-  const disableSort = isRootDir || isCredExpired || isLoading;
+  const disableSort = isCredExpired || isLoading;
   const showTitleFilter = applyDocumentSearch !== '';
   const hideClearBtn =
     isRootDir ||
@@ -331,21 +362,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           label: t('download'),
           onClick: async (e: Event) => {
             e.stopPropagation();
-            try {
-              const { data } = await getChannelDocDownloadUrl({
-                channelId,
-                itemId: info?.row?.original?.id,
-              });
-              downloadFromUrl(
-                data?.result?.data?.downloadUrl,
-                data?.result?.data?.name,
-              );
-            } catch (e) {
-              failureToastConfig({
-                content: `Failed to download ${info?.row?.original?.name}`,
-                dataTestId: 'file-download-toaster',
-              });
-            }
+            downloadChannelFileMutation.mutate({
+              channelId,
+              itemId: info?.row?.original?.id,
+              name: info?.row?.original?.name,
+            });
           },
           dataTestId: 'folder-menu',
           className: '!px-6 !py-2',
@@ -451,6 +472,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           accessorKey: 'more',
           header: () => '',
           cell: (info: CellContext<DocType, unknown>) => {
+            if (
+              info?.row?.original?.id ===
+                downloadChannelFileMutation.variables?.itemId &&
+              downloadChannelFileMutation.isLoading
+            ) {
+              return <Spinner />;
+            }
             const options = getAllOptions(info);
             return options.length > 0 ? (
               <PopupMenu
@@ -488,7 +516,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         }
         return true;
       }),
-    [totalRows, isRootDir, applyDocumentSearch],
+    [
+      totalRows,
+      isRootDir,
+      applyDocumentSearch,
+      downloadChannelFileMutation.isLoading,
+    ],
   );
 
   // Columns configuration for Datagrid component for List view
@@ -587,6 +620,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         accessorKey: 'more',
         header: () => '',
         cell: (info: CellContext<DocType, unknown>) => {
+          if (
+            info?.row?.original?.id ===
+              downloadChannelFileMutation.variables?.itemId &&
+            downloadChannelFileMutation.isLoading
+          ) {
+            return <Spinner />;
+          }
           const options = getAllOptions(info);
           return options.length > 0 ? (
             <PopupMenu
@@ -610,7 +650,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         tdClassName: 'items-center relative',
       },
     ],
-    [totalRows],
+    [totalRows, downloadChannelFileMutation.isLoading],
   );
 
   // Columns configuration for Datagrid component for Grid view
@@ -854,7 +894,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                   {t('enableIntegration')}
                 </p>
                 <p className="text-neutral-900 text-center">
-                  {t('enableIntegrationDescription')}
+                  {t('enableIntegrationDescriptionLine1')}
+                  <br />
+                  {t('enableIntegrationDescriptionLine2')}
                 </p>
               </div>
               <div className="flex justify-center">
@@ -1228,28 +1270,42 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           </div>
         )}
         <div className="flex justify-between">
-          <BreadCrumb
-            variant={BreadCrumbVariantEnum.ChannelDoc}
-            items={items}
-            onItemClick={(item) => {
-              const sliceIndex =
-                items.findIndex((folder) => folder.id === item.id) + 1;
-              const itemsToEncode = items.slice(1, sliceIndex);
-              const mappedItemsToEncode = itemsToEncode.map((each) => ({
-                id: each.id,
-                name: each.label,
-                type: 'Folder',
-              }));
-              const encodedPath = compressString(
-                JSON.stringify(mappedItemsToEncode),
-              );
-              if (!!mappedItemsToEncode.length) {
-                navigate(`/channels/${channelId}/documents/${encodedPath}`);
-              } else {
-                navigate(`/channels/${channelId}/documents`);
-              }
-            }}
-          />
+          {applyDocumentSearch !== '' ? (
+            <Button
+              label={t('backToDocuments')}
+              leftIcon="arrowLeft"
+              leftIconClassName="!text-neutral-900 group-hover:!text-primary-500"
+              leftIconSize={20}
+              className="!py-[7px]"
+              variant={ButtonVariant.Secondary}
+              onClick={() => {
+                setValue('documentSearch', '');
+              }}
+            />
+          ) : (
+            <BreadCrumb
+              variant={BreadCrumbVariantEnum.ChannelDoc}
+              items={items}
+              onItemClick={(item) => {
+                const sliceIndex =
+                  items.findIndex((folder) => folder.id === item.id) + 1;
+                const itemsToEncode = items.slice(1, sliceIndex);
+                const mappedItemsToEncode = itemsToEncode.map((each) => ({
+                  id: each.id,
+                  name: each.label,
+                  type: 'Folder',
+                }));
+                const encodedPath = compressString(
+                  JSON.stringify(mappedItemsToEncode),
+                );
+                if (!!mappedItemsToEncode.length) {
+                  navigate(`/channels/${channelId}/documents/${encodedPath}`);
+                } else {
+                  navigate(`/channels/${channelId}/documents`);
+                }
+              }}
+            />
+          )}
           {isBaseFolderSet && (
             <div className="flex gap-2 items-center">
               <DocSearch
@@ -1270,75 +1326,74 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 }}
                 disable={isCredExpired || isLoading}
               />
-              {permissions.includes(
-                ChannelPermissionEnum.CanEditChannelDoc,
-              ) && (
-                <div className="relative">
-                  <PopupMenu
-                    triggerNode={
-                      <Button
-                        label={t('addNewPopupLabelCTA')}
-                        leftIcon="add"
-                        className="px-4 py-2 gap-1 h-10"
-                        leftIconClassName="text-white focus:text-white group-focus:text-white"
-                        leftIconHoverColor="text-white"
-                        disabled={disableAddNewPopup}
-                        size={Size.Small}
-                      />
-                    }
-                    menuItems={[
-                      {
-                        renderNode: (
-                          <div className="bg-blue-50 px-6 text-xs font-medium text-neutral-500 py-2">
-                            {t('addNewPopupBanner')}
-                          </div>
-                        ),
-                        isBanner: true,
-                      },
-                      {
-                        label: (
-                          <div className="flex gap-2 items-center text-xs">
-                            <Icon name={'folder'} size={16} /> {t('folder')}
-                          </div>
-                        ),
-                        onClick: openAddModal,
-                      },
-                      {
-                        renderNode: (
-                          <div className="bg-blue-50 px-6 text-xs font-medium text-neutral-500 py-2">
-                            {t('uploadNewPopupBanner')}
-                          </div>
-                        ),
-                        isBanner: true,
-                      },
-                      {
-                        label: (
-                          <div className="flex gap-2.5 items-center text-xs">
-                            <Icon name={'fileUpload'} size={16} /> {t('file')}
-                          </div>
-                        ),
-                        onClick: () => {
-                          reset();
-                          fileInputRef?.current?.click();
+              {permissions.includes(ChannelPermissionEnum.CanEditChannelDoc) &&
+                !hideAddNewPopup && (
+                  <div className="relative">
+                    <PopupMenu
+                      triggerNode={
+                        <Button
+                          label={t('addNewPopupLabelCTA')}
+                          leftIcon="add"
+                          className="px-4 py-2 gap-1 h-10"
+                          leftIconClassName="text-white focus:text-white group-focus:text-white"
+                          leftIconHoverColor="text-white"
+                          disabled={disableAddNewPopup}
+                          size={Size.Small}
+                        />
+                      }
+                      menuItems={[
+                        {
+                          renderNode: (
+                            <div className="bg-blue-50 px-6 text-xs font-medium text-neutral-500 py-2">
+                              {t('addNewPopupBanner')}
+                            </div>
+                          ),
+                          isBanner: true,
                         },
-                      },
-                      {
-                        label: (
-                          <div className="flex gap-2.5 items-center text-xs">
-                            <Icon name={'folderUpload'} size={16} />{' '}
-                            {t('folder')}
-                          </div>
-                        ),
-                        onClick: () => {
-                          reset();
-                          folderInputRef?.current?.click();
+                        {
+                          label: (
+                            <div className="flex gap-2 items-center text-xs">
+                              <Icon name={'folder'} size={16} /> {t('folder')}
+                            </div>
+                          ),
+                          onClick: openAddModal,
                         },
-                      },
-                    ]}
-                    className="right-0 mt-2 top-full border-1 border-neutral-200 focus-visible:outline-none w-[247px]"
-                  />
-                </div>
-              )}
+                        {
+                          renderNode: (
+                            <div className="bg-blue-50 px-6 text-xs font-medium text-neutral-500 py-2">
+                              {t('uploadNewPopupBanner')}
+                            </div>
+                          ),
+                          isBanner: true,
+                        },
+                        {
+                          label: (
+                            <div className="flex gap-2.5 items-center text-xs">
+                              <Icon name={'fileUpload'} size={16} /> {t('file')}
+                            </div>
+                          ),
+                          onClick: () => {
+                            reset();
+                            fileInputRef?.current?.click();
+                          },
+                        },
+                        {
+                          label: (
+                            <div className="flex gap-2.5 items-center text-xs">
+                              <Icon name={'folderUpload'} size={16} />{' '}
+                              {t('folder')}
+                            </div>
+                          ),
+                          onClick: () => {
+                            reset();
+                            folderInputRef?.current?.click();
+                          },
+                        },
+                      ]}
+                      className="right-0 mt-2 top-full border-1 border-neutral-200 focus-visible:outline-none w-[247px]"
+                    />
+                  </div>
+                )}
             </div>
           )}
         </div>
@@ -1352,16 +1407,18 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 ? t('allItemTitle')
                 : 'Search results'}
             </p>
-            <FilterMenuDocument
-              control={control}
-              watch={watch}
-              setValue={setValue}
-              view={view}
-              hideFilter={disableFilter}
-              hideSort={disableSort}
-              showTitleFilter={showTitleFilter}
-              changeView={(view) => setView(view)}
-            />
+            {!hideFilterRow && (
+              <FilterMenuDocument
+                control={control}
+                watch={watch}
+                setValue={setValue}
+                view={view}
+                hideFilter={disableFilter}
+                hideSort={disableSort}
+                showTitleFilter={showTitleFilter}
+                changeView={(view) => setView(view)}
+              />
+            )}
             <DataGrid
               {...dataGridProps}
               flatData={dataGridProps.flatData.map((doc: any) => ({

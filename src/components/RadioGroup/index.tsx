@@ -60,7 +60,7 @@ const RadioGroup: FC<RadioButtonProps> = ({
             data-testid={option.dataTestId}
             className="w-5 h-5 accent-primary-600"
             {...field}
-            id={option.data.value}
+            id={`${name ? name : ''}${option.data.value}`}
             value={option.data?.value}
             onChange={(e) => {
               // field.onChange(transform?.output ? transform?.output(e) : e)
@@ -78,7 +78,9 @@ const RadioGroup: FC<RadioButtonProps> = ({
             disabled={disabled}
             type="radio"
           />
-          <label htmlFor={option.data.value}>{labelRenderer(option)}</label>
+          <label htmlFor={`${name ? name : ''}${option.data.value}`}>
+            {labelRenderer(option)}
+          </label>
         </div>
       ))}
     </div>

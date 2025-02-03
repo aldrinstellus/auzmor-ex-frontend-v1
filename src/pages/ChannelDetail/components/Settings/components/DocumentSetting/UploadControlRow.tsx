@@ -27,13 +27,13 @@ const UploadControlRow: FC<UploadControlRowProps> = ({ data, canEdit }) => {
 
   const mapToString = (value: boolean) => {
     if (value) {
-      return 'Anyone';
+      return t('anyone');
     }
-    return 'Channel Admins';
+    return t('channelAdmin');
   };
 
   const mapToBool = (value: string) => {
-    if (value === 'Anyone') {
+    if (value === t('anyone')) {
       return true;
     }
     return false;

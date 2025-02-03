@@ -27,13 +27,13 @@ const DocAccessLevelRow: FC<DocAccessLevelRowProps> = ({ data, canEdit }) => {
 
   const mapToString = (value: boolean) => {
     if (value) {
-      return 'Viewer';
+      return t('anyone');
     }
-    return 'Can’t download';
+    return t('channelAdmin');
   };
 
   const mapToBool = (value: string) => {
-    if (value === 'Viewer') {
+    if (value === t('anyone')) {
       return true;
     }
     return false;
@@ -70,16 +70,16 @@ const DocAccessLevelRow: FC<DocAccessLevelRowProps> = ({ data, canEdit }) => {
   const uploadSettingOptions: IRadioListOption[] = [
     {
       data: {
-        value: t('viewer'),
-        label: t('viewerDescription'),
+        value: t('anyone'),
+        label: t('anyoneDescription'),
         onChange: handleChange,
       },
       dataTestId: '',
     },
     {
       data: {
-        value: t('cannotDownload'),
-        label: t('cannotDownloadDescription'),
+        value: t('channelAdmin'),
+        label: t('channelAdminDescription'),
         onChange: handleChange,
       },
       dataTestId: '',
