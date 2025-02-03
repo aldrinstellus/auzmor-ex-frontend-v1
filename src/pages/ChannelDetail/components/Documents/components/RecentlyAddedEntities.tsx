@@ -4,7 +4,7 @@ import React, { FC, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { getIconFromMime } from './Doc';
-import { humanizeTime } from 'utils/time';
+import { getUtcMiliseconds, humanizeTime } from 'utils/time';
 import { DocumentPathContext } from 'contexts/DocumentPathContext';
 import DataGrid from 'components/DataGrid';
 import { useDataGrid } from 'hooks/useDataGrid';
@@ -15,6 +15,7 @@ import Truncate from 'components/Truncate';
 import { useTranslation } from 'react-i18next';
 import { compressString } from 'utils/misc';
 import useNavigate from 'hooks/useNavigation';
+import moment from 'moment';
 
 interface IRecentlyAddedEntitiesProps {
   disableActions: boolean;
@@ -79,7 +80,10 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({
       params: {
         rootFolderId: items.length > 1 ? items[1].id : undefined,
         folderId: items.length < 3 ? undefined : items[items.length - 1].id,
-        sort: 'external_updated_at',
+        sort: 'external_created_at',
+        createdAfter: getUtcMiliseconds(
+          moment().subtract(7, 'days').startOf('D').valueOf(),
+        ),
         limit: 5,
       },
     },
