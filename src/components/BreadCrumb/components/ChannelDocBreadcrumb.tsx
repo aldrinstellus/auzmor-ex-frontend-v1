@@ -29,17 +29,35 @@ const ChannelDocBreadcrumb: FC<IChannelDocBreadcrumbProps> = ({
   });
 
   useEffect(() => {
-    if (ref.current) {
-      if (ref.current.clientWidth < ref.current.scrollWidth) {
-        setPopupItemIndex((popupItemIndex) => popupItemIndex + 1);
-      }
-    }
-  }, [items, popupItemIndex]);
+    if (!ref.current) return;
 
-  const handleItemClick = (item: Item) => {
-    onItemClick(item);
-    setPopupItemIndex(0);
-  };
+    const { clientWidth, scrollWidth } = ref.current;
+
+    if (clientWidth < scrollWidth) {
+      // Increase index only if it's still overflowing
+      setPopupItemIndex((prev) => prev + 1);
+    } else {
+      // Check if reducing index still fits within the width
+      setPopupItemIndex((prev) => {
+        if (prev === 0) return 0; // No need to reduce further
+
+        // Simulate reducing index and check if it still fits
+        const testIndex = prev - 1;
+        const testItems = items.slice(testIndex);
+        const tempDiv = document.createElement('div');
+        tempDiv.style.position = 'absolute';
+        tempDiv.style.visibility = 'hidden';
+        tempDiv.style.width = `${width}px`;
+        tempDiv.innerHTML = testItems.map((item) => item.label).join(' / ');
+        document.body.appendChild(tempDiv);
+
+        const fits = tempDiv.clientWidth >= tempDiv.scrollWidth;
+        document.body.removeChild(tempDiv);
+
+        return fits ? testIndex : prev; // Only decrease if it fits
+      });
+    }
+  }, [items]);
 
   return (
     <div className="flex items-center gap-2" ref={ref} style={{ width }}>
@@ -56,7 +74,7 @@ const ChannelDocBreadcrumb: FC<IChannelDocBreadcrumbProps> = ({
             }
             menuItems={items.slice(0, popupItemIndex).map((each) => ({
               label: each.label,
-              onClick: () => handleItemClick(each),
+              onClick: () => onItemClick(each),
               stroke: 'text-neutral-900',
               dataTestId: 'post-ellipsis-edit-comment',
             }))}
@@ -72,7 +90,7 @@ const ChannelDocBreadcrumb: FC<IChannelDocBreadcrumbProps> = ({
               index === items.slice(popupItemIndex).length - 1 &&
               'font-bold text-neutral-900 cursor-default'
             }`}
-            onClick={() => handleItemClick(each)}
+            onClick={() => onItemClick(each)}
           >
             <Truncate text={each.label} className="max-w-[240px]" />
           </div>

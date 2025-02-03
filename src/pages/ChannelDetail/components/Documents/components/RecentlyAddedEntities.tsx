@@ -11,29 +11,25 @@ import { useDataGrid } from 'hooks/useDataGrid';
 import { ColumnDef } from '@tanstack/table-core';
 import NoDataFound from 'components/NoDataFound';
 import Skeleton from 'react-loading-skeleton';
-import FilePreviewModal from './FilePreviewModal';
-import useModal from 'hooks/useModal';
 import Truncate from 'components/Truncate';
-import { ChannelPermissionEnum } from '../../utils/channelPermission';
 import { useTranslation } from 'react-i18next';
+import { compressString } from 'utils/misc';
+import useNavigate from 'hooks/useNavigation';
 
 interface IRecentlyAddedEntitiesProps {
-  permissions: ChannelPermissionEnum[];
   disableActions: boolean;
 }
 
 const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({
-  permissions,
   disableActions,
 }) => {
   const { t } = useTranslation('channelDetail', {
     keyPrefix: 'documentTab',
   });
-  const { items, appendItem } = useContext(DocumentPathContext);
+  const { items } = useContext(DocumentPathContext);
   const { channelId } = useParams();
-  const [filePreview, openFilePreview, closeFilePreview, filePreviewProps] =
-    useModal();
   const isRootDir = items.length === 1;
+  const navigate = useNavigate();
 
   const columns = React.useMemo<ColumnDef<Doc>[]>(
     () => [
@@ -98,19 +94,15 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({
       columns,
       isRowSelectionEnabled: false,
       view: 'GRID',
-      onRowClick: (e, table, virtualRow, isDoubleClick) => {
-        if ((virtualRow.original.isFolder || isRootDir) && isDoubleClick) {
-          appendItem({
-            id: virtualRow.original.id,
-            label: virtualRow?.original?.name,
-          });
-        } else if (
-          !disableActions &&
-          !!!virtualRow.original.isFolder &&
-          isDoubleClick
+      onRowClick: (e, table, virtualRow) => {
+        if (
+          virtualRow.original.isFolder ||
+          (!!!virtualRow.original.isFolder && !disableActions)
         ) {
-          openFilePreview(virtualRow.original);
-          return;
+          const encodedPath = compressString(
+            JSON.stringify(virtualRow?.original.pathWithId),
+          );
+          navigate(`/channels/${channelId}/documents/${encodedPath}`);
         }
       },
       noDataFound: <NoDataFound hideClearBtn />,
@@ -129,20 +121,15 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({
       <div className="flex gap-6">
         <DataGrid
           {...dataGridProps}
-          flatData={dataGridProps.flatData.slice(0, 5)}
+          flatData={dataGridProps.flatData.slice(0, 5).map((doc: any) => ({
+            ...doc,
+            pathWithId:
+              items.length === 1
+                ? [{ id: doc.id, name: doc.name, type: 'Folder' }]
+                : doc.pathWithId,
+          }))}
         />
       </div>
-      {filePreview && (
-        <FilePreviewModal
-          file={(filePreviewProps as Doc) || {}}
-          open={filePreview}
-          canDownload={
-            permissions.includes(ChannelPermissionEnum.CanDownloadDocuments) &&
-            !!filePreviewProps?.downloadable
-          }
-          closeModal={closeFilePreview}
-        />
-      )}
     </div>
   );
 };

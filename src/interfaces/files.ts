@@ -27,7 +27,7 @@ export type Doc = {
   ownerName: string;
   ownerImage?: string;
   path: string;
-  pathWithId: Record<string, string>;
+  pathWithId: { name: string; id: string; type: 'File' | 'Folder' }[];
   externalCreatedAt: string;
   externalUpdatedAt: string;
   externalModifiedBy: string;

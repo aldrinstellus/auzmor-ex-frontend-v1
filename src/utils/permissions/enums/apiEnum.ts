@@ -238,4 +238,5 @@ export enum ApiEnum {
   ChannelDocSync = 'CHANNEL_DOC_SYNC',
   GetChannelDocSyncStatus = 'GET_CHANNEL_DOC_SYNC_STATUS',
   UseChannelDocSyncStatus = 'USE_CHANNEL_DOC_SYNC_STATUS',
+  UseChannelDocById = 'USE_CHANNEL_DOC_BY_ID',
 }

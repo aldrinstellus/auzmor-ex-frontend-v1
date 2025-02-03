@@ -282,6 +282,19 @@ export const getChannelDocumentSyncStatus = async (payload: {
   return response;
 };
 
+// Get channel document by id
+export const getChannelDocumentById = async (payload: {
+  channelId: string;
+  rootFolderId: string;
+  fileId: string;
+}) => {
+  const response = await apiService.get(
+    `/channels/${payload.channelId}/files/${payload.fileId}`,
+    { rootFolderId: payload.rootFolderId },
+  );
+  return response;
+};
+
 /** Hooks */
 
 // To list out all rirectories / sites
@@ -413,6 +426,22 @@ export const useChannelDocSyncStatus = (
   return useQuery({
     queryKey: ['channel-doc-sync-status', payload],
     queryFn: () => getChannelDocumentSyncStatus(payload),
+    ...options,
+  });
+};
+
+// Get file by id
+export const useChannelDocById = (
+  payload: {
+    channelId: string;
+    rootFolderId: string;
+    fileId: string;
+  },
+  options: Record<string, any>,
+) => {
+  return useQuery({
+    queryKey: ['channel-doc-by-id', payload],
+    queryFn: () => getChannelDocumentById(payload),
     ...options,
   });
 };
