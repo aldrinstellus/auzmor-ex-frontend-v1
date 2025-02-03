@@ -195,7 +195,8 @@
       "success": "Connected successfully",
       "failure": "Failed to connect, Try again!"
     },
-    "accessDenied": "Access Denied"
+    "accessDenied": "Access Denied",
+    "backToDocuments": "Back to Documents"
   },
   "memberTab": {
     "title": "Members",

@@ -1270,28 +1270,42 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           </div>
         )}
         <div className="flex justify-between">
-          <BreadCrumb
-            variant={BreadCrumbVariantEnum.ChannelDoc}
-            items={items}
-            onItemClick={(item) => {
-              const sliceIndex =
-                items.findIndex((folder) => folder.id === item.id) + 1;
-              const itemsToEncode = items.slice(1, sliceIndex);
-              const mappedItemsToEncode = itemsToEncode.map((each) => ({
-                id: each.id,
-                name: each.label,
-                type: 'Folder',
-              }));
-              const encodedPath = compressString(
-                JSON.stringify(mappedItemsToEncode),
-              );
-              if (!!mappedItemsToEncode.length) {
-                navigate(`/channels/${channelId}/documents/${encodedPath}`);
-              } else {
-                navigate(`/channels/${channelId}/documents`);
-              }
-            }}
-          />
+          {applyDocumentSearch !== '' ? (
+            <Button
+              label={t('backToDocuments')}
+              leftIcon="arrowLeft"
+              leftIconClassName="!text-neutral-900 group-hover:!text-primary-500"
+              leftIconSize={20}
+              className="!py-[7px]"
+              variant={ButtonVariant.Secondary}
+              onClick={() => {
+                setValue('documentSearch', '');
+              }}
+            />
+          ) : (
+            <BreadCrumb
+              variant={BreadCrumbVariantEnum.ChannelDoc}
+              items={items}
+              onItemClick={(item) => {
+                const sliceIndex =
+                  items.findIndex((folder) => folder.id === item.id) + 1;
+                const itemsToEncode = items.slice(1, sliceIndex);
+                const mappedItemsToEncode = itemsToEncode.map((each) => ({
+                  id: each.id,
+                  name: each.label,
+                  type: 'Folder',
+                }));
+                const encodedPath = compressString(
+                  JSON.stringify(mappedItemsToEncode),
+                );
+                if (!!mappedItemsToEncode.length) {
+                  navigate(`/channels/${channelId}/documents/${encodedPath}`);
+                } else {
+                  navigate(`/channels/${channelId}/documents`);
+                }
+              }}
+            />
+          )}
           {isBaseFolderSet && (
             <div className="flex gap-2 items-center">
               <DocSearch
@@ -1385,9 +1399,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         </div>
         {isBaseFolderSet ? (
           <Fragment>
-            <RecentlyAddedEntities disableActions={isCredExpired} />
+            {!isRootDir && (
+              <RecentlyAddedEntities disableActions={isCredExpired} />
+            )}
             <p className="text-base font-bold text-neutral-900">
-              {t('allItemTitle')}
+              {applyDocumentSearch === ''
+                ? t('allItemTitle')
+                : 'Search results'}
             </p>
             {!hideFilterRow && (
               <FilterMenuDocument
