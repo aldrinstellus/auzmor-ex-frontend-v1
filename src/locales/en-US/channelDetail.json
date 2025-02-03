@@ -142,7 +142,8 @@
     "activateFolderDescription": "Connect your preferred SharePoint site to create, share, and collaborate on files and folders in this channel.",
     "selectExistingCTA": "Select Existing",
     "enableIntegration": "Enable SharePoint to View Files",
-    "enableIntegrationDescription": "Connect SharePoint to access and manage files directly from this platform. View, upload, and organize documents seamlessly within your workspace.",
+    "enableIntegrationDescriptionLine1": "Connect SharePoint to access and manage files directly from this platform.",
+    "enableIntegrationDescriptionLine2": "View, upload, and organize documents seamlessly within this workspace.",
     "sharepointCTA": "SharePoint",
     "noDataFound": "No documents found.",
     "selectBaseSite": "Select Base Site",
@@ -177,6 +178,10 @@
     "deleteFile": {
       "success": "File “{{name}}” deleted.",
       "failure": "Failed to delete {{name}}."
+    },
+    "downloadFile": {
+      "success": "File downloaded successfully.",
+      "failure": "Failed to download {{name}}."
     },
     "renameFile": {
       "success": "File renamed successfully.",

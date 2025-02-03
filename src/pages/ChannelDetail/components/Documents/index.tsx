@@ -64,7 +64,6 @@ import DocSearch from './components/DocSearch';
 import Popover from 'components/Popover';
 import { parseNumber } from 'react-advanced-cropper';
 import { getExtension, trimExtension } from '../utils';
-import { getChannelDocDownloadUrl } from 'queries/learn';
 import { useTranslation } from 'react-i18next';
 import { getUtcMiliseconds } from 'utils/time';
 import useNavigate from 'hooks/useNavigation';
@@ -183,6 +182,36 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         exact: false,
       });
       closeConfirm();
+    },
+  });
+
+  // Initialise download file mutation
+  const downloadChannelFile = getApi(ApiEnum.GetChannelDocDownloadUrl);
+  const downloadChannelFileMutation = useMutation({
+    mutationFn: (payload: {
+      channelId: string;
+      itemId: string;
+      name: string;
+    }) =>
+      downloadChannelFile({
+        channelId: payload.channelId,
+        itemId: payload.itemId,
+      }),
+    onSuccess(data: any) {
+      downloadFromUrl(
+        data?.data?.result?.data?.downloadUrl,
+        data?.data?.result?.data?.name,
+      );
+    },
+    onError(response: any, variables) {
+      const failMessage =
+        response?.response?.data?.errors[0]?.reason === 'ACCESS_DENIED'
+          ? t('accessDenied')
+          : t('downloadFile.failure', { name: variables?.name });
+      failureToastConfig({
+        content: failMessage,
+        dataTestId: 'file-download-toaster',
+      });
     },
   });
 
@@ -331,21 +360,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           label: t('download'),
           onClick: async (e: Event) => {
             e.stopPropagation();
-            try {
-              const { data } = await getChannelDocDownloadUrl({
-                channelId,
-                itemId: info?.row?.original?.id,
-              });
-              downloadFromUrl(
-                data?.result?.data?.downloadUrl,
-                data?.result?.data?.name,
-              );
-            } catch (e) {
-              failureToastConfig({
-                content: `Failed to download ${info?.row?.original?.name}`,
-                dataTestId: 'file-download-toaster',
-              });
-            }
+            downloadChannelFileMutation.mutate({
+              channelId,
+              itemId: info?.row?.original?.id,
+              name: info?.row?.original?.name,
+            });
           },
           dataTestId: 'folder-menu',
           className: '!px-6 !py-2',
@@ -451,6 +470,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           accessorKey: 'more',
           header: () => '',
           cell: (info: CellContext<DocType, unknown>) => {
+            if (
+              info?.row?.original?.id ===
+                downloadChannelFileMutation.variables?.itemId &&
+              downloadChannelFileMutation.isLoading
+            ) {
+              return <Spinner />;
+            }
             const options = getAllOptions(info);
             return options.length > 0 ? (
               <PopupMenu
@@ -488,7 +514,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         }
         return true;
       }),
-    [totalRows, isRootDir, applyDocumentSearch],
+    [
+      totalRows,
+      isRootDir,
+      applyDocumentSearch,
+      downloadChannelFileMutation.isLoading,
+    ],
   );
 
   // Columns configuration for Datagrid component for List view
@@ -587,6 +618,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         accessorKey: 'more',
         header: () => '',
         cell: (info: CellContext<DocType, unknown>) => {
+          if (
+            info?.row?.original?.id ===
+              downloadChannelFileMutation.variables?.itemId &&
+            downloadChannelFileMutation.isLoading
+          ) {
+            return <Spinner />;
+          }
           const options = getAllOptions(info);
           return options.length > 0 ? (
             <PopupMenu
@@ -610,7 +648,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         tdClassName: 'items-center relative',
       },
     ],
-    [totalRows],
+    [totalRows, downloadChannelFileMutation.isLoading],
   );
 
   // Columns configuration for Datagrid component for Grid view
@@ -854,7 +892,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                   {t('enableIntegration')}
                 </p>
                 <p className="text-neutral-900 text-center">
-                  {t('enableIntegrationDescription')}
+                  {t('enableIntegrationDescriptionLine1')}
+                  <br />
+                  {t('enableIntegrationDescriptionLine2')}
                 </p>
               </div>
               <div className="flex justify-center">

@@ -43,6 +43,13 @@ const AddFolderModal: FC<IAddFolderModalProps> = ({
   });
 
   const onSubmit = () => onSelect(getValues('folderName'));
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleSubmit(onSubmit)();
+    }
+  };
+
   return (
     <Modal open={isOpen}>
       {/* Header */}
@@ -60,6 +67,7 @@ const AddFolderModal: FC<IAddFolderModalProps> = ({
               placeholder: t('folderNameInputPlaceholder'),
               dataTestId: `folder-name-input`,
               inputClassName: 'text-sm py-[9px]',
+              onEnter: handleKeyDown,
               error: formState.errors.folderName?.message,
               autofocus: true,
             },
