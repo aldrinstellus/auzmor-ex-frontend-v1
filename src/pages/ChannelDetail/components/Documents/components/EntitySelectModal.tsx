@@ -213,6 +213,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
       },
       height: 312,
       noDataFound: <NoDataFound hideClearBtn />,
+      isDoubleClickAllowed: headings === 'folder',
     },
   });
 
