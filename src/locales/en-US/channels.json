@@ -21,6 +21,13 @@
     "successToast": "Channel has been archived successfully.",
     "errorToast": "Error archiving channel."
   },
+  "leaveChannelModal": {
+    "title": "Leave Channel",
+    "cancelButton": "Cancel",
+    "leaveButton": "Leave",
+    "confirmationMessage": "Are you sure you want to leave this channel?",
+    "errorToast": "Error leaving channel."
+  },
   "deleteChannelModal": {
     "delete": "Delete",
     "title": "@{{name}}",
