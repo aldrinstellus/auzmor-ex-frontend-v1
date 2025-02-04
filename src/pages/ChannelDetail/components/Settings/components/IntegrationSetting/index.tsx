@@ -325,7 +325,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
           <EntitySelectModal
             isOpen={isOpen}
             closeModal={closeModal}
-            onSelect={(entity: any, callback: () => void) =>
+            onSelect={(entity: any, callback: (isError: boolean) => void) =>
               updateConnectionMutation.mutate(
                 {
                   channelId: channelId,
@@ -333,7 +333,6 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
                   orgProviderId: availableAccount?.orgProviderId,
                 } as any,
                 {
-                  onSettled: callback,
                   onSuccess: () => {
                     successToastConfig({
                       content: t('documentTab.connectFolder.success'),
@@ -342,6 +341,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
                     queryClient.invalidateQueries(['get-channel-files'], {
                       exact: false,
                     });
+                    callback(false);
                   },
                   onError: (response: any) => {
                     const failMessage =
@@ -352,6 +352,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
                     failureToastConfig({
                       content: failMessage,
                     });
+                    callback(true);
                   },
                 },
               )

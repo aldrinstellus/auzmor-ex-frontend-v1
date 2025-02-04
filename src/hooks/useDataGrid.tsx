@@ -4,10 +4,12 @@ import { usePermissions } from './usePermissions';
 import { IDataGridProps } from 'components/DataGrid';
 import { ColumnDef, RowSelectionState } from '@tanstack/react-table';
 import Skeleton from 'react-loading-skeleton';
+import { AxiosError } from 'axios';
 
 type DataGridType<T> = {
   apiEnum: ApiEnum;
   payload?: Record<string, any>;
+  onError?: (e: AxiosError<Record<string, any>>) => void;
   isInfiniteQuery?: boolean;
   loadingRowCount?: number;
   loadingGrid?: ReactNode;
@@ -27,7 +29,14 @@ export const useDataGrid = <T extends object>({
   );
   const [isRowSelected, setIsRowSelected] = useState<boolean>(false);
   const tableRef = useRef<any>(null);
-  const { apiEnum, payload, isInfiniteQuery, isEnabled, loadingGrid } = rest;
+  const {
+    apiEnum,
+    payload,
+    isInfiniteQuery,
+    isEnabled,
+    loadingGrid,
+    onError = () => {},
+  } = rest;
   const { columns, view } = rest.dataGridProps;
 
   useEffect(() => {
@@ -114,7 +123,10 @@ export const useDataGrid = <T extends object>({
   }
 
   const useQuery = getApi(apiEnum);
-  const { data, isLoading } = useQuery(payload, { enabled: isEnabled });
+  const { data, isLoading } = useQuery(payload, {
+    enabled: isEnabled,
+    onError: (e: AxiosError<Record<string, any>>) => onError(e),
+  });
   const flatData = data || [];
 
   const tableData = useMemo(

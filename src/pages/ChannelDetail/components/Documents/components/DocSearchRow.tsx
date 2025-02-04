@@ -34,7 +34,8 @@ const DocSearchRow = ({
         <div className="text-xs">
           {t('updatedOn', {
             date: moment(data?.updatedAt).format('DD MMM YYYY'),
-          })}
+          })}{' '}
+          &nbsp;
           {data?.externalModifiedBy &&
             t('updatedBy', { name: data?.externalModifiedBy })}
         </div>
