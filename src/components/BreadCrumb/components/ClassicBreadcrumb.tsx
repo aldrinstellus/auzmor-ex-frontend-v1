@@ -7,7 +7,10 @@ interface IClassicBreadcrumbProps {
   items: Item[];
   labelClassName?: string;
   iconSize?: number;
-  onItemClick?: (item: Item) => void;
+  onItemClick?: (
+    item: Item,
+    e?: React.MouseEvent<HTMLSpanElement, MouseEvent>,
+  ) => void;
 }
 
 const ClassicBreadcrumb: FC<IClassicBreadcrumbProps> = ({
@@ -30,7 +33,7 @@ const ClassicBreadcrumb: FC<IClassicBreadcrumbProps> = ({
               index === items.length - 1 &&
               'font-bold text-neutral-900 cursor-default'
             } ${labelStyle}`}
-            onClick={() => onItemClick(each)}
+            onClick={(e) => onItemClick(each, e)}
           >
             {each.label}
           </span>

@@ -10,7 +10,10 @@ interface IChannelDocBreadcrumbProps {
   width?: number | '100%' | '100vw' | '100vh';
   iconSize?: number;
   labelClassName?: string;
-  onItemClick?: (item: Item) => void;
+  onItemClick?: (
+    item: Item,
+    e?: React.MouseEvent<HTMLElement, MouseEvent>,
+  ) => void;
 }
 
 const ChannelDocBreadcrumb: FC<IChannelDocBreadcrumbProps> = ({
@@ -34,27 +37,34 @@ const ChannelDocBreadcrumb: FC<IChannelDocBreadcrumbProps> = ({
     const { clientWidth, scrollWidth } = ref.current;
 
     if (clientWidth < scrollWidth) {
-      // Increase index only if it's still overflowing
+      // Increase `popupItemIndex` only if needed
       setPopupItemIndex((prev) => prev + 1);
     } else {
-      // Check if reducing index still fits within the width
+      // Try to reduce popup index gradually until all items fit
       setPopupItemIndex((prev) => {
-        if (prev === 0) return 0; // No need to reduce further
+        let newIndex = prev;
+        while (newIndex > 0) {
+          const testIndex = newIndex - 1;
+          const testItems = items.slice(testIndex);
 
-        // Simulate reducing index and check if it still fits
-        const testIndex = prev - 1;
-        const testItems = items.slice(testIndex);
-        const tempDiv = document.createElement('div');
-        tempDiv.style.position = 'absolute';
-        tempDiv.style.visibility = 'hidden';
-        tempDiv.style.width = `${width}px`;
-        tempDiv.innerHTML = testItems.map((item) => item.label).join(' / ');
-        document.body.appendChild(tempDiv);
+          // Create a temporary element to check fit
+          const tempDiv = document.createElement('div');
+          tempDiv.style.position = 'absolute';
+          tempDiv.style.visibility = 'hidden';
+          tempDiv.style.width = `${width}px`;
+          tempDiv.innerHTML = testItems.map((item) => item.label).join(' / ');
+          document.body.appendChild(tempDiv);
 
-        const fits = tempDiv.clientWidth >= tempDiv.scrollWidth;
-        document.body.removeChild(tempDiv);
+          const fits = tempDiv.clientWidth >= tempDiv.scrollWidth;
+          document.body.removeChild(tempDiv);
 
-        return fits ? testIndex : prev; // Only decrease if it fits
+          if (fits) {
+            newIndex = testIndex; // Keep reducing if it fits
+          } else {
+            break; // Stop reducing if it doesn’t fit
+          }
+        }
+        return newIndex;
       });
     }
   }, [items]);
@@ -82,7 +92,9 @@ const ChannelDocBreadcrumb: FC<IChannelDocBreadcrumbProps> = ({
           />
         </div>
       )}
-      {popupItemIndex > 0 && <Icon name="arrowRight" size={20} hover={false} />}
+      {popupItemIndex > 0 && (
+        <Icon name="arrowRight" size={20} hover={false} className="flex" />
+      )}
       {items.slice(popupItemIndex).map((each, index) => (
         <div key={each.id} className="flex items-center gap-2">
           <div
@@ -92,7 +104,10 @@ const ChannelDocBreadcrumb: FC<IChannelDocBreadcrumbProps> = ({
             }`}
             onClick={() => onItemClick(each)}
           >
-            <Truncate text={each.label} className="max-w-[240px]" />
+            <Truncate
+              text={each.label}
+              className={index !== items.length - 1 ? 'max-w-[240px]' : ''}
+            />
           </div>
           {index < items.slice(popupItemIndex).length - 1 && (
             <Icon name="arrowRight" size={iconSize} hover={false} />
