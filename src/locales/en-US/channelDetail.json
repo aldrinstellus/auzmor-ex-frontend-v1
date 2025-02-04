@@ -145,7 +145,6 @@
     "enableIntegrationDescriptionLine1": "Connect SharePoint to access and manage files directly from this platform.",
     "enableIntegrationDescriptionLine2": "View, upload, and organize documents seamlessly within your workspace.",
     "sharepointCTA": "Connect SharePoint",
-    "noDataFound": "No documents found. Check back later or try another search.",
     "selectBaseSite": "Select SharePoint Site",
     "searchSitePlaceholder": "Search a SharePoint site",
     "selectSiteCTA": "Select Site",
@@ -196,7 +195,17 @@
       "failure": "Failed to connect, Try again!"
     },
     "accessDenied": "Access Denied",
-    "backToDocuments": "Back to Documents"
+    "backToDocuments": "Back to Documents",
+    "noDataFound": {
+      "docListing": "No documents found. Check back later or try another search.",
+      "site": "No sites available. Check your permissions or refresh the list.",
+      "drive": "No drives available. Check your permissions or refresh the list.",
+      "folder": "No folders available. Check your permissions or refresh the list.",
+      "common": "No data found"
+    },
+    "listDirectories": {
+      "failure": "Failed to load. Please check your connection and try again"
+    }
   },
   "memberTab": {
     "title": "Members",

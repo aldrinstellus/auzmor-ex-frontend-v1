@@ -18,11 +18,13 @@ import moment from 'moment';
 import BreadCrumb, { BreadCrumbVariantEnum } from 'components/BreadCrumb';
 import { DocumentPathContext } from 'contexts/DocumentPathContext';
 import { useTranslation } from 'react-i18next';
+import { AxiosError } from 'axios';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 
 interface IEntitySelectModalProps {
   isOpen: boolean;
   closeModal: () => void;
-  onSelect: (entity: any, callback: () => void) => void;
+  onSelect: (entity: any, callback: (isError: boolean) => void) => void;
   integrationType?: DocIntegrationEnum;
   headerText?: string;
   q?: Record<string, any>;
@@ -151,6 +153,19 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
         ...q,
       },
     },
+    onError: (e: AxiosError<Record<string, any>>) => {
+      const isAccessDenied = !!e.response?.data?.errors?.some(
+        (e: { code: string; message: string; reason: string }) =>
+          e.code === 'ACCESS_DENIED',
+      );
+      if (isAccessDenied) {
+        failureToastConfig({ content: t('accessDenied') });
+      } else {
+        failureToastConfig({
+          content: t('listDirectories.failure'),
+        });
+      }
+    },
     dataGridProps: {
       columns,
       className: 'overflow-y-auto',
@@ -212,7 +227,22 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
         }
       },
       height: 312,
-      noDataFound: <NoDataFound hideClearBtn />,
+      noDataFound: (
+        <NoDataFound
+          hideClearBtn
+          labelHeader={(() => {
+            switch (headings) {
+              case 'site':
+                return t('noDataFound.site');
+              case 'drive':
+                return t('noDataFound.drive');
+              case 'folder':
+                return t('noDataFound.folder');
+            }
+            return t('noDataFound.common');
+          })()}
+        />
+      ),
       isDoubleClickAllowed: headings === 'folder',
     },
   });
@@ -334,9 +364,11 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
             variant={ButtonVariant.Primary}
             onClick={() => {
               setOnSelectLoading(true);
-              onSelect(selectedItems?.folders || [], () => {
+              onSelect(selectedItems?.folders || [], (isError: boolean) => {
                 setOnSelectLoading(false);
-                closeModal();
+                if (!isError) {
+                  closeModal();
+                }
               });
               resetField('entitySearch');
             }}
