@@ -312,6 +312,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const reAuthorizeForOthers =
     isCredExpired &&
     !permissions.includes(ChannelPermissionEnum.CanReauthorize);
+  const isDocSearchApplied = applyDocumentSearch !== '';
 
   // Flags to disable / enable actions
   const disableSelectExistingCTA = isCredExpired || isLoading;
@@ -321,7 +322,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const hideFilterRow = isRootDir;
   const disableFilter = isCredExpired || isLoading;
   const disableSort = isCredExpired || isLoading;
-  const showTitleFilter = applyDocumentSearch !== '';
+  const showTitleFilter = isDocSearchApplied;
   const hideClearBtn =
     isRootDir ||
     !permissions.includes(ChannelPermissionEnum.CanEditChannelDoc) ||
@@ -507,7 +508,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         }
         if (
           each.accessorKey === 'location' &&
-          (isRootDir || applyDocumentSearch === '')
+          (isRootDir || !isDocSearchApplied)
         ) {
           return false;
         }
@@ -519,7 +520,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     [
       totalRows,
       isRootDir,
-      applyDocumentSearch,
+      isDocSearchApplied,
       downloadChannelFileMutation.isLoading,
     ],
   );
@@ -588,32 +589,53 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         header: () => (
           <div className="font-bold text-neutral-500">{t('location')}</div>
         ),
-        cell: (info: CellContext<DocType, unknown>) => (
-          <Popover
-            triggerNode={
-              <BreadCrumb
-                items={getMappedLocation(info?.row?.original)}
-                onItemClick={(item) => console.log(item)}
-              />
-            }
-            triggerNodeClassName="w-full"
-            wrapperClassName="w-full"
-            contentRenderer={() => (
-              <div className="flex p-3 bg-primary-50 rounded-9xl border border-primary-50 shadow">
+        cell: (info: CellContext<DocType, unknown>) => {
+          return (
+            <Popover
+              triggerNode={
                 <BreadCrumb
                   items={getMappedLocation(info?.row?.original)}
-                  labelClassName="hover:text-primary-500 hover:underline min-w-max"
-                  onItemClick={() => {
-                    const encodedPath = compressString(
-                      JSON.stringify(info?.row?.original.pathWithId),
-                    );
-                    navigate(`/channels/${channelId}/documents/${encodedPath}`);
-                  }}
+                  onItemClick={() => {}}
                 />
-              </div>
-            )}
-          />
-        ),
+              }
+              triggerNodeClassName="w-full"
+              wrapperClassName="w-full"
+              contentRenderer={() => (
+                <div className="flex p-3 bg-primary-50 rounded-9xl border border-primary-50 shadow">
+                  <BreadCrumb
+                    items={getMappedLocation(info?.row?.original)}
+                    labelClassName="hover:text-primary-500 hover:underline min-w-max"
+                    onItemClick={(item, e) => {
+                      e?.stopPropagation();
+                      const sliceIndex =
+                        info?.row?.original.pathWithId.findIndex(
+                          (folder) => folder.id === item.id,
+                        );
+                      const itemsToEncode =
+                        info?.row?.original.pathWithId.slice(0, sliceIndex + 1);
+                      const mappedItemsToEncode = itemsToEncode.map((each) => ({
+                        id: each.id,
+                        name: each.name,
+                        type: 'Folder',
+                      }));
+                      const encodedPath = compressString(
+                        JSON.stringify(mappedItemsToEncode),
+                      );
+                      if (!!mappedItemsToEncode.length) {
+                        navigate(
+                          `/channels/${channelId}/documents/${encodedPath}`,
+                        );
+                      } else {
+                        navigate(`/channels/${channelId}/documents`);
+                      }
+                      setValue('documentSearch', '');
+                    }}
+                  />
+                </div>
+              )}
+            />
+          );
+        },
         size: 260,
       },
       {
@@ -721,10 +743,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
 
   // Get props for Datagrid component
   const dataGridProps = useDataGrid<DocType>({
-    apiEnum:
-      applyDocumentSearch === ''
-        ? ApiEnum.GetInfiniteChannelFiles
-        : ApiEnum.GetChannelDocDeepSearch,
+    apiEnum: isDocSearchApplied
+      ? ApiEnum.GetChannelDocDeepSearch
+      : ApiEnum.GetInfiniteChannelFiles,
     isInfiniteQuery: true,
     payload: {
       channelId,
@@ -739,15 +760,15 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           (type: any) => type.paramKey,
         ),
         ...parseModifiedOnFilter,
-        ...(applyDocumentSearch === ''
+        ...(isDocSearchApplied
           ? {
+              q: !byTitle ? applyDocumentSearch : undefined,
+              byTitle: byTitle ? applyDocumentSearch : undefined,
+            }
+          : {
               rootFolderId: items.length > 1 ? items[1].id : undefined,
               folderId:
                 items.length < 3 ? undefined : items[items.length - 1].id,
-            }
-          : {
-              q: !byTitle ? applyDocumentSearch : undefined,
-              byTitle: byTitle ? applyDocumentSearch : undefined,
             }),
       },
     },
@@ -761,9 +782,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     dataGridProps: {
       columns:
         view === 'LIST'
-          ? applyDocumentSearch === ''
-            ? columnsListView
-            : columnsDeepSearchListView
+          ? isDocSearchApplied
+            ? columnsDeepSearchListView
+            : columnsListView
           : columnsGridView,
       isRowSelectionEnabled: false,
       view,
@@ -806,10 +827,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
 
   // Hook to reset document search param
   useEffect(() => {
-    if (documentSearch === '' && applyDocumentSearch !== '') {
+    if (documentSearch === '' && isDocSearchApplied) {
       setValue('applyDocumentSearch', '');
     }
-  }, [documentSearch, applyDocumentSearch]);
+  }, [documentSearch, isDocSearchApplied]);
 
   // Hook to set rootfolder information in filters store to be consumed by document owners api call in filter by owners
   useEffect(() => {
@@ -1270,7 +1291,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           </div>
         )}
         <div className="flex justify-between">
-          {applyDocumentSearch !== '' ? (
+          {isDocSearchApplied ? (
             <Button
               label={t('backToDocuments')}
               leftIcon="arrowLeft"
@@ -1403,9 +1424,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               <RecentlyAddedEntities disableActions={isCredExpired} />
             )}
             <p className="text-base font-bold text-neutral-900">
-              {applyDocumentSearch === ''
-                ? t('allItemTitle')
-                : 'Search results'}
+              {isDocSearchApplied ? 'Search results' : t('allItemTitle')}
             </p>
             {!hideFilterRow && (
               <FilterMenuDocument
@@ -1424,7 +1443,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               flatData={dataGridProps.flatData.map((doc: any) => ({
                 ...doc,
                 pathWithId:
-                  items.length === 1
+                  items.length === 1 && !isDocSearchApplied
                     ? [{ id: doc.id, name: doc.name, type: 'Folder' }]
                     : doc.pathWithId,
               }))}

@@ -14,7 +14,10 @@ interface IBreadCrumbProps {
   width?: number | '100%' | '100vw' | '100vh';
   labelClassName?: string;
   iconSize?: number;
-  onItemClick?: (item: Item) => void;
+  onItemClick?: (
+    item: Item,
+    e?: React.MouseEvent<HTMLElement, MouseEvent>,
+  ) => void;
 }
 
 const BreadCrumb: FC<IBreadCrumbProps> = ({
