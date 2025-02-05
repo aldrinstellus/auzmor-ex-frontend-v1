@@ -242,3 +242,23 @@ export const getUtcMiliseconds = (localMillis: number) => {
   const utcMillis = localMillis - date.getTimezoneOffset() * 60000;
   return utcMillis;
 };
+
+export const getUserTimeZone = () => {
+  const profile = JSON.parse(localStorage.getItem('profile') || '{}');
+  return profile.timeZone || momentTimezone.tz.guess();
+};
+
+export const convertDateToTimeZone = (
+  date = moment(),
+  timezone = getUserTimeZone(),
+) => moment.tz(date, timezone);
+
+export const formatDateWithTimeZone = (
+  date: moment.Moment,
+  format = 'YYYY-MM-DD',
+) => {
+  if (date) {
+    return convertDateToTimeZone(date).format(format);
+  }
+  return '';
+};
