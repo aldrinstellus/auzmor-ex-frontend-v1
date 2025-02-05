@@ -134,6 +134,10 @@ export const fetchMe = async () => {
       },
     },
   };
+  localStorage.setItem(
+    'profile',
+    JSON.stringify({ timeZone: mappedData.result.data.timeZone }),
+  );
   return mappedData;
 };
 
