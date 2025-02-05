@@ -942,7 +942,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         )}
       </Fragment>
     ) : (
-      <NoDataFound hideClearBtn labelHeader={t('noDataFound')} />
+      <NoDataFound hideClearBtn labelHeader={t('noDataFound.noConnection')} />
     );
 
   // Its a functional component that gives File upload job rendered

@@ -56,7 +56,7 @@ const IntegrationSetting: FC<IIntegrationSettingProps> = () => {
     },
     [DocIntegrationEnum.Sharepoint]: {
       icon: 'sharePoint',
-      label: t('documentTab.sharepointCTA'),
+      label: t('documentTab.sharepoint'),
     },
   };
 
