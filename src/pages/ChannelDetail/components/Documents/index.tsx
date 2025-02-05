@@ -772,7 +772,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             }),
       },
     },
-    isEnabled: !isLoading,
+    options: {
+      enabled: !isLoading,
+    },
     loadingGrid: (
       <Skeleton
         containerClassName="!rounded-15xl !w-[213px] !h-[147px] relative"
