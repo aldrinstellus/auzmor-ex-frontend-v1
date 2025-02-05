@@ -887,7 +887,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       <Fragment>
         {isConnectionMade ? (
           <Fragment>
-            <NoDataFound illustration="noChannelFound" hideClearBtn hideText />
+            <NoDataFound
+              illustration="noChannelFound"
+              illustrationClassName="h-[144px]"
+              hideClearBtn
+              hideText
+            />
             <div className="flex flex-col gap-4 justify-between">
               <p className="w-full text-2xl font-semibold text-neutral-900 text-center">
                 {t('activateFolder')}

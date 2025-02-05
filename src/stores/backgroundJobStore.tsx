@@ -137,7 +137,7 @@ export const useBackgroundJobStore = create<
         return (
           <Icon
             name="tickCircleFilled"
-            color="text-primary-600"
+            color="text-green-600"
             hover={false}
             size={20}
           />

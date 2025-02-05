@@ -18,7 +18,7 @@ const ChannelDocSyncJob: FC<IChannelDocSyncJobProps> = ({}) => {
         {showSuccess && (
           <Icon
             name="tickCircleFilled"
-            color="text-primary-600"
+            color="text-green-600"
             hover={false}
             size={20}
           />
@@ -36,7 +36,7 @@ const ChannelDocSyncJob: FC<IChannelDocSyncJobProps> = ({}) => {
           {jobTitle}
         </span>
         {(showSuccess || showFailed) && (
-          <Icon name="close" size={20} onClick={reset} />
+          <Icon name="close2" size={20} onClick={reset} />
         )}
       </div>
       {showLoading && (
@@ -44,7 +44,7 @@ const ChannelDocSyncJob: FC<IChannelDocSyncJobProps> = ({}) => {
           isLoading
           className="flex-grow"
           barClassName="!w-full"
-          barFilledClassName="!bg-primary-500"
+          barFilledClassName="!bg-green-500"
           customLabel={<></>}
         />
       )}

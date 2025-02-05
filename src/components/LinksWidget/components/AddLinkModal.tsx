@@ -48,7 +48,7 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
       .string()
       .required(t('labelField.requiredError'))
       .min(2, t('labelField.minLengthError'))
-      .max(20, t('labelField.maxLengthError')),
+      .max(60, t('labelField.maxLengthError')),
     url: yup
       .string()
       .test('is-valid-url', t('urlField.invalidUrlError'), (value) =>
@@ -101,7 +101,7 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
     }
     getPreviewLink(getUrlWithProtocol(url)).then((response: any) => {
       if (!getValues('title') && response?.title) {
-        setValue('title', response.title.slice(0, 20), {
+        setValue('title', response.title.slice(0, 60), {
           shouldValidate: true,
         });
       }
@@ -152,7 +152,7 @@ const AddLinkModal: FC<IAddLinksModalProps> = ({
       className: '',
       dataTestId: 'add-link-title',
       required: true,
-      maxLength: 20,
+      maxLength: 60,
     },
   ];
 

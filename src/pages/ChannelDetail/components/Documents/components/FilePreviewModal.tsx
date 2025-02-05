@@ -5,7 +5,6 @@ import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { useParams } from 'react-router-dom';
 import Icon from 'components/Icon';
 import Divider from 'components/Divider';
-import Avatar from 'components/Avatar';
 import Spinner from 'components/Spinner';
 import moment from 'moment';
 import { downloadFromUrl } from 'utils/misc';
@@ -13,6 +12,7 @@ import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import { useTranslation } from 'react-i18next';
 import { Doc } from 'interfaces';
 import Skeleton from 'react-loading-skeleton';
+import { useMutation } from '@tanstack/react-query';
 
 interface IFilePreviewProps {
   fileId: string;
@@ -35,8 +35,6 @@ const FilePreview: FC<IFilePreviewProps> = ({
   const { getApi } = usePermissions();
   const { channelId } = useParams();
 
-  const getChannelDocDownloadUrl = getApi(ApiEnum.GetChannelDocDownloadUrl);
-
   const useChannelDocById = getApi(ApiEnum.UseChannelDocById);
   const { data: fileData, isLoading: fileLoading } = useChannelDocById({
     channelId,
@@ -50,81 +48,86 @@ const FilePreview: FC<IFilePreviewProps> = ({
     fileId: fileId,
   });
 
+  const downloadChannelFile = getApi(ApiEnum.GetChannelDocDownloadUrl);
+  const downloadChannelFileMutation = useMutation({
+    mutationFn: (payload: {
+      channelId: string;
+      itemId: string;
+      name: string;
+    }) =>
+      downloadChannelFile({
+        channelId: payload.channelId,
+        itemId: payload.itemId,
+      }),
+    onSuccess(data: any) {
+      downloadFromUrl(
+        data?.data?.result?.data?.downloadUrl,
+        data?.data?.result?.data?.name,
+      );
+    },
+    onError(response: any, variables) {
+      const failMessage =
+        response?.response?.data?.errors[0]?.reason === 'ACCESS_DENIED'
+          ? t('accessDenied')
+          : t('downloadFile.failure', { name: variables?.name });
+      failureToastConfig({
+        content: failMessage,
+        dataTestId: 'file-download-toaster',
+      });
+    },
+  });
+
   const isLoading = fileLoading || previewLoading;
+  const isDownloading = downloadChannelFileMutation.isLoading;
 
   const file = fileData?.data?.result?.data as Doc;
 
   return (
     <Modal
       open={open}
-      closeModal={closeModal}
-      className="!w-[65vw] flex flex-col h-[80vh] overflow-hidden"
-      showModalCloseBtn
+      className="!h-[calc(100vh-62px)] !w-[calc(100vw-96px)] flex flex-col overflow-hidden"
     >
-      <div className="flex items-center relative p-6">
-        <div className="flex flex-grow justify-center items-start text-center">
-          {fileLoading ? <Skeleton width={256} /> : file?.name || ''}
+      <div className="flex items-center relative px-6 py-4 shrink-0">
+        <div className="flex flex-grow items-start ">
+          {fileLoading ? (
+            <Skeleton width={256} height={40} />
+          ) : (
+            <div>
+              <div className="text-base leading-normal text-neutral-900 font-semibold">
+                {file?.name || ''}
+              </div>
+              <div className="text-xs text-neutral-900">
+                {t('lastUpdatedDate', {
+                  date: moment(file?.externalUpdatedAt || '').format(
+                    'MMM DD, YYYY',
+                  ),
+                })}
+              </div>
+            </div>
+          )}
         </div>
         <div className="flex absolute gap-3 right-4">
           {canDownload && !fileLoading && !!file.downloadable && (
-            <Icon
-              name="download"
-              color="text-neutral-900"
-              onClick={() => {
-                getChannelDocDownloadUrl({
-                  channelId,
-                  itemId: fileId,
-                })
-                  .then(({ data }: Record<string, any>) => {
-                    downloadFromUrl(
-                      data?.result?.data?.downloadUrl,
-                      data?.result?.data?.name,
-                    );
-                  })
-                  .catch(() => {
-                    failureToastConfig({
-                      content: `Failed to download ${file?.name || ''}`,
-                      dataTestId: 'file-download-toaster',
-                    });
+            <div className="flex gap-2">
+              {isDownloading && <Spinner />}
+              <Icon
+                name="download"
+                color="text-neutral-900"
+                disabled={isDownloading}
+                onClick={() => {
+                  downloadChannelFileMutation.mutate({
+                    channelId: channelId || '',
+                    itemId: fileId,
+                    name: file?.name || '',
                   });
-              }}
-            />
+                }}
+              />
+            </div>
           )}
-          <a
-            href={data?.data?.result?.launchURL}
-            rel="noreferrer"
-            target="_blank"
-          >
-            <Icon name="launch" color="text-neutral-900" />
-          </a>
+          <Icon name="close2" color="text-neutral-900" onClick={closeModal} />
         </div>
       </div>
       <Divider />
-      <div className="flex rounded-9xl p-4 gap-2 items-center mx-4 mt-4 bg-[#F0F6FE]">
-        <Avatar
-          size={40}
-          name={file?.ownerName || ''}
-          image={file?.ownerImage || ''}
-          loading={fileLoading}
-        />
-        <div className="flex flex-grow justify-between">
-          <div className="flex flex-col text-sm font-bold text-neutral-900">
-            {fileLoading ? <Skeleton /> : file?.ownerName || ''}
-          </div>
-          <div className="flex flex-col items-end">
-            {fileLoading ? (
-              <Skeleton width={128} />
-            ) : (
-              <div className="flex text-xs text-[#384D6F]">
-                {t('lastUpdated')}:{' '}
-                <span>
-                  {moment(file?.externalUpdatedAt || '').format('MMM DD, YYYY')}
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
       <div className="flex items-center justify-center w-full h-full">
         {isLoading ? (
           <Spinner />

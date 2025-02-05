@@ -129,6 +129,7 @@
     "file": "File",
     "recentlyAdded": "Recently Added",
     "lastUpdated": "Last Updated",
+    "lastUpdatedDate": "Last Updated: {{date}}",
     "addedOn": "Added {{date}}",
     "updated": "Updated {{date}}",
     "updatedOn": "Updated on {{date}}",

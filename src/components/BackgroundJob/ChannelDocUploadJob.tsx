@@ -63,7 +63,7 @@ const ChannelDocUploadJob: FC<IChannelDocUploadJobProps> = ({}) => {
               '-rotate-180': true,
             })}
           />
-          {progress === 100 && <Icon name="close" size={20} onClick={reset} />}
+          {progress === 100 && <Icon name="close2" size={20} onClick={reset} />}
         </div>
         {showProgressbar && (
           <div className="flex items-center gap-4">
@@ -73,7 +73,7 @@ const ChannelDocUploadJob: FC<IChannelDocUploadJobProps> = ({}) => {
               total={100}
               className="flex-grow"
               barClassName="!w-full"
-              barFilledClassName="!bg-primary-500"
+              barFilledClassName="!bg-green-500"
               customLabel={<></>}
             />
           </div>
