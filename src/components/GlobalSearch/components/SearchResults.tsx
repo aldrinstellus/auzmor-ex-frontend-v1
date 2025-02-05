@@ -61,6 +61,7 @@ function getSourceType(entityType: ISearchResultType): string {
     case ISearchResultType.EVENT:
       return 'Event';
     case ISearchResultType.PATH:
+    case ISearchResultType.LEARNING_PATH:
       return 'LearningPath';
     case ISearchResultType.PEOPLE:
       return 'User';
@@ -196,6 +197,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
         );
         break;
       case ISearchResultType.PATH:
+      case ISearchResultType.LEARNING_PATH:
         window.location.assign(
           getLearnUrl(
             isAdmin ? `/paths/${entity.id}` : `/user/paths/${entity.id}/detail`,
@@ -367,6 +369,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
         );
       case ISearchResultType.COURSE:
       case ISearchResultType.PATH:
+      case ISearchResultType.LEARNING_PATH:
       case ISearchResultType.EVENT:
         return (
           <div className="flex gap-1.5 items-center w-full overflow-hidden">
