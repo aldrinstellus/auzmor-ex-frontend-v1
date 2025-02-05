@@ -18,7 +18,7 @@ const ChannelDocSyncJob: FC<IChannelDocSyncJobProps> = ({}) => {
         {showSuccess && (
           <Icon
             name="tickCircleFilled"
-            color="text-green-600"
+            color="!text-green-600"
             hover={false}
             size={20}
           />
