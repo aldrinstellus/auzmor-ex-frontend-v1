@@ -18,7 +18,7 @@ interface IChannelDocBreadcrumbProps {
 
 const ChannelDocBreadcrumb: FC<IChannelDocBreadcrumbProps> = ({
   items,
-  width = 548,
+  width = 630,
   iconSize = 20,
   labelClassName = '',
   onItemClick = () => {},
@@ -26,47 +26,12 @@ const ChannelDocBreadcrumb: FC<IChannelDocBreadcrumbProps> = ({
   const ref = useRef<HTMLDivElement | null>(null);
   const [popupItemIndex, setPopupItemIndex] = useState<number>(0);
   const labelStyle = clsx({
-    'flex text-2xl font-medium text-neutral-500 cursor-pointer truncate max-w-[240px]':
-      true,
+    'flex text-2xl font-medium text-neutral-500 cursor-pointer truncate': true,
     [labelClassName]: true,
   });
 
   useEffect(() => {
-    if (!ref.current) return;
-
-    const { clientWidth, scrollWidth } = ref.current;
-
-    if (clientWidth < scrollWidth) {
-      // Increase `popupItemIndex` only if needed
-      setPopupItemIndex((prev) => prev + 1);
-    } else {
-      // Try to reduce popup index gradually until all items fit
-      setPopupItemIndex((prev) => {
-        let newIndex = prev;
-        while (newIndex > 0) {
-          const testIndex = newIndex - 1;
-          const testItems = items.slice(testIndex);
-
-          // Create a temporary element to check fit
-          const tempDiv = document.createElement('div');
-          tempDiv.style.position = 'absolute';
-          tempDiv.style.visibility = 'hidden';
-          tempDiv.style.width = `${width}px`;
-          tempDiv.innerHTML = testItems.map((item) => item.label).join(' / ');
-          document.body.appendChild(tempDiv);
-
-          const fits = tempDiv.clientWidth >= tempDiv.scrollWidth;
-          document.body.removeChild(tempDiv);
-
-          if (fits) {
-            newIndex = testIndex; // Keep reducing if it fits
-          } else {
-            break; // Stop reducing if it doesn’t fit
-          }
-        }
-        return newIndex;
-      });
-    }
+    setPopupItemIndex(Math.max(0, items.length - 2));
   }, [items]);
 
   return (
@@ -96,11 +61,16 @@ const ChannelDocBreadcrumb: FC<IChannelDocBreadcrumbProps> = ({
         <Icon name="arrowRight" size={20} hover={false} className="flex" />
       )}
       {items.slice(popupItemIndex).map((each, index) => (
-        <div key={each.id} className="flex items-center gap-2">
+        <div
+          key={each.id}
+          className={`flex items-center gap-2 ${
+            index === items.length - 1 && 'flex-grow'
+          }`}
+        >
           <div
             className={`${labelStyle} ${
               index === items.slice(popupItemIndex).length - 1 &&
-              'font-bold text-neutral-900 cursor-default'
+              'font-bold text-neutral-900 cursor-default flex-grow'
             }`}
             onClick={() => onItemClick(each)}
           >

@@ -87,7 +87,9 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({
         limit: 5,
       },
     },
-    isEnabled: true,
+    options: {
+      enabled: true,
+    },
     loadingGrid: (
       <Skeleton
         containerClassName="!rounded-15xl !w-[233px] !h-[53px] relative"

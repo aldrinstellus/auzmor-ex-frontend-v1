@@ -772,7 +772,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             }),
       },
     },
-    isEnabled: !isLoading,
+    options: {
+      enabled: !isLoading,
+    },
     loadingGrid: (
       <Skeleton
         containerClassName="!rounded-15xl !w-[213px] !h-[147px] relative"
@@ -945,7 +947,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         )}
       </Fragment>
     ) : (
-      <NoDataFound hideClearBtn labelHeader={t('noDataFound')} />
+      <NoDataFound hideClearBtn labelHeader={t('noDataFound.noConnection')} />
     );
 
   // Its a functional component that gives File upload job rendered

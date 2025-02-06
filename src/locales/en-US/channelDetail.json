@@ -202,11 +202,13 @@
       "site": "No sites available. Check your permissions or refresh the list.",
       "drive": "No drives available. Check your permissions or refresh the list.",
       "folder": "No folders available. Check your permissions or refresh the list.",
+      "noConnection": "No documents available in this channel.",
       "common": "No data found"
     },
     "listDirectories": {
       "failure": "Failed to load. Please check your connection and try again"
-    }
+    },
+    "sharepoint": "Sharepoint"
   },
   "memberTab": {
     "title": "Members",

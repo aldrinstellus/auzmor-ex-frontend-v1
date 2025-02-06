@@ -4,16 +4,15 @@ import { usePermissions } from './usePermissions';
 import { IDataGridProps } from 'components/DataGrid';
 import { ColumnDef, RowSelectionState } from '@tanstack/react-table';
 import Skeleton from 'react-loading-skeleton';
-import { AxiosError } from 'axios';
+import { UseQueryOptions } from '@tanstack/react-query';
 
 type DataGridType<T> = {
   apiEnum: ApiEnum;
   payload?: Record<string, any>;
-  onError?: (e: AxiosError<Record<string, any>>) => void;
+  options?: Omit<UseQueryOptions<T>, 'queryKey' | 'queryFn'>;
   isInfiniteQuery?: boolean;
   loadingRowCount?: number;
   loadingGrid?: ReactNode;
-  isEnabled?: boolean;
   selectedItems?: RowSelectionState;
   dataGridProps: IDataGridProps<T>;
 };
@@ -33,9 +32,11 @@ export const useDataGrid = <T extends object>({
     apiEnum,
     payload,
     isInfiniteQuery,
-    isEnabled,
     loadingGrid,
-    onError = () => {},
+    options = {
+      onError: () => {},
+      onSuccess: () => {},
+    },
   } = rest;
   const { columns, view } = rest.dataGridProps;
 
@@ -67,7 +68,7 @@ export const useDataGrid = <T extends object>({
       fetchNextPage,
       hasNextPage,
       isError,
-    } = useInfiniteQuery(payload, { enabled: isEnabled });
+    } = useInfiniteQuery(payload, options);
     const flatData = useMemo(
       () =>
         isError
@@ -123,10 +124,7 @@ export const useDataGrid = <T extends object>({
   }
 
   const useQuery = getApi(apiEnum);
-  const { data, isLoading } = useQuery(payload, {
-    enabled: isEnabled,
-    onError: (e: AxiosError<Record<string, any>>) => onError(e),
-  });
+  const { data, isLoading } = useQuery(payload, options);
   const flatData = data || [];
 
   const tableData = useMemo(
