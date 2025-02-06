@@ -761,8 +761,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         ...parseModifiedOnFilter,
         ...(isDocSearchApplied
           ? {
-              q: !byTitle ? applyDocumentSearch : undefined,
-              byTitle: byTitle ? applyDocumentSearch : undefined,
+              q: applyDocumentSearch,
+              byTitle,
             }
           : {
               rootFolderId: items.length > 1 ? items[1].id : undefined,
