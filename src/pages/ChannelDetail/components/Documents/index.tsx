@@ -1077,7 +1077,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         type="file"
         ref={fileInputRef}
         multiple={true}
-        onChange={async (e: any) => {
+        onChange={async (e: React.ChangeEvent<HTMLInputElement>) => {
+          if (!!!e?.target?.files) {
+            return;
+          }
           try {
             // Id of parent folder
             const parentFolderId =
@@ -1131,6 +1134,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               dataTestId: 'file-delete-toaster',
             });
             reset();
+          } finally {
+            e.target.value = '';
           }
         }}
       />
@@ -1260,6 +1265,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               content: reason,
               dataTestId: 'file-delete-toaster',
             });
+          } finally {
+            e.target.value = '';
           }
         }}
       />
