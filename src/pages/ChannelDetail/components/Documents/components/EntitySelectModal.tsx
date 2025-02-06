@@ -18,7 +18,6 @@ import moment from 'moment';
 import BreadCrumb, { BreadCrumbVariantEnum } from 'components/BreadCrumb';
 import { DocumentPathContext } from 'contexts/DocumentPathContext';
 import { useTranslation } from 'react-i18next';
-import { AxiosError } from 'axios';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 
 interface IEntitySelectModalProps {
@@ -153,18 +152,38 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
         ...q,
       },
     },
-    onError: (e: AxiosError<Record<string, any>>) => {
-      const isAccessDenied = !!e.response?.data?.errors?.some(
-        (e: { code: string; message: string; reason: string }) =>
-          e.code === 'ACCESS_DENIED',
-      );
-      if (isAccessDenied) {
-        failureToastConfig({ content: t('accessDenied') });
-      } else {
-        failureToastConfig({
-          content: t('listDirectories.failure'),
-        });
-      }
+    options: {
+      staleTime: headings === 'drive' ? 0 : 5 * 60 * 60 * 100,
+      networkMode: headings === 'drive' ? 'always' : 'online',
+      onError: (e: any) => {
+        const isAccessDenied = !!e?.response?.data?.errors?.some(
+          (e: { code: string; message: string; reason: string }) =>
+            e.code === 'ACCESS_DENIED',
+        );
+        if (isAccessDenied) {
+          failureToastConfig({ content: t('accessDenied') });
+        } else {
+          failureToastConfig({
+            content: t('listDirectories.failure'),
+          });
+        }
+      },
+      onSuccess: (drives) => {
+        if (headings === 'drive' && drives.length === 1) {
+          const row = drives[0];
+          setSelectedItems({
+            directory: selectedItems?.directory,
+            drive: row,
+            folders: [],
+          });
+          appendItem({
+            id: row.id,
+            label: row.name,
+            meta: row,
+          });
+          resetField('entitySearch');
+        }
+      },
     },
     dataGridProps: {
       columns,
@@ -191,12 +210,24 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
             drive: undefined,
             folders: [],
           });
+          appendItem({
+            id: virtualRow.original.id,
+            label: virtualRow.original.name,
+            meta: virtualRow.original,
+          });
+          resetField('entitySearch');
         } else if (headings === 'drive') {
           setSelectedItems({
             directory: selectedItems?.directory,
             drive: virtualRow.original,
             folders: [],
           });
+          appendItem({
+            id: virtualRow.original.id,
+            label: virtualRow.original.name,
+            meta: virtualRow.original,
+          });
+          resetField('entitySearch');
         } else {
           if (
             (selectedItems?.folders || [])?.findIndex(

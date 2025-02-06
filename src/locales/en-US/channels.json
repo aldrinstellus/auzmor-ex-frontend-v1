@@ -26,6 +26,7 @@
     "cancelButton": "Cancel",
     "leaveButton": "Leave",
     "confirmationMessage": "Are you sure you want to leave this channel?",
+    "successToast": "Successfully left the channel.",
     "errorToast": "Error leaving channel."
   },
   "deleteChannelModal": {

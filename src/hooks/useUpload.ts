@@ -348,52 +348,55 @@ export const useChannelDocUpload = (channelId: string) => {
         rootFolderId,
       });
     });
-    files.forEach((file: IUploadUrlPayload, index: number) => {
-      const jobId = `upload-job-${index}`;
-      const job = getJob(jobId);
-      if (!!job && job.status === BackgroundJobStatusEnum.YetToStart) {
-        getUploadUrl(file)
-          .then((response) => {
-            updateJobProgress(jobId, 0, BackgroundJobStatusEnum.Running);
-            uploadToSharepoint(
-              (response as any).data.result as IUploadUrlResponse,
-              fileList.find(
-                ({ file }) => file.name === (response as any).data.result.name,
-              )!.file,
-              jobId,
-            ).then((response) => {
-              updateJobProgress(
+
+    const batchSize = 20;
+    for (let i = 0; i < files.length; i += batchSize) {
+      const batch = files.slice(i, i + batchSize);
+      const batchPromises = batch.map((file, index) => {
+        const jobId = `upload-job-${i + index}`;
+        const job = getJob(jobId);
+        if (!!job && job.status === BackgroundJobStatusEnum.YetToStart) {
+          return getUploadUrl(file)
+            .then((response) => {
+              updateJobProgress(jobId, 0, BackgroundJobStatusEnum.Running);
+              return uploadToSharepoint(
+                (response as any).data.result as IUploadUrlResponse,
+                fileList.find(
+                  ({ file }) =>
+                    file.name === (response as any).data.result.name,
+                )!.file,
                 jobId,
-                100,
-                BackgroundJobStatusEnum.CompletedSuccessfully,
-              );
-              finishUpload({
-                uploadResponse: JSON.stringify(response),
-                rootFolderId: file.rootFolderId,
-              }).then(() => {
-                updateJobProgress(
-                  jobId,
-                  100,
-                  BackgroundJobStatusEnum.CompletedSuccessfully,
-                );
-                queryClient.invalidateQueries(['get-channel-files'], {
-                  exact: false,
+              ).then((response) => {
+                return finishUpload({
+                  uploadResponse: JSON.stringify(response),
+                  rootFolderId: file.rootFolderId,
+                }).then(() => {
+                  updateJobProgress(
+                    jobId,
+                    100,
+                    BackgroundJobStatusEnum.CompletedSuccessfully,
+                  );
                 });
               });
+            })
+            .catch((e) => {
+              const jobComment =
+                e?.response?.data?.errors[0]?.reason || 'Upload failed';
+              updateJob({
+                ...job,
+                progress: 100,
+                status: BackgroundJobStatusEnum.Error,
+                jobComment,
+              });
             });
-          })
-          .catch((e) => {
-            const jobComment =
-              e?.response?.data?.errors[0]?.reason || 'Upload failed';
-            updateJob({
-              ...job,
-              progress: 100,
-              status: BackgroundJobStatusEnum.Error,
-              jobComment,
-            });
-          });
-      }
-    });
+        }
+      });
+
+      await Promise.allSettled(batchPromises);
+      queryClient.invalidateQueries(['get-channel-files'], {
+        exact: false,
+      });
+    }
     return uploadedFiles;
   };
   return {

@@ -8,6 +8,7 @@ import Modal from 'components/Modal';
 import { useMutation } from '@tanstack/react-query';
 import queryClient from 'utils/queryClient';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
+import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import useNavigate from 'hooks/useNavigation';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -34,12 +35,12 @@ const LeaveChannelModal: FC<ILeaveChannelModalProps> = ({
   const leaveChannelMutation = useMutation({
     mutationKey: ['leave-channel-member', channelId],
     mutationFn: (id: string) => leaveChannel(id),
-    onError: () =>
-      failureToastConfig({
-        content: t('errorToast'),
-      }),
+    onError: () => failureToastConfig({ content: t('errorToast') }),
     onSuccess: () => {
       closeModal();
+      successToastConfig({ content: t('successToast') });
+      queryClient.invalidateQueries(['channel-requests'], { exact: false });
+      queryClient.invalidateQueries(['channel-members'], { exact: false });
       queryClient.invalidateQueries({ queryKey: ['channel'] });
       navigate('/channels');
     },

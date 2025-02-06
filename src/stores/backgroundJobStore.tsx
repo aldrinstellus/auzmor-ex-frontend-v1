@@ -2,6 +2,7 @@ import Icon from 'components/Icon';
 import Spinner from 'components/Spinner';
 import { ReactNode } from 'react';
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
+import { twConfig } from 'utils/misc';
 import { create } from 'zustand';
 
 export enum BackgroundJobStatusEnum {
@@ -117,6 +118,7 @@ export const useBackgroundJobStore = create<
               strokeWidth={10}
               styles={buildStyles({
                 pathTransitionDuration: 0.15,
+                pathColor: twConfig.theme.colors.green['600'],
               })}
             />
           </div>
@@ -137,7 +139,7 @@ export const useBackgroundJobStore = create<
         return (
           <Icon
             name="tickCircleFilled"
-            color="text-green-600"
+            color="!text-green-600"
             hover={false}
             size={20}
           />
