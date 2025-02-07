@@ -238,23 +238,32 @@ const SearchResults: FC<ISearchResultsProps> = ({
               bgColor={result.profileColor}
               size={24}
             />
-            <div className="min-w-0">
-              <Truncate
-                text={result.fullName}
-                className={textStyles}
-                textRenderer={(text) => (
-                  <HighlightText text={text} subString={searchQuery} />
-                )}
-              />
-            </div>
-            {result?.designation && (
-              <div className="flex gap-2 items-center">
-                <div className="flex w-[3px] h-[3px] bg-neutral-500 rounded-full" />
-                <div className="text-xs text-neutral-500">
-                  {result?.designation}
+            <div className="flex flex-col grow">
+              <div className="flex gap-1.5 items-center overflow-hidden">
+                <div className="min-w-0">
+                  <Truncate
+                    text={result.fullName}
+                    className={textStyles}
+                    textRenderer={(text) => (
+                      <HighlightText text={text} subString={searchQuery} />
+                    )}
+                  />
                 </div>
+                {result?.designation && (
+                  <div className="flex gap-2 items-center">
+                    <div className="flex w-[3px] h-[3px] bg-neutral-500 rounded-full" />
+                    <div className="text-xs text-neutral-500">
+                      {result?.designation}
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
+              {result?.email && (
+                <div className="text-xxs leading-[1.6] text-black opacity-50">
+                  <HighlightText text={result?.email} subString={searchQuery} />
+                </div>
+              )}
+            </div>
           </div>
         );
       case ISearchResultType.CHANNEL:
@@ -480,7 +489,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
 
   return (
     <div
-      className="max-h-[325px] overflow-y-auto 
+      className="max-h-[365px] overflow-y-auto 
       [&::-webkit-scrollbar]:w-2.5
       [&::-webkit-scrollbar-thumb]:bg-neutral-400
       [&::-webkit-scrollbar-thumb:hover]:bg-neutral-500

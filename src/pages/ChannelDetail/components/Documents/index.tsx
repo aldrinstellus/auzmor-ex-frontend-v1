@@ -1149,11 +1149,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         onChange={async (e: any) => {
           try {
             reset();
-            // Variable to store all new folder and respective ids and parent folder ids
-            const folders: {
-              [folderName: string]: { parentFolderId: string; id: string };
-            } = {};
-
             // Id of root folder
             const parentFolderIdOriginal =
               items.length <= 2 ? '' : items[items.length - 1].id;
@@ -1199,59 +1194,84 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             // Set background jobs
             setJobs(jobs);
 
+            const folderSet = new Set();
+            const folderTree = new Map();
+            const folderIdMap = new Map();
+
             // Iterate through folders and create folder.
             for (const job of Object.values(jobs) as BackgroundJob[]) {
-              const folderNames = job.jobData.file.webkitRelativePath
-                .split('/')
-                .slice(0, -1);
-              let parentFolderId = parentFolderIdOriginal;
+              const item = job.jobData.file;
+              if (item.webkitRelativePath) {
+                const pathParts = item.webkitRelativePath
+                  .split('/')
+                  .slice(0, -1);
+                let currentPath = '';
+                for (const part of pathParts) {
+                  currentPath = currentPath ? `${currentPath}/${part}` : part;
+                  if (!folderSet.has(currentPath)) {
+                    folderSet.add(currentPath);
+                    const parentPath =
+                      currentPath.substring(0, currentPath.lastIndexOf('/')) ||
+                      null;
+                    folderTree.set(currentPath, { parentPath, name: part });
+                  }
+                }
+              }
+            }
 
-              // Process each folder in sequence
-              for (const folderName of folderNames) {
-                if (!folders[folderName]) {
-                  const response: any = await createFolderMutation
-                    .mutateAsync(
-                      {
-                        channelId: channelId,
-                        remoteFolderId: parentFolderId.toString(),
-                        rootFolderId: rootFolderId.toString(),
-                        name: folderName,
-                      } as any,
-                      {
-                        onSuccess: async () => {
-                          await queryClient.invalidateQueries(
-                            ['get-channel-files'],
-                            {
-                              exact: false,
-                            },
-                          );
+            const queue = Array.from(folderTree.keys()).sort(
+              (a, b) => a.split('/').length - b.split('/').length,
+            );
+            for (const folder of queue) {
+              const { parentPath, name } = folderTree.get(folder);
+              const parentFolderId = parentPath
+                ? folderIdMap.get(parentPath)
+                : parentFolderIdOriginal;
+              const response: any = await createFolderMutation
+                .mutateAsync(
+                  {
+                    channelId: channelId,
+                    remoteFolderId: parentFolderId.toString(),
+                    rootFolderId: rootFolderId.toString(),
+                    name,
+                  } as any,
+                  {
+                    onSuccess: async () => {
+                      await queryClient.invalidateQueries(
+                        ['get-channel-files'],
+                        {
+                          exact: false,
                         },
-                      },
-                    )
-                    .catch((e) => {
-                      reset();
-                      throw e;
-                    });
-                  const folderId = (response?.result?.data?.id).toString();
-                  folders[folderName] = { id: folderId, parentFolderId };
-                  parentFolderId = folderId; // Update parentFolderId for next folder
-                } else {
-                  parentFolderId = folders[folderName].id.toString();
-                }
-                updateJob({
-                  ...job,
-                  jobData: {
-                    ...job.jobData,
-                    parentFolderId: folders[folderName].id.toString(),
+                      );
+                    },
                   },
+                )
+                .catch((e) => {
+                  reset();
+                  throw e;
                 });
-                const fileIndex = parseInt(job?.id?.split('-').at(-1) || '-1');
-                if (fileIndex > -1) {
-                  files[fileIndex] = {
-                    ...files[fileIndex],
-                    parentFolderId: folders[folderName].id.toString(),
-                  };
-                }
+              const folderId = (response?.result?.data?.id).toString();
+              folderIdMap.set(folder, folderId);
+            }
+
+            for (const job of Object.values(jobs) as BackgroundJob[]) {
+              const path = job.jobData.file.webkitRelativePath;
+              const parentFolder = path
+                ? path.split('/').slice(0, -1).join('/')
+                : parentFolderIdOriginal;
+              updateJob({
+                ...job,
+                jobData: {
+                  ...job.jobData,
+                  parentFolderId: folderIdMap.get(parentFolder),
+                },
+              });
+              const fileIndex = parseInt(job?.id?.split('-').at(-1) || '-1');
+              if (fileIndex > -1) {
+                files[fileIndex] = {
+                  ...files[fileIndex],
+                  parentFolderId: folderIdMap.get(parentFolder),
+                };
               }
             }
 

@@ -359,16 +359,18 @@ export const useChannelDocUpload = (channelId: string) => {
           return getUploadUrl(file)
             .then((response) => {
               updateJobProgress(jobId, 0, BackgroundJobStatusEnum.Running);
+              const uploadUrlResponse = response.data
+                .result as IUploadUrlResponse;
+              const fileToUpload = fileList.find(
+                ({ file }) => file.name === uploadUrlResponse.name,
+              )!.file;
               return uploadToSharepoint(
-                (response as any).data.result as IUploadUrlResponse,
-                fileList.find(
-                  ({ file }) =>
-                    file.name === (response as any).data.result.name,
-                )!.file,
+                uploadUrlResponse,
+                fileToUpload,
                 jobId,
-              ).then((response) => {
+              ).then((uploadResponse) => {
                 return finishUpload({
-                  uploadResponse: JSON.stringify(response),
+                  uploadResponse: JSON.stringify(uploadResponse),
                   rootFolderId: file.rootFolderId,
                 }).then(() => {
                   updateJobProgress(
@@ -388,11 +390,36 @@ export const useChannelDocUpload = (channelId: string) => {
                 status: BackgroundJobStatusEnum.Error,
                 jobComment,
               });
+              return Promise.reject(e);
             });
+        } else {
+          return Promise.resolve();
         }
       });
 
-      await Promise.allSettled(batchPromises);
+      const retryBatchPromises = batchPromises.map((promise) =>
+        promise.catch(async () => {
+          const maxRetries = 3;
+          let attempt = 1;
+          while (attempt <= maxRetries) {
+            try {
+              await new Promise((resolve) =>
+                setTimeout(resolve, 1000 * attempt),
+              );
+              console.log('Retrying Promise Attempt:', attempt);
+              return await promise;
+            } catch (err) {
+              if (attempt === maxRetries) {
+                console.log('Failed after max retries reached');
+                return Promise.resolve();
+              }
+              attempt++;
+            }
+          }
+        }),
+      );
+
+      await Promise.allSettled(retryBatchPromises);
       queryClient.invalidateQueries(['get-channel-files'], {
         exact: false,
       });

@@ -130,7 +130,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
       <Divider />
       <div className="flex items-center justify-center w-full h-full">
         {isLoading ? (
-          <Spinner />
+          <Spinner className="!h-24 !w-24" />
         ) : (
           <iframe
             src={data?.data?.result?.previewURL}
@@ -139,6 +139,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
             allow="all"
             name="iframe_a"
             loading={isLoading}
+            sandbox="allow-scripts allow-same-origin allow-popups allow-forms" // downloads are not allowed
           />
         )}
       </div>

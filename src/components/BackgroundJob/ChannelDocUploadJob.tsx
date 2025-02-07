@@ -2,7 +2,10 @@ import { clsx } from 'clsx';
 import Icon from 'components/Icon';
 import ProgressBar from 'components/ProgressBar';
 import React, { FC, Fragment, useEffect, useState } from 'react';
-import { useBackgroundJobStore } from 'stores/backgroundJobStore';
+import {
+  BackgroundJobStatusEnum,
+  useBackgroundJobStore,
+} from 'stores/backgroundJobStore';
 
 interface IChannelDocUploadJobProps {}
 
@@ -24,7 +27,7 @@ const ChannelDocUploadJob: FC<IChannelDocUploadJobProps> = ({}) => {
     let total = 0;
     const jobKeys = Object.keys(jobs);
     jobKeys.forEach((key) => {
-      progress += jobs[key].progress;
+      progress += jobs[key].progress || 0;
       total += 100;
     });
     if (total === 0) {
@@ -32,12 +35,26 @@ const ChannelDocUploadJob: FC<IChannelDocUploadJobProps> = ({}) => {
     } else {
       setProgress(Math.floor((progress * 100) / total));
     }
-    setJobTitle(`${Math.floor((total - progress) / 100)} Uploads pending`);
+    const completed = progress / 100;
+    const pending = Math.floor((total - progress) / 100);
+    const failed = jobKeys.filter(
+      (key) => jobs[key].status === BackgroundJobStatusEnum.Error,
+    ).length;
+
+    console.log({ jobs });
+    const completedText = completed > 0 ? `${completed} completed` : null;
+    const failedText = failed > 0 ? `${failed} failed` : null;
+    const pendingText = pending > 0 ? `${pending} pending` : null;
+
+    const jobTitleText = [completedText, failedText, pendingText]
+      .filter(Boolean)
+      .join(', ');
+    console.log({ jobTitleText });
+    setJobTitle(jobTitleText);
 
     if (Math.floor((progress * 100) / total) === 100) {
       setIsExpanded(false);
       setShowProgressbar(false);
-      setJobTitle(`${total / 100} Uploads complete`);
     }
   }, [jobs]);
 
