@@ -267,32 +267,48 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
               )
             ) {
               return {
+                className: 'p-5',
                 illustration: 'accessDenied',
                 illustrationClassName: 'w-[200px] h-[133px]',
-                message: t('noDataFound.accessDeniedSite'),
+                hideText: true,
+                customLabel: (
+                  <div className="flex m-auto !font-medium !text-neutral-900 !text-base max-w-[400px] text-center pt-4">
+                    {t('noDataFound.accessDeniedSite')}
+                  </div>
+                ),
               };
             }
             return {
+              className: 'p-5',
               illustration: 'noResult',
               illustrationClassName: undefined,
-              message: t('noDataFound.failure'),
+              hideText: true,
+              customLabel: (
+                <div className="flex m-auto !font-medium !text-neutral-900 !text-base max-w-[400px] text-center pt-4">
+                  {t('noDataFound.failure')}
+                </div>
+              ),
             };
           }
           return {
-            illustration: 'noResult',
-            illustrationClassName: '',
-            message: (() => {
-              switch (headings) {
-                case 'site':
-                  return t('noDataFound.site');
-                case 'drive':
-                  return t('noDataFound.drive');
-                case 'folder':
-                  return t('noDataFound.folder');
-                default:
-                  return '';
-              }
-            })(),
+            className: 'p-5',
+            hideText: true,
+            customLabel: (
+              <div className="flex m-auto !font-medium !text-neutral-900 !text-base max-w-[400px] text-center pt-4">
+                {(() => {
+                  switch (headings) {
+                    case 'site':
+                      return t('noDataFound.site');
+                    case 'drive':
+                      return t('noDataFound.drive');
+                    case 'folder':
+                      return t('noDataFound.folder');
+                    default:
+                      return '';
+                  }
+                })()}
+              </div>
+            ),
           };
         };
         return <NoDataFound hideClearBtn {...geNoResultProps()} />;
