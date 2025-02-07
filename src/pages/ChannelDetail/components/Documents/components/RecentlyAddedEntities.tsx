@@ -111,7 +111,7 @@ const RecentlyAddedEntities: FC<IRecentlyAddedEntitiesProps> = ({
           navigate(`/channels/${channelId}/documents/${encodedPath}`);
         }
       },
-      noDataFound: <NoDataFound hideClearBtn />,
+      noDataFound: () => <NoDataFound hideClearBtn />,
     },
   });
 

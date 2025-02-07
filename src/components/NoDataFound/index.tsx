@@ -15,6 +15,7 @@ interface INoDataFoundProps {
   labelHeader?: ReactNode;
   illustration?: string;
   illustrationClassName?: string;
+  customLabel?: ReactNode;
 }
 
 const illustrationMap: Record<string, any> = {
@@ -31,6 +32,10 @@ const illustrationMap: Record<string, any> = {
     size: 121,
     color: '!text-primary-500',
   },
+  accessDenied: {
+    type: 'image',
+    src: require('images/png/PrivateChannelBanner.png'),
+  },
 };
 
 const NoDataFound: FC<INoDataFoundProps> = ({
@@ -45,6 +50,7 @@ const NoDataFound: FC<INoDataFoundProps> = ({
   clearBtnLabel = 'Clear search',
   illustration = 'noResult',
   illustrationClassName = '',
+  customLabel,
 }) => {
   const style = clsx({ [className]: true });
   const illustrationStyle = clsx({
@@ -80,6 +86,7 @@ const NoDataFound: FC<INoDataFoundProps> = ({
           <div className="text-sm text-gray-500 mt-4">{message}</div>
         </div>
       )}
+      {!!customLabel && customLabel}
 
       {!hideClearBtn && (
         <div className="flex justify-center mt-6 group">

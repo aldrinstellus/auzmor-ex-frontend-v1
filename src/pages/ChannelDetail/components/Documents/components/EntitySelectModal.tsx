@@ -258,22 +258,61 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
         }
       },
       height: 312,
-      noDataFound: (
-        <NoDataFound
-          hideClearBtn
-          labelHeader={(() => {
-            switch (headings) {
-              case 'site':
-                return t('noDataFound.site');
-              case 'drive':
-                return t('noDataFound.drive');
-              case 'folder':
-                return t('noDataFound.folder');
+      noDataFound: (error) => {
+        const geNoResultProps = () => {
+          if (error) {
+            if (
+              error?.response?.data?.errors.some(
+                (e: { code: string }) => e.code === 'ACCESS_DENIED',
+              )
+            ) {
+              return {
+                className: 'p-5',
+                illustration: 'accessDenied',
+                illustrationClassName: 'w-[200px] h-[133px]',
+                hideText: true,
+                customLabel: (
+                  <div className="flex m-auto !font-medium !text-neutral-900 !text-base max-w-[400px] text-center pt-4">
+                    {t('noDataFound.accessDeniedSite')}
+                  </div>
+                ),
+              };
             }
-            return t('noDataFound.common');
-          })()}
-        />
-      ),
+            return {
+              className: 'p-5',
+              illustration: 'noResult',
+              illustrationClassName: undefined,
+              hideText: true,
+              customLabel: (
+                <div className="flex m-auto !font-medium !text-neutral-900 !text-base max-w-[400px] text-center pt-4">
+                  {t('noDataFound.failure')}
+                </div>
+              ),
+            };
+          }
+          return {
+            className: 'p-5',
+            hideText: true,
+            customLabel: (
+              <div className="flex m-auto !font-medium !text-neutral-900 !text-base max-w-[400px] text-center pt-4">
+                {(() => {
+                  switch (headings) {
+                    case 'site':
+                      return t('noDataFound.site');
+                    case 'drive':
+                      return t('noDataFound.drive');
+                    case 'folder':
+                      return t('noDataFound.folder');
+                    default:
+                      return '';
+                  }
+                })()}
+              </div>
+            ),
+          };
+        };
+        return <NoDataFound hideClearBtn {...geNoResultProps()} />;
+      },
       isDoubleClickAllowed: headings === 'folder',
     },
   });
