@@ -761,8 +761,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         ...parseModifiedOnFilter,
         ...(isDocSearchApplied
           ? {
-              q: !byTitle ? applyDocumentSearch : undefined,
-              byTitle: byTitle ? applyDocumentSearch : undefined,
+              q: applyDocumentSearch,
+              byTitle,
             }
           : {
               rootFolderId: items.length > 1 ? items[1].id : undefined,
@@ -800,7 +800,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           navigate(`/channels/${channelId}/documents/${encodedPath}`);
         }
       },
-      noDataFound: (
+      noDataFound: () => (
         <NoDataFound
           labelHeader={t('noDataFound.docListing')}
           clearBtnLabel="Upload now"

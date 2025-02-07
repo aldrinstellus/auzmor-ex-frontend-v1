@@ -44,7 +44,7 @@ export interface IDataGridProps<T> {
   height?: number | 'auto';
   trDataClassName?: string;
   view?: 'LIST' | 'GRID';
-  noDataFound: JSX.Element;
+  noDataFound: (error: Record<string, any> | null) => JSX.Element;
   enableMultiRowSelection?: boolean;
   getRowId?: (
     originalRow: T,
@@ -52,6 +52,7 @@ export interface IDataGridProps<T> {
     parent?: Row<T> | undefined,
   ) => string;
   isDoubleClickAllowed?: boolean;
+  error?: Record<string, any> | null;
 }
 
 const DataGrid = <T extends object>({
@@ -75,6 +76,7 @@ const DataGrid = <T extends object>({
   enableMultiRowSelection,
   getRowId,
   isDoubleClickAllowed = false,
+  error,
 }: IDataGridProps<T>) => {
   const { ref, inView } = useInView();
   const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null);
@@ -166,7 +168,7 @@ const DataGrid = <T extends object>({
 
   if (view === 'GRID') {
     return flatData.length === 0 && !isLoading ? (
-      noDataFound
+      noDataFound(error || null)
     ) : (
       <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
         {rows.map((row: Row<T>) => {
@@ -195,7 +197,7 @@ const DataGrid = <T extends object>({
   }
 
   return flatData.length === 0 && !isLoading ? (
-    noDataFound
+    noDataFound(error || null)
   ) : (
     <div
       className={className}

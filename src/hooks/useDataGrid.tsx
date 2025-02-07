@@ -68,6 +68,7 @@ export const useDataGrid = <T extends object>({
       fetchNextPage,
       hasNextPage,
       isError,
+      error,
     } = useInfiniteQuery(payload, options);
     const flatData = useMemo(
       () =>
@@ -120,11 +121,12 @@ export const useDataGrid = <T extends object>({
       isFetchingNextPage,
       fetchNextPage,
       hasNextPage,
+      error,
     };
   }
 
   const useQuery = getApi(apiEnum);
-  const { data, isLoading } = useQuery(payload, options);
+  const { data, isLoading, error } = useQuery(payload, options);
   const flatData = data || [];
 
   const tableData = useMemo(
@@ -166,5 +168,6 @@ export const useDataGrid = <T extends object>({
     tableRef,
     isRowSelected,
     onRowClick: isLoading ? () => {} : rest.dataGridProps.onRowClick,
+    error,
   };
 };

@@ -203,7 +203,8 @@
       "drive": "No drives available. Check your permissions or refresh the list.",
       "folder": "No folders available. Check your permissions or refresh the list.",
       "noConnection": "No documents available in this channel.",
-      "common": "No data found"
+      "accessDeniedSite": "You don’t have permission to access this site. Please choose a different site or try again.",
+      "failure": "Something went wrong, Please try again later."
     },
     "listDirectories": {
       "failure": "Failed to load. Please check your connection and try again"

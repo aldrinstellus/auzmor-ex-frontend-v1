@@ -318,7 +318,6 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanPromoteMember,
               ChannelPermissionEnum.CanEditSettings,
               ChannelPermissionEnum.CanPostContent,
-              ChannelPermissionEnum.CanManageChannelRequests,
               ChannelPermissionEnum.CanArchive,
               ChannelPermissionEnum.CanAccessManageTab,
               ChannelPermissionEnum.CanAccessMembersTab,
