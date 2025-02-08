@@ -53,6 +53,7 @@ export const getIconFromMime = (mimeType?: string) => {
       'application/vnd.google-apps.spreadsheet',
       'application/vnd.ms-excel.sheet.macroenabled.12',
       'application/vnd.oasis.opendocument.spreadsheet',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     ],
     pdf: [
       'pdf',

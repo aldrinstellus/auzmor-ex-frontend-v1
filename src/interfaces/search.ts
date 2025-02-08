@@ -20,5 +20,6 @@ export type ISearchResult = Record<string, any>;
 export interface ISearchResultGroup {
   module: ISearchResultType;
   name: string;
+  isLoading?: boolean;
   results: ISearchResult[];
 }

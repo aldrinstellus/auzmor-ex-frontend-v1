@@ -450,6 +450,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
 
   if (
     !isLoading &&
+    !searchResults.some((entity) => entity.isLoading) &&
     sumBy(searchResults, (entity) => entity.results.length) === 0
   ) {
     return (
@@ -512,6 +513,22 @@ const SearchResults: FC<ISearchResultsProps> = ({
             const isRecent =
               entity.module === ISearchResultType.RECENT ||
               entity.module === ISearchResultType.KEYWORD;
+            if (entity.isLoading)
+              return (
+                <div className="flex flex-col pl-3 gap-2 my-1">
+                  {[...Array(5)].map((element) => (
+                    <div
+                      className="flex gap-1.5 items-center h-5"
+                      key={element}
+                    >
+                      <Skeleton width={20} height={20} />
+                      <div className="grow">
+                        <Skeleton height={20} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
             return entity.results.length > 0 ? (
               <li
                 key={entity.module}
