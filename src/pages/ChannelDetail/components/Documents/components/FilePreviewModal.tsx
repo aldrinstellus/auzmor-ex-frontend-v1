@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import Modal from 'components/Modal';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
@@ -45,7 +45,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
   const useChannelFilePreview = getApi(ApiEnum.GetChannelFilePreview);
   const { data, isLoading: previewLoading } = useChannelFilePreview({
     channelId,
-    fileId: fileId,
+    fileId,
   });
 
   const downloadChannelFile = getApi(ApiEnum.GetChannelDocDownloadUrl);
@@ -77,10 +77,19 @@ const FilePreview: FC<IFilePreviewProps> = ({
     },
   });
 
+  useEffect(() => {
+    const elem = document.getElementById('videoplayer');
+    if (elem) {
+      elem?.setAttribute('oncontextmenu', 'return false;');
+    }
+  });
+
   const isLoading = fileLoading || previewLoading;
   const isDownloading = downloadChannelFileMutation.isLoading;
 
   const file = fileData?.data?.result?.data as Doc;
+  const previewUrl = data?.data?.result?.previewURL;
+  const isVideo = file?.mimeType?.startsWith('video/');
 
   return (
     <Modal
@@ -131,15 +140,25 @@ const FilePreview: FC<IFilePreviewProps> = ({
       <div className="flex items-center justify-center w-full h-full">
         {isLoading ? (
           <Spinner className="!h-24 !w-24" />
+        ) : isVideo ? (
+          <div className="flex w-full h-full justify-center">
+            <video
+              id="videoplayer"
+              src={previewUrl}
+              controls
+              controlsList="nodownload"
+              className="object-contain h-[calc(100%-72px)] w-full"
+            />
+          </div>
         ) : (
           <iframe
-            src={data?.data?.result?.previewURL}
+            src={previewUrl}
             className="w-full h-full mt-2"
             allowFullScreen
             allow="all"
             name="iframe_a"
             loading={isLoading}
-            sandbox="allow-scripts allow-same-origin allow-popups allow-forms" // downloads are not allowed
+            sandbox="allow-scripts allow-same-origin allow-forms" // downloads are not allowed
           />
         )}
       </div>
