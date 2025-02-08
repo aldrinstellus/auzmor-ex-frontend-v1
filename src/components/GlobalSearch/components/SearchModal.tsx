@@ -12,6 +12,9 @@ import { usePermissions } from 'hooks/usePermissions';
 import { ISearchResultGroup, ISearchResultType } from 'interfaces/search';
 import Modal from 'components/Modal';
 import { sumBy } from 'lodash';
+import useRole from 'hooks/useRole';
+
+const limit = 5;
 
 export interface ISearchModalProps {
   onClose?: () => void;
@@ -26,6 +29,7 @@ const SearchModal: FC<ISearchModalProps> = ({
 }) => {
   const { getApi } = usePermissions();
   const { t } = useTranslation('components', { keyPrefix: 'GlobalSearch' });
+  const { isAdmin } = useRole();
 
   const queryClient = useQueryClient();
 
@@ -46,7 +50,7 @@ const SearchModal: FC<ISearchModalProps> = ({
     getSearchResults(
       {
         q: debouncedSearchQuery,
-        limit: 5,
+        limit,
       },
       {
         enabled: !showRecentSearchResults,
@@ -56,16 +60,34 @@ const SearchModal: FC<ISearchModalProps> = ({
       },
     );
 
-  const { data: documentSearchResultsData } = getSearchResults(
+  const {
+    data: documentSearchResultsData,
+    isLoading: isDocumentSearchResultsFetching,
+  } = getSearchResults(
     {
       q: debouncedSearchQuery,
-      limit: 5,
+      limit,
       module: 'document',
     },
     {
       enabled: !showRecentSearchResults,
     },
   );
+
+  const documentSearchResults: ISearchResultGroup[] = [
+    {
+      module: ISearchResultType.DOCUMENT,
+      name: t(`modules.${ISearchResultType.DOCUMENT}`),
+      isLoading: isDocumentSearchResultsFetching,
+      results:
+        documentSearchResultsData?.result?.data
+          ?.find(
+            (item: ISearchResultGroup) =>
+              item.module === ISearchResultType.DOCUMENT,
+          )
+          ?.results?.slice(0, limit) || [],
+    },
+  ];
 
   const isLoading = showRecentSearchResults
     ? isRecentSearchResultsFetching
@@ -75,10 +97,7 @@ const SearchModal: FC<ISearchModalProps> = ({
     ? recentSearchResults
     : [
         ...(searchResultsData?.result?.data || []),
-        ...(documentSearchResultsData?.results?.data?.filter(
-          (item: ISearchResultGroup) =>
-            item.module === ISearchResultType.DOCUMENT,
-        ) || []),
+        ...documentSearchResults,
       ].map((item: ISearchResultGroup) => ({
         ...item,
         name: t(`modules.${item.module}`),
@@ -95,7 +114,9 @@ const SearchModal: FC<ISearchModalProps> = ({
       name: 'globalSearch',
       dataTestId: 'global-search',
       className: 'w-full',
-      placeholder: t('searchPlaceholder'),
+      placeholder: isAdmin
+        ? t('searchPlaceholder')
+        : t('searchPlaceholderLearner'),
       inputClassName:
         'border-none !p-0 rounded-none text-base font-medium mr-9',
       autofocus: true,

@@ -10,7 +10,7 @@ import { sumBy } from 'lodash';
 import React, { FC, useEffect, useRef, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import useNavigate from 'hooks/useNavigation';
-import { getLearnUrl } from 'utils/misc';
+import { compressString, getLearnUrl } from 'utils/misc';
 import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 import { getIconFromMime } from 'pages/ChannelDetail/components/Documents/components/Doc';
 import HighlightText from 'components/HighlightText';
@@ -150,6 +150,41 @@ const SearchResults: FC<ISearchResultsProps> = ({
     }
   }, [selectedIndex]);
 
+  const getItemUrl = (entityType: ISearchResultType, entity: ISearchResult) => {
+    switch (entityType) {
+      case ISearchResultType.APP:
+        return `${isAdmin ? '/apps/' : '/user/apps/'}${entity.id}/launch`;
+      case ISearchResultType.CHANNEL:
+        return `/channels/${entity.id}`;
+      case ISearchResultType.DOCUMENT:
+        return `/channels/${entity.channelId}/documents/${compressString(
+          JSON.stringify(entity.pathWithId),
+        )}`;
+      case ISearchResultType.COURSE:
+        return getLearnUrl(
+          isAdmin
+            ? `/courses/${entity.id}`
+            : `/user/courses/${entity.id}/detail`,
+        );
+      case ISearchResultType.EVENT:
+        return getLearnUrl(
+          isAdmin ? `/events/${entity.id}` : `/user/events/${entity.id}/detail`,
+        );
+      case ISearchResultType.PATH:
+      case ISearchResultType.LEARNING_PATH:
+        return getLearnUrl(
+          isAdmin ? `/paths/${entity.id}` : `/user/paths/${entity.id}/detail`,
+        );
+      case ISearchResultType.USER:
+      case ISearchResultType.PEOPLE:
+        return getLearnUrl(`/users/${entity.id}`);
+      case ISearchResultType.TEAM:
+        return getLearnUrl(`/teams/${entity.id}`);
+      default:
+        return '';
+    }
+  };
+
   const handleItemClick = async (
     entityType: ISearchResultType,
     entity: ISearchResult,
@@ -163,58 +198,17 @@ const SearchResults: FC<ISearchResultsProps> = ({
         sourceType: getSourceType(entityType),
       });
     }
-    switch (entityType) {
-      case ISearchResultType.APP:
-        window.open(
-          `${window.location.origin}${isAdmin ? '/apps/' : '/user/apps/'}${
-            entity.id
-          }/launch`,
-          '_target',
-        );
-        break;
-      case ISearchResultType.CHANNEL:
-        navigate(`/channels/${entity.id}`);
-        break;
-      case ISearchResultType.DOCUMENT:
-        window.open(entity.url, '_target');
-        break;
-      case ISearchResultType.COURSE:
-        window.location.assign(
-          getLearnUrl(
-            isAdmin
-              ? `/courses/${entity.id}`
-              : `/user/courses/${entity.id}/detail`,
-          ),
-        );
-        break;
-      case ISearchResultType.EVENT:
-        window.location.assign(
-          getLearnUrl(
-            isAdmin
-              ? `/events/${entity.id}`
-              : `/user/events/${entity.id}/detail`,
-          ),
-        );
-        break;
-      case ISearchResultType.PATH:
-      case ISearchResultType.LEARNING_PATH:
-        window.location.assign(
-          getLearnUrl(
-            isAdmin ? `/paths/${entity.id}` : `/user/paths/${entity.id}/detail`,
-          ),
-        );
-        break;
-      case ISearchResultType.USER:
-      case ISearchResultType.PEOPLE:
-        window.location.assign(getLearnUrl(`/users/${entity.id}`));
-        break;
-      case ISearchResultType.TEAM:
-        isAdmin
-          ? window.location.assign(getLearnUrl(`/teams/${entity.id}`))
-          : navigate(`/teams/${entity.id}`);
-        break;
-      default:
-        return;
+    const url = getItemUrl(entityType, entity);
+    if (
+      [
+        ISearchResultType.CHANNEL,
+        ISearchResultType.DOCUMENT,
+        ISearchResultType.APP,
+      ].includes(entityType)
+    ) {
+      navigate(url);
+    } else {
+      window.location.assign(url);
     }
     onClose();
   };
@@ -238,7 +232,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
               bgColor={result.profileColor}
               size={24}
             />
-            <div className="flex flex-col grow">
+            <div className="flex flex-col grow gap-[2px]">
               <div className="flex gap-1.5 items-center overflow-hidden">
                 <div className="min-w-0">
                   <Truncate
@@ -450,6 +444,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
 
   if (
     !isLoading &&
+    !searchResults.some((entity) => entity.isLoading) &&
     sumBy(searchResults, (entity) => entity.results.length) === 0
   ) {
     return (
@@ -489,7 +484,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
 
   return (
     <div
-      className="max-h-[365px] overflow-y-auto 
+      className="max-h-[375px] overflow-y-auto 
       [&::-webkit-scrollbar]:w-2.5
       [&::-webkit-scrollbar-thumb]:bg-neutral-400
       [&::-webkit-scrollbar-thumb:hover]:bg-neutral-500
@@ -512,6 +507,22 @@ const SearchResults: FC<ISearchResultsProps> = ({
             const isRecent =
               entity.module === ISearchResultType.RECENT ||
               entity.module === ISearchResultType.KEYWORD;
+            if (entity.isLoading)
+              return (
+                <div className="flex flex-col pl-3 gap-2 my-1">
+                  {[...Array(5)].map((element) => (
+                    <div
+                      className="flex gap-1.5 items-center h-5"
+                      key={element}
+                    >
+                      <Skeleton width={20} height={20} />
+                      <div className="grow">
+                        <Skeleton height={20} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
             return entity.results.length > 0 ? (
               <li
                 key={entity.module}
