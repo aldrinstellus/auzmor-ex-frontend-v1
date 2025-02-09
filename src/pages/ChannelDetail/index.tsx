@@ -24,7 +24,6 @@ import { useChannelRole } from 'hooks/useChannelRole';
 import useRole from 'hooks/useRole';
 import useProduct from 'hooks/useProduct';
 import Button, { Variant } from 'components/Button';
-import { IS_PROD } from 'utils/constants';
 
 export enum ChannelDetailTabsEnum {
   Home = 'HOME',
@@ -191,9 +190,9 @@ const ChannelDetail: FC<AppProps> = ({
       tabLabel: (isActive: boolean) => (
         <div className={tabStyles(isActive)}>{t('tabs.documents')}</div>
       ),
-      hidden:
-        IS_PROD ||
-        !permissions.includes(ChannelPermissionEnum.CanAccessDocumentsTab),
+      hidden: !permissions.includes(
+        ChannelPermissionEnum.CanAccessDocumentsTab,
+      ),
       dataTestId: 'channel-document-tab',
       tabContent: showBanner(ChannelDetailTabsEnum.Documents) || (
         <DocumentPathProvider>
