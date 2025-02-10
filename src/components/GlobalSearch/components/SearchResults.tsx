@@ -98,10 +98,16 @@ const SearchResults: FC<ISearchResultsProps> = ({
 
   const clickSearchResultApi = getApi(ApiEnum.ClickSearchResult);
   const clickSearchResultMutation = useMutation({
-    mutationFn: (payload: { sourceId: string; sourceType: string }) =>
-      clickSearchResultApi(payload),
+    mutationFn: (payload: {
+      sourceId: string;
+      sourceType: string;
+      additionalInfo?: any;
+    }) => clickSearchResultApi(payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['global-recent-clicked-results']);
+      await queryClient.invalidateQueries([
+        'global-recent-clicked-results-learner',
+      ]);
     },
   });
 
@@ -123,6 +129,9 @@ const SearchResults: FC<ISearchResultsProps> = ({
     mutationFn: deleteRecentClickedResultApi,
     onSuccess: async () => {
       await queryClient.invalidateQueries(['global-recent-clicked-results']);
+      await queryClient.invalidateQueries([
+        'global-recent-clicked-results-learner',
+      ]);
     },
     onSettled: () => {
       setDeletedResult(null);
@@ -192,6 +201,12 @@ const SearchResults: FC<ISearchResultsProps> = ({
     if (entityType === ISearchResultType.KEYWORD) {
       updateSearchQuery(entity.term);
       return;
+    } else if (entityType === ISearchResultType.DOCUMENT) {
+      await clickSearchResultMutation.mutateAsync({
+        sourceId: entity.id,
+        sourceType: getSourceType(entityType),
+        additionalInfo: { ...entity },
+      });
     } else {
       await clickSearchResultMutation.mutateAsync({
         sourceId: entity.id,
@@ -344,15 +359,18 @@ const SearchResults: FC<ISearchResultsProps> = ({
           </div>
         );
       case ISearchResultType.DOCUMENT:
-        const iconName = result?.isFolder
+        const documentData = result?.additionalInfo
+          ? result?.additionalInfo
+          : result;
+        const iconName = documentData?.isFolder
           ? 'folder'
-          : getIconFromMime(result?.mimeType);
+          : getIconFromMime(documentData?.mimeType);
         return (
           <div className="flex gap-1.5 items-center w-full overflow-hidden">
             <Icon name={iconName} size={24} hover={false} />
             <div className="min-w-0">
               <Truncate
-                text={result.name}
+                text={documentData.name}
                 className={textStyles}
                 textRenderer={(text) => (
                   <HighlightText text={text} subString={searchQuery} />
@@ -363,7 +381,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
               <div className="flex w-[3px] h-[3px] bg-neutral-500 rounded-full" />
               <div className="text-xs text-neutral-500">
                 {`Created on ${getFormattedDate(
-                  result.createdAt,
+                  documentData.createdAt,
                   user?.timezone,
                 )}`}
               </div>

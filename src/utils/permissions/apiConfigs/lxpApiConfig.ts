@@ -174,6 +174,7 @@ export const apiConfigLxp = {
     [Default]: queries.useSearchResults,
   },
   [ApiEnum.GetRecentClickedResults]: {
+    [Learner]: queries.useLearnerRecentClickedResults,
     [Default]: queries.useRecentClickedResults,
   },
   [ApiEnum.GetRecentSearchTerms]: {
