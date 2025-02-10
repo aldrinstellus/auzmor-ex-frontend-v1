@@ -166,8 +166,11 @@ const SearchResults: FC<ISearchResultsProps> = ({
       case ISearchResultType.CHANNEL:
         return `/channels/${entity.id}`;
       case ISearchResultType.DOCUMENT:
-        return `/channels/${entity.channelId}/documents/${compressString(
-          JSON.stringify(entity.pathWithId),
+        const channelId = entity.additionalInfo?.channelId || entity.channelId;
+        const pathWithId =
+          entity.additionalInfo?.pathWithId || entity.pathWithId;
+        return `/channels/${channelId}/documents/${compressString(
+          JSON.stringify(pathWithId),
         )}`;
       case ISearchResultType.COURSE:
         return getLearnUrl(
@@ -202,17 +205,20 @@ const SearchResults: FC<ISearchResultsProps> = ({
       updateSearchQuery(entity.term);
       return;
     } else if (entityType === ISearchResultType.DOCUMENT) {
+      const additionalInfo = entity.additionalInfo;
       await clickSearchResultMutation.mutateAsync({
-        sourceId: entity.id,
+        sourceId: additionalInfo?.id || entity.id,
         sourceType: getSourceType(entityType),
         additionalInfo: {
-          channel_id: entity.channelId,
-          name: entity.name,
-          path_with_id: entity.pathWithId,
-          external_created_at: entity.externalCreatedAt,
-          created_at: entity.createdAt,
-          is_folder: entity.isFolder,
-          mime_type: entity.mimeType,
+          id: additionalInfo?.id || entity.id,
+          channel_id: additionalInfo?.channelId || entity.channelId,
+          name: additionalInfo?.name || entity.name,
+          path_with_id: additionalInfo?.pathWithId || entity.pathWithId,
+          external_created_at:
+            additionalInfo?.externalCreatedAt || entity.externalCreatedAt,
+          created_at: additionalInfo?.createdAt || entity.createdAt,
+          is_folder: additionalInfo?.isFolder || entity.isFolder,
+          mime_type: additionalInfo?.mimeType || entity.mimeType,
         },
       });
     } else {
