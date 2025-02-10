@@ -32,6 +32,12 @@ const illustrationMap: Record<string, any> = {
     size: 121,
     color: '!text-primary-500',
   },
+  noPreviewAvailable: {
+    type: 'icon',
+    src: 'file',
+    size: 160,
+    color: '!text-neutral-500',
+  },
   accessDenied: {
     type: 'image',
     src: require('images/png/PrivateChannelBanner.png'),
