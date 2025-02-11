@@ -98,10 +98,16 @@ const SearchResults: FC<ISearchResultsProps> = ({
 
   const clickSearchResultApi = getApi(ApiEnum.ClickSearchResult);
   const clickSearchResultMutation = useMutation({
-    mutationFn: (payload: { sourceId: string; sourceType: string }) =>
-      clickSearchResultApi(payload),
+    mutationFn: (payload: {
+      sourceId: string;
+      sourceType: string;
+      additionalInfo?: any;
+    }) => clickSearchResultApi(payload),
     onSuccess: async () => {
       await queryClient.invalidateQueries(['global-recent-clicked-results']);
+      await queryClient.invalidateQueries([
+        'global-recent-clicked-results-learner',
+      ]);
     },
   });
 
@@ -123,6 +129,9 @@ const SearchResults: FC<ISearchResultsProps> = ({
     mutationFn: deleteRecentClickedResultApi,
     onSuccess: async () => {
       await queryClient.invalidateQueries(['global-recent-clicked-results']);
+      await queryClient.invalidateQueries([
+        'global-recent-clicked-results-learner',
+      ]);
     },
     onSettled: () => {
       setDeletedResult(null);
@@ -157,8 +166,11 @@ const SearchResults: FC<ISearchResultsProps> = ({
       case ISearchResultType.CHANNEL:
         return `/channels/${entity.id}`;
       case ISearchResultType.DOCUMENT:
-        return `/channels/${entity.channelId}/documents/${compressString(
-          JSON.stringify(entity.pathWithId),
+        const channelId = entity.additionalInfo?.channelId || entity.channelId;
+        const pathWithId =
+          entity.additionalInfo?.pathWithId || entity.pathWithId;
+        return `/channels/${channelId}/documents/${compressString(
+          JSON.stringify(pathWithId),
         )}`;
       case ISearchResultType.COURSE:
         return getLearnUrl(
@@ -192,6 +204,23 @@ const SearchResults: FC<ISearchResultsProps> = ({
     if (entityType === ISearchResultType.KEYWORD) {
       updateSearchQuery(entity.term);
       return;
+    } else if (entityType === ISearchResultType.DOCUMENT) {
+      const additionalInfo = entity.additionalInfo;
+      await clickSearchResultMutation.mutateAsync({
+        sourceId: additionalInfo?.id || entity.id,
+        sourceType: getSourceType(entityType),
+        additionalInfo: {
+          id: additionalInfo?.id || entity.id,
+          channel_id: additionalInfo?.channelId || entity.channelId,
+          name: additionalInfo?.name || entity.name,
+          path_with_id: additionalInfo?.pathWithId || entity.pathWithId,
+          external_created_at:
+            additionalInfo?.externalCreatedAt || entity.externalCreatedAt,
+          created_at: additionalInfo?.createdAt || entity.createdAt,
+          is_folder: additionalInfo?.isFolder || entity.isFolder,
+          mime_type: additionalInfo?.mimeType || entity.mimeType,
+        },
+      });
     } else {
       await clickSearchResultMutation.mutateAsync({
         sourceId: entity.id,
@@ -344,15 +373,18 @@ const SearchResults: FC<ISearchResultsProps> = ({
           </div>
         );
       case ISearchResultType.DOCUMENT:
-        const iconName = result?.isFolder
+        const documentData = result?.additionalInfo
+          ? result?.additionalInfo
+          : result;
+        const iconName = documentData?.isFolder
           ? 'folder'
-          : getIconFromMime(result?.mimeType);
+          : getIconFromMime(documentData?.mimeType);
         return (
           <div className="flex gap-1.5 items-center w-full overflow-hidden">
             <Icon name={iconName} size={24} hover={false} />
             <div className="min-w-0">
               <Truncate
-                text={result.name}
+                text={documentData.name}
                 className={textStyles}
                 textRenderer={(text) => (
                   <HighlightText text={text} subString={searchQuery} />
@@ -363,7 +395,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
               <div className="flex w-[3px] h-[3px] bg-neutral-500 rounded-full" />
               <div className="text-xs text-neutral-500">
                 {`Created on ${getFormattedDate(
-                  result.createdAt,
+                  documentData.externalCreatedAt || documentData.createdAt,
                   user?.timezone,
                 )}`}
               </div>

@@ -23,15 +23,18 @@ export const getRecentSearchTerms = async (params?: Record<string, any>) => {
   }
 };
 
-export const clickSearchResult = async (params: {
+export const clickSearchResult = async (payload: {
   sourceId: string;
   sourceType: string;
+  additionalInfo?: any;
 }) => {
   try {
-    const { sourceId, sourceType } = params;
-    const { data } = await apiService.post(
-      `/search/results/clicked?source_id=${sourceId}&source_type=${sourceType}`,
-    );
+    const { sourceId, sourceType, additionalInfo } = payload;
+    const { data } = await apiService.post(`/search/results/clicked`, {
+      source_id: sourceId,
+      source_type: sourceType,
+      additional_info: additionalInfo,
+    });
     return data;
   } catch (error) {
     return { result: { data: [] } };
@@ -108,7 +111,21 @@ export const useRecentClickedResults = (
   return {
     ...useQuery({
       queryKey: ['global-recent-clicked-results', params],
-      queryFn: () => getRecentClickedResults(params),
+      queryFn: () => getRecentClickedResults({ ...params, scope: 'ADMIN' }),
+      staleTime: 5 * 60 * 1000,
+      ...options,
+    }),
+  };
+};
+
+export const useLearnerRecentClickedResults = (
+  params?: Record<string, any>,
+  options?: Record<string, any>,
+) => {
+  return {
+    ...useQuery({
+      queryKey: ['global-recent-clicked-results-learner', params],
+      queryFn: () => getRecentClickedResults({ ...params, scope: 'LEARNER' }),
       staleTime: 5 * 60 * 1000,
       ...options,
     }),

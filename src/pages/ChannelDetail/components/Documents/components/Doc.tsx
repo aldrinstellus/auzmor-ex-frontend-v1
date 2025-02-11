@@ -49,7 +49,6 @@ export const getIconFromMime = (mimeType?: string) => {
     xls: [
       'xls',
       'xlsx',
-      'application/vnd.ms-excel',
       'application/vnd.google-apps.spreadsheet',
       'application/vnd.ms-excel.sheet.macroenabled.12',
       'application/vnd.oasis.opendocument.spreadsheet',
