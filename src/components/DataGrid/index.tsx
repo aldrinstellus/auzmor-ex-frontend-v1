@@ -53,6 +53,7 @@ export interface IDataGridProps<T> {
   ) => string;
   isDoubleClickAllowed?: boolean;
   error?: Record<string, any> | null;
+  totalCount?: number;
 }
 
 const DataGrid = <T extends object>({
