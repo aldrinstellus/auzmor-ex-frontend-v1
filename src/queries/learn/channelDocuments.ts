@@ -7,12 +7,18 @@ import apiService from 'utils/apiService';
 import { isFiltersEmpty } from 'utils/misc';
 
 // To list out all rirectories / sites
-const getChannelDirectories = async (payload: {
-  channelId: string;
-  directoryId?: string;
-  driveId?: string;
-  params?: Record<string, any>;
-}) => {
+const getChannelDirectories = async (
+  context: QueryFunctionContext<
+    (Record<string, any> | undefined | string)[],
+    any
+  >,
+  payload: {
+    channelId: string;
+    directoryId?: string;
+    driveId?: string;
+    params?: Record<string, any>;
+  },
+) => {
   const getId = (directory: {
     directoryId: string;
     rootFolderId?: string;
@@ -27,28 +33,36 @@ const getChannelDirectories = async (payload: {
     }
     return id;
   };
-  const response = await apiService
-    .get(
-      `/channels/${payload.channelId}/directories${
-        payload.directoryId ? `/${payload.directoryId}/folders` : ''
-      }${payload.driveId ? `/${payload.driveId}` : ''}`,
-      isFiltersEmpty(payload.params || {}),
-    )
-    .catch((e) => {
-      throw e;
-    });
-  const directories = ((response as any)?.data?.result?.data || []).map(
+
+  let response = null;
+
+  if (!!!context.pageParam) {
+    response = await apiService
+      .get(
+        `/channels/${payload.channelId}/directories${
+          payload.directoryId ? `/${payload.directoryId}/folders` : ''
+        }${payload.driveId ? `/${payload.driveId}` : ''}`,
+        isFiltersEmpty(payload.params || {}),
+      )
+      .catch((e) => {
+        throw e;
+      });
+  } else {
+    response = await apiService.get(context.pageParam);
+  }
+
+  ((response as any)?.data?.result?.data || []).forEach(
     (each: {
       directoryId: string;
       rootFolderId?: string;
       folderId?: string;
-    }) => ({
-      ...each,
-      id: getId(each),
-    }),
+      id: string;
+    }) => {
+      each.id = getId(each);
+    },
   );
 
-  return directories;
+  return response;
 };
 
 // To connect folder / site to channel
@@ -302,9 +316,20 @@ export const useChannelDirectories = (
   payload: { channelId: string; params: Record<string, any> },
   options: Record<string, any>,
 ) => {
-  return useQuery({
+  return useInfiniteQuery({
     queryKey: ['get-directories', payload],
-    queryFn: () => getChannelDirectories(payload),
+    queryFn: (context) => getChannelDirectories(context, payload),
+    getNextPageParam: (lastPage: any) => {
+      const pageDataLen = lastPage?.data?.result?.data?.length;
+      const pageLimit = lastPage?.data?.result?.paging?.limit;
+      if (pageDataLen < pageLimit) {
+        return null;
+      }
+      return lastPage?.data?.result?.paging?.next;
+    },
+    getPreviousPageParam: (currentPage: any) => {
+      return currentPage?.data?.result?.paging?.prev;
+    },
     ...options,
   });
 };

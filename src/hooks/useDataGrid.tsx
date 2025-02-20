@@ -109,6 +109,7 @@ export const useDataGrid = <T extends object>({
 
     return {
       ...rest.dataGridProps,
+      totalCount: data?.pages[0]?.data?.result?.totalCount || tableData?.length,
       flatData: tableData,
       columns: tableColumns,
       isLoading,

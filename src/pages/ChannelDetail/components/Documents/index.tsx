@@ -814,7 +814,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
 
   // Hook to update total count of rows listed
   useEffect(() => {
-    setTotalRows((dataGridProps?.flatData || []).length);
+    setTotalRows(
+      dataGridProps?.totalCount || (dataGridProps?.flatData || []).length,
+    );
   }, [dataGridProps.flatData]);
 
   // Hook to update input tag attributes
