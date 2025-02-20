@@ -141,7 +141,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
 
   const dataGridProps = useDataGrid({
     apiEnum: ApiEnum.GetChannelDirectories,
-    isInfiniteQuery: false,
+    isInfiniteQuery: true,
     payload: {
       channelId: channelId,
       directoryId,
@@ -318,7 +318,9 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
   });
 
   useEffect(() => {
-    setTotalRows((dataGridProps?.flatData || []).length);
+    setTotalRows(
+      dataGridProps?.totalCount || (dataGridProps?.flatData || []).length,
+    );
   }, [dataGridProps.flatData]);
 
   useEffect(() => {
