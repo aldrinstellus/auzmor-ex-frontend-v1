@@ -108,7 +108,9 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
         accessorKey: 'name',
         header: () => (
           <div className="font-bold text-neutral-500">
-            {t('nameColumn', { totalRows })}
+            {headings === 'site' ? t('siteNameColumn', { totalRows }) : null}
+            {headings === 'drive' ? t('driveNameColumn', { totalRows }) : null}
+            {headings === 'folder' ? t('folderNameColumn') : null}
           </div>
         ),
         cell: (info) => (
@@ -168,7 +170,8 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
           });
         }
       },
-      onSuccess: (drives) => {
+      onSuccess: (drivesResponse) => {
+        const drives = drivesResponse?.pages?.[0]?.data?.result?.data || [];
         if (headings === 'drive' && drives.length === 1) {
           const row = drives[0];
           setSelectedItems({
@@ -321,7 +324,7 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
     setTotalRows(
       dataGridProps?.totalCount || (dataGridProps?.flatData || []).length,
     );
-  }, [dataGridProps.flatData]);
+  }, [dataGridProps.totalCount, dataGridProps.flatData]);
 
   useEffect(() => {
     if (dataGridProps?.tableRef?.current) {
