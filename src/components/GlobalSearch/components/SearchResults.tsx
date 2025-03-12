@@ -229,13 +229,13 @@ const SearchResults: FC<ISearchResultsProps> = ({
     }
     const url = getItemUrl(entityType, entity);
     if (
-      [
-        ISearchResultType.CHANNEL,
-        ISearchResultType.DOCUMENT,
-        ISearchResultType.APP,
-      ].includes(entityType)
+      [ISearchResultType.CHANNEL, ISearchResultType.DOCUMENT].includes(
+        entityType,
+      )
     ) {
       navigate(url);
+    } else if (entityType === ISearchResultType.APP) {
+      window.open(url, '_target');
     } else {
       window.location.assign(url);
     }
