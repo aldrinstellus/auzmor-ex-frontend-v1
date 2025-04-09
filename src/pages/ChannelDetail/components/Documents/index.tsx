@@ -493,6 +493,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 }
                 menuItems={options}
                 className="right-0 top-full border-1 border-neutral-200 focus-visible:outline-none w-44"
+                onClick={(e) => e.stopPropagation()}
               />
             ) : (
               <></>
@@ -662,6 +663,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               }
               menuItems={options}
               className="right-0 top-full border-1 border-neutral-200 focus-visible:outline-none w-44"
+              onClick={(e) => e.stopPropagation()}
             />
           ) : (
             <></>
