@@ -306,7 +306,7 @@ const LearnCard: FC<ILearnCardProps> = ({
             />
             <div className="flex-col gap-0.2">
               <div className="text-white text-sm font-medium">
-                {data?.my_enrollment?.assigned_by?.display_name == user?.name
+                {data?.my_enrollment?.assigned_by?.id == user?.id
                   ? t('selfEnrolled')
                   : data?.my_enrollment?.assigned_by?.full_name ||
                     data?.my_enrollment?.assigned_by?.first_name ||

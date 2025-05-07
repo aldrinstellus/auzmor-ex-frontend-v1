@@ -4,9 +4,12 @@
     "viewAll": "View all",
     "joinEvent": "Join event",
     "live": "Live",
+    "session": "Session:",
+    "onlyAttendee": "You are the only attendee",
     "moreAttendees": "More attendees",
     "virtual": "Virtual",
-    "notFoundHeader": "No upcoming events."
+    "notFoundHeader": "No upcoming events.",
+    "selfEnrolled": "Self Enrolled"
   },
   "progressTracker": {
     "progressTracker": "Progress Tracker",

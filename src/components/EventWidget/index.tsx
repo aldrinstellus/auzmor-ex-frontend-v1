@@ -36,11 +36,23 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
   const useInfiniteEvents = getApi(ApiEnum.GetEvents);
   const { data: ongoingEvents, isLoading: isLoadingOngoing } =
     useInfiniteEvents({
-      q: { limit: 1, filter: 'ONGOING' },
+      q: {
+        filter: 'ONGOING',
+        status: 'PUBLISHED',
+        limit: 1,
+        page: 1,
+        sort: '-start_date',
+      },
     });
   const { data: upcomingEvents, isLoading: isLoadingUpcoming } =
     useInfiniteEvents({
-      q: { limit: 1, filter: 'UPCOMING' },
+      q: {
+        filter: 'UPCOMING',
+        status: 'PUBLISHED',
+        limit: 1,
+        page: 1,
+        sort: '-start_date',
+      },
     });
   const isLoading = isLoadingOngoing || isLoadingUpcoming;
   let events = ongoingEvents?.pages?.flatMap((page: any) =>
@@ -52,19 +64,12 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
       page?.data?.result?.data.map((event: any) => event),
     );
   }
-  const event = events?.[0];
-  const useEventAttendees = getApi(ApiEnum.GetEventAttendees);
-  const { data: attendees } = useEventAttendees({ eventId: event?.id });
-  const eventsAttendees = attendees?.data?.result?.data?.map(
-    (attendee: any) => ({
-      id: attendee.id,
-      name: attendee.full_name,
-      image: attendee.image_url,
-    }),
-  );
+  const eventSession = events?.[0];
   const userTimezone = currentTimezone || 'Asia/Kolkata';
-  const startDate = event?.start_date;
-  const endDate = event?.end_date;
+  const startDate = eventSession?.start_date;
+  const endDate = eventSession?.end_date;
+
+  const assignedBy = eventSession?.my_enrollment?.assigned_by;
 
   if (isLoading) {
     return (
@@ -109,20 +114,20 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
                 } relative overflow-hidden group/card`}
               >
                 <img
-                  src={event?.image_url}
+                  src={eventSession?.event?.image_url}
                   className="w-full h-[160px] object-cover group-hover/card:scale-[1.10]"
                   style={{
                     transition: 'all 0.25s ease-in 0s',
                     animation: '0.15s ease-in 0s 1 normal both running fadeIn',
                   }}
-                  alt={`${event?.name} Image`}
+                  alt={`${eventSession?.event?.title} Image`}
                 />
-                {!isLive && event?.conference_url && (
+                {!isLive && eventSession?.conference_url && (
                   <div className="absolute z-10 flex top-0 left-4 right-4 bottom-40 justify-center items-center inset-0">
                     <Button
                       label={t('joinEvent')}
                       onClick={() => {
-                        window.open(event.conference_url, '_blank');
+                        window.open(eventSession.conference_url, '_blank');
                       }}
                       className="w-full bg-white text-white bg-opacity-20 border-white"
                     />
@@ -155,7 +160,7 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
                 </div>
                 <div className="absolute bg-white bottom-0 left-0 flex flex-col p-4 z-10 gap-2 w-full">
                   <div className="flex gap-1">
-                    {event?.categories?.slice(0, 2)?.map((d: any) => (
+                    {eventSession?.categories?.slice(0, 2)?.map((d: any) => (
                       <div
                         key={d?.id}
                         className="px-2 py-1 rounded bg-primary-100 text-center text-primary-500 text-xs font-medium"
@@ -163,14 +168,21 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
                         {d?.title}
                       </div>
                     ))}
-                    {event?.categories?.length > 2 && (
+                    {eventSession?.categories?.length > 2 && (
                       <div className="px-2 py-1 rounded bg-primary-100 text-center text-primary-500 text-xs font-medium">
-                        +{event?.categories?.length - 2}
+                        +{eventSession?.categories?.length - 2}
                       </div>
                     )}
                   </div>
                   <div className="text-neutral-900 font-semibold text-base">
-                    {event?.name}
+                    {eventSession?.event?.title}
+                  </div>
+                  <div className="flex gap-1 items-center">
+                    <Icon name="session" size={16} color="text-primary-500" />
+                    <p className="flex gap-1 text-xs text-neutral-900">
+                      <span className="font-semibold">{t('session')}</span>
+                      {eventSession.title}
+                    </p>
                   </div>
                   <div className="flex gap-2">
                     <div className="flex gap-1 items-center">
@@ -192,42 +204,65 @@ const EventWidget: FC<IEventWidgetProps> = ({ className = '' }) => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Avatar
-                      name={event?.created_by?.full_name}
-                      image={event?.created_by?.image_url}
+                      name={
+                        assignedBy?.display_name ||
+                        assignedBy?.full_name ||
+                        assignedBy?.first_name ||
+                        'U'
+                      }
+                      image={assignedBy?.image_url}
                       size={32}
+                      bgColor={assignedBy?.profile_color}
                     />
                     <div className="text-neutral-500 text-xs font-normal">
-                      {event?.created_by?.full_name}
+                      {assignedBy?.id == user?.id
+                        ? t('selfEnrolled')
+                        : assignedBy?.display_name ||
+                          assignedBy?.full_name ||
+                          assignedBy.first_name}
                     </div>
                     <div className="flex ml-auto gap-1 items-center">
                       <Icon
-                        name={event.location ? 'location' : 'video'}
+                        name={eventSession?.location ? 'location' : 'video'}
                         size={20}
                         color="text-primary-500"
                       />
                       <p className="text-xs text-neutral-500">
-                        {event?.location || t('virtual')}
+                        {eventSession?.location || t('virtual')}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <AvatarList
-                      size={32}
-                      users={eventsAttendees || []}
-                      moreCount={attendees?.data?.result?.total_records || 10}
-                      className="-space-x-[12px]"
-                      avatarClassName="!b-[1px]"
-                    />
-                    <div className="text-xs text-neutral-500 font-normal">
-                      {t('moreAttendees')}
+                  {eventSession?.stats?.enrollments === 1 ? (
+                    <div className="flex items-center text-sm text-neutral-500 font-normal">
+                      {t('onlyAttendee')}
                     </div>
-                  </div>
-                  {isLive && event.conference_url && (
+                  ) : (
+                    <div className="flex items-center gap-2">
+                      <AvatarList
+                        size={32}
+                        users={[
+                          {
+                            id: user?.id,
+                            name: user?.name,
+                            image: user?.profileImage,
+                          },
+                        ]}
+                        display={1}
+                        moreCount={eventSession?.stats?.enrollments}
+                        className="-space-x-[12px]"
+                        avatarClassName="!b-[1px]"
+                      />
+                      <div className="text-xs text-neutral-500 font-normal">
+                        {t('moreAttendees')}
+                      </div>
+                    </div>
+                  )}
+                  {isLive && eventSession?.conference_url && (
                     <Button
                       label={t('joinEvent')}
                       className="w-full"
                       onClick={() => {
-                        window.open(event.conference_url, '_blank');
+                        window.open(eventSession?.conference_url, '_blank');
                       }}
                     />
                   )}

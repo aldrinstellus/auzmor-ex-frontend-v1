@@ -7,7 +7,7 @@ export const getAllEvents = async ({
   queryKey,
 }: QueryFunctionContext<(Record<string, any> | undefined | string)[], any>) => {
   if (pageParam === null) {
-    return await apiService.get('/learner/events', queryKey[1]);
+    return await apiService.get('/learner/event_sessions', queryKey[1]);
   } else return await apiService.get(pageParam);
 };
 

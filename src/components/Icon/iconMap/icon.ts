@@ -205,6 +205,7 @@ import NoResultFoundIcon from '../components/NoResultFound';
 import CloseCircle2Icon from '../components/CloseCircle2';
 import WarningIcon from '../components/Warning';
 import Close2Icon from '../components/Close2';
+import SessionIcon from '../components/Session';
 
 export const icon = {
   add: Add,
@@ -378,6 +379,7 @@ export const icon = {
   security: Security,
   seekForward: SeekForwardIcon,
   send: Send,
+  session: SessionIcon,
   setting: SettingIcon,
   settingThree: SettingThreeIcon,
   shareForward: ShareForward,
