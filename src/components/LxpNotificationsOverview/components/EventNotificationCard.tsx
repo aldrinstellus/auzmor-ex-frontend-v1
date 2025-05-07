@@ -78,6 +78,7 @@ const EventNotificationCard = forwardRef<
       target1Type,
       target2Type,
       additionalInfo,
+      actor,
     );
     return (
       <div

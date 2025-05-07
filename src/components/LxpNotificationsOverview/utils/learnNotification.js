@@ -84,6 +84,7 @@ export const getIconForAction = (actionType, target1Type) => {
     case NOTIFICATION_ACTION_TYPES.EventComplete:
     case NOTIFICATION_ACTION_TYPES.ApprovedExternalCertificate:
     case NOTIFICATION_ACTION_TYPES.AddExternalCertificate:
+    case NOTIFICATION_ACTION_TYPES.EventCompletionConfirmed:
       iconName = 'completedNotification';
       break;
     case NOTIFICATION_ACTION_TYPES.PublicCourse:
@@ -101,6 +102,17 @@ export const getIconForAction = (actionType, target1Type) => {
     case NOTIFICATION_ACTION_TYPES.RecurringEventReminderInstructor:
     case NOTIFICATION_ACTION_TYPES.RecurringEventReminderLearner:
     case NOTIFICATION_ACTION_TYPES.EventReminder:
+    case NOTIFICATION_ACTION_TYPES.TaskNotificationOnEdit:
+    case NOTIFICATION_ACTION_TYPES.LearnerCourseOverdue:
+    case NOTIFICATION_ACTION_TYPES.LearnerLearningPathOverdue:
+    case NOTIFICATION_ACTION_TYPES.CourseOverdueByXDays:
+    case NOTIFICATION_ACTION_TYPES.LearningPathOverdueByXDays:
+    case NOTIFICATION_ACTION_TYPES.OverdueReportees:
+    case NOTIFICATION_ACTION_TYPES.OverdueTeamMembers:
+    case NOTIFICATION_ACTION_TYPES.ApprovalReminderExternalCertificate:
+    case NOTIFICATION_ACTION_TYPES.SessionDateUpdated:
+    case NOTIFICATION_ACTION_TYPES.SessionUpdated:
+    case NOTIFICATION_ACTION_TYPES.EventSessionReminder:
       iconName = 'updateNotification';
       break;
     case NOTIFICATION_ACTION_TYPES.RemoveManager:
@@ -118,6 +130,7 @@ export const getIconForAction = (actionType, target1Type) => {
       break;
     case NOTIFICATION_ACTION_TYPES.CoursePublished:
     case NOTIFICATION_ACTION_TYPES.EventPublished:
+    case NOTIFICATION_ACTION_TYPES.SessionCreated:
       iconName = 'publishNotification';
       break;
     case NOTIFICATION_ACTION_TYPES.CourseAssigned:
@@ -135,7 +148,9 @@ export const getIconForAction = (actionType, target1Type) => {
     case NOTIFICATION_ACTION_TYPES.AddManager:
     case NOTIFICATION_ACTION_TYPES.UserAdd:
     case NOTIFICATION_ACTION_TYPES.BulkAddManagerToTeam:
-    case NOTIFICATION_ACTION_TYPES.AddInstructor:
+    case NOTIFICATION_ACTION_TYPES.InstructorAddedtoEventSession:
+    case NOTIFICATION_ACTION_TYPES.LearnerEnrolledToEventSession:
+    case NOTIFICATION_ACTION_TYPES.LearnerEnrolledToAllEventSessions:
       iconName = 'enrollmentNotification';
       break;
     case NOTIFICATION_ACTION_TYPES.AssessmentFailed:
@@ -153,6 +168,7 @@ export const getIconForAction = (actionType, target1Type) => {
     case NOTIFICATION_ACTION_TYPES.NotLoggedForXDays:
     case NOTIFICATION_ACTION_TYPES.EventCancelled:
     case NOTIFICATION_ACTION_TYPES.LearnerCertificateExpired:
+    case NOTIFICATION_ACTION_TYPES.SessionCancelled:
       iconName = 'expiryNotification';
       break;
     case NOTIFICATION_ACTION_TYPES.LearnerCertificateExpirationRemainder:
@@ -252,7 +268,7 @@ const getSourceList = (sourceNamesList = undefined, count) => {
   return count;
 };
 
-const getSourceRoute = (isLearn, target1Type, targetId1) => {
+const getSourceRoute = (isLearn, target1Type, targetId1, additionalInfo) => {
   switch (target1Type) {
     case SOURCE.course.id:
       return isLearn
@@ -260,8 +276,16 @@ const getSourceRoute = (isLearn, target1Type, targetId1) => {
         : `/courses/${targetId1}`;
     case SOURCE.event.id:
       return isLearn
-        ? `/user/events/${targetId1}/detail`
-        : `/events/${targetId1}`;
+        ? `/user/events/${targetId1}/detail${
+            additionalInfo.eventSessionId
+              ? `?activeSessionId=${additionalInfo.eventSessionId}`
+              : ''
+          }`
+        : `/events/${targetId1}${
+            additionalInfo.eventSessionId
+              ? `?activeSessionId=${additionalInfo.eventSessionId}`
+              : ''
+          }`;
     case SOURCE.path.pathAPIKey:
       return isLearn
         ? `/user/paths/${targetId1}/detail`
@@ -366,6 +390,7 @@ export const getNotificationTitle = (
   target1Type,
   target2Type,
   additionalInfo,
+  actor,
 ) => {
   const { user } = useAuth();
   const { t } = useTranslation('learnNotifications');
@@ -768,7 +793,14 @@ export const getNotificationTitle = (
     return (
       <NotificationTitle
         i18nKey="notifications.eventCompleted"
-        values={{ eventName: deletedTargetName, assigneeName: name }}
+        values={{
+          assigneeName: actor.display_name,
+          eventName: deletedTargetName,
+          sessionName:
+            additionalInfo && additionalInfo.eventSessionTitle
+              ? additionalInfo.eventSessionTitle
+              : '',
+        }}
         linkTo={
           isLearn ? `/user/events/${targetId1}/detail` : `/events/${targetId1}`
         }
@@ -873,6 +905,24 @@ export const getNotificationTitle = (
           isLearn
             ? '/not-found?event-error=eventCancelled'
             : `/events/${targetId1}`
+        }
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.SessionCancelled === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.sessionCancelled"
+        values={{
+          eventName: deletedTargetName,
+          sessionName:
+            additionalInfo && additionalInfo.eventSessionTitle
+              ? additionalInfo.eventSessionTitle
+              : '',
+        }}
+        linkTo={
+          isLearn ? `/user/events/${targetId1}/detail` : `/events/${targetId1}`
         }
         components={[<NotificationText bold viewInline />]}
       />
@@ -1006,15 +1056,6 @@ export const getNotificationTitle = (
   if (NOTIFICATION_ACTION_TYPES.EcommerceDisabled === actionType) {
     return <NotificationTitle i18nKey="notifications.disabledEcommerce" />;
   }
-  if (NOTIFICATION_ACTION_TYPES.LogisticsDisabled === actionType) {
-    return (
-      <NotificationTitle
-        i18nKey="notifications.disabledLogistics"
-        values={{ logistic: deletedTargetName }}
-        components={[<NotificationText bold viewInline />]}
-      />
-    );
-  }
   if (NOTIFICATION_ACTION_TYPES.EcommerceContentPurchase === actionType) {
     return (
       <NotificationTitle
@@ -1070,13 +1111,15 @@ export const getNotificationTitle = (
       />
     );
   }
-  if (NOTIFICATION_ACTION_TYPES.AddInstructor === actionType) {
+  if (NOTIFICATION_ACTION_TYPES.InstructorAddedtoEventSession === actionType) {
     return (
       <NotificationTitle
         i18nKey="notifications.instructorAdded"
         values={{ eventName: deletedTargetName }}
         linkTo={
-          isLearn ? `/user/events/${targetId1}/detail` : `/events/${targetId1}`
+          isLearn
+            ? `/user/events/${additionalInfo.eventId}/detail?activeSessionIds=${targetId1}`
+            : `/events/${additionalInfo.eventId}?activeSessionIds=${targetId1}`
         }
         components={[<NotificationText bold viewInline />]}
       />
@@ -1144,6 +1187,29 @@ export const getNotificationTitle = (
         values={{ eventName: deletedTargetName }}
         linkTo={
           isLearn ? `/user/events/${targetId1}/detail` : `/events/${targetId1}`
+        }
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (
+    NOTIFICATION_ACTION_TYPES.SessionUpdated === actionType ||
+    NOTIFICATION_ACTION_TYPES.SessionDateUpdated === actionType
+  ) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.sessionUpdated"
+        values={{
+          eventName: deletedTargetName,
+          sessionName:
+            additionalInfo && additionalInfo.eventSessionTitle
+              ? additionalInfo.eventSessionTitle
+              : '',
+        }}
+        linkTo={
+          isLearn
+            ? `/user/events/${targetId1}/detail?activeSessionId=${additionalInfo.eventSessionId}`
+            : `/events/${targetId1}?activeSessionId=${additionalInfo.eventSessionId}`
         }
         components={[<NotificationText bold viewInline />]}
       />
@@ -1366,17 +1432,22 @@ export const getNotificationTitle = (
               : `/courses/${targetId1}/evaluations`
             : isLearn
             ? `/user/events/${targetId1}/detail`
-            : `/events/${targetId1}/evaluations`
+            : `/event_sessions/${targetId1}/evaluations`
         }
         components={[<NotificationText bold viewInline />]}
       />
     );
   }
   if (NOTIFICATION_ACTION_TYPES.EvaluationCompleted === actionType) {
-    const { sourceType: source, attempt, assessmentId } = additionalInfo || {};
+    const {
+      sourceType: source,
+      attempt,
+      assessmentId,
+      eventId = '',
+    } = additionalInfo || {};
     const param =
       isLearn && assessmentId && attempt
-        ? `?assessmentId=${assessmentId}&attempt=${attempt}`
+        ? `?assessmentId=${assessmentId}&attempt=${attempt}&eventId=${eventId}`
         : '';
 
     return (
@@ -1389,7 +1460,7 @@ export const getNotificationTitle = (
               ? `/user/courses/${targetId1}/summary${param}`
               : `/courses/${targetId1}`
             : isLearn
-            ? `/user/events/${targetId1}/summary${param}`
+            ? `/user/event_sessions/${targetId1}/summary${param}`
             : `/events/${targetId1}`
         }
         components={[<NotificationText bold viewInline />]}
@@ -1400,7 +1471,82 @@ export const getNotificationTitle = (
     return (
       <NotificationTitle
         i18nKey="notifications.eventPublished"
-        values={{ eventName: deletedTargetName, creator: name }}
+        values={{ eventName: deletedTargetName, eventCreator: name }}
+        linkTo={
+          isLearn ? `/user/events/${targetId1}/detail` : `/events/${targetId1}`
+        }
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.SessionCreated === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.sessionCreated"
+        values={{
+          eventName: deletedTargetName,
+          sessionName:
+            additionalInfo && additionalInfo.eventSessionTitle
+              ? additionalInfo.eventSessionTitle
+              : '',
+        }}
+        linkTo={
+          isLearn
+            ? `/user/events/${targetId1}/detail?activeSessionId=${additionalInfo.eventSessionId}`
+            : `/events/${targetId1}?activeSessionId=${additionalInfo.eventSessionId}`
+        }
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.EventSessionReminder === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.sessionReminder"
+        values={{
+          eventName: deletedTargetName,
+          sessionName:
+            additionalInfo && additionalInfo.eventSessionTitle
+              ? additionalInfo.eventSessionTitle
+              : '',
+        }}
+        linkTo={getSourceRoute(isLearn, target1Type, targetId1, additionalInfo)}
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.LearnerEnrolledToEventSession === actionType) {
+    const { sessionCount = '' } = additionalInfo || {};
+    return (
+      <NotificationTitle
+        i18nKey="notifications.learnerEnrolled"
+        values={{ sessionCount, eventName: deletedTargetName }}
+        linkTo={
+          isLearn ? `/user/events/${targetId1}/detail` : `/events/${targetId1}`
+        }
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (
+    NOTIFICATION_ACTION_TYPES.LearnerEnrolledToAllEventSessions === actionType
+  ) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.learnerEnrolledToAllSessions"
+        values={{ eventName: deletedTargetName }}
+        linkTo={
+          isLearn ? `/user/events/${targetId1}/detail` : `/events/${targetId1}`
+        }
+        components={[<NotificationText bold viewInline />]}
+      />
+    );
+  }
+  if (NOTIFICATION_ACTION_TYPES.EventCompletionConfirmed === actionType) {
+    return (
+      <NotificationTitle
+        i18nKey="notifications.eventCompletionConfirmed"
+        values={{ eventName: deletedTargetName }}
         linkTo={
           isLearn ? `/user/events/${targetId1}/detail` : `/events/${targetId1}`
         }
