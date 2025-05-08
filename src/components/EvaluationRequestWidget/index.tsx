@@ -21,7 +21,7 @@ const EvaluationRequestWidget = ({ className = '' }) => {
     keyPrefix: 'evaluationRequestWidget',
   });
 
-  const modules = ['Course', 'Event'];
+  const modules = ['Course', 'EventSession'];
 
   const useGetEvaluations = getApi(ApiEnum.GetEvaluations);
   const { data, isLoading } = useGetEvaluations({
