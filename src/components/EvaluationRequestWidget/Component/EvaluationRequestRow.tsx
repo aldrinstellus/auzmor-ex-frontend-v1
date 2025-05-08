@@ -38,7 +38,7 @@ const EvaluationRequestRow: FC<EvaluationRequestRowProps> = ({
         <div className="flex gap-1 items-center overflow-hidden">
           <Tooltip tooltipContent={data?.module}>
             <Icon
-              name={data?.module === 'Event' ? 'calendarTwo' : 'teacher'}
+              name={data?.module === 'EventSession' ? 'calendarTwo' : 'teacher'}
               size={16}
               color="text-primary-500"
             />
@@ -46,7 +46,15 @@ const EvaluationRequestRow: FC<EvaluationRequestRowProps> = ({
           <Truncate
             className={'text-sm font-bold'}
             toolTipTextClassName="overflow-hidden"
-            text={data?.source?.source_name || data?.module}
+            text={
+              (data?.module === 'EventSession'
+                ? `${
+                    data?.source?.parent?.title
+                      ? `${data?.source?.parent?.title}: `
+                      : ''
+                  }${data?.source?.source_name}`
+                : data?.source?.source_name) || data?.module
+            }
           />
         </div>
         <Tooltip tooltipContent={t('startEvaluationTooltip')}>
