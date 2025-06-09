@@ -931,19 +931,35 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 </p>
               </div>
               <div className="flex justify-center">
-                <Button
-                  label={t('sharepointCTA')}
-                  size={Size.Small}
-                  variant={ButtonVariant.Secondary}
-                  leftIcon={'sharePoint'}
-                  onClick={() =>
-                    window.location.assign(
-                      getLearnUrl('/settings/market-place'),
-                    )
-                  }
-                  className="flex !text-[#036b70] group-hover:border-neutral-900 hover:border-neutral-900"
-                  disabled={disableSharepointCTA}
-                />
+                {permissions.includes(ChannelPermissionEnum.CanReauthorize) ? (
+                  <Button
+                    label={t('sharepointCTA')}
+                    size={Size.Small}
+                    variant={ButtonVariant.Secondary}
+                    leftIcon={'sharePoint'}
+                    onClick={() =>
+                      window.location.assign(
+                        getLearnUrl('/settings/market-place'),
+                      )
+                    }
+                    className="flex !text-[#036b70] group-hover:border-neutral-900 hover:border-neutral-900"
+                    disabled={disableSharepointCTA}
+                  />
+                ) : (
+                  <span>
+                    {t('contactCTA')}
+                    <Link
+                      to={
+                        `mailto:${currentUser?.result?.data?.org?.primaryAdmin?.email}` ||
+                        ''
+                      }
+                      className="underline"
+                    >
+                      {currentUser?.result?.data?.org?.primaryAdmin?.email ||
+                        ''}
+                    </Link>
+                  </span>
+                )}
               </div>
             </div>
           </Fragment>
