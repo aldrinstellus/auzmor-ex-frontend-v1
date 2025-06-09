@@ -122,6 +122,7 @@
     "reAuthorizeCTA": "Reauthorize",
     "reAuthorizeForOthersFirstHalf": "There is a sync issue with SharePoint. Please contact ",
     "reAuthorizeForOthersSecondHalf": " or the support team to resolve this.",
+    "contactCTA": "Contact ",
     "addNewPopupLabelCTA": "New",
     "addNewPopupBanner": "Add New",
     "uploadNewPopupBanner": "Upload New",
