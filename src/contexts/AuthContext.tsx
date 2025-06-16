@@ -15,7 +15,7 @@ import SubscriptionExpired from 'components/SubscriptionExpired';
 import AccountDeactivated from 'components/AccountDeactivated';
 import { useBrandingStore } from 'stores/branding';
 import useProduct from 'hooks/useProduct';
-import apiService, { ProductEnum, getProduct } from 'utils/apiService';
+import apiService, { ProductEnum } from 'utils/apiService';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
 import { useTranslation } from 'react-i18next';
@@ -166,8 +166,28 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
         const fetchMe = getApi(ApiEnum.GetMeApi);
         const userData = await fetchMe();
         const data = userData?.result?.data;
+        const orgUrl = data?.org?.url;
+
+        //Redirect to org url if the user is logged in and the org url is different from the current host
         if (
-          getSubDomain(window.location.host) ||
+          isLxp &&
+          process.env.NODE_ENV !== 'development' &&
+          orgUrl &&
+          orgUrl !== window.location.host
+        ) {
+          const queryParams = query.toString();
+
+          let updatedUrl = `${window.location.protocol}//${data.org.url}${window.location.pathname}`;
+          if (queryParams) {
+            updatedUrl += `?${queryParams}`;
+          }
+          window.location.replace(updatedUrl);
+          return;
+        }
+
+        if (
+          (!isLxp && getSubDomain(window.location.host)) ||
+          (isLxp && orgUrl === window.location.host) ||
           process.env.NODE_ENV === 'development'
         ) {
           setLoggedIn(true);
@@ -219,11 +239,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
         }
       }
     }
-    if (
-      !!!token &&
-      getProduct() === ProductEnum.Lxp &&
-      !!getSubDomain(window.location.host)
-    ) {
+    if (!!!token && isLxp) {
       window.location.replace(getLearnUrl());
     } else {
       setLoading(false);

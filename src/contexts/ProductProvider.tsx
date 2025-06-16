@@ -1,7 +1,6 @@
 import Spinner from 'components/Spinner';
 import React, { FC, ReactNode, createContext, useState } from 'react';
 import { ProductEnum, getProduct } from 'utils/apiService';
-import { getSubDomain } from 'utils/misc';
 
 interface IProductContextState {
   product: ProductEnum | null;
@@ -24,7 +23,9 @@ const ProductProvider: FC<IProductProviderProps> = ({ children }) => {
   // Redirect to learn if user lands on lxp generic page.
   if (
     getProduct() === ProductEnum.Lxp &&
-    !!!getSubDomain(window.location.host)
+    (
+      process.env.REACT_APP_LEARN_BASE_URL || `https://learn.auzmor.com`
+    ).includes(window.location.host)
   ) {
     if (process.env.NODE_ENV !== 'development') {
       window.location.replace(

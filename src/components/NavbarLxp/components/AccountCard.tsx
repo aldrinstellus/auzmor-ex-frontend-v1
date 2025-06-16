@@ -8,6 +8,7 @@ import Icon from 'components/Icon';
 import {
   deleteCookie,
   getCookieParam,
+  getCookieValue,
   getLearnUrl,
   isSafariBrowser,
   userChannel,
@@ -18,7 +19,6 @@ import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { UserRole } from 'interfaces';
 import Divider from 'components/Divider';
-import { SwitchView } from './SwitchView';
 import { useState } from 'react';
 import useModal from 'hooks/useModal';
 import LearnLogo from 'images/LearnLogo.svg';
@@ -43,7 +43,10 @@ const AccountCard = () => {
   const redirectToDomain = async (org: any) => {
     const { url } = org;
     const isSafari = isSafariBrowser();
-    const fullUrl = url.startsWith('http') ? url : `https://${url}`;
+    const authToken = getCookieValue(getCookieParam());
+    const fullUrl = url.startsWith('http')
+      ? `${url}?generic_access_token=${authToken}`
+      : `https://${url}?generic_access_token=${authToken}`;
 
     const windowRef = isSafari ? window.open() : null;
     if (fullUrl) {
@@ -295,13 +298,6 @@ const AccountCard = () => {
               </div>
             )}
             {totalBranches > 0 && <Divider className="my-[6px]" />}
-            <div
-              className={`flex ${menuItemStyle} justify-between`}
-              data-testid="user-menu-switch-theme"
-            >
-              <div>{t('switchTheme')}</div>
-              <SwitchView viewType={user?.preferences?.learnerViewType} />
-            </div>
             <div
               className={`flex ${menuItemStyle}`}
               onClick={() => {
