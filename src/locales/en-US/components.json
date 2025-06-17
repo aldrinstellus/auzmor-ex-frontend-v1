@@ -171,6 +171,10 @@
     "size": "Size",
     "sort": "sort"
   },
+  "columnSelector": {
+    "search": "Search",
+    "selectedColumns": "{{selectedCount}} of {{totalCount}}"
+  },
   "Reply": {
     "editReply": "Edit reply",
     "deleteReply": " Delete reply",

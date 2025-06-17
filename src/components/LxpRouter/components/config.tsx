@@ -164,6 +164,9 @@ const routers = createBrowserRouter(
       <Route path="*" element={<Navigate to="/404" />} />
     </Route>,
   ),
+  {
+    basename: '/lxp',
+  },
 );
 
 export default routers;

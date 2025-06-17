@@ -19,6 +19,7 @@ import { parseNumber } from 'react-advanced-cropper';
 import Button, { Variant as ButtonVariant } from 'components/Button';
 import { isTrim } from '../../utils';
 import { useTranslation } from 'react-i18next';
+import ColumnSelector from './ColumnSelector';
 
 export enum FilterKey {
   departments = 'departments',
@@ -33,8 +34,11 @@ interface IFilterMenu {
   dataTestIdSort?: string;
   dataTestIdFilter?: string;
   view: 'LIST' | 'GRID';
+  columns?: any[];
+  updateColumns?: (columns: object[]) => void;
   hideFilter?: boolean;
   hideSort?: boolean;
+  hideColumnSelector?: boolean;
   showTitleFilter?: boolean;
   changeView: (view: 'LIST' | 'GRID') => void;
 }
@@ -46,8 +50,11 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
   dataTestIdSort,
   dataTestIdFilter,
   view,
+  columns = [],
+  updateColumns = () => {},
   hideFilter = false,
   hideSort = false,
+  hideColumnSelector = false,
   showTitleFilter = true,
   changeView,
 }) => {
@@ -300,6 +307,9 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
                 dataTestId={dataTestIdSort}
                 sortOptions={sortOptions}
               />
+            )}
+            {!hideColumnSelector && (
+              <ColumnSelector columns={columns} updateColumns={updateColumns} />
             )}
           </div>
         </div>

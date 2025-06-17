@@ -652,12 +652,7 @@ export const insertAt = (str: string, index: number, insertStr: string) => {
 };
 
 export const getLearnUrl = (slug = '') => {
-  const subdomain = getSubDomain(window.location.host);
-  return `${insertAt(
-    process.env.REACT_APP_LEARN_BASE_URL || 'https://learn.auzmor.com',
-    'https://'.length,
-    subdomain ? `${subdomain}.` : '',
-  )}${slug}`;
+  return `${window.location.protocol}//${window.location.host}${slug}`;
 };
 
 export const getCookieValue = (key: string) => {

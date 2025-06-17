@@ -35,6 +35,7 @@ import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import BreadCrumb, { BreadCrumbVariantEnum } from 'components/BreadCrumb';
 import DocumentPathProvider, {
   DocumentPathContext,
+  Item,
 } from 'contexts/DocumentPathContext';
 import RecentlyAddedEntities from './components/RecentlyAddedEntities';
 import Avatar from 'components/Avatar';
@@ -85,6 +86,101 @@ export interface IForm {
 interface IDocumentProps {
   permissions: ChannelPermissionEnum[];
 }
+
+const fieldSize: Record<string, number> = {
+  ownerName: 256,
+  modifiedAt: 200,
+};
+
+const TimeField = ({ time }: { time: string }) => (
+  <div className="flex gap-2 font-medium text-neutral-900 leading-6">
+    {moment(time).format('MMMM DD,YYYY') as string}
+  </div>
+);
+
+const NameField = ({
+  name,
+  mimeType,
+  isFolder,
+}: {
+  name: string;
+  mimeType: string;
+  isFolder: boolean;
+}) => (
+  <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
+    <div className="flex w-6">
+      <Icon
+        name={isFolder ? 'folder' : getIconFromMime(mimeType)}
+        className="!w-6"
+        hover={false}
+      />
+    </div>
+    <span className="break-all truncate w-full">{name}</span>
+  </div>
+);
+
+const OwnerField = ({
+  ownerName,
+  ownerImage,
+}: {
+  ownerName: string;
+  ownerImage?: string;
+}) => (
+  <div className="flex gap-2 items-center">
+    <Avatar image={ownerImage} name={ownerName} size={24} />
+    <span className="truncate">{ownerName}</span>
+  </div>
+);
+
+const LocationField = ({
+  pathItems,
+  pathWithId,
+  channelId,
+  updateDocumentSearch,
+}: {
+  pathItems: Item[];
+  pathWithId: object[];
+  channelId: string;
+  updateDocumentSearch: (value: string) => void;
+}) => {
+  const navigate = useNavigate();
+  return (
+    <Popover
+      triggerNode={<BreadCrumb items={pathItems} onItemClick={() => {}} />}
+      triggerNodeClassName="w-full"
+      wrapperClassName="w-full"
+      contentRenderer={() => (
+        <div className="flex p-3 bg-primary-50 rounded-9xl border border-primary-50 shadow">
+          <BreadCrumb
+            items={pathItems}
+            labelClassName="hover:text-primary-500 hover:underline min-w-max"
+            onItemClick={(item, e) => {
+              e?.stopPropagation();
+              const sliceIndex = pathWithId.findIndex(
+                (folder: any) => folder.id === item.id,
+              );
+              const itemsToEncode = pathWithId.slice(0, sliceIndex + 1);
+              const mappedItemsToEncode = itemsToEncode.map((each: any) => ({
+                id: each.id,
+                name: each.name,
+                type: 'Folder',
+              }));
+              const encodedPath = compressString(
+                JSON.stringify(mappedItemsToEncode),
+              );
+              if (!!mappedItemsToEncode.length) {
+                navigate(`/channels/${channelId}/documents/${encodedPath}`);
+              } else {
+                navigate(`/channels/${channelId}/documents`);
+              }
+              updateDocumentSearch('');
+            }}
+          />
+        </div>
+      )}
+    />
+  );
+};
 
 const Document: FC<IDocumentProps> = ({ permissions }) => {
   const { t } = useTranslation('channelDetail', {
@@ -142,6 +238,30 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     refetch,
   } = useChannelDocumentStatus({
     channelId,
+  });
+
+  // Api call: Get fields for the channel
+  const useChannelDocumentFields = getApi(ApiEnum.GetChannelDocumentFields);
+  const { data: documentFields } = useChannelDocumentFields({ channelId });
+
+  // Api call: Update fields for the channel
+  const updateChannelDocumentFields = getApi(
+    ApiEnum.UpdateChannelDocumentFields,
+  );
+  const updateChannelDocumentFieldsMutation = useMutation({
+    mutationKey: ['update-channel-doc-fields', channelId],
+    mutationFn: updateChannelDocumentFields,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(
+        ['get-channel-files', 'get-channel-document-fields'],
+        {
+          exact: false,
+        },
+      );
+    },
+    onError: () => {
+      failureToastConfig({ content: 'Failed to update columns' });
+    },
   });
 
   // Api call: Create folder mutation
@@ -322,6 +442,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const hideFilterRow = isRootDir;
   const disableFilter = isCredExpired || isLoading;
   const disableSort = isCredExpired || isLoading;
+  const disableColumnSelector =
+    isCredExpired ||
+    isLoading ||
+    !permissions.includes(ChannelPermissionEnum.CanConnectChannelDoc);
   const showTitleFilter = isDocSearchApplied;
   const hideClearBtn =
     isRootDir ||
@@ -415,59 +539,53 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             </div>
           ),
           cell: (info: CellContext<DocType, unknown>) => (
-            <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
-              <div className="flex w-6">
-                <Icon
-                  name={
-                    isRootDir || info?.row?.original?.isFolder
-                      ? 'folder'
-                      : getIconFromMime(info.row.original.mimeType)
-                  }
-                  className="!w-6"
-                  hover={false}
-                />
-              </div>
-              <span className="break-all truncate w-full">
-                {info.getValue() as string}
-              </span>
-            </div>
+            <NameField
+              name={info.getValue() as string}
+              mimeType={info?.row?.original?.mimeType}
+              isFolder={isRootDir || info?.row?.original?.isFolder}
+            />
           ),
           thClassName: 'flex-1',
           tdClassName: 'flex-1',
         },
         {
-          accessorKey: 'ownerName',
+          accessorKey: 'location',
           header: () => (
-            <div className="font-bold text-neutral-500">{t('owner')}</div>
+            <div className="font-bold text-neutral-500">{t('location')}</div>
           ),
           cell: (info: CellContext<DocType, unknown>) => (
-            <div className="flex gap-2 items-center">
-              <Avatar
-                image={info.row.original?.ownerImage}
-                name={info.row.original?.ownerName}
-                size={24}
-              />
-              <span className="truncate">{info.row.original?.ownerName}</span>
-            </div>
-          ),
-          size: 256,
-        },
-        {
-          accessorKey: 'modifiedAt',
-          header: () => (
-            <div className="font-bold text-neutral-500">{t('lastUpdated')}</div>
-          ),
-          cell: (info: CellContext<DocType, unknown>) => (
-            <div className="flex gap-2 font-medium text-neutral-900 leading-6">
-              {
-                moment(info.getValue() as string).format(
-                  'MMMM DD,YYYY',
-                ) as string
+            <LocationField
+              pathItems={getMappedLocation(info?.row?.original)}
+              pathWithId={info?.row?.original.pathWithId}
+              channelId={channelId}
+              updateDocumentSearch={(value: string) =>
+                setValue('documentSearch', value)
               }
-            </div>
+            />
           ),
-          size: 200,
+          size: 260,
         },
+        ...(documentFields
+          ?.filter((field: any) => field.isVisible && field.name !== 'name')
+          ?.map((field: any) => ({
+            accessorKey: field.name,
+            header: () => (
+              <div className="font-bold text-neutral-500">{field.label}</div>
+            ),
+            cell: (info: CellContext<DocType, unknown>) => {
+              if (field.name === 'ownerName') {
+                return (
+                  <OwnerField
+                    ownerName={info.row.original?.ownerName}
+                    ownerImage={info.row.original?.ownerImage}
+                  />
+                );
+              } else if (field.type === 'datetime') {
+                return <TimeField time={info.getValue() as string} />;
+              }
+            },
+            size: field.size || fieldSize[field.name] || 256,
+          })) || []),
         {
           accessorKey: 'more',
           header: () => '',
@@ -523,157 +641,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       isDocSearchApplied,
       downloadChannelFileMutation.isLoading,
     ],
-  );
-
-  // Columns configuration for Datagrid component for List view
-  const columnsDeepSearchListView = React.useMemo<ColumnDef<DocType>[]>(
-    () => [
-      {
-        accessorKey: 'name',
-        header: () => (
-          <div className="font-bold text-neutral-500">
-            {t('nameColumn', { totalRows })}
-          </div>
-        ),
-        cell: (info: CellContext<DocType, unknown>) => (
-          <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
-            <div className="flex w-6">
-              <Icon
-                name={
-                  info?.row?.original?.isFolder
-                    ? 'folder'
-                    : getIconFromMime(info.row.original.mimeType)
-                }
-                className="!w-6"
-              />
-            </div>
-            <span className="break-all truncate w-full">
-              {info.getValue() as string}
-            </span>
-          </div>
-        ),
-        thClassName: 'flex-1',
-        tdClassName: 'flex-1',
-      },
-      {
-        accessorKey: 'ownerName',
-        header: () => (
-          <div className="font-bold text-neutral-500">{t('owner')}</div>
-        ),
-        cell: (info: CellContext<DocType, unknown>) => (
-          <div className="flex gap-2 items-center">
-            <Avatar
-              image={info.row.original?.ownerImage}
-              name={info.row.original?.ownerName}
-              size={24}
-            />
-            <span className="truncate">{info.row.original?.ownerName}</span>
-          </div>
-        ),
-        size: 256,
-      },
-      {
-        accessorKey: 'modifiedAt',
-        header: () => (
-          <div className="font-bold text-neutral-500">{t('lastUpdated')}</div>
-        ),
-        cell: (info: CellContext<DocType, unknown>) => (
-          <div className="flex gap-2 font-medium text-neutral-900 leading-6">
-            {moment(info.getValue() as string).format('MMMM DD,YYYY') as string}
-          </div>
-        ),
-        size: 200,
-      },
-      {
-        accessorKey: 'location',
-        header: () => (
-          <div className="font-bold text-neutral-500">{t('location')}</div>
-        ),
-        cell: (info: CellContext<DocType, unknown>) => {
-          return (
-            <Popover
-              triggerNode={
-                <BreadCrumb
-                  items={getMappedLocation(info?.row?.original)}
-                  onItemClick={() => {}}
-                />
-              }
-              triggerNodeClassName="w-full"
-              wrapperClassName="w-full"
-              contentRenderer={() => (
-                <div className="flex p-3 bg-primary-50 rounded-9xl border border-primary-50 shadow">
-                  <BreadCrumb
-                    items={getMappedLocation(info?.row?.original)}
-                    labelClassName="hover:text-primary-500 hover:underline min-w-max"
-                    onItemClick={(item, e) => {
-                      e?.stopPropagation();
-                      const sliceIndex =
-                        info?.row?.original.pathWithId.findIndex(
-                          (folder) => folder.id === item.id,
-                        );
-                      const itemsToEncode =
-                        info?.row?.original.pathWithId.slice(0, sliceIndex + 1);
-                      const mappedItemsToEncode = itemsToEncode.map((each) => ({
-                        id: each.id,
-                        name: each.name,
-                        type: 'Folder',
-                      }));
-                      const encodedPath = compressString(
-                        JSON.stringify(mappedItemsToEncode),
-                      );
-                      if (!!mappedItemsToEncode.length) {
-                        navigate(
-                          `/channels/${channelId}/documents/${encodedPath}`,
-                        );
-                      } else {
-                        navigate(`/channels/${channelId}/documents`);
-                      }
-                      setValue('documentSearch', '');
-                    }}
-                  />
-                </div>
-              )}
-            />
-          );
-        },
-        size: 260,
-      },
-      {
-        accessorKey: 'more',
-        header: () => '',
-        cell: (info: CellContext<DocType, unknown>) => {
-          if (
-            info?.row?.original?.id ===
-              downloadChannelFileMutation.variables?.itemId &&
-            downloadChannelFileMutation.isLoading
-          ) {
-            return <Spinner />;
-          }
-          const options = getAllOptions(info);
-          return options.length > 0 ? (
-            <PopupMenu
-              triggerNode={
-                <div
-                  className="cursor-pointer relative"
-                  data-testid="feed-post-ellipsis"
-                  title="more"
-                >
-                  <Icon name="moreV2Filled" tabIndex={0} size={16} />
-                </div>
-              }
-              menuItems={options}
-              className="right-0 top-full border-1 border-neutral-200 focus-visible:outline-none w-44"
-              onClick={(e) => e.stopPropagation()}
-            />
-          ) : (
-            <></>
-          );
-        },
-        size: 16,
-        tdClassName: 'items-center relative',
-      },
-    ],
-    [totalRows, downloadChannelFileMutation.isLoading],
   );
 
   // Columns configuration for Datagrid component for Grid view
@@ -783,12 +750,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       />
     ),
     dataGridProps: {
-      columns:
-        view === 'LIST'
-          ? isDocSearchApplied
-            ? columnsDeepSearchListView
-            : columnsListView
-          : columnsGridView,
+      columns: view === 'LIST' ? columnsListView : columnsGridView,
       isRowSelectionEnabled: false,
       view,
       onRowClick: (e, table, virtualRow) => {
@@ -1471,6 +1433,14 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 view={view}
                 hideFilter={disableFilter}
                 hideSort={disableSort}
+                hideColumnSelector={disableColumnSelector}
+                columns={documentFields}
+                updateColumns={(columns: any) =>
+                  updateChannelDocumentFieldsMutation.mutate({
+                    channelId,
+                    fields: columns,
+                  } as any)
+                }
                 showTitleFilter={showTitleFilter}
                 changeView={(view) => setView(view)}
               />

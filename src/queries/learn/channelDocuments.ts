@@ -102,6 +102,52 @@ const getChannelFiles = async (payload: {
   return (response as any)?.data?.result?.data;
 };
 
+// To get all fields for the channel documents
+const getChannelDocumentFields = async (payload: {
+  channelId: string;
+  params: Record<string, any>;
+}) => {
+  // const response = await apiService.get(
+  //   `/channels/${payload.channelId}/document/fields`,
+  //   payload.params,
+  // );
+  // return response.data.result.fields;
+  console.log({ payload });
+  return [
+    { name: 'name', label: 'Name', type: 'string', isVisible: true },
+    {
+      name: 'ownerName',
+      label: 'Owner',
+      type: 'string',
+      isVisible: true,
+    },
+    {
+      name: 'modifiedAt',
+      label: 'Last Updated',
+      type: 'datetime',
+      isVisible: true,
+    },
+  ]; // Mocked response for fields
+};
+
+// To update fields for the channel documents
+export const updateChannelDocumentFields = async (payload: {
+  channelId: string;
+  fields: Array<{
+    id: string;
+    isVisible: boolean;
+  }>;
+}) => {
+  // return await apiService
+  //   .put(`/channels/${payload.channelId}/connect`, {
+  //     fields: payload.fields,
+  //   })
+  //   .catch((e) => {
+  //     throw e;
+  //   });
+  console.log({ payload });
+};
+
 // To get files based on params Infinite listing
 const getInfiniteChannelFiles = async (
   context: QueryFunctionContext<
@@ -345,6 +391,18 @@ export const useChannelFiles = (
   return useQuery({
     queryKey: ['get-channel-files', payload],
     queryFn: () => getChannelFiles(payload),
+    ...{ ...options, networkMode: 'always', staleTime: 1 * 60 * 1000 },
+  });
+};
+
+// To get all fields for the channel documents
+export const useChannelDocumentFields = (
+  payload: { channelId: string; params: Record<string, any> },
+  options: Record<string, any>,
+) => {
+  return useQuery({
+    queryKey: ['get-channel-document-fields', payload],
+    queryFn: () => getChannelDocumentFields(payload),
     ...{ ...options, networkMode: 'always', staleTime: 1 * 60 * 1000 },
   });
 };
