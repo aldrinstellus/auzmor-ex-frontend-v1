@@ -130,6 +130,24 @@ const getChannelDocumentFields = async (payload: {
   ]; // Mocked response for fields
 };
 
+// To update fields for the channel documents
+export const updateChannelDocumentFields = async (payload: {
+  channelId: string;
+  fields: Array<{
+    id: string;
+    isVisible: boolean;
+  }>;
+}) => {
+  // return await apiService
+  //   .put(`/channels/${payload.channelId}/connect`, {
+  //     fields: payload.fields,
+  //   })
+  //   .catch((e) => {
+  //     throw e;
+  //   });
+  console.log({ payload });
+};
+
 // To get files based on params Infinite listing
 const getInfiniteChannelFiles = async (
   context: QueryFunctionContext<

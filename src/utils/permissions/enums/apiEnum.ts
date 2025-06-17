@@ -226,6 +226,7 @@ export enum ApiEnum {
   GetInfiniteChannelFiles = 'GET_INFINITE_CHANNEL_FILES',
   GetChannelDocumentStatus = 'GET_CHANNEL_DOCUMENT_STATUS',
   GetChannelDocumentFields = 'GET_CHANNEL_DOCUMENT_FIELDS',
+  UpdateChannelDocumentFields = 'UPDATE_CHANNEL_DOCUMENT_FIELDS',
   GetChannelFilePreview = 'GET_CHANNEL_FILE_PREVIEW',
   CreateChannelDocFolder = 'CREATE_CHANNEL_DOC_FOLDER',
   GetChannelDocOwners = 'GET_CHANNEL_DOC_OWNERS',

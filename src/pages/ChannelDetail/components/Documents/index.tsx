@@ -240,9 +240,29 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     channelId,
   });
 
-  // Api call: Get custom fields for the channel
+  // Api call: Get fields for the channel
   const useChannelDocumentFields = getApi(ApiEnum.GetChannelDocumentFields);
   const { data: documentFields } = useChannelDocumentFields({ channelId });
+
+  // Api call: Update fields for the channel
+  const updateChannelDocumentFields = getApi(
+    ApiEnum.UpdateChannelDocumentFields,
+  );
+  const updateChannelDocumentFieldsMutation = useMutation({
+    mutationKey: ['update-channel-doc-fields', channelId],
+    mutationFn: updateChannelDocumentFields,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(
+        ['get-channel-files', 'get-channel-document-fields'],
+        {
+          exact: false,
+        },
+      );
+    },
+    onError: () => {
+      failureToastConfig({ content: 'Failed to update columns' });
+    },
+  });
 
   // Api call: Create folder mutation
   const createChannelDocFolder = getApi(ApiEnum.CreateChannelDocFolder);
@@ -422,6 +442,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const hideFilterRow = isRootDir;
   const disableFilter = isCredExpired || isLoading;
   const disableSort = isCredExpired || isLoading;
+  const disableColumnSelector =
+    isCredExpired ||
+    isLoading ||
+    !permissions.includes(ChannelPermissionEnum.CanConnectChannelDoc);
   const showTitleFilter = isDocSearchApplied;
   const hideClearBtn =
     isRootDir ||
@@ -1409,6 +1433,14 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 view={view}
                 hideFilter={disableFilter}
                 hideSort={disableSort}
+                hideColumnSelector={disableColumnSelector}
+                columns={documentFields}
+                updateColumns={(columns: any) =>
+                  updateChannelDocumentFieldsMutation.mutate({
+                    channelId,
+                    fields: columns,
+                  } as any)
+                }
                 showTitleFilter={showTitleFilter}
                 changeView={(view) => setView(view)}
               />
