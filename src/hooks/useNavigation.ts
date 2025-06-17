@@ -16,7 +16,8 @@ const useNavigate = () => {
   const { isAdmin } = useRole();
 
   const navigate = (to: To, options?: NavigateOptions) => {
-    const isLearner = isLxp && (pathname.split('/')[1] === 'user' || !isAdmin);
+    const isLearner =
+      isLxp && (pathname.split('/').includes('user') || !isAdmin);
 
     let newPath = to;
     if (isLearner) {

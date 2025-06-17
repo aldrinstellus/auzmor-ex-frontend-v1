@@ -19,7 +19,7 @@ const BookmarkFeedHeader: FC<IBookmarkFeedHeaderProps> = ({
   const { pathname } = useLocation();
 
   if (isLxp) {
-    const isLearner = pathname.split('/')[1] === 'user';
+    const isLearner = pathname.split('/').includes('user');
     switch (mode) {
       case FeedModeEnum.Default:
         backTo = `${isLearner ? '/user' : ''}/feed`;

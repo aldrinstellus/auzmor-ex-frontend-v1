@@ -28,7 +28,7 @@ const useRole = (
     user?.role === UserRole.Superadmin || user?.role === UserRole.PrimaryAdmin;
 
   // Used for lxp only
-  const isLearner = pathname.split('/')[1] === 'user';
+  const isLearner = pathname.split('/').includes('user');
 
   if (isLxp && isLearner) {
     isAdminOrSuperAdmin = false;

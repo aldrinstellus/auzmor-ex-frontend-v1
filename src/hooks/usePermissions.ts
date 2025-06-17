@@ -18,7 +18,7 @@ export const usePermissions = () => {
     let role = orgRole;
     if (getProduct() === ProductEnum.Lxp) {
       const path = window.location.pathname;
-      const isLearner = path.split('/')[1] === 'user';
+      const isLearner = path.split('/').includes('user');
       if (isLearner) role = UserRole.Learner;
     }
     return role;
