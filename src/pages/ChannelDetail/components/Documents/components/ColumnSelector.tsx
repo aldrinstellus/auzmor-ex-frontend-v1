@@ -9,10 +9,10 @@ import Layout, { FieldType } from 'components/Form';
 
 interface ColumnItem {
   id: string;
-  name: string;
+  fieldName: string;
   label: string;
   type: string;
-  isVisible: boolean;
+  visibility: boolean;
   dataTestId: string;
 }
 
@@ -38,7 +38,7 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
   // Setup react-hook-form for checkboxes
   const methods = useForm<{ [key: string]: boolean }>({
     defaultValues: columns.reduce((acc, col) => {
-      acc[col.name] = col.isVisible;
+      acc[col.fieldName] = col.visibility;
       return acc;
     }, {} as { [key: string]: boolean }),
   });
@@ -46,7 +46,7 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
   // Update columns when checkbox changes
   const handleCheckboxChange = (name: string, checked: boolean) => {
     const updated = columns.map((col) =>
-      col.name === name ? { ...col, isVisible: checked } : col,
+      col.fieldName === name ? { ...col, isVisible: checked } : col,
     );
     updateColumns(updated);
   };
@@ -56,8 +56,8 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
     const subscription = methods.watch((values, { name }) => {
       if (name) {
         const checked = values[name];
-        const col = columns.find((c) => c.name === name);
-        if (col && col.isVisible !== checked) {
+        const col = columns.find((c) => c.fieldName === name);
+        if (col && col.visibility !== checked) {
           handleCheckboxChange(name, checked as boolean);
         }
       }
@@ -94,10 +94,10 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
     key: item.id,
     renderNode: (
       <Checkbox
-        name={item.name}
+        name={item.fieldName}
         control={methods.control}
         label={item.label}
-        disabled={item.name === 'name'}
+        disabled={item.fieldName === 'name'}
         className="w-full px-3 py-2 hover:bg-primary-100 !justify-start"
         dataTestId={`column-selector-checkbox-${item.label}`}
       />
@@ -127,7 +127,7 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
     <div className="w-full px-6 py-2 font-sm font-bold text-neutral-500 hover:text-primary-500 text-center border-t-1 border-t-neutral-200 cursor-pointer">
       {t('selectedColumns', {
         selectedCount:
-          filteredColumns.filter((item) => item.isVisible).length || 0,
+          filteredColumns.filter((item) => item.visibility).length || 0,
         totalCount: filteredColumns.length || 0,
       })}
     </div>

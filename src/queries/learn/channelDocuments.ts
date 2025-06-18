@@ -107,27 +107,37 @@ const getChannelDocumentFields = async (payload: {
   channelId: string;
   params: Record<string, any>;
 }) => {
-  // const response = await apiService.get(
-  //   `/channels/${payload.channelId}/document/fields`,
-  //   payload.params,
-  // );
-  // return response.data.result.fields;
-  console.log({ payload });
-  return [
-    { name: 'name', label: 'Name', type: 'string', isVisible: true },
-    {
-      name: 'ownerName',
-      label: 'Owner',
-      type: 'string',
-      isVisible: true,
-    },
-    {
-      name: 'modifiedAt',
-      label: 'Last Updated',
-      type: 'datetime',
-      isVisible: true,
-    },
-  ]; // Mocked response for fields
+  try {
+    const response = await apiService.get(
+      `/channels/${payload.channelId}/document-fields`,
+      payload.params,
+    );
+    return response.data.result.data.fields;
+  } catch (e) {
+    return [
+      {
+        id: 1,
+        fieldName: 'name',
+        label: 'Name',
+        type: 'string',
+        visibility: true,
+      },
+      {
+        id: 2,
+        fieldName: 'ownerName',
+        label: 'Owner',
+        type: 'string',
+        visibility: true,
+      },
+      {
+        id: 3,
+        fieldName: 'modifiedAt',
+        label: 'Last Updated',
+        type: 'datetime',
+        visibility: true,
+      },
+    ]; // Mocked response for fields
+  }
 };
 
 // To update fields for the channel documents
@@ -135,17 +145,20 @@ export const updateChannelDocumentFields = async (payload: {
   channelId: string;
   fields: Array<{
     id: string;
-    isVisible: boolean;
+    visibility: boolean;
   }>;
 }) => {
-  // return await apiService
-  //   .put(`/channels/${payload.channelId}/connect`, {
-  //     fields: payload.fields,
-  //   })
-  //   .catch((e) => {
-  //     throw e;
-  //   });
-  console.log({ payload });
+  return await apiService
+    .patch(`/channels/${payload.channelId}/document-fields`, {
+      documentFields:
+        payload.fields?.map((field) => ({
+          id: field.id,
+          visibility: field.visibility,
+        })) || [],
+    })
+    .catch((e) => {
+      throw e;
+    });
 };
 
 // To get files based on params Infinite listing

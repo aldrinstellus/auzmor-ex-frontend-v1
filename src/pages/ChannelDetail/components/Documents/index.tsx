@@ -566,14 +566,16 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           size: 260,
         },
         ...(documentFields
-          ?.filter((field: any) => field.isVisible && field.name !== 'name')
+          ?.filter(
+            (field: any) => field.visibility && field.fieldName !== 'name',
+          )
           ?.map((field: any) => ({
-            accessorKey: field.name,
+            accessorKey: field.fieldName,
             header: () => (
               <div className="font-bold text-neutral-500">{field.label}</div>
             ),
             cell: (info: CellContext<DocType, unknown>) => {
-              if (field.name === 'ownerName') {
+              if (field.fieldName === 'ownerName') {
                 return (
                   <OwnerField
                     ownerName={info.row.original?.ownerName}
@@ -584,7 +586,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 return <TimeField time={info.getValue() as string} />;
               }
             },
-            size: field.size || fieldSize[field.name] || 256,
+            size: field.size || fieldSize[field.fieldName] || 256,
           })) || []),
         {
           accessorKey: 'more',
