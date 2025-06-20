@@ -279,8 +279,8 @@
     },
     "privacyRow": {
       "label": "Privacy",
-      "privateDescription": "Anyone can join automatically, and content is visible to all without joining.",
-      "publicDescription": "Anyone in the organization can request to join the channel, and it's visible in the channel discovery."
+      "privateDescription": "Anyone in the organization can request to join the channel, and it's visible in the channel discovery.",
+      "publicDescription": "Anyone can join automatically, and content is visible to all without joining."
     },
     "restrictionRow": {
       "label": "Restriction",
