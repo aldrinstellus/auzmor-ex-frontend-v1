@@ -47,7 +47,6 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
 
   // Update columns when checkbox changes
   const handleCheckboxChange = (name: string, checked: boolean) => {
-    // console.log(checked);
     const updated = columns.map((col) =>
       col.fieldName === name ? { ...col, visibility: checked } : col,
     );
