@@ -21,13 +21,14 @@ interface IGenericFilterProps<TFilters extends FieldValues> {
   setValue: UseFormSetValue<TFilters>;
   transform?: (
     options: Record<string, any>[] | string[] | number[],
-  ) => ICheckboxListOption[] | IRadioListOption[];
+  ) => (ICheckboxListOption | IRadioListOption)[];
   listType?: 'CHECKBOX' | 'RADIO';
 }
 
 const transformOptions = (
   options: Record<string, any>[] | string[] | number[],
-): ICheckboxListOption[] | IRadioListOption[] => {
+): (ICheckboxListOption | IRadioListOption)[] => {
+  console.log(options);
   if (!Array.isArray(options)) return [];
 
   if (typeof options[0] === 'string' || typeof options[0] === 'number') {
