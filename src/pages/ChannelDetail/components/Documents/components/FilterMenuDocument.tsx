@@ -33,6 +33,7 @@ import { IForm } from '..';
 import { ICheckboxListOption } from 'components/CheckboxList';
 import { IFilterNavigation } from 'components/FilterModalNew/components/FilterModalNew';
 import { titleCase } from 'utils/misc';
+import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
 
 // Interfaces
 interface IFilterMenu {
@@ -80,14 +81,25 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
   const { t } = useTranslation('channelDetail', { keyPrefix: 'documentTab' });
   const { t: ts } = useTranslation('components', { keyPrefix: 'Sort' });
 
+  const [filterKeys, setFilterKeys] = useState([
+    'docOwners',
+    'docType',
+    ...columns
+      .filter((column) => column.isCustomField && column.visibility)
+      .map((column) => column.fieldName),
+  ]);
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
   const [isInitialized, setIsInitialized] = useState(false);
-  const [filters, setFilters] = useState<IFilters>({
-    sort: undefined,
-    docOwners: [],
-    docType: [],
-    docModified: '',
-  });
+  const { filters, setFilters } = useAppliedFiltersStore();
+
+  useEffect(() => {
+    setFilters({
+      sort: undefined,
+      docOwners: [],
+      docType: [],
+      docModified: '',
+    });
+  }, []);
 
   const {
     searchParams,
@@ -123,10 +135,10 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
 
   const isFilterApplied = useMemo(
     () =>
-      filters.docOwners.length > 0 ||
-      filters.docType.length > 0 ||
-      !!filters.docModified,
-    [filters],
+      filters &&
+      (filterKeys.some((key) => filters[key]?.length > 0) ||
+        !!filters.docModified),
+    [filters, filterKeys],
   );
 
   // Util: Format modified date
@@ -142,7 +154,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
 
   // Sync filters to URL
   useEffect(() => {
-    if (!isInitialized) return;
+    if (!isInitialized || !filters) return;
     Object.entries(filters).forEach(([key, value]) => {
       if (!value || (Array.isArray(value) && value.length === 0)) {
         deleteParam(key);
@@ -225,6 +237,16 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
       docModified: '',
     });
   }, []);
+
+  useEffect(() => {
+    setFilterKeys([
+      'docOwners',
+      'docType',
+      ...columns
+        .filter((column) => column.isCustomField && column.visibility)
+        .map((column) => column.fieldName),
+    ]);
+  }, [columns]);
 
   // Render
   return (
@@ -319,7 +341,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
                 setFilter={(val) =>
                   setFilters({ ...filters, sort: val as SortType })
                 }
-                selectedValue={filters.sort}
+                selectedValue={filters?.sort}
                 entity="channel-document"
                 dataTestId={dataTestIdSort}
                 sortOptions={sortOptions}
@@ -336,35 +358,48 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-4">
               <span className="text-neutral-500">Filter by</span>
-              {isFilterApplied && (
-                <>
-                  {/* Filter chips */}
-                  {filters.docOwners.length > 0 && (
+              {isFilterApplied &&
+                filters &&
+                Object.entries(filters).map(([key, value]) => {
+                  if (
+                    !value ||
+                    (Array.isArray(value) && value.length === 0) ||
+                    !filterKeys.includes(key)
+                  )
+                    return null;
+                  const displayValues = Array.isArray(value)
+                    ? value.map((v) =>
+                        typeof v === 'string'
+                          ? v
+                          : v?.data?.label || JSON.stringify(v),
+                      )
+                    : [
+                        typeof value === 'string'
+                          ? value
+                          : JSON.stringify(value),
+                      ];
+                  return (
                     <FilterChip
-                      label="Owner"
-                      values={filters.docOwners.map((o) => o.data.label)}
-                      onClear={() => setFilters({ ...filters, docOwners: [] })}
-                    />
-                  )}
-                  {filters.docType.length > 0 && (
-                    <FilterChip
-                      label="Type"
-                      values={filters.docType.map((t) => t.data.label)}
-                      onClear={() => setFilters({ ...filters, docType: [] })}
-                    />
-                  )}
-                  {!!filters.docModified && (
-                    <FilterChip
-                      label="Modified on"
-                      values={[parseModifiedOn(filters.docModified)]}
+                      key={key}
+                      label={key}
+                      values={displayValues}
                       onClear={() =>
-                        setFilters({ ...filters, docModified: '' })
+                        setFilters({
+                          ...filters,
+                          [key]: Array.isArray(value) ? [] : '',
+                        })
                       }
                     />
-                  )}
-                </>
+                  );
+                })}
+              {isFilterApplied && filters && !!filters.docModified && (
+                <FilterChip
+                  label="Modified on"
+                  values={[parseModifiedOn(filters.docModified)]}
+                  onClear={() => setFilters({ ...filters, docModified: '' })}
+                />
               )}
-              {!!filters.sort && (
+              {filters && !!filters.sort && (
                 <FilterChip
                   label="Sort by"
                   values={[
@@ -391,7 +426,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
         <FilterModalNew
           open={showFilterModal}
           closeModal={closeFilterModal}
-          appliedFilters={filters}
+          appliedFilters={filters as IFilters}
           onApply={(newFilters: IFilters) => {
             setFilters(newFilters);
             closeFilterModal();
@@ -400,7 +435,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
             clearFilters();
             closeFilterModal();
           }}
-          defaultValues={filters}
+          defaultValues={filters as IFilters}
           filterNavigation={[
             {
               key: 'docOwners',
