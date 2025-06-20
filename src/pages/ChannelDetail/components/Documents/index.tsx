@@ -1419,7 +1419,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             </div>
           )}
         </div>
-        {true ? (
+        {isBaseFolderSet ? (
           <Fragment>
             {!isRootDir && !isDocSearchApplied && (
               <RecentlyAddedEntities disableActions={isCredExpired} />
