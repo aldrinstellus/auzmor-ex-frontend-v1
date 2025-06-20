@@ -1,0 +1,13 @@
+div.ant-picker-input > input {
+  font-size: 12px !important;
+  width: 84px !important;
+}
+.ant-picker.ant-picker-range {
+  padding: 0px 0px 0px 11px !important;
+}
+.ant-picker-active-bar {
+  display: none;
+}
+span.ant-picker-suffix > span.anticon.anticon-calendar {
+  display: none;
+}

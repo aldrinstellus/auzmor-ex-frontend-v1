@@ -7,13 +7,15 @@ import Checkbox from 'components/Checkbox';
 import { useForm, FormProvider } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 
-interface ColumnItem {
+export interface ColumnItem {
   id: string;
   fieldName: string;
   label: string;
   type: string;
   visibility: boolean;
   dataTestId: string;
+  values: Array<any>;
+  isCustomField: boolean;
 }
 
 interface IColumnSelecorProps {
@@ -45,8 +47,9 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
 
   // Update columns when checkbox changes
   const handleCheckboxChange = (name: string, checked: boolean) => {
+    // console.log(checked);
     const updated = columns.map((col) =>
-      col.fieldName === name ? { ...col, isVisible: checked } : col,
+      col.fieldName === name ? { ...col, visibility: checked } : col,
     );
     updateColumns(updated);
   };
@@ -97,7 +100,7 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
         name={item.fieldName}
         control={methods.control}
         label={item.label}
-        disabled={item.fieldName === 'name'}
+        disabled={!item.isCustomField}
         className="w-full px-3 py-2 hover:bg-primary-100 !justify-start"
         dataTestId={`column-selector-checkbox-${item.label}`}
       />

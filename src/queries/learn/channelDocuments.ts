@@ -3,6 +3,7 @@ import {
   useInfiniteQuery,
   useQuery,
 } from '@tanstack/react-query';
+import { ColumnItem } from 'pages/ChannelDetail/components/Documents/components/ColumnSelector';
 import apiService from 'utils/apiService';
 import { isFiltersEmpty } from 'utils/misc';
 
@@ -143,17 +144,15 @@ const getChannelDocumentFields = async (payload: {
 // To update fields for the channel documents
 export const updateChannelDocumentFields = async (payload: {
   channelId: string;
-  fields: Array<{
-    id: string;
-    visibility: boolean;
-  }>;
+  fields: ColumnItem[];
 }) => {
   return await apiService
     .patch(`/channels/${payload.channelId}/document-fields`, {
       documentFields:
         payload.fields?.map((field) => ({
-          id: field.id,
+          id: parseInt(field.id),
           visibility: field.visibility,
+          is_custom_field: field.isCustomField,
         })) || [],
     })
     .catch((e) => {

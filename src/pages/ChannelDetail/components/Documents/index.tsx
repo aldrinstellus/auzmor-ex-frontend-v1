@@ -68,6 +68,7 @@ import { getExtension, trimExtension } from '../utils';
 import { useTranslation } from 'react-i18next';
 import { getUtcMiliseconds } from 'utils/time';
 import useNavigate from 'hooks/useNavigation';
+import { ColumnItem } from './components/ColumnSelector';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
@@ -566,9 +567,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           size: 260,
         },
         ...(documentFields
-          ?.filter(
-            (field: any) => field.visibility && field.fieldName !== 'name',
-          )
+          ?.filter((field: any) => field.visibility)
           ?.map((field: any) => ({
             accessorKey: field.fieldName,
             header: () => (
@@ -642,6 +641,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       isRootDir,
       isDocSearchApplied,
       downloadChannelFileMutation.isLoading,
+      documentFields,
     ],
   );
 
@@ -1419,7 +1419,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             </div>
           )}
         </div>
-        {isBaseFolderSet ? (
+        {true ? (
           <Fragment>
             {!isRootDir && !isDocSearchApplied && (
               <RecentlyAddedEntities disableActions={isCredExpired} />
@@ -1437,11 +1437,20 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 hideSort={disableSort}
                 hideColumnSelector={disableColumnSelector}
                 columns={documentFields}
-                updateColumns={(columns: any) =>
-                  updateChannelDocumentFieldsMutation.mutate({
-                    channelId,
-                    fields: columns,
-                  } as any)
+                updateColumns={(columns: ColumnItem[]) =>
+                  updateChannelDocumentFieldsMutation.mutate(
+                    {
+                      channelId,
+                      fields: columns,
+                    } as any,
+                    {
+                      onSuccess: () =>
+                        queryClient.invalidateQueries(
+                          ['get-channel-document-fields'],
+                          { exact: false },
+                        ),
+                    },
+                  )
                 }
                 showTitleFilter={showTitleFilter}
                 changeView={(view) => setView(view)}

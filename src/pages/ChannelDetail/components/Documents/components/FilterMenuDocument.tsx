@@ -1,32 +1,40 @@
-import FilterModal, { FilterModalVariant } from 'components/FilterModal';
+// Imports - Grouped by category
+import { FC, useEffect, useState, useMemo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
+import moment from 'moment';
+import { parseNumber } from 'react-advanced-cropper';
+import {
+  Control,
+  UseFormReturn,
+  UseFormSetValue,
+  UseFormWatch,
+} from 'react-hook-form';
+
+import Icon from 'components/Icon';
 import IconButton, {
   Variant as IconVariant,
   Size as IconSize,
 } from 'components/IconButton';
-import useModal from 'hooks/useModal';
-import { FC, useEffect } from 'react';
-import useURLParams from 'hooks/useURLParams';
+import Button, { Variant as ButtonVariant } from 'components/Button';
+import Layout, { FieldType } from 'components/Form';
 import Sort from 'components/Sort';
 import PopupMenu from 'components/PopupMenu';
-import Layout, { FieldType } from 'components/Form';
-import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
-import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
-import Icon from 'components/Icon';
+import ColumnSelector, { ColumnItem } from './ColumnSelector';
+import { FilterModalNew, GenericFilter } from 'components/FilterModalNew';
+import DocumentOwner from 'components/FilterModalNew/components/DocumentOwner';
+import DocumentType from 'components/FilterModalNew/components/DocumentType';
+import DocModified from 'components/FilterModalNew/components/DocumentModifed';
+
+import useModal from 'hooks/useModal';
+import useURLParams from 'hooks/useURLParams';
+
 import { getIconFromMime } from './Doc';
 import { IForm } from '..';
-import moment from 'moment';
-import { parseNumber } from 'react-advanced-cropper';
-import Button, { Variant as ButtonVariant } from 'components/Button';
-import { isTrim } from '../../utils';
-import { useTranslation } from 'react-i18next';
-import ColumnSelector from './ColumnSelector';
+import { ICheckboxListOption } from 'components/CheckboxList';
+import { IFilterNavigation } from 'components/FilterModalNew/components/FilterModalNew';
+import { titleCase } from 'utils/misc';
 
-export enum FilterKey {
-  departments = 'departments',
-  locations = 'locations',
-  status = 'status',
-}
-
+// Interfaces
 interface IFilterMenu {
   control: Control<IForm, any>;
   watch: UseFormWatch<IForm>;
@@ -34,8 +42,8 @@ interface IFilterMenu {
   dataTestIdSort?: string;
   dataTestIdFilter?: string;
   view: 'LIST' | 'GRID';
-  columns?: any[];
-  updateColumns?: (columns: object[]) => void;
+  columns?: ColumnItem[];
+  updateColumns?: (columns: ColumnItem[]) => void;
   hideFilter?: boolean;
   hideSort?: boolean;
   hideColumnSelector?: boolean;
@@ -43,6 +51,17 @@ interface IFilterMenu {
   changeView: (view: 'LIST' | 'GRID') => void;
 }
 
+type SortType = 'name:asc' | 'name:desc' | 'external_updated_at' | 'size:asc';
+
+interface IFilters {
+  sort?: SortType;
+  docOwners: ICheckboxListOption[];
+  docType: ICheckboxListOption[];
+  docModified?: string;
+  [key: string]: any;
+}
+
+// Component
 const FilterMenuDocument: FC<IFilterMenu> = ({
   control,
   watch,
@@ -58,15 +77,18 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
   showTitleFilter = true,
   changeView,
 }) => {
-  const { t } = useTranslation('channelDetail', {
-    keyPrefix: 'documentTab',
-  });
-  const { t: ts } = useTranslation('components', {
-    keyPrefix: 'Sort',
-  });
+  const { t } = useTranslation('channelDetail', { keyPrefix: 'documentTab' });
+  const { t: ts } = useTranslation('components', { keyPrefix: 'Sort' });
+
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
-  const { filters, setFilters, updateFilter, clearFilters } =
-    useAppliedFiltersStore();
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [filters, setFilters] = useState<IFilters>({
+    sort: undefined,
+    docOwners: [],
+    docType: [],
+    docModified: '',
+  });
+
   const {
     searchParams,
     updateParam,
@@ -74,135 +96,141 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
     deleteParam,
     parseParams,
   } = useURLParams();
-  const [docType, recentlyModified, byTitle] = watch([
-    'docType',
-    'recentlyModified',
-    'byTitle',
-  ]);
-  const selectedButtonClassName = '!bg-primary-50 text-primary-500 text-sm';
-  const regularButtonClassName =
+
+  const [docType, byTitle] = watch(['docType', 'byTitle']);
+
+  const dynamicFilters: IFilterNavigation<any>[] = useMemo(
+    () =>
+      columns
+        .filter((column) => column.isCustomField && column.visibility)
+        .map((column) => ({
+          key: column.fieldName,
+          label: () => titleCase(column.fieldName),
+          component: (form: UseFormReturn<any>) => (
+            <GenericFilter
+              options={column.values}
+              name={column.fieldName}
+              {...form}
+            />
+          ),
+        })),
+    [columns],
+  );
+
+  const selectedClass = '!bg-primary-50 text-primary-500 text-sm';
+  const regularClass =
     '!text-neutral-500 text-sm hover:border hover:border-primary-500 focus:border focus:border-primary-500 !font-normal';
 
-  const isFilterApplied =
-    !!filters?.docTypeCheckbox?.length ||
-    !!filters?.docOwnerCheckbox?.length ||
-    !!filters?.docModifiedRadio;
+  const isFilterApplied = useMemo(
+    () =>
+      filters.docOwners.length > 0 ||
+      filters.docType.length > 0 ||
+      !!filters.docModified,
+    [filters],
+  );
 
-  useEffect(() => {
-    if (filters) {
-      Object.keys(filters).forEach((key: string) => {
-        if (!!filters[key] && filters[key].length === 0) {
-          deleteParam(key);
-        } else {
-          if (typeof filters[key] === 'object') {
-            const serializedFilters = serializeFilter(filters[key]);
-            updateParam(key, serializedFilters);
-          } else {
-            if (filters[key] === undefined) {
-              deleteParam(key);
-            } else {
-              updateParam(key, filters[key]);
-            }
-          }
-        }
-      });
-    }
-  }, [filters]);
-
-  useEffect(() => {
-    const sort = searchParams.get('sort') || undefined;
-    const docOwnerCheckbox = parseParams('docOwnerCheckbox') || [];
-    const docTypeCheckbox = parseParams('docTypeCheckbox') || [];
-    const docModifiedRadio = searchParams.get('docModifiedRadio') || undefined;
-    const validSortValues = [
-      'name:asc',
-      'name:desc',
-      'external_updated_at',
-      'size:desc',
-    ];
-
-    const docFilters = {
-      docOwnerCheckbox,
-      docTypeCheckbox,
-      docModifiedRadio,
-      sort,
-    };
-
-    if (!sort || !validSortValues.includes(sort)) {
-      deleteParam('sort');
-    }
-
-    if (!!!docOwnerCheckbox.length) {
-      deleteParam('docOwnerCheckbox');
-    }
-
-    if (!!!docTypeCheckbox.length) {
-      deleteParam('docTypeCheckbox');
-    }
-
-    if (!!!docModifiedRadio) {
-      deleteParam('docModifiedRadio');
-    }
-
-    setFilters(docFilters);
-
-    return clearFilters;
-  }, []);
-
-  const menuItems = [
-    {
-      icon: 'list',
-      label: t('list'),
-      onClick: () => changeView('LIST'),
-    },
-    {
-      icon: 'grid',
-      label: t('grid'),
-      onClick: () => changeView('GRID'),
-    },
-  ];
-
-  const sortOptions = [
-    {
-      icon: 'sortByAcs',
-      label: ts('aToZ'),
-      key: 'name:asc',
-      dataTestId: 'sortBy-asc',
-    },
-    {
-      icon: 'sortByDesc',
-      label: ts('zToA'),
-      key: 'name:desc',
-      dataTestId: 'sortBy-desc',
-    },
-    {
-      icon: 'calendar',
-      label: ts('dateModified'),
-      key: 'external_updated_at',
-      dataTestId: 'sortby-dateadded',
-    },
-    {
-      icon: 'vuesax',
-      label: ts('size'),
-      key: 'size:asc',
-      dataTestId: 'sortBy-size',
-    },
-  ];
-
-  const parseModifiedOn = (value: string) => {
+  // Util: Format modified date
+  const parseModifiedOn = useCallback((value: string) => {
     if (value.includes('custom')) {
       const [start, end] = value.replace('custom:', '').split('-');
       return `${moment(parseNumber(start)).format('DD MMM YYYY')} - ${moment(
         parseNumber(end),
       ).format('DD MMM YYYY')}`;
-    } else {
-      return value;
     }
-  };
+    return value;
+  }, []);
 
+  // Sync filters to URL
+  useEffect(() => {
+    if (!isInitialized) return;
+    Object.entries(filters).forEach(([key, value]) => {
+      if (!value || (Array.isArray(value) && value.length === 0)) {
+        deleteParam(key);
+      } else {
+        updateParam(
+          key,
+          typeof value === 'object' ? serializeFilter(value) : value,
+        );
+      }
+    });
+  }, [filters, isInitialized]);
+
+  // Load filters from URL on mount
+  useEffect(() => {
+    const sort = searchParams.get('sort') || undefined;
+    const docOwners = parseParams('docOwners') || [];
+    const docType = parseParams('docType') || [];
+    const docModified = searchParams.get('docModified') || '';
+
+    setFilters({ sort, docOwners, docType, docModified });
+
+    const validSorts = [
+      'name:asc',
+      'name:desc',
+      'external_updated_at',
+      'size:desc',
+    ];
+    if (!validSorts.includes(sort)) deleteParam('sort');
+    if (!docOwners.length) deleteParam('docOwners');
+    if (!docType.length) deleteParam('docType');
+    if (!docModified) deleteParam('docModified');
+
+    setIsInitialized(true);
+  }, []);
+
+  // Memoized sort & view menu options
+  const menuItems = useMemo(
+    () => [
+      { icon: 'list', label: t('list'), onClick: () => changeView('LIST') },
+      { icon: 'grid', label: t('grid'), onClick: () => changeView('GRID') },
+    ],
+    [changeView, t],
+  );
+
+  const sortOptions = useMemo(
+    () => [
+      {
+        icon: 'sortByAcs',
+        label: ts('aToZ'),
+        key: 'name:asc',
+        dataTestId: 'sortBy-asc',
+      },
+      {
+        icon: 'sortByDesc',
+        label: ts('zToA'),
+        key: 'name:desc',
+        dataTestId: 'sortBy-desc',
+      },
+      {
+        icon: 'calendar',
+        label: ts('dateModified'),
+        key: 'external_updated_at',
+        dataTestId: 'sortby-dateadded',
+      },
+      {
+        icon: 'vuesax',
+        label: ts('size'),
+        key: 'size:asc',
+        dataTestId: 'sortBy-size',
+      },
+    ],
+    [ts],
+  );
+
+  const clearFilters = useCallback(() => {
+    setFilters({
+      sort: undefined,
+      docOwners: [],
+      docType: [],
+      docModified: '',
+    });
+  }, []);
+
+  // Render
   return (
     <>
       <div className="flex flex-col gap-6">
+        {/* Top controls */}
         <div className="flex justify-between items-center h-9">
           <div className="flex gap-4 items-center">
             <Layout
@@ -224,7 +252,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
                     {
                       value: 'folder',
                       render: () => (
-                        <div className="flex gap-2 font-medium text-xs op">
+                        <div className="flex gap-2 font-medium text-xs">
                           <Icon name="folder" size={16} /> {t('folder')}
                         </div>
                       ),
@@ -241,45 +269,34 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
                 },
               ]}
             />
-            {false && (
-              <Button
-                variant={ButtonVariant.Secondary}
-                label={isTrim('Recently modified')}
-                className={`capitalize ${
-                  !!recentlyModified
-                    ? selectedButtonClassName
-                    : regularButtonClassName
-                }`}
-                onClick={() => setValue('recentlyModified', !recentlyModified)}
-              />
-            )}
+
             {showTitleFilter && !hideFilter && (
               <Button
                 variant={ButtonVariant.Secondary}
                 label={t('titleOnlyCTA')}
                 className={`capitalize ${
-                  !!byTitle ? selectedButtonClassName : regularButtonClassName
+                  !!byTitle ? selectedClass : regularClass
                 }`}
                 onClick={() => setValue('byTitle', !byTitle)}
               />
             )}
           </div>
-          <div className="flex space-x-2 justify-center items-center relative">
-            <div className="flex relative">
-              <PopupMenu
-                triggerNode={
-                  <IconButton
-                    icon={view === 'GRID' ? 'grid' : 'list'}
-                    variant={IconVariant.Secondary}
-                    size={IconSize.Medium}
-                    borderAround
-                    className="bg-white !p-[10px]"
-                  />
-                }
-                menuItems={menuItems}
-                className="mt-1 top-full right-0 border-1 border-neutral-200 focus-visible:outline-none"
-              />
-            </div>
+
+          {/* Right controls */}
+          <div className="flex space-x-2 items-center relative">
+            <PopupMenu
+              triggerNode={
+                <IconButton
+                  icon={view === 'GRID' ? 'grid' : 'list'}
+                  variant={IconVariant.Secondary}
+                  size={IconSize.Medium}
+                  borderAround
+                  className="bg-white !p-[10px]"
+                />
+              }
+              menuItems={menuItems}
+              className="mt-1 top-full right-0 border-1 border-neutral-200"
+            />
             {!hideFilter && (
               <div className="relative flex">
                 <IconButton
@@ -299,11 +316,11 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
             {!hideSort && (
               <Sort
                 controlled
-                setFilter={(sortValue) => {
-                  setFilters({ sort: sortValue });
-                }}
-                selectedValue={filters ? filters.sort : ''}
-                entity={'channel-document'}
+                setFilter={(val) =>
+                  setFilters({ ...filters, sort: val as SortType })
+                }
+                selectedValue={filters.sort}
+                entity="channel-document"
                 dataTestId={dataTestIdSort}
                 sortOptions={sortOptions}
               />
@@ -313,170 +330,130 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
             )}
           </div>
         </div>
+
+        {/* Active filters */}
         {(filters?.sort || isFilterApplied) && (
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-4">
+              <span className="text-neutral-500">Filter by</span>
               {isFilterApplied && (
-                <div className="flex items-center gap-2">
-                  <span className="text-neutral-500">Filter by</span>
-                  {!!(filters.docOwnerCheckbox || []).length && (
-                    <div
-                      onClick={() => updateFilter('docOwnerCheckbox', [])}
-                      className="flex items-center px-3 py-1 border border-neutral-200 rounded-7xl gap-1 cursor-pointer hover:border-primary-600 group h-8"
-                    >
-                      <span className="text-neutral-500 font-medium">
-                        Owner{' '}
-                        {filters.docOwnerCheckbox.length === 1 && (
-                          <span className="text-primary-500 font-bold">
-                            {filters.docOwnerCheckbox[0].name}
-                          </span>
-                        )}
-                        {filters.docOwnerCheckbox.length === 2 && (
-                          <span>
-                            <span className="text-primary-500 font-bold">
-                              {filters.docOwnerCheckbox[0].name}
-                            </span>{' '}
-                            and{' '}
-                            <span className="text-primary-500 font-bold">
-                              {filters.docOwnerCheckbox[1].name}
-                            </span>
-                          </span>
-                        )}
-                        {filters.docOwnerCheckbox.length > 2 && (
-                          <span>
-                            <span className="text-primary-500 font-bold">
-                              {filters.docOwnerCheckbox[0].name},
-                              {filters.docOwnerCheckbox[1].name}
-                            </span>
-                            and{' '}
-                            <span className="text-primary-500 font-bold">
-                              + {filters.docOwnerCheckbox.length - 2} others
-                            </span>
-                          </span>
-                        )}
-                      </span>
-                      <Icon name="close" size={16} />
-                    </div>
+                <>
+                  {/* Filter chips */}
+                  {filters.docOwners.length > 0 && (
+                    <FilterChip
+                      label="Owner"
+                      values={filters.docOwners.map((o) => o.data.label)}
+                      onClear={() => setFilters({ ...filters, docOwners: [] })}
+                    />
                   )}
-                  {!!(filters.docTypeCheckbox || []).length && (
-                    <div
-                      onClick={() => updateFilter('docTypeCheckbox', [])}
-                      className="flex items-center px-3 py-1 border border-neutral-200 rounded-7xl gap-1 cursor-pointer hover:border-primary-600 group h-8"
-                    >
-                      <span className="text-neutral-500 font-medium">
-                        Type{' '}
-                        {filters.docTypeCheckbox.length === 1 && (
-                          <span className="text-primary-500 font-bold">
-                            {filters.docTypeCheckbox[0].label}
-                          </span>
-                        )}
-                        {filters.docTypeCheckbox.length === 2 && (
-                          <span>
-                            <span className="text-primary-500 font-bold">
-                              {filters.docTypeCheckbox[0].label}
-                            </span>{' '}
-                            and{' '}
-                            <span className="text-primary-500 font-bold">
-                              {filters.docTypeCheckbox[1].label}
-                            </span>
-                          </span>
-                        )}
-                        {filters.docTypeCheckbox.length > 2 && (
-                          <span>
-                            <span className="text-primary-500 font-bold">
-                              {filters.docTypeCheckbox[0].label},
-                              {filters.docTypeCheckbox[1].label}
-                            </span>
-                            and{' '}
-                            <span className="text-primary-500 font-bold">
-                              + {filters.docTypeCheckbox.length - 2} more
-                            </span>
-                          </span>
-                        )}
-                      </span>
-                      <Icon name="close" size={16} />
-                    </div>
+                  {filters.docType.length > 0 && (
+                    <FilterChip
+                      label="Type"
+                      values={filters.docType.map((t) => t.data.label)}
+                      onClear={() => setFilters({ ...filters, docType: [] })}
+                    />
                   )}
-                  {!!filters?.docModifiedRadio && (
-                    <div
-                      onClick={() =>
-                        updateFilter('docModifiedRadio', undefined)
+                  {!!filters.docModified && (
+                    <FilterChip
+                      label="Modified on"
+                      values={[parseModifiedOn(filters.docModified)]}
+                      onClear={() =>
+                        setFilters({ ...filters, docModified: '' })
                       }
-                      className="flex items-center px-3 py-1 border border-neutral-200 rounded-7xl gap-1 cursor-pointer hover:border-primary-600 group h-8"
-                    >
-                      <span className="text-neutral-500 font-medium">
-                        Modified on{' '}
-                        <span className="text-primary-500 font-bold">
-                          {parseModifiedOn(filters.docModifiedRadio)}
-                        </span>
-                      </span>
-                      <Icon name="close" size={16} />
-                    </div>
+                    />
                   )}
-                </div>
+                </>
               )}
-              {filters?.sort && (
-                <div className="flex items-center gap-2">
-                  <span className="text-neutral-500">Sort by</span>
-                  <div
-                    onClick={() => updateFilter('sort', undefined)}
-                    className="flex items-center px-3 py-1 border border-neutral-200 rounded-7xl gap-1 cursor-pointer hover:border-primary-600 group h-8"
-                  >
-                    <span className="text-primary-500 font-bold group-hover:text-primary-600">
-                      {
-                        sortOptions.find(
-                          (option) => option.key === filters?.sort,
-                        )?.label
-                      }
-                    </span>
-                    <Icon name="close" size={16} />
-                  </div>
-                </div>
+              {!!filters.sort && (
+                <FilterChip
+                  label="Sort by"
+                  values={[
+                    sortOptions.find((s) => s.key === filters.sort)?.label ||
+                      '',
+                  ]}
+                  onClear={() => setFilters({ ...filters, sort: undefined })}
+                />
               )}
             </div>
             <div
-              className="text-neutral-500 border px-3 py-[3px] whitespace-nowrap rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
+              className="text-neutral-500 border px-3 py-[3px] rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
               onClick={clearFilters}
-              data-testid={`people-clear-filters`}
+              data-testid="people-clear-filters"
             >
-              {'Clear all'}
+              Clear all
             </div>
           </div>
         )}
       </div>
+
+      {/* Modal */}
       {showFilterModal && (
-        <FilterModal
+        <FilterModalNew
           open={showFilterModal}
           closeModal={closeFilterModal}
-          appliedFilters={{
-            docOwnerCheckbox: filters?.docOwnerCheckbox,
-            docTypeCheckbox: filters?.docTypeCheckbox,
-            docModifiedRadio: filters?.docModifiedRadio,
-          }}
-          onApply={(appliedFilters) => {
-            setFilters({
-              ...appliedFilters,
-              docModifiedRadio: (
-                appliedFilters?.docModifiedRadio || []
-              ).includes('undefined')
-                ? undefined
-                : appliedFilters.docModifiedRadio,
-            });
+          appliedFilters={filters}
+          onApply={(newFilters: IFilters) => {
+            setFilters(newFilters);
             closeFilterModal();
           }}
           onClear={() => {
-            setFilters({
-              docOwnerCheckbox: [],
-              docTypeCheckbox: [],
-              docModifiedRadio: undefined,
-            });
+            clearFilters();
             closeFilterModal();
           }}
-          variant={FilterModalVariant.Document}
+          defaultValues={filters}
+          filterNavigation={[
+            {
+              key: 'docOwners',
+              label: () => 'Owner',
+              component: (form: UseFormReturn<any>) => (
+                <DocumentOwner {...form} name="docOwners" />
+              ),
+            },
+            {
+              key: 'docType',
+              label: () => 'Type',
+              component: (form: UseFormReturn<any>) => (
+                <DocumentType {...form} name="docType" />
+              ),
+            },
+            {
+              key: 'docModified',
+              label: () => 'Modified',
+              component: (form: UseFormReturn<any>) => (
+                <DocModified {...form} name="docModified" />
+              ),
+            },
+            ...dynamicFilters,
+          ]}
         />
       )}
     </>
   );
 };
+
+// Helper component: FilterChip
+const FilterChip = ({
+  label,
+  values,
+  onClear,
+}: {
+  label: string;
+  values: string[];
+  onClear: () => void;
+}) => (
+  <div
+    onClick={onClear}
+    className="flex items-center px-3 py-1 border border-neutral-200 rounded-7xl gap-1 cursor-pointer hover:border-primary-600 group h-8"
+  >
+    <span className="text-neutral-500 font-medium">
+      {label}{' '}
+      <span className="text-primary-500 font-bold">
+        {values.slice(0, 2).join(', ')}
+        {values.length > 2 && ` and + ${values.length - 2} more`}
+      </span>
+    </span>
+    <Icon name="close" size={16} />
+  </div>
+);
 
 export default FilterMenuDocument;
