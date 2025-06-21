@@ -69,6 +69,7 @@ import { useTranslation } from 'react-i18next';
 import { getUtcMiliseconds } from 'utils/time';
 import useNavigate from 'hooks/useNavigation';
 import { ColumnItem } from './components/ColumnSelector';
+import { ICheckboxListOption } from 'components/CheckboxList';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
@@ -230,6 +231,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const { data: currentUser } = useCurrentUser();
   const syncIntervalRef = useRef<any>(null);
   const navigate = useNavigate();
+
+  console.log(filters);
 
   // Api call: Check connection status
   const useChannelDocumentStatus = getApi(ApiEnum.GetChannelDocumentStatus);
@@ -658,8 +661,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
 
   // Its a function to parse modified on filter that maps string to respected date param oo api
   const parseModifiedOnFilter = useMemo(() => {
-    if (filters?.docModifiedRadio?.includes('custom')) {
-      const [start, end] = filters?.docModifiedRadio
+    if (filters?.modifiedOn?.includes('custom')) {
+      const [start, end] = filters?.modifiedOn
         .replace('custom:', '')
         .split('-');
       if (parseNumber(start) && parseNumber(end)) {
@@ -669,8 +672,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         };
       }
     }
-    if (filters?.docModifiedRadio) {
-      switch (filters.docModifiedRadio) {
+    if (filters?.modifiedOn) {
+      switch (filters.modifiedOn) {
         case 'Today':
           return {
             modifiedAfter: getUtcMiliseconds(moment().startOf('day').valueOf()),
@@ -723,11 +726,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         sort: filters?.sort ? filters?.sort.split(':')[0] : undefined,
         order: filters?.sort ? filters?.sort.split(':')[1] : undefined,
         isFolder: docType ? !!(docType.value === 'folder') : undefined,
-        owners: (filters?.docOwnerCheckbox || []).map(
-          (owner: any) => owner.name,
+        owners: (filters?.docOwners || []).map(
+          (owner: ICheckboxListOption) => owner.data.name,
         ),
-        type: (filters?.docTypeCheckbox || []).map(
-          (type: any) => type.paramKey,
+        type: (filters?.docType || []).map(
+          (type: ICheckboxListOption) => type.data.paramKey,
         ),
         ...parseModifiedOnFilter,
         ...(isDocSearchApplied

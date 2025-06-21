@@ -1,8 +1,6 @@
 // Imports - Grouped by category
-import { FC, useEffect, useState, useMemo, useCallback } from 'react';
+import { FC, useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import moment from 'moment';
-import { parseNumber } from 'react-advanced-cropper';
 import {
   Control,
   UseFormReturn,
@@ -26,14 +24,14 @@ import DocumentType from 'components/FilterModalNew/components/DocumentType';
 import DocModified from 'components/FilterModalNew/components/DocumentModifed';
 
 import useModal from 'hooks/useModal';
-import useURLParams from 'hooks/useURLParams';
 
 import { getIconFromMime } from './Doc';
 import { IForm } from '..';
 import { ICheckboxListOption } from 'components/CheckboxList';
 import { IFilterNavigation } from 'components/FilterModalNew/components/FilterModalNew';
 import { titleCase } from 'utils/misc';
-import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
+import { useAppliedFilter } from 'hooks/useAppliedFilter';
+import { FilterKey } from 'stores/appliedFiltersStore';
 
 // Interfaces
 interface IFilterMenu {
@@ -58,7 +56,7 @@ interface IFilters {
   sort?: SortType;
   docOwners: ICheckboxListOption[];
   docType: ICheckboxListOption[];
-  docModified?: string;
+  modifiedOn?: string;
   [key: string]: any;
 }
 
@@ -80,34 +78,31 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
 }) => {
   const { t } = useTranslation('channelDetail', { keyPrefix: 'documentTab' });
   const { t: ts } = useTranslation('components', { keyPrefix: 'Sort' });
+  const staticFilterKeys: FilterKey[] = [
+    { key: 'docOwners', label: 'Owners' },
+    { key: 'docType', label: 'Type' },
+    { key: 'modifiedOn', label: 'Modified on' },
+    { key: 'sort', label: 'Sort by' },
+  ];
+  const initialFilters = {
+    sort: undefined,
+    docOwners: [],
+    docType: [],
+    modifiedOn: '',
+  };
 
-  const [filterKeys, setFilterKeys] = useState([
-    'docOwners',
-    'docType',
+  const [filterKeys, setFilterKeys] = useState<FilterKey[]>([
+    ...staticFilterKeys,
     ...columns
       .filter((column) => column.isCustomField && column.visibility)
-      .map((column) => column.fieldName),
+      .map((column) => ({
+        key: column.fieldName,
+        label: titleCase(column.fieldName),
+      })),
   ]);
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
-  const [isInitialized, setIsInitialized] = useState(false);
-  const { filters, setFilters } = useAppliedFiltersStore();
-
-  useEffect(() => {
-    setFilters({
-      sort: undefined,
-      docOwners: [],
-      docType: [],
-      docModified: '',
-    });
-  }, []);
-
-  const {
-    searchParams,
-    updateParam,
-    serializeFilter,
-    deleteParam,
-    parseParams,
-  } = useURLParams();
+  const { filters, setFilters, isFilterApplied, clearFilters, FilterChips } =
+    useAppliedFilter(initialFilters);
 
   const [docType, byTitle] = watch(['docType', 'byTitle']);
 
@@ -132,63 +127,6 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
   const selectedClass = '!bg-primary-50 text-primary-500 text-sm';
   const regularClass =
     '!text-neutral-500 text-sm hover:border hover:border-primary-500 focus:border focus:border-primary-500 !font-normal';
-
-  const isFilterApplied = useMemo(
-    () =>
-      filters &&
-      (filterKeys.some((key) => filters[key]?.length > 0) ||
-        !!filters.docModified),
-    [filters, filterKeys],
-  );
-
-  // Util: Format modified date
-  const parseModifiedOn = useCallback((value: string) => {
-    if (value.includes('custom')) {
-      const [start, end] = value.replace('custom:', '').split('-');
-      return `${moment(parseNumber(start)).format('DD MMM YYYY')} - ${moment(
-        parseNumber(end),
-      ).format('DD MMM YYYY')}`;
-    }
-    return value;
-  }, []);
-
-  // Sync filters to URL
-  useEffect(() => {
-    if (!isInitialized || !filters) return;
-    Object.entries(filters).forEach(([key, value]) => {
-      if (!value || (Array.isArray(value) && value.length === 0)) {
-        deleteParam(key);
-      } else {
-        updateParam(
-          key,
-          typeof value === 'object' ? serializeFilter(value) : value,
-        );
-      }
-    });
-  }, [filters, isInitialized]);
-
-  // Load filters from URL on mount
-  useEffect(() => {
-    const sort = searchParams.get('sort') || undefined;
-    const docOwners = parseParams('docOwners') || [];
-    const docType = parseParams('docType') || [];
-    const docModified = searchParams.get('docModified') || '';
-
-    setFilters({ sort, docOwners, docType, docModified });
-
-    const validSorts = [
-      'name:asc',
-      'name:desc',
-      'external_updated_at',
-      'size:desc',
-    ];
-    if (!validSorts.includes(sort)) deleteParam('sort');
-    if (!docOwners.length) deleteParam('docOwners');
-    if (!docType.length) deleteParam('docType');
-    if (!docModified) deleteParam('docModified');
-
-    setIsInitialized(true);
-  }, []);
 
   // Memoized sort & view menu options
   const menuItems = useMemo(
@@ -229,22 +167,15 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
     [ts],
   );
 
-  const clearFilters = useCallback(() => {
-    setFilters({
-      sort: undefined,
-      docOwners: [],
-      docType: [],
-      docModified: '',
-    });
-  }, []);
-
   useEffect(() => {
     setFilterKeys([
-      'docOwners',
-      'docType',
+      ...staticFilterKeys,
       ...columns
         .filter((column) => column.isCustomField && column.visibility)
-        .map((column) => column.fieldName),
+        .map((column) => ({
+          key: column.fieldName,
+          label: titleCase(column.fieldName),
+        })),
     ]);
   }, [columns]);
 
@@ -354,71 +285,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
         </div>
 
         {/* Active filters */}
-        {(filters?.sort || isFilterApplied) && (
-          <div className="flex justify-between items-start">
-            <div className="flex items-center gap-4">
-              <span className="text-neutral-500">Filter by</span>
-              {isFilterApplied &&
-                filters &&
-                Object.entries(filters).map(([key, value]) => {
-                  if (
-                    !value ||
-                    (Array.isArray(value) && value.length === 0) ||
-                    !filterKeys.includes(key)
-                  )
-                    return null;
-                  const displayValues = Array.isArray(value)
-                    ? value.map((v) =>
-                        typeof v === 'string'
-                          ? v
-                          : v?.data?.label || JSON.stringify(v),
-                      )
-                    : [
-                        typeof value === 'string'
-                          ? value
-                          : JSON.stringify(value),
-                      ];
-                  return (
-                    <FilterChip
-                      key={key}
-                      label={key}
-                      values={displayValues}
-                      onClear={() =>
-                        setFilters({
-                          ...filters,
-                          [key]: Array.isArray(value) ? [] : '',
-                        })
-                      }
-                    />
-                  );
-                })}
-              {isFilterApplied && filters && !!filters.docModified && (
-                <FilterChip
-                  label="Modified on"
-                  values={[parseModifiedOn(filters.docModified)]}
-                  onClear={() => setFilters({ ...filters, docModified: '' })}
-                />
-              )}
-              {filters && !!filters.sort && (
-                <FilterChip
-                  label="Sort by"
-                  values={[
-                    sortOptions.find((s) => s.key === filters.sort)?.label ||
-                      '',
-                  ]}
-                  onClear={() => setFilters({ ...filters, sort: undefined })}
-                />
-              )}
-            </div>
-            <div
-              className="text-neutral-500 border px-3 py-[3px] rounded-7xl hover:text-primary-600 hover:border-primary-600 cursor-pointer"
-              onClick={clearFilters}
-              data-testid="people-clear-filters"
-            >
-              Clear all
-            </div>
-          </div>
-        )}
+        <FilterChips filterKeys={filterKeys} sortOptions={sortOptions} />
       </div>
 
       {/* Modal */}
@@ -452,10 +319,10 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
               ),
             },
             {
-              key: 'docModified',
+              key: 'modifiedOn',
               label: () => 'Modified',
               component: (form: UseFormReturn<any>) => (
-                <DocModified {...form} name="docModified" />
+                <DocModified {...form} name="modifiedOn" />
               ),
             },
             ...dynamicFilters,
@@ -465,30 +332,5 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
     </>
   );
 };
-
-// Helper component: FilterChip
-const FilterChip = ({
-  label,
-  values,
-  onClear,
-}: {
-  label: string;
-  values: string[];
-  onClear: () => void;
-}) => (
-  <div
-    onClick={onClear}
-    className="flex items-center px-3 py-1 border border-neutral-200 rounded-7xl gap-1 cursor-pointer hover:border-primary-600 group h-8"
-  >
-    <span className="text-neutral-500 font-medium">
-      {label}{' '}
-      <span className="text-primary-500 font-bold">
-        {values.slice(0, 2).join(', ')}
-        {values.length > 2 && ` and + ${values.length - 2} more`}
-      </span>
-    </span>
-    <Icon name="close" size={16} />
-  </div>
-);
 
 export default FilterMenuDocument;

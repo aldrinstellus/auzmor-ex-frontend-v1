@@ -56,7 +56,7 @@ const DocumentOwner: FC<IVisibilityProps> = ({
     () => [
       {
         type: FieldType.CheckboxList,
-        name: 'documentOwnerCheckbox',
+        name,
         control,
         options: owners?.map((owner: any) => ({
           data: { ...owner, id: owner.name },
