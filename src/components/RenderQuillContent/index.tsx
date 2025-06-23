@@ -45,7 +45,7 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
   const postType = (data as IPost)?.type;
 
   const isEmpty = useMemo(() => {
-    const ops = data?.content.editor.ops || [];
+    const ops = data?.content?.editor?.ops || [];
 
     for (const op of ops) {
       if (op.insert && op.insert.emoji) {

@@ -22,16 +22,14 @@ const Recommendation: FC<IRecommendationProps> = ({
         <p className="text-sm font-bold text-neutral-900">{title}</p>
       </div>
       <div className="flex top-8 gap-4 w-full overflow-hidden hover:overflow-x-scroll pb-4">
-        <div className={`flex gap-4 ${cards.length === 3 ? 'w-max' : 'w-full'}`}>
           {cards.map((card: Record<string, any>) => (
-            <LearnCard
+            <LearnCard  
               className={`${cards.length === 1 ? 'w-full' : cards.length === 2 ? 'w-[calc(50%-0.5rem)]' : 'w-[254px]'} h-[290px] flex-shrink-0`}
               data={card}
               key={card.id}
               isLoading={isLoading}
             />
           ))}
-        </div>
       </div>
       <div className='flex items-center justify-center'>
         <Button
