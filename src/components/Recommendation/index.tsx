@@ -39,7 +39,7 @@ const Recommendation: FC<IRecommendationProps> = ({
           rightIconClassName="!text-black"
           size={Size.ExtraSmall}
           onClick={onCLick}
-          className="!bg-transparent !text-black hover:!text-black active:!text-black text-xs font-bold outline-1 outline focus:outline-primary-500"
+          className="!bg-transparent !text-black hover:!text-black active:!text-black text-xs font-bold"
         />
       </div>
     </Card>

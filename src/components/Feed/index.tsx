@@ -723,13 +723,13 @@ const Feed: FC<IFeedProps> = ({
     if (totalPosts > 10) {
       if (trendingCards.length > 1) {
         if (recentlyAssignedCards.length > 1) {
-          return { tIndex: 4, rIndex: 3 };
+          return { tIndex: 4, rIndex: 2 };
         } else {
           return { tIndex: 4, rIndex: -1 };
         }
       } else {
         if (recentlyAssignedCards.length > 1) {
-          return { tIndex: -1, rIndex: 3 };
+          return { tIndex: -1, rIndex: 2 };
         } else {
           return { tIndex: -1, rIndex: -1 };
         }
@@ -737,13 +737,13 @@ const Feed: FC<IFeedProps> = ({
     } else if (totalPosts <= 10 && totalPosts > 3) {
       if (trendingCards.length > 1) {
         if (recentlyAssignedCards.length > 1) {
-          return { tIndex: 2, rIndex: 3 };
+          return { tIndex: 2, rIndex: 2 };
         } else {
           return { tIndex: 2, rIndex: -1 };
         }
       } else {
         if (recentlyAssignedCards.length > 1) {
-          return { tIndex: -1, rIndex: 3 };
+          return { tIndex: -1, rIndex: 2 };
         } else {
           return { tIndex: -1, rIndex: -1 };
         }
@@ -751,13 +751,13 @@ const Feed: FC<IFeedProps> = ({
     } else if (totalPosts >= 3 && totalPosts < 5) {
       if (trendingCards.length > 1) {
         if (recentlyAssignedCards.length > 1) {
-          return { tIndex: 2, rIndex: 3 };
+          return { tIndex: 2, rIndex: 2 };
         } else {
           return { tIndex: 2, rIndex: -1 };
         }
       } else {
         if (recentlyAssignedCards.length > 1) {
-          return { tIndex: -1, rIndex: 3 };
+          return { tIndex: -1, rIndex: 2 };
         } else {
           return { tIndex: -1, rIndex: -1 };
         }
