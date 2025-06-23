@@ -63,7 +63,37 @@ const Comments: FC<CommentsProps> = ({ channelId, entityId }) => {
   data?.pages.flatMap((page: any) => page.data?.data?.comments || []) ?? [];
 
   return (
-    <div className='w-full h-full flex flex-col gap-2'>
+    <div className='h-full'>
+      <div className="flex flex-row items-center justify-between gap-2 min-h-[15%] px-4 py-3 mb-4 border-b border-gray-300">
+        <div>
+          <Avatar
+            name={user?.name || 'U'}
+            size={32}
+            image={user?.profileImage}
+          />
+        </div>
+        <CommentsRTE
+          className="w-0 flex-grow"
+          channelId={channelId}
+          entityId={entityId}
+          entityType="comment"
+          inputRef={inputRef}
+          media={media}
+          removeMedia={() => {
+            setMedia([]);
+            setFiles([]);
+            setMediaValidationErrors([]);
+            if (inputRef.current) {
+              inputRef.current.value = '';
+            }
+          }}
+          files={files}
+          mediaValidationErrors={mediaValidationErrors}
+          setIsCreateCommentLoading={setIsCreateCommentLoading}
+          setMediaValidationErrors={setMediaValidationErrors}
+          isCreateCommentLoading={isCreateCommentLoading}
+        />
+      </div>
       {isLoading ? (
         <div className='w-full h-[92%] flex flex-col'>
           <CommentSkeleton />
@@ -71,8 +101,8 @@ const Comments: FC<CommentsProps> = ({ channelId, entityId }) => {
       ) : (
         commentIds &&
         commentIds.length > 0 ? (
-          <div className="h-[85%] max-h-[85%] overflow-y-auto">
-            {isCreateCommentLoading && <CommentSkeleton />}
+          <div className="h-[80%] overflow-y-scroll">
+            {isCreateCommentLoading && <div className='px-4'><CommentSkeleton /></div>}
             <div className="flex flex-col gap-4 px-4">
               {commentIds.filter(({ id }) => !!comment[id])
                 .map(({ id }) => (
@@ -93,7 +123,7 @@ const Comments: FC<CommentsProps> = ({ channelId, entityId }) => {
             )}
           </div>
         ) : (
-          <div className='w-full h-[85%] flex items-center justify-center'>
+          <div className='w-full h-[80%] flex items-center justify-center'>
             <NoDataFound
                 illustration="noCommentAvailable"
                 labelHeader={
@@ -160,36 +190,6 @@ const Comments: FC<CommentsProps> = ({ channelId, entityId }) => {
         data-testid="reply-uploadphoto"
         aria-label="upload image"
       />
-      <div className="flex flex-row items-center justify-between gap-2 h-[15%] border-t border-gray-300">
-        <div>
-          <Avatar
-            name={user?.name || 'U'}
-            size={32}
-            image={user?.profileImage}
-          />
-        </div>
-        <CommentsRTE
-          className="w-0 flex-grow"
-          channelId={channelId}
-          entityId={entityId}
-          entityType="comment"
-          inputRef={inputRef}
-          media={media}
-          removeMedia={() => {
-            setMedia([]);
-            setFiles([]);
-            setMediaValidationErrors([]);
-            if (inputRef.current) {
-              inputRef.current.value = '';
-            }
-          }}
-          files={files}
-          mediaValidationErrors={mediaValidationErrors}
-          setIsCreateCommentLoading={setIsCreateCommentLoading}
-          setMediaValidationErrors={setMediaValidationErrors}
-          isCreateCommentLoading={isCreateCommentLoading}
-        />
-      </div>
     </div>
   );
 };

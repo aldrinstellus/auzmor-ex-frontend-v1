@@ -210,7 +210,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
         ) : null}
       </div>
          {/* Comment Section */}
-      <div className={`transition-all duration-300 ease-in-out ${showComment ? 'w-[32%] px-2 py-4' : 'w-0 overflow-hidden'} relative h-full`}>
+      <div className={`transition-all duration-300 ease-in-out ${showComment ? 'w-[32%] px-2 pb-4' : 'w-0 overflow-hidden'} relative h-full`}>
         {showComment && (
           <Comments channelId={channelId} entityId={fileId} />
         )}
