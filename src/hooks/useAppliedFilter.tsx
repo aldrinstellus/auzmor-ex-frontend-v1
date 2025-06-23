@@ -1,5 +1,5 @@
-import { FC, useCallback, useEffect, useState } from 'react';
-import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
+import { useCallback, useEffect, useState } from 'react';
+import { FilterKey, useAppliedFiltersStore } from 'stores/appliedFiltersStore';
 import useURLParams from './useURLParams';
 import Icon from 'components/Icon';
 import moment from 'moment';
@@ -82,16 +82,8 @@ export const useAppliedFilter = (initialFilters: Record<string, any>) => {
     return value;
   }, []);
 
-  const FilterChips: FC<{
-    filterKeys: { key: string; label: string }[];
-    sortOptions?: {
-      icon: string;
-      label: string;
-      key: string;
-      dataTestId: string;
-    }[];
-  }> = ({
-    filterKeys,
+  const FilterChips = ({
+    filterKeys = [],
     sortOptions = [
       {
         icon: 'sortByAcs',
@@ -113,7 +105,7 @@ export const useAppliedFilter = (initialFilters: Record<string, any>) => {
       },
     ],
   }: {
-    filterKeys: { key: string; label: string }[];
+    filterKeys: FilterKey[];
     sortOptions?: {
       icon: string;
       label: string;
@@ -121,6 +113,7 @@ export const useAppliedFilter = (initialFilters: Record<string, any>) => {
       dataTestId: string;
     }[];
   }) => {
+    console.log(filterKeys);
     return isFilterApplied ? (
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-4">

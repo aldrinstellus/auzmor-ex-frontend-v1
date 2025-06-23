@@ -1,5 +1,5 @@
 // Imports - Grouped by category
-import { FC, useEffect, useState, useMemo } from 'react';
+import { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Control,
@@ -31,7 +31,6 @@ import { ICheckboxListOption } from 'components/CheckboxList';
 import { IFilterNavigation } from 'components/FilterModalNew/components/FilterModalNew';
 import { titleCase } from 'utils/misc';
 import { useAppliedFilter } from 'hooks/useAppliedFilter';
-import { FilterKey } from 'stores/appliedFiltersStore';
 
 // Interfaces
 interface IFilterMenu {
@@ -54,8 +53,8 @@ type SortType = 'name:asc' | 'name:desc' | 'external_updated_at' | 'size:asc';
 
 interface IFilters {
   sort?: SortType;
-  docOwners: ICheckboxListOption[];
-  docType: ICheckboxListOption[];
+  owners: ICheckboxListOption[];
+  type: ICheckboxListOption[];
   modifiedOn?: string;
   [key: string]: any;
 }
@@ -78,33 +77,24 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
 }) => {
   const { t } = useTranslation('channelDetail', { keyPrefix: 'documentTab' });
   const { t: ts } = useTranslation('components', { keyPrefix: 'Sort' });
-  const staticFilterKeys: FilterKey[] = [
-    { key: 'docOwners', label: 'Owners' },
-    { key: 'docType', label: 'Type' },
-    { key: 'modifiedOn', label: 'Modified on' },
-    { key: 'sort', label: 'Sort by' },
-  ];
   const initialFilters = {
     sort: undefined,
-    docOwners: [],
-    docType: [],
+    owners: [],
+    type: [],
     modifiedOn: '',
   };
 
-  const [filterKeys, setFilterKeys] = useState<FilterKey[]>([
-    ...staticFilterKeys,
-    ...columns
-      .filter((column) => column.isCustomField && column.visibility)
-      .map((column) => ({
-        key: column.fieldName,
-        label: titleCase(column.fieldName),
-      })),
-  ]);
   const [showFilterModal, openFilterModal, closeFilterModal] = useModal();
-  const { filters, setFilters, isFilterApplied, clearFilters, FilterChips } =
-    useAppliedFilter(initialFilters);
+  const {
+    filters,
+    setFilters,
+    isFilterApplied,
+    clearFilters,
+    FilterChips,
+    validFilterKey,
+  } = useAppliedFilter(initialFilters);
 
-  const [docType, byTitle] = watch(['docType', 'byTitle']);
+  const [fileOrFolder, byTitle] = watch(['fileOrFolder', 'byTitle']);
 
   const dynamicFilters: IFilterNavigation<any>[] = useMemo(
     () =>
@@ -167,18 +157,6 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
     [ts],
   );
 
-  useEffect(() => {
-    setFilterKeys([
-      ...staticFilterKeys,
-      ...columns
-        .filter((column) => column.isCustomField && column.visibility)
-        .map((column) => ({
-          key: column.fieldName,
-          label: titleCase(column.fieldName),
-        })),
-    ]);
-  }, [columns]);
-
   // Render
   return (
     <>
@@ -190,7 +168,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
               fields={[
                 {
                   type: FieldType.SingleSelect,
-                  name: 'docType',
+                  name: 'fileOrFolder',
                   control,
                   options: [
                     {
@@ -212,8 +190,8 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
                     },
                   ],
                   disabled: hideFilter,
-                  suffixIcon: !!docType && <></>,
-                  isClearable: !!docType,
+                  suffixIcon: !!fileOrFolder && <></>,
+                  isClearable: !!fileOrFolder,
                   clearIcon: <Icon name="close" size={16} />,
                   placeholder: 'Select',
                   showSearch: false,
@@ -285,7 +263,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
         </div>
 
         {/* Active filters */}
-        <FilterChips filterKeys={filterKeys} sortOptions={sortOptions} />
+        <FilterChips filterKeys={validFilterKey} sortOptions={sortOptions} />
       </div>
 
       {/* Modal */}
@@ -305,17 +283,17 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
           defaultValues={filters as IFilters}
           filterNavigation={[
             {
-              key: 'docOwners',
+              key: 'owners',
               label: () => 'Owner',
               component: (form: UseFormReturn<any>) => (
-                <DocumentOwner {...form} name="docOwners" />
+                <DocumentOwner {...form} name="owners" />
               ),
             },
             {
-              key: 'docType',
+              key: 'type',
               label: () => 'Type',
               component: (form: UseFormReturn<any>) => (
-                <DocumentType {...form} name="docType" />
+                <DocumentType {...form} name="type" />
               ),
             },
             {

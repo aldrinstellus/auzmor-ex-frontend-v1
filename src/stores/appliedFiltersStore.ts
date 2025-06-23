@@ -1,3 +1,4 @@
+import { ICheckboxListOption } from 'components/CheckboxList';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
@@ -14,7 +15,17 @@ type Actions = {
   clearFilters: () => void;
 };
 
-export type FilterKey = { key: string; label: string };
+export type FilterKey = {
+  key: string;
+  label: string;
+  transform: (value: any) => any;
+};
+
+export const checkboxTransform = (values: ICheckboxListOption[]) => {
+  return values.map(
+    (value: ICheckboxListOption) => value.data.label ?? value.data.name ?? '',
+  );
+};
 
 export const useAppliedFiltersStore = create<State & Actions>()(
   immer((set, get) => ({
@@ -33,7 +44,7 @@ export const useAppliedFiltersStore = create<State & Actions>()(
       }),
     setValidFilterKeys: (filterKeys: FilterKey[]) =>
       set((state) => {
-        state.validFilterKey = { ...state.validFilterKey, ...filterKeys };
+        state.validFilterKey = [...state.validFilterKey, ...filterKeys];
       }),
     updateFilter: (key, value) =>
       set((state) => {
