@@ -23,6 +23,7 @@ interface IFilePreviewProps {
   rootFolderId: string;
   open: boolean;
   canDownload: boolean;
+  canComment: boolean;
   closeModal: () => void;
 }
 
@@ -31,6 +32,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
   rootFolderId,
   open,
   canDownload = false,
+  canComment = false,
   closeModal,
 }) => {
   const { t } = useTranslation('channelDetail', {
@@ -138,13 +140,15 @@ const FilePreview: FC<IFilePreviewProps> = ({
           )}
         </div>
         <div className="flex absolute gap-3 right-4">
-          <Icon
-            name={showComment ? "commentFilled" : "comment"}
-            color="text-red-500"
-            onClick={() => {
-              setShowComment(!showComment);
-            }}
-          />
+          {canComment && (
+            <Icon
+              name={showComment ? "commentFilled" : "comment"}
+              color="text-red-500"
+              onClick={() => {
+                setShowComment(!showComment);
+              }}
+            />
+          )}
           {canDownload && !fileLoading && !!file.downloadable && (
             <div className="flex gap-2">
               {isDownloading && <Spinner />}

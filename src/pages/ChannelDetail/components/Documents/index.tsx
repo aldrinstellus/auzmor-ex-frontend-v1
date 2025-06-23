@@ -1762,6 +1762,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           canDownload={permissions.includes(
             ChannelPermissionEnum.CanDownloadDocuments,
           )}
+          canComment={permissions.includes(
+            ChannelPermissionEnum.CanCommentDocuments,
+          )}
           closeModal={() => {
             const mappedItemsToEncode = items.slice(1).map((each) => ({
               id: each.id,
