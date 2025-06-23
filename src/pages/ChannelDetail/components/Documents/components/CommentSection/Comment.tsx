@@ -31,14 +31,17 @@ import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import RenderQuillContent from 'components/RenderQuillContent/index';
 import { useCommentStore } from 'stores/commentStore';
+import { useChannelRole } from 'hooks/useChannelRole';
 
 interface CommentProps {
+  channelId?: string
   commentId: string;
 }
 
-export const Comment: FC<CommentProps> = ({ commentId }) => {
+export const Comment: FC<CommentProps> = ({ channelId, commentId }) => {
   const { t: tp } = useTranslation('profile');
   const { t } = useTranslation('post', { keyPrefix: 'commentComponent' });
+  const { isChannelAdmin, isChannelMember } = useChannelRole(channelId);
   const [getComments, storedcomments, setComment] = useCommentStore(
     ({ getComments, comment, setComment }) => [
       getComments,
@@ -167,6 +170,10 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
                     onClick: showConfirm,
                     stroke: 'text-neutral-900',
                     dataTestId: 'document-ellipsis-delete-comment',
+                    disabled: !(
+                      isChannelAdmin || 
+                      (isChannelMember && comment.createdBy?.userId === user?.id)
+                    )
                   },
                 ]}
                 className="mt-1 right-0 border-1 border-neutral-200 focus-visible:outline-none"
