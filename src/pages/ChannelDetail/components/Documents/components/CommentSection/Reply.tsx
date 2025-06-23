@@ -94,7 +94,7 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
 
   return (
     <div>
-      <div className={`flex flex-col`}>
+      <div className="flex flex-col">
         <div className="bg-neutral-100 p-3 rounded-9xl mb-2">
           <div className="flex justify-between p-0">
             <div className="flex">

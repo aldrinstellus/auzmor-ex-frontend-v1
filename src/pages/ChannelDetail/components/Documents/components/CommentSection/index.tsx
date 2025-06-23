@@ -106,7 +106,7 @@ const Comments: FC<CommentsProps> = ({ channelId, entityId }) => {
             <div className="flex flex-col gap-4 px-4">
               {commentIds.filter(({ id }) => !!comment[id])
                 .map(({ id }) => (
-                  <Comment key={id} commentId={id} />
+                  <Comment key={id} channelId={channelId} commentId={id} />
                 ))}
             </div>
             {hasNextPage && !isFetchingNextPage && (
