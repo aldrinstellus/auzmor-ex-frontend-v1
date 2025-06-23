@@ -35,14 +35,13 @@ const LearnCard: FC<ILearnCardProps> = ({
   medalPosition = 'top',
 }) => {
   const { t } = useTranslation('learnWidget', { keyPrefix: 'learnCard' });
+  const baseStyle = 'relative overflow-hidden group/card flex-shrink-0';
+  const sizeStyle = className || '';
 
   const { user } = useAuth();
   const style = useMemo(
     () =>
-      clsx({
-        'w-full h-[350px] relative overflow-hidden group/card': true,
-        [className]: true,
-      }),
+      clsx(baseStyle, sizeStyle),
     [className],
   );
   const type = useMemo(() => {
