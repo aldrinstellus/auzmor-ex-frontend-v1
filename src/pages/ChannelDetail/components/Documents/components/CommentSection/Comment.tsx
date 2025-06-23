@@ -159,6 +159,7 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
                     },
                     stroke: 'text-neutral-900',
                     dataTestId: 'document-ellipsis-edit-comment',
+                    disabled: comment.createdBy?.userId !== user?.id,
                   },
                   {
                     icon: 'delete',
