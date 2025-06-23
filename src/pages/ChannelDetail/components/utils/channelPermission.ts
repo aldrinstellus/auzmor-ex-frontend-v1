@@ -86,11 +86,6 @@ export const getChannelPermissions: (
             ChannelPermissionEnum.CanReauthorize,
           ].filter((permission) => {
             if (
-              permission === ChannelPermissionEnum.CanConnectChannelDoc &&
-              !isSuperAdmin
-            )
-              return false;
-            if (
               permission === ChannelPermissionEnum.CanReauthorize &&
               !isSuperAdmin
             )
@@ -120,11 +115,6 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanReauthorize,
             ].filter((permission) => {
               if (
-                permission === ChannelPermissionEnum.CanConnectChannelDoc &&
-                !isSuperAdmin
-              )
-                return false;
-              if (
                 permission === ChannelPermissionEnum.CanReauthorize &&
                 !isSuperAdmin
               )
@@ -152,11 +142,6 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanDeleteDocuments,
               ChannelPermissionEnum.CanReauthorize,
             ].filter((permission) => {
-              if (
-                permission === ChannelPermissionEnum.CanConnectChannelDoc &&
-                !isSuperAdmin
-              )
-                return false;
               if (
                 permission === ChannelPermissionEnum.CanReauthorize &&
                 !isSuperAdmin
@@ -189,11 +174,6 @@ export const getChannelPermissions: (
             ChannelPermissionEnum.CanReauthorize,
           ].filter((permission) => {
             if (
-              permission === ChannelPermissionEnum.CanConnectChannelDoc &&
-              !isSuperAdmin
-            )
-              return false;
-            if (
               permission === ChannelPermissionEnum.CanReauthorize &&
               !isSuperAdmin
             )
@@ -224,11 +204,6 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanReauthorize,
             ].filter((permission) => {
               if (
-                permission === ChannelPermissionEnum.CanConnectChannelDoc &&
-                !isSuperAdmin
-              )
-                return false;
-              if (
                 permission === ChannelPermissionEnum.CanReauthorize &&
                 !isSuperAdmin
               )
@@ -257,11 +232,6 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanDeleteDocuments,
               ChannelPermissionEnum.CanReauthorize,
             ].filter((permission) => {
-              if (
-                permission === ChannelPermissionEnum.CanConnectChannelDoc &&
-                !isSuperAdmin
-              )
-                return false;
               if (
                 permission === ChannelPermissionEnum.CanReauthorize &&
                 !isSuperAdmin

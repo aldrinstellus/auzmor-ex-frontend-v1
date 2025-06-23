@@ -17,30 +17,32 @@ const Recommendation: FC<IRecommendationProps> = ({
   onCLick,
 }) => {
   return (
-    <Card className="flex flex-col gap-4 px-4 pt-4 relative h-[366px]">
-      <div className="flex items-center justify-between">
+    <Card className="flex flex-col gap-4 px-4 pt-4 relative h-[392px]">
+      <div>
         <p className="text-sm font-bold text-neutral-900">{title}</p>
-        <Button
-          label="Show more"
-          rightIcon={'arrowRight'}
-          rightIconSize={12}
-          rightIconClassName="hover:text-primary-500"
-          size={Size.ExtraSmall}
-          onClick={onCLick}
-          className="!bg-transparent !text-primary-500 hover:text-primary-600 active:text-primary-700 text-xs font-normal outline-1 outline focus:outline-primary-500"
-        />
       </div>
       <div className="flex top-8 gap-4 w-full overflow-hidden hover:overflow-x-scroll pb-4">
-        <div className="flex gap-4">
+        <div className={`flex gap-4 ${cards.length === 3 ? 'w-max' : 'w-full'}`}>
           {cards.map((card: Record<string, any>) => (
             <LearnCard
-              className="!w-[254px] !h-[290px]"
+              className={`${cards.length === 1 ? 'w-full' : cards.length === 2 ? 'w-[calc(50%-0.5rem)]' : 'w-[254px]'} h-[290px] flex-shrink-0`}
               data={card}
               key={card.id}
               isLoading={isLoading}
             />
           ))}
         </div>
+      </div>
+      <div className='flex items-center justify-center'>
+        <Button
+          label="View All"
+          rightIcon="arrowRight"
+          rightIconSize={12}
+          rightIconClassName="!text-black"
+          size={Size.ExtraSmall}
+          onClick={onCLick}
+          className="!bg-transparent !text-black hover:!text-black active:!text-black text-xs font-bold outline-1 outline focus:outline-primary-500"
+        />
       </div>
     </Card>
   );
