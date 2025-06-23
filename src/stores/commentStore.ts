@@ -3,7 +3,7 @@ import { IComment } from 'components/Comments';
 import { chain } from 'utils/misc';
 
 export interface ICommentStore {
-  comment: { [key: string]: IComment };
+  comment: { [key: string]: IComment  };
   setComment: (comment: { [key: string]: IComment }) => void;
   updateComment: (id: string, comment: IComment) => void;
   appendComments: (comments: IComment[]) => void;

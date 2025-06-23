@@ -16,6 +16,7 @@ import { useMutation } from '@tanstack/react-query';
 import { getIconFromMime } from './Doc';
 import NoDataFound from 'components/NoDataFound';
 import { getExtension } from '../../utils';
+import Comments from './CommentSection';
 
 interface IFilePreviewProps {
   fileId: string;
@@ -38,6 +39,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
   const { getApi } = usePermissions();
   const { channelId } = useParams();
   const [isIframeLoading, setIsIframeLoading] = React.useState(true);
+  const [showComment, setShowComment] = React.useState(false);
 
   const useChannelDocById = getApi(ApiEnum.UseChannelDocById);
   const { data: fileData, isLoading: fileLoading } = useChannelDocById({
@@ -116,7 +118,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
       open={open}
       className="!h-[calc(100vh-62px)] !w-[calc(100vw-96px)] flex flex-col overflow-hidden"
     >
-      <div className="flex items-center relative px-6 py-4 shrink-0">
+      <div className="h-[10%] flex items-center relative px-6 py-4 shrink-0">
         <div className="flex flex-grow items-start ">
           {fileLoading ? (
             <Skeleton width={256} height={40} />
@@ -136,6 +138,13 @@ const FilePreview: FC<IFilePreviewProps> = ({
           )}
         </div>
         <div className="flex absolute gap-3 right-4">
+          <Icon
+            name={showComment ? "commentFilled" : "comment"}
+            color="text-red-500"
+            onClick={() => {
+              setShowComment(!showComment);
+            }}
+          />
           {canDownload && !fileLoading && !!file.downloadable && (
             <div className="flex gap-2">
               {isDownloading && <Spinner />}
@@ -157,7 +166,9 @@ const FilePreview: FC<IFilePreviewProps> = ({
         </div>
       </div>
       <Divider />
-      <div className="flex items-center justify-center w-full h-full">
+      <div className="flex justify-center w-full h-[90%] overflow-hidden">
+        {/* Main Content */}
+      <div className={`bg-gray-200 transition-all duration-300 ease-in-out ${showComment ? 'w-[68%]' : 'w-full'} flex items-center justify-center h-full px-8 pt-8`}>
         {showSpinner ? <Spinner className="!h-24 !w-24" /> : null}
         {showNoPreview ? (
           <NoDataFound
@@ -177,18 +188,18 @@ const FilePreview: FC<IFilePreviewProps> = ({
               src={previewUrl}
               controls
               controlsList="nodownload"
-              className="object-contain h-[calc(100%-72px)] w-full"
+              className="object-contain h-[calc(100%-72px)] w-full z-1"
             />
           </div>
         ) : null}
         {showIframe ? (
           <div className="w-full h-full relative">
             {isIframeLoading && (
-              <Spinner className="absolute !h-24 !w-24 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+              <Spinner className="absolute !h-24 !w-24 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-1" />
             )}
             <iframe
               src={previewUrl}
-              className="w-full h-[calc(100%-8px)] mt-2"
+              className="w-full h-[calc(100%-8px)] mt-2 z-1"
               allowFullScreen
               allow="all"
               name="iframe_a"
@@ -197,6 +208,13 @@ const FilePreview: FC<IFilePreviewProps> = ({
             />
           </div>
         ) : null}
+      </div>
+         {/* Comment Section */}
+      <div className={`transition-all duration-300 ease-in-out ${showComment ? 'w-[32%] px-2 py-4' : 'w-0 overflow-hidden'} relative h-full`}>
+        {showComment && (
+          <Comments channelId={channelId} entityId={fileId} />
+        )}
+      </div>
       </div>
     </Modal>
   );

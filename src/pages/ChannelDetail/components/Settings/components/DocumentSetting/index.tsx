@@ -5,6 +5,8 @@ import { IChannel } from 'stores/channelStore';
 import DocVisibilityRow from './DocVisibilityRow';
 import UploadControlRow from './UploadControlRow';
 import DocAccessLevelRow from './DocAccessLevelRow';
+import CommentVisibilityRow from './CommentVisibilityRow';
+import CommentControlRow from './CommentControlRow';
 import { useTranslation } from 'react-i18next';
 
 type DocumentSettingProps = {
@@ -30,6 +32,8 @@ const DocumentSetting: FC<DocumentSettingProps> = ({
         <DocVisibilityRow canEdit={canEdit} data={channelData} />
         <UploadControlRow canEdit={canEdit} data={channelData} />
         <DocAccessLevelRow canEdit={canEdit} data={channelData} />
+        <CommentVisibilityRow canEdit={canEdit} data={channelData} />
+        <CommentControlRow canEdit={canEdit} data={channelData} />
       </Card>
     </div>
   );

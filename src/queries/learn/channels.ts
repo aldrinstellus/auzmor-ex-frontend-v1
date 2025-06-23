@@ -12,6 +12,9 @@ import {
   useChannelStore,
 } from 'stores/channelStore';
 import apiService from 'utils/apiService';
+import { IComment } from 'components/Comments';
+import { useCommentStore } from 'stores/commentStore';
+
 
 export const getAllChannels = async (
   context: QueryFunctionContext<
@@ -307,6 +310,38 @@ export const bulkChannelRequestUpdate = async (
   });
 };
 
+export const getChannelDocumentComments = async (
+  channelId: string,
+  fileId: string,
+  context: QueryFunctionContext<(string | { channelId: string; fileId: string; limit?: number })[]>,
+  appendComments: (comments: IComment[]) => void
+) => {
+  const params = context.queryKey[1] as { limit?: number };
+  const { limit } = params;
+
+  let response;
+  if (!context.pageParam) {
+    const queryParams = new URLSearchParams();
+    if (limit) queryParams.append('limit', String(limit));
+    const url = `/channels/${channelId}/files/${fileId}/comments?${queryParams}`;
+    response = await apiService.get(url);
+  } else {
+    response = await apiService.get(context.pageParam);
+  }
+
+  const comments = response.data?.data?.comments || [];
+  appendComments(comments);
+
+  // Replace with only comment IDs for caching
+  response.data.data.comments = comments.map((comment: IComment) => ({ id: comment.id }));
+  return response;
+};
+
+export const createDocComment = async (channelId: string, id: string, payload: any) => {
+  const { result } = await apiService.post(`/channels/${channelId}/files/${id}/comments`, payload);
+  return result?.data;
+};
+
 // ------------------ React Query -----------------------
 
 export const useInfiniteChannels = (
@@ -479,5 +514,36 @@ export const useInfiniteChannelsRequestLearner = (
       staleTime: 5 * 60 * 1000,
       enabled: enabled,
     }),
+  };
+};
+
+export const useInfiniteChannelDocumentComments = ({
+  channelId,
+  fileId,
+  limit = 4,
+}: {
+  channelId: string;
+  fileId: string;
+  limit?: number;
+}) => {
+  const { comment, appendComments } = useCommentStore();
+
+  return {
+    ...useInfiniteQuery({
+      queryKey: ['comments', { channelId, fileId, limit }],
+      queryFn: (context) =>
+        getChannelDocumentComments(channelId, fileId, context, appendComments),
+      getNextPageParam: (lastPage: any) => {
+        const pageDataLen = lastPage?.data?.data?.comments.length;
+        const pageLimit = lastPage?.data?.data?.paging?.limit;
+        if (pageDataLen < pageLimit) {
+          return null;
+        }
+        return lastPage?.data?.data?.paging?.next;
+      },
+      getPreviousPageParam: (currentPage: any) =>
+        currentPage?.data?.data?.paging?.prev,
+    }),
+    comment,
   };
 };

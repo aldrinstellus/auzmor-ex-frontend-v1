@@ -76,6 +76,12 @@ export const apiConfigLxp = {
   [ApiEnum.UpdateChannelJoinRequests]: {
     [Default]: queries.bulkChannelRequestUpdate,
   },
+  [ApiEnum.GetChannelDocumentComments]: {
+    [Default]: queries.useInfiniteChannelDocumentComments,
+  },
+  [ApiEnum.CreateChannelDocumentComments]: {
+    [Default]: queries.createDocComment,
+  },
 
   //comments
   [ApiEnum.GetComments]: { [Default]: queries.useInfiniteComments },

@@ -12,14 +12,14 @@ import { usePermissions } from 'hooks/usePermissions';
 import queryClient from 'utils/queryClient';
 import { useTranslation } from 'react-i18next';
 
-type DocAccessLevelRowProps = {
+type CommentControlRowProps = {
   data: IChannel;
   canEdit: boolean;
 };
 
-const DocAccessLevelRow: FC<DocAccessLevelRowProps> = ({ data, canEdit }) => {
+const CommentControlRow: FC<CommentControlRowProps> = ({ data, canEdit }) => {
   const { t } = useTranslation('channelDetail', {
-    keyPrefix: 'setting.documentSetting.DocAccessLevelRow',
+    keyPrefix: 'setting.documentSetting.commentControlRow',
   });
   const { channelId = '' } = useParams();
   const { getApi } = usePermissions();
@@ -52,8 +52,8 @@ const DocAccessLevelRow: FC<DocAccessLevelRowProps> = ({ data, canEdit }) => {
   const { control } = useForm<any>({
     mode: 'onSubmit',
     defaultValues: {
-      docAccessLevel: mapToString(
-        !!data.settings?.restriction?.canDownloadDocuments,
+      canPost: mapToString(
+        !!data.settings?.restriction?.canPost,
       ),
     },
   });
@@ -62,12 +62,12 @@ const DocAccessLevelRow: FC<DocAccessLevelRowProps> = ({ data, canEdit }) => {
     updateChannelMutation.mutate({
       channelId,
       settings: {
-        restriction: { canDownloadDocuments: mapToBool(value) },
+        restriction: { canPost: mapToBool(value) },
       },
     });
   };
 
-  const uploadSettingOptions: IRadioListOption[] = [
+  const postSettingOptions: IRadioListOption[] = [
     {
       data: {
         value: t('anyone'),
@@ -89,11 +89,11 @@ const DocAccessLevelRow: FC<DocAccessLevelRowProps> = ({ data, canEdit }) => {
   const fields = [
     {
       type: FieldType.Radio,
-      name: 'docAccessLevel',
+      name: 'canPost',
       rowClassName: 'space-y-4',
       control,
       disabled: !canEdit,
-      radioList: uploadSettingOptions,
+      radioList: postSettingOptions,
       labelRenderer: (option: IRadioListOption) => {
         return (
           <>
@@ -114,15 +114,16 @@ const DocAccessLevelRow: FC<DocAccessLevelRowProps> = ({ data, canEdit }) => {
   return (
     <InfoRow
       icon={{
-        name: 'lock-open',
-        color: '!text-teal-500',
-        bgColor: '!bg-teal-50',
+        name: 'upload',
+        color: '!text-red-500',
+        bgColor: '!bg-red-50',
       }}
       isEditButton={false}
       label={<div className="my-6">{t('title')}</div>}
       isEditMode={true}
       value={data?.settings?.visibility}
       dataTestId=""
+      border={false}
       editNode={
         <div>
           <form>
@@ -137,4 +138,4 @@ const DocAccessLevelRow: FC<DocAccessLevelRowProps> = ({ data, canEdit }) => {
   );
 };
 
-export default DocAccessLevelRow;
+export default CommentControlRow;
