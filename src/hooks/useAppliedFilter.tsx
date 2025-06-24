@@ -114,6 +114,7 @@ export const useAppliedFilter = (initialFilters: Record<string, any>) => {
       dataTestId: string;
     }[];
   }) => {
+    const { deleteParam } = useURLParams();
     return isFilterApplied ? (
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-4">
@@ -145,12 +146,13 @@ export const useAppliedFilter = (initialFilters: Record<string, any>) => {
                   key={key}
                   label={displayLabel}
                   values={displayValues}
-                  onClear={() =>
+                  onClear={() => {
                     setFilters({
                       ...filters,
                       [key]: Array.isArray(value) ? [] : '',
-                    })
-                  }
+                    });
+                    deleteParam(key);
+                  }}
                 />
               );
             })}
