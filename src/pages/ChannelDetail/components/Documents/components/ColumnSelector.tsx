@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import Layout, { FieldType } from 'components/Form';
 import Popover from 'components/Popover';
 import { ICheckboxListOption } from 'components/CheckboxList';
+import { searchObjects } from 'utils/misc';
 
 export interface ColumnItem {
   id: string;
@@ -39,10 +40,10 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
     },
   });
 
-  const [watchedColumns, _watchedColumnSearch] = watch([
+  const [watchedColumns, watchedColumnSearch] = watch([
     'columns',
     'columnSearch',
-  ]); // watch changes to the checkboxes
+  ]);
 
   useEffect(() => {
     if (watchedColumns) {
@@ -75,10 +76,14 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
         type: FieldType.CheckboxList,
         name: 'columns',
         control,
-        options: columns?.map((column) => ({
-          data: column,
-          disabled: disabledFieldName.includes(column.fieldName),
-        })),
+        options: searchObjects(
+          columns?.map((column) => ({
+            data: column,
+            disabled: disabledFieldName.includes(column.fieldName),
+          })),
+          ['data.label'],
+          watchedColumnSearch,
+        ),
         labelRenderer: (option: ICheckboxListOption) => {
           return (
             <div className="ml-2.5 cursor-pointer text-xs">
@@ -89,7 +94,7 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
         rowClassName: 'px-6 py-3 border-b border-neutral-200',
       },
     ],
-    [columns],
+    [columns, watchedColumnSearch],
   );
 
   return (

@@ -741,34 +741,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     { key: 'sort', label: 'Sort by', transform: () => {} },
   ];
 
-  console.log(filters);
-
-  const customFields = filters
-    ? validFilterKey
-        .filter((each) => {
-          return (
-            !!each.isDynamic &&
-            Object.keys(filters).includes(each.key) &&
-            filters[each.key].length
-          );
-        })
-        .map((each: FilterKey) =>
-          JSON.stringify({
-            custom_field_id: parseNumber(
-              (documentFields as ColumnItem[]).find(
-                (docField) => docField.fieldName == each.key,
-              )!.id,
-            ),
-            field_name: (documentFields as ColumnItem[]).find(
-              (docField) => docField.fieldName == each.key,
-            )?.fieldName,
-            field_values: filters
-              ? each.transform(filters[each.key] ?? [])
-              : [],
-          }),
-        )
-    : [];
-
   // Get props for Datagrid component
   const dataGridProps = useDataGrid<DocType>({
     apiEnum: isDocSearchApplied
@@ -778,15 +750,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     payload: {
       channelId,
       params: {
-        ...(validFilterKey ?? [])
-          .filter((validField) => !validField.isDynamic)
-          .reduce((acc, current) => {
-            acc[current.key as string] = current.transform(
-              filters?.[current.key] || [],
-            );
-            return acc;
-          }, {} as Record<string, any>),
-        customFields: [...customFields],
+        ...(validFilterKey ?? []).reduce((acc, current) => {
+          acc[current.key as string] = current.transform(
+            filters?.[current.key] || [],
+          );
+          return acc;
+        }, {} as Record<string, any>),
         sort: filters?.sort ? filters?.sort.split(':')[0] : undefined,
         order: filters?.sort ? filters?.sort.split(':')[1] : undefined,
         ...parseModifiedOnFilter,
