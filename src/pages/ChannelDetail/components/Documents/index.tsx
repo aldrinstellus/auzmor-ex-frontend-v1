@@ -1595,6 +1595,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           canComment={permissions.includes(
             ChannelPermissionEnum.CanCommentDocuments,
           )}
+          canPostComment={permissions.includes(
+            ChannelPermissionEnum.CanPostCommentsChannelDoc,
+          )}
           closeModal={() => {
             const mappedItemsToEncode = items.slice(1).map((each) => ({
               id: each.id,

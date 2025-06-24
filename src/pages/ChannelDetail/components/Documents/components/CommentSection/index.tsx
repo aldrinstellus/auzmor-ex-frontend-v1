@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
 import NoDataFound from 'components/NoDataFound';
+import { useChannelRole } from 'hooks/useChannelRole';
 
 export const validImageTypesForComments = [
   'image/png',
@@ -27,11 +28,13 @@ export const validImageTypesForComments = [
 
 interface CommentsProps {
   channelId?: string,
+  canPostComment: boolean,
   entityId: string;
 }
 
-const Comments: FC<CommentsProps> = ({ channelId, entityId }) => {
+const Comments: FC<CommentsProps> = ({ channelId, canPostComment, entityId }) => {
   const { t } = useTranslation('channelDetail', { keyPrefix: 'documentTab' });
+  const { isChannelAdmin } = useChannelRole(channelId);
   const { user } = useAuth();
   const { getApi } = usePermissions();
   const {
@@ -62,38 +65,42 @@ const Comments: FC<CommentsProps> = ({ channelId, entityId }) => {
   const commentIds: { id: string }[] =
   data?.pages.flatMap((page: any) => page.data?.data?.comments || []) ?? [];
 
+  const isPostingOnCommentAllowed = canPostComment || isChannelAdmin;
+
   return (
     <div className='h-full'>
-      <div className="flex flex-row items-center justify-between gap-2 min-h-[15%] px-4 py-3 mb-4 border-b border-gray-300">
-        <div>
-          <Avatar
-            name={user?.name || 'U'}
-            size={32}
-            image={user?.profileImage}
+      {isPostingOnCommentAllowed && (
+        <div className="flex flex-row items-center justify-between gap-2 min-h-[15%] px-4 py-3 mb-4 border-b border-gray-300">
+          <div>
+            <Avatar
+              name={user?.name || 'U'}
+              size={32}
+              image={user?.profileImage}
+            />
+          </div>
+          <CommentsRTE
+            className="w-0 flex-grow"
+            channelId={channelId}
+            entityId={entityId}
+            entityType="comment"
+            inputRef={inputRef}
+            media={media}
+            removeMedia={() => {
+              setMedia([]);
+              setFiles([]);
+              setMediaValidationErrors([]);
+              if (inputRef.current) {
+                inputRef.current.value = '';
+              }
+            }}
+            files={files}
+            mediaValidationErrors={mediaValidationErrors}
+            setIsCreateCommentLoading={setIsCreateCommentLoading}
+            setMediaValidationErrors={setMediaValidationErrors}
+            isCreateCommentLoading={isCreateCommentLoading}
           />
         </div>
-        <CommentsRTE
-          className="w-0 flex-grow"
-          channelId={channelId}
-          entityId={entityId}
-          entityType="comment"
-          inputRef={inputRef}
-          media={media}
-          removeMedia={() => {
-            setMedia([]);
-            setFiles([]);
-            setMediaValidationErrors([]);
-            if (inputRef.current) {
-              inputRef.current.value = '';
-            }
-          }}
-          files={files}
-          mediaValidationErrors={mediaValidationErrors}
-          setIsCreateCommentLoading={setIsCreateCommentLoading}
-          setMediaValidationErrors={setMediaValidationErrors}
-          isCreateCommentLoading={isCreateCommentLoading}
-        />
-      </div>
+      )}
       {isLoading ? (
         <div className='w-full h-[92%] flex flex-col'>
           <CommentSkeleton />
@@ -101,12 +108,12 @@ const Comments: FC<CommentsProps> = ({ channelId, entityId }) => {
       ) : (
         commentIds &&
         commentIds.length > 0 ? (
-          <div className="h-[80%] overflow-y-scroll">
+          <div className="h-[80%] pt-4 overflow-y-scroll">
             {isCreateCommentLoading && <div className='px-4'><CommentSkeleton /></div>}
             <div className="flex flex-col gap-4 px-4">
               {commentIds.filter(({ id }) => !!comment[id])
                 .map(({ id }) => (
-                  <Comment key={id} channelId={channelId} commentId={id} />
+                  <Comment key={id} channelId={channelId} canPostComment={isPostingOnCommentAllowed} commentId={id} />
                 ))}
             </div>
             {hasNextPage && !isFetchingNextPage && (
