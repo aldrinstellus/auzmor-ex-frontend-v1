@@ -24,6 +24,7 @@ interface IFilePreviewProps {
   open: boolean;
   canDownload: boolean;
   canComment: boolean;
+  canPostComment: boolean;
   closeModal: () => void;
 }
 
@@ -33,6 +34,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
   open,
   canDownload = false,
   canComment = false,
+  canPostComment = false,
   closeModal,
 }) => {
   const { t } = useTranslation('channelDetail', {
@@ -216,7 +218,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
          {/* Comment Section */}
       <div className={`transition-all duration-300 ease-in-out ${showComment ? 'w-[32%] px-2 pb-4' : 'w-0 overflow-hidden'} relative h-full`}>
         {showComment && (
-          <Comments channelId={channelId} entityId={fileId} />
+          <Comments channelId={channelId} canPostComment={canPostComment} entityId={fileId} />
         )}
       </div>
       </div>

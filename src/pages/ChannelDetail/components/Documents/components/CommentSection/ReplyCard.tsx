@@ -21,6 +21,7 @@ import { useCommentStore } from 'stores/commentStore';
 
 interface CommentsProps {
   entityId: string;
+  canPostComment: boolean;
   className?: string;
 }
 
@@ -29,7 +30,7 @@ export interface activeCommentsDataType {
   type: string;
 }
 
-const ReplyCard: FC<CommentsProps> = ({entityId, className }) => {
+const ReplyCard: FC<CommentsProps> = ({entityId, canPostComment, className }) => {
   const { user } = useAuth();
   const { getApi } = usePermissions();
   const {
@@ -72,7 +73,7 @@ const ReplyCard: FC<CommentsProps> = ({entityId, className }) => {
         </div>
       ) : (
         <div className="ml-8">
-          <div className="flex flex-row items-center justify-between mb-4 gap-2">
+          {canPostComment && (<div className="flex flex-row items-center justify-between mb-4 gap-2">
             <div>
               <Avatar
                 name={user?.name || t('nameNotSpecified')}
@@ -100,7 +101,7 @@ const ReplyCard: FC<CommentsProps> = ({entityId, className }) => {
               setMediaValidationErrors={setMediaValidationErrors}
               isCreateCommentLoading={isCreateCommentLoading}
             />
-          </div>
+          </div>)}
           {replyIds && replyIds.length > 0 && (
             <div>
               {isCreateCommentLoading && <CommentSkeleton />}

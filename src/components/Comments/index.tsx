@@ -50,7 +50,6 @@ export interface IComment {
   relevantComments: string[];
   entityType: string;
   entityId: string;
-  channelId: string;
   orgId: string;
   createdAt: string;
   updatedAt: string;

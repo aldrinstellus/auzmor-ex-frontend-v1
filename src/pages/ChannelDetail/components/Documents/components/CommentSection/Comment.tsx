@@ -35,10 +35,11 @@ import { useChannelRole } from 'hooks/useChannelRole';
 
 interface CommentProps {
   channelId?: string
+  canPostComment: boolean
   commentId: string;
 }
 
-export const Comment: FC<CommentProps> = ({ channelId, commentId }) => {
+export const Comment: FC<CommentProps> = ({ channelId, canPostComment ,commentId }) => {
   const { t: tp } = useTranslation('profile');
   const { t } = useTranslation('post', { keyPrefix: 'commentComponent' });
   const { isChannelAdmin, isChannelMember } = useChannelRole(channelId);
@@ -305,7 +306,7 @@ export const Comment: FC<CommentProps> = ({ channelId, commentId }) => {
       </div>
       {showReplies ? (
         <div className="mt-4">
-          <ReplyCard entityId={comment.id} />
+          <ReplyCard entityId={comment.id} canPostComment={canPostComment} />
         </div>
       ) : !previousShowReply.current && replies?.length ? (
         replies.map((reply) => (
