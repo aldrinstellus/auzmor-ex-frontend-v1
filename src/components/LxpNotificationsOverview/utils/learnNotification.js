@@ -4133,7 +4133,7 @@ export const getNotificationTitle = (
       />
     );
   }
-  if (true) {
+  if (NOTIFICATION_ACTION_TYPES.ReassignPath === actionType) {
     return (
       <NotificationTitle
         i18nKey={
