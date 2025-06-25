@@ -6,7 +6,7 @@ import Spinner from 'components/Spinner';
 import LoadMore from 'components/Comments/components/LoadMore';
 import { useCommentStore } from 'stores/commentStore';
 import CommentSkeleton from 'components/Comments/components/CommentSkeleton';
-import { CommentsRTE } from 'components/Comments/components/CommentsRTE';
+import { CommentsRTE, Placeholder } from 'components/Comments/components/CommentsRTE';
 import { EntityType } from 'interfaces';
 import {
   IMG_FILE_SIZE_LIMIT,
@@ -81,6 +81,7 @@ const Comments: FC<CommentsProps> = ({
               className="w-0 flex-grow py-1"
               entityId={entityId}
               entityType={EntityType.Comment.toLocaleLowerCase()}
+              placeholder={Placeholder.CreateReply}
               inputRef={inputRef}
               media={media}
               removeMedia={() => {

@@ -27,8 +27,8 @@ import { useFeedStore } from 'stores/feedStore';
 import { useTranslation } from 'react-i18next';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
-import { useCommentsFetcher } from './utils';
 import NoDataFound from 'components/NoDataFound';
+import { useCommentsFetcher } from './utils';
 
 export const validImageTypesForComments = [
   'image/png',
@@ -128,6 +128,7 @@ const Comments: FC<CommentsProps> = ({
   const [isCreateCommentLoading, setIsCreateCommentLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<string>('');
   const getPost = useFeedStore((state) => state.getPost);
+  console.log(commentIds);
 
   return (
     <div className={`${className}`}>
@@ -228,12 +229,12 @@ const Comments: FC<CommentsProps> = ({
         ) : showEmptyState ? (
           <div className='w-full h-[80%] flex items-center justify-center'>
             <NoDataFound
-                illustration="noCommentAvailable"
+                illustration="noComments"
                 labelHeader={
                   <div className='flex flex-col items-center justify-center'>
-                    {t('noComments')}
+                    {t('noComments.label')}
                     <span className="text-sm font-semibold">
-                      {t('noCommentAvailable')}
+                      {t('noComments.desc')}
                     </span>
                   </div>
                 }

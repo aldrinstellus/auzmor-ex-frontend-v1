@@ -36,6 +36,15 @@ export enum PostCommentMode {
   Create = 'CREATE',
   Edit = 'EDIT',
   SendWish = 'SEND_WISH',
+  Reply = 'REPLY',
+  EditReply = 'EDIT_REPLY',
+}
+
+export enum Placeholder {
+  EditComment = 'EDIT_COMMENT',
+  CreateReply = 'CREATE_REPLY',
+  EditReply = 'EDIT_REPLY',
+  SendWish = 'SEND_WISH',
 }
 
 interface CommentFormProps {
@@ -59,6 +68,7 @@ interface CommentFormProps {
   isCreateCommentLoading?: boolean;
   suggestions?: string;
   toolbarId?: string;
+  placeholder?: Placeholder;
 }
 
 interface IUpdateCommentPayload {
@@ -90,6 +100,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
   setMediaValidationErrors = () => {},
   suggestions,
   toolbarId,
+  placeholder,
 }) => {
   const {
     comment,
@@ -382,6 +393,21 @@ export const CommentsRTE: FC<CommentFormProps> = ({
     createCommentMutation.isLoading ||
     updateCommentMutation.isLoading ||
     uploadStatus === UploadStatus.Uploading;
+  
+  const getPlaceholder = (mode?: Placeholder): string => {
+    switch (mode) {
+      case Placeholder.SendWish:
+        return 'Wish them now...';
+      case Placeholder.CreateReply:
+        return 'Reply to this thread…';
+      case Placeholder.EditReply:
+        return 'Edit your Reply...';
+      case Placeholder.EditComment:
+        return 'Edit your comment...';
+      default:
+        return 'Leave a comment...';
+    }
+  };
 
   return (
     <div className={`flex flex-row ${className} `}>
@@ -391,11 +417,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
         <RichTextEditor
           toolbarId={`toolbar-${toolbarId || entityId}`}
           defaultValue={commentData?.content?.editor}
-          placeholder={
-            mode === PostCommentMode.SendWish
-              ? 'Wish them now...'
-              : 'Leave a comment...'
-          }
+          placeholder={getPlaceholder(placeholder)}
           className="max-w-full flex-grow text-sm"
           ref={quillRef}
           dataTestId="postcomment-textbox"

@@ -6,8 +6,8 @@ import DocVisibilityRow from './DocVisibilityRow';
 import UploadControlRow from './UploadControlRow';
 import DocAccessLevelRow from './DocAccessLevelRow';
 import CommentVisibilityRow from './CommentVisibilityRow';
-import CommentControlRow from './CommentControlRow';
 import { useTranslation } from 'react-i18next';
+import CommentControlRow from './CommentControlRow';
 
 type DocumentSettingProps = {
   channelData: IChannel;

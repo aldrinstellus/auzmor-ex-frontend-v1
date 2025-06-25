@@ -33,6 +33,10 @@
     "reply": {
       "single": "Reply",
       "multiple": "Replies"
+    },
+    "noComments":{
+      "label": "No Comments yet",
+      "desc": "Be the first to leave a comment or ask a question"
     }
   },
   "announcementAnalytics": {
