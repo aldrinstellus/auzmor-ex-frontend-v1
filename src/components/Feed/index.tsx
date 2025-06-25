@@ -802,15 +802,9 @@ const Feed: FC<IFeedProps> = ({
   };
 
   const handleRecentlyAssignedContent = () => {
-    if (user?.preferences?.learnerViewType === 'MODERN') {
-      window.location.assign(
-        `${getLearnUrl()}/user/trainings?filter=ASSIGNED&sort=updated_at&type=elearning`,
-      );
-    } else {
-      window.location.assign(
-        `${getLearnUrl()}/user/courses/shared?sort=created_at&viewAs=Grid`,
-      );
-    }
+    window.location.assign(
+      `${getLearnUrl()}/user/trainings?filter=ASSIGNED&sort=updated_at&type=elearning`,
+    );
   };
 
   const Recommendation =
