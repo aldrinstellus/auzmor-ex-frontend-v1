@@ -546,3 +546,8 @@ export const TASK_CATEGORIES = {
   task: 'Checklist',
   subtask: 'ChecklistItem',
 };
+
+export const ELEARNING_TYPE = {
+  course: 'Course',
+  path: 'LearningPath',
+};

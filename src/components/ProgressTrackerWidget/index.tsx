@@ -63,6 +63,7 @@ const ProgressTrackerWidget: FC<IProgressTrackerWidgetProps> = ({
           <EmptyState />
         ) : (
           <LearnCard
+            className='w-full h-[350px]'
             showProgressInfo
             data={{ ...trackerData[0] }}
             isLoading={isLoading}

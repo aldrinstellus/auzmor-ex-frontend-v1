@@ -28,6 +28,7 @@ const Recommendation: FC<IRecommendationProps> = ({
               data={card}
               key={card.id}
               isLoading={isLoading}
+              medalPosition='bottom'
             />
           ))}
       </div>
