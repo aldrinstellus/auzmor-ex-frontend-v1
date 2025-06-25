@@ -18,7 +18,7 @@ import {
   getProfileImage,
   getUserCardTooltipProps,
 } from 'utils/misc';
-import { CommentsRTE, PostCommentMode } from './CommentsRTE';
+import { CommentsRTE, Placeholder, PostCommentMode } from './CommentsRTE';
 import ConfirmationBox from 'components/ConfirmationBox';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
@@ -195,6 +195,7 @@ export const Comment: FC<CommentProps> = ({
               entityId={comment?.id}
               entityType="post"
               mode={PostCommentMode.Edit}
+              placeholder={Placeholder.EditComment}
               setEditComment={setEditComment}
               commentData={comment}
               className="bg-white rounded-19xl"

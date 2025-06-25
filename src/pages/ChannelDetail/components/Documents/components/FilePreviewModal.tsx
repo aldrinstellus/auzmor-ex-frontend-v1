@@ -217,7 +217,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
         ) : null}
       </div>
          {/* Comment Section */}
-      <div className={`transition-all duration-300 ease-in-out ${showComment ? 'w-[32%] px-2 py-2' : 'w-0 overflow-hidden'} relative h-[98%]`}>
+      <div className={`transition-all duration-300 ease-in-out ${showComment ? 'w-[32%] px-2 pt-3 pb-2' : 'w-0 overflow-hidden'} relative h-[98%]`}>
         {showComment && (
           <CommentCard
             className='h-full'
