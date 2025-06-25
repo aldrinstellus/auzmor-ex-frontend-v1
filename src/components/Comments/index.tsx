@@ -45,6 +45,8 @@ interface CommentsProps<T = any> {
   createApiParams?: T;
   extractCommentsIds: (page: T) => { id: string }[];
   showEmptyState?: boolean;
+  className?: string;
+  commentsWrapperClassName?: string;
 }
 
 export interface IComment {
@@ -78,6 +80,8 @@ const Comments: FC<CommentsProps> = ({
   createApiParams,
   extractCommentsIds,
   showEmptyState = false,
+  className= '',
+  commentsWrapperClassName= '',
 }) => {
   const { t } = useTranslation('post', { keyPrefix: 'commentComponent' });
   const WORK_ANNIVERSARY_SUGGESTIONS = [
@@ -126,7 +130,7 @@ const Comments: FC<CommentsProps> = ({
   const getPost = useFeedStore((state) => state.getPost);
 
   return (
-    <div>
+    <div className={`${className}`}>
       <div className="flex flex-row items-center justify-between p-0 gap-2">
         <div>
           <Avatar
@@ -198,7 +202,7 @@ const Comments: FC<CommentsProps> = ({
         commentIds.length > 0 ? (
           <>
             <Divider className="mt-4" />
-            <div className="pt-4">
+            <div className={`pt-4 ${commentsWrapperClassName}`}>
               {isCreateCommentLoading && <CommentSkeleton />}
               <div className="flex flex-col gap-4">
                 {commentIds

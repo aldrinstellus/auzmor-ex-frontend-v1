@@ -68,7 +68,6 @@ export const Comment: FC<CommentProps> = ({
     (total, count) => total + count,
     0,
   );
-  console.log(comment);
 
   useEffect(() => {
     if (showReplies) {
@@ -153,7 +152,7 @@ export const Comment: FC<CommentProps> = ({
             </div>
           </div>
           <div className="text-neutral-500 font-normal text-xs mt-1">
-            {humanizeTime(comment.updatedAt)}
+            {humanizeTime(comment?.updatedAt)}
           </div>
           <div className="relative">
             {user?.id === comment?.createdBy?.userId && (
@@ -213,7 +212,7 @@ export const Comment: FC<CommentProps> = ({
         <div className="flex items-center space-x-2">
           <Likes
             reaction={comment?.myReaction?.reaction || ''}
-            entityId={comment.id}
+            entityId={comment?.id}
             entityType="comment"
             reactionId={comment?.myReaction?.id || ''}
             queryKey="comments"
