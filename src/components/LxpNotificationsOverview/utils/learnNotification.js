@@ -335,7 +335,7 @@ const getSourceList = (sourceNamesList = undefined, count) => {
       .join(', ');
     const othersLabel =
       sourceNamesList.length > 2
-        ? ` ${i18n.t('assessment.bulkUpload.moreErrors', {
+        ? ` ${i18n.t('learnNotifications:notifications.bulkAssign', {
             count: sourceNamesList.length - 2,
           })}`
         : '';
