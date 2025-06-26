@@ -333,7 +333,9 @@ export const getChannelDocumentComments = async (
   appendComments(comments);
 
   // Replace with only comment IDs for caching
-  response.data.data.comments = comments.map((comment: IComment) => ({ id: comment.id }));
+  response.data.result = {
+    data: comments.map((comment: IComment) => ({ id: comment.id })),
+  };
   return response;
 };
 

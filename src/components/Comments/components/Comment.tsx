@@ -36,10 +36,12 @@ import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface CommentProps {
   commentId: string;
+  canPostComment?: boolean;
 }
 
 export const Comment: FC<CommentProps> = ({
   commentId,
+  canPostComment = true,
 }) => {
   const { t: tp } = useTranslation('profile');
   const { t } = useTranslation('post', { keyPrefix: 'commentComponent' });
@@ -314,7 +316,7 @@ export const Comment: FC<CommentProps> = ({
 
       {showReplies ? (
         <div className="mt-4">
-          <ReplyCard entityId={comment.id}/>
+          <ReplyCard entityId={comment.id} canPostComment={canPostComment} />
         </div>
       ) : !previousShowReply.current && replies?.length ? (
         replies.map((reply) => (

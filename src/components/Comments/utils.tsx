@@ -1,7 +1,5 @@
 import { IComment } from ".";
 
-type CommentItem = { id: string };
-
 interface UseCommentsFetcherOptions<T> {
   useApiHook: (params: T) => {
     data: any;
@@ -12,13 +10,11 @@ interface UseCommentsFetcherOptions<T> {
     comment: Record<string, IComment>;
   };
   hookParams: T;
-  extractComments: (page: any) => CommentItem[];
 }
 
 export function useCommentsFetcher<T>({
   useApiHook,
   hookParams,
-  extractComments,
 }: UseCommentsFetcherOptions<T>) {
   const {
     data,
@@ -30,7 +26,7 @@ export function useCommentsFetcher<T>({
   } = useApiHook(hookParams);
 
   const commentIds: { id: string }[] =
-    data?.pages.flatMap((page: any) => extractComments(page)) ?? [];
+    data?.pages.flatMap((page: any) => page.data?.result?.data) ?? [];
 
   return {
     commentIds,

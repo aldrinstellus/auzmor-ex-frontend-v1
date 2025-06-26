@@ -51,7 +51,6 @@ const FilePreview: FC<IFilePreviewProps> = ({
     fileId,
     rootFolderId,
   });
-  console.log(canPostComment);
 
   const useChannelFilePreview = getApi(ApiEnum.GetChannelFilePreview);
   const {
@@ -235,8 +234,8 @@ const FilePreview: FC<IFilePreviewProps> = ({
               fileId,
               payload,
             })}
-            extractCommentsIds={(page: any) => page?.data?.data?.comments ?? []}
             showEmptyState={true}
+            canPostComment={canPostComment}
           />
         )}
       </div>

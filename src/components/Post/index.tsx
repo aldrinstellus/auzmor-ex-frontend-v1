@@ -517,10 +517,7 @@ const Post: FC<PostProps> = ({
         {/* Comments */}
         {showComments ? (
           <div className="pb-3 px-6">
-            <CommentCard
-              entityId={post?.id || ''}
-              extractCommentsIds={(page: any) => page.data?.result?.data ?? []}
-            />
+            <CommentCard entityId={post?.id || ''} />
           </div>
         ) : !previousShowComment.current && commentIds?.length ? (
           commentIds.map((id) => (

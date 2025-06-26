@@ -21,6 +21,7 @@ import { usePermissions } from 'hooks/usePermissions';
 
 interface CommentsProps {
   entityId: string;
+  canPostComment?: boolean;
   className?: string;
 }
 
@@ -31,6 +32,7 @@ export interface activeCommentsDataType {
 
 const Comments: FC<CommentsProps> = ({
   entityId,
+  canPostComment = true,
   className,
 }) => {
   const { user } = useAuth();
@@ -69,7 +71,7 @@ const Comments: FC<CommentsProps> = ({
         </div>
       ) : (
         <div className="ml-8">
-          <div className="flex flex-row items-center justify-between mb-4 gap-2">
+          {canPostComment && (<div className="flex flex-row items-center justify-between mb-4 gap-2">
             <div>
               <Avatar
                 name={user?.name || t('nameNotSpecified')}
@@ -95,7 +97,7 @@ const Comments: FC<CommentsProps> = ({
               setMediaValidationErrors={setMediaValidationErrors}
               isCreateCommentLoading={isCreateCommentLoading}
             />
-          </div>
+          </div>)}
           {replyIds && replyIds.length > 0 && (
             <div>
               {isCreateCommentLoading && <CommentSkeleton />}

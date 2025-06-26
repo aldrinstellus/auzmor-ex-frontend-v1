@@ -43,10 +43,10 @@ interface CommentsProps<T = any> {
   createApiEnum?: ApiEnum;
   getApiParams?: T;
   createApiParams?: T;
-  extractCommentsIds: (page: T) => { id: string }[];
   showEmptyState?: boolean;
   className?: string;
   commentsWrapperClassName?: string;
+  canPostComment?: boolean;
 }
 
 export interface IComment {
@@ -78,10 +78,10 @@ const Comments: FC<CommentsProps> = ({
   createApiEnum,
   getApiParams,
   createApiParams,
-  extractCommentsIds,
   showEmptyState = false,
   className= '',
   commentsWrapperClassName= '',
+  canPostComment = true,
 }) => {
   const { t } = useTranslation('post', { keyPrefix: 'commentComponent' });
   const WORK_ANNIVERSARY_SUGGESTIONS = [
@@ -123,16 +123,14 @@ const Comments: FC<CommentsProps> = ({
 } = useCommentsFetcher({
   useApiHook,
   hookParams: getApiParams || defaultParams,
-  extractComments: extractCommentsIds,
 });
   const [isCreateCommentLoading, setIsCreateCommentLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<string>('');
   const getPost = useFeedStore((state) => state.getPost);
-  console.log(commentIds);
 
   return (
     <div className={`${className}`}>
-      <div className="flex flex-row items-center justify-between p-0 gap-2">
+      {canPostComment && (<div className="flex flex-row items-center justify-between p-0 gap-2">
         <div>
           <Avatar
             name={user?.name || 'U'}
@@ -164,7 +162,7 @@ const Comments: FC<CommentsProps> = ({
           isCreateCommentLoading={isCreateCommentLoading}
           suggestions={suggestions}
         />
-      </div>
+      </div>)}
       {getPost(entityId)?.occasionContext?.type === 'WORK_ANNIVERSARY' && (
         <div className="flex mt-2 w-full justify-center">
           {WORK_ANNIVERSARY_SUGGESTIONS.map((suggestions: string) => (
@@ -209,7 +207,7 @@ const Comments: FC<CommentsProps> = ({
                 {commentIds
                   ?.filter(({ id }) => !!comment[id])
                   .map(({ id }, _i: any) => (
-                    <Comment key={id} commentId={id}/>
+                    <Comment key={id} canPostComment={canPostComment} commentId={id}/>
                   ))}
               </div>
               {hasNextPage && !isFetchingNextPage && (
