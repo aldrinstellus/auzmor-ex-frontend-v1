@@ -551,3 +551,7 @@ export const ELEARNING_TYPE = {
   course: 'Course',
   path: 'LearningPath',
 };
+
+export const LEARNER_ENROLLMENT_STATUS = {
+  ASSIGNED: 'learnNotifications:notifications.status.assigned',
+};
