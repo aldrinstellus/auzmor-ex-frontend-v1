@@ -112,6 +112,16 @@ export const documentOptions: ICheckboxListOption[] = [
     },
     datatestId: `document-${IDocType.AUDIO}`,
   },
+  {
+    data: {
+      id: 'others',
+      value: ['others'],
+      label: 'Other',
+      icon: 'file',
+      paramKey: 'Others',
+    },
+    datatestId: `document-${IDocType.OTHERS}`,
+  },
   // {
   //   data: {
   //     id: 'archive',

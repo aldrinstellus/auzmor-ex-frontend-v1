@@ -25,6 +25,24 @@ interface IFilePreviewProps {
   closeModal: () => void;
 }
 
+function getPreviewUrl(previewUrl: string | undefined): string {
+  if (!previewUrl) {
+    return '';
+  }
+
+  // Ensure the Youtube URL is properly formatted for embedding
+  if (previewUrl.includes('youtube.com') && !previewUrl.includes('/embed/')) {
+    previewUrl = previewUrl.replace('watch?v=', 'embed/');
+  } else if (
+    previewUrl.includes('youtu.be') &&
+    !previewUrl.includes('/embed/')
+  ) {
+    previewUrl = previewUrl.replace('youtu.be/', 'youtube.com/embed/');
+  }
+
+  return previewUrl;
+}
+
 const FilePreview: FC<IFilePreviewProps> = ({
   fileId,
   rootFolderId,
@@ -96,13 +114,13 @@ const FilePreview: FC<IFilePreviewProps> = ({
   const isDownloading = downloadChannelFileMutation.isLoading;
 
   const file = fileData?.data?.result?.data as Doc;
-  const previewUrl = data?.data?.result?.previewURL;
+  const previewUrl = getPreviewUrl(data?.data?.result?.previewURL);
   const isImage = file?.mimeType?.startsWith('image/');
   const isSupportedVideo = ['video/mp4', 'video/webm'].includes(file?.mimeType);
   const fileExtension = getExtension(file?.name || '');
   const allowIframePreview =
     isImage ||
-    ['.html', '.htm', '.md'].includes(fileExtension) ||
+    ['.html', '.htm', '.md', '.url'].includes(fileExtension) ||
     ['doc', 'pdf', 'ppt', 'xls'].includes(getIconFromMime(file?.mimeType));
 
   const showSpinner = isLoading;
@@ -188,7 +206,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
             )}
             <iframe
               src={previewUrl}
-              className="w-full h-[calc(100%-8px)] mt-2"
+              className="w-full h-full p-2"
               allowFullScreen
               allow="all"
               name="iframe_a"
