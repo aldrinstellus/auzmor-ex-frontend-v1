@@ -98,7 +98,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                   className="cursor-pointer text-primary-500 text-lg font-medium flex items-center gap-1"
                   onClick={() =>
                     window.open(
-                      `${window.location.origin}/apps/${app.id}/launch`,
+                      `${window.location.origin}/lxp/apps/${app.id}/launch`,
                       '_target',
                     )
                   }

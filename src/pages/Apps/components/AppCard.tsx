@@ -164,7 +164,7 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
   });
 
   const handleAppLaunch = () => {
-    window.open(`${window.location.origin}/apps/${app.id}/launch`, '_target');
+    window.open(`${window.location.origin}/lxp/apps/${app.id}/launch`, '_target');
   };
 
   return (
