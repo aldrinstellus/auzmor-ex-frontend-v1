@@ -20,6 +20,7 @@ import Truncate from 'components/Truncate';
 import { useTranslation } from 'react-i18next';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
+import { isLearnerRoute } from 'components/LxpNotificationsOverview/utils/learnNotification';
 
 type AppCardProps = {
   app: IApp;
@@ -164,7 +165,7 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
   });
 
   const handleAppLaunch = () => {
-    window.open(`${window.location.origin}/lxp/apps/${app.id}/launch`, '_target');
+    window.open(`${window.location.origin}/lxp${isLearnerRoute() ? '/user' : ''}/apps/${app.id}/launch`, '_target');
   };
 
   return (

@@ -14,6 +14,7 @@ import AudienceModal, { getAudienceCount } from 'components/AudienceModal';
 import { isEmpty } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import Truncate from 'components/Truncate';
+import { isLearnerRoute } from 'components/LxpNotificationsOverview/utils/learnNotification';
 
 type AppDetailModalProps = {
   app: IApp;
@@ -98,7 +99,7 @@ const AppDetailModal: FC<AppDetailModalProps> = ({
                   className="cursor-pointer text-primary-500 text-lg font-medium flex items-center gap-1"
                   onClick={() =>
                     window.open(
-                      `${window.location.origin}/lxp/apps/${app.id}/launch`,
+                      `${window.location.origin}/lxp${isLearnerRoute() ? '/user' : ''}/apps/${app.id}/launch`,
                       '_target',
                     )
                   }
