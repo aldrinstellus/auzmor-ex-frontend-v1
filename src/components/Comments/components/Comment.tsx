@@ -321,7 +321,7 @@ export const Comment: FC<CommentProps> = ({
       ) : !previousShowReply.current && replies?.length ? (
         replies.map((reply) => (
           <div className="mt-4 ml-8" key={reply.id}>
-            <Reply comment={reply}/>
+            <Reply comment={reply} />
           </div>
         ))
       ) : null}

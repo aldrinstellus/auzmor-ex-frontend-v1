@@ -129,7 +129,7 @@ const Comments: FC<CommentsProps> = ({
   const getPost = useFeedStore((state) => state.getPost);
 
   return (
-    <div className={`${className}`}>
+    <div className={className}>
       {canPostComment && (<div className="flex flex-row items-center justify-between p-0 gap-2">
         <div>
           <Avatar

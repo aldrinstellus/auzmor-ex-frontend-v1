@@ -17,6 +17,7 @@ import { getIconFromMime } from './Doc';
 import NoDataFound from 'components/NoDataFound';
 import { getExtension } from '../../utils';
 import CommentCard from 'components/Comments/index'
+import { ICommentPayload } from 'components/Comments/components/CommentsRTE';
 
 interface IFilePreviewProps {
   fileId: string;
@@ -229,7 +230,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
               channelId, 
               limit: 4
             }}
-            createApiParams={(payload: any) => ({
+            createApiParams={(payload: ICommentPayload) => ({
               channelId,
               fileId,
               payload,

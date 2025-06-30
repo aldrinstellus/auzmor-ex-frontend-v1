@@ -37,7 +37,12 @@
     "noComments":{
       "label": "No Comments yet",
       "desc": "Be the first to leave a comment or ask a question"
-    }
+    },
+    "leaveCommentPlaceholder": "Leave a comment...",
+    "editCommentPlaceholder": "Edit your comment...",
+    "editReplyPlaceholder": "Edit your Reply...",
+    "createReplyPlaceholder": "Reply to this thread…",
+    "createWishPlaceholder": "Wish them now..."
   },
   "announcementAnalytics": {
     "title": "Acknowledgement Report",

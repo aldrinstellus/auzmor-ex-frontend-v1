@@ -31,6 +31,7 @@ import { UploadStatus, useUpload } from 'hooks/useUpload';
 import Banner, { Variant as BannerVariant } from 'components/Banner';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
+import { useTranslation } from 'react-i18next';
 
 export enum PostCommentMode {
   Create = 'CREATE',
@@ -80,6 +81,21 @@ interface IUpdateCommentPayload {
   files: string[];
 }
 
+export interface ICommentPayload {
+  entityId?: string;
+  entityType?: string;
+  channelId?: string;
+  fileId?: string;
+  content: {
+    text: string;
+    html: string;
+    editor: DeltaStatic;
+  };
+  mentions: string[];
+  hashtags: string[];
+  files: string[];
+}
+
 export const CommentsRTE: FC<CommentFormProps> = ({
   className = '',
   wrapperClassName = '',
@@ -102,6 +118,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
   toolbarId,
   placeholder,
 }) => {
+  const { t } = useTranslation('post', { keyPrefix: 'commentComponent' });
   const {
     comment,
     setComment,
@@ -118,7 +135,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
   const createComment = getApi(createApiEnum || ApiEnum.CreateComment);
   const createCommentMutation = useMutation({
     mutationKey: ['create-comment'],
-    mutationFn: (payload: any) => createComment(payload),
+    mutationFn: (payload: ICommentPayload) => createComment(payload),
     onError: () => {
       failureToastConfig({
         content: `Error adding ${entityType === 'post' ? 'Comment' : 'Reply'}`,
@@ -309,11 +326,14 @@ export const CommentsRTE: FC<CommentFormProps> = ({
       };
       const customCreateApiParams = createApiParams ? createApiParams(data) : null;
 
-      createCommentMutation.mutate(customCreateApiParams || {
+      const payload: ICommentPayload = customCreateApiParams as ICommentPayload ||
+      {
         entityId: entityId || '',
         entityType: entityType,
         ...data,
-      })
+      };
+
+      createCommentMutation.mutate(payload)
     } else if (mode === PostCommentMode.Edit) {
       const commentContent = removeEmptyLines({
         text:
@@ -397,15 +417,15 @@ export const CommentsRTE: FC<CommentFormProps> = ({
   const getPlaceholder = (mode?: Placeholder): string => {
     switch (mode) {
       case Placeholder.SendWish:
-        return 'Wish them now...';
+        return t('createWishPlaceholder');
       case Placeholder.CreateReply:
-        return 'Reply to this thread…';
+        return t('createReplyPlaceholder');
       case Placeholder.EditReply:
-        return 'Edit your Reply...';
+        return t('editReplyPlaceholder');
       case Placeholder.EditComment:
-        return 'Edit your comment...';
+        return t('editCommentPlaceholder');
       default:
-        return 'Leave a comment...';
+        return t('leaveCommentPlaceholder');
     }
   };
 
