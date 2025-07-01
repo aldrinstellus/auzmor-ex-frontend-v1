@@ -316,7 +316,7 @@ export const Comment: FC<CommentProps> = ({
 
       {showReplies ? (
         <div className="mt-4">
-          <ReplyCard entityId={comment.id} canPostComment={canPostComment} />
+          <ReplyCard entityId={comment?.id} canPostComment={canPostComment} />
         </div>
       ) : !previousShowReply.current && replies?.length ? (
         replies.map((reply) => (
