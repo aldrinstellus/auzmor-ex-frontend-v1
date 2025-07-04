@@ -57,8 +57,6 @@ const FilePreview: FC<IFilePreviewProps> = ({
   const { getApi } = usePermissions();
   const { channelId } = useParams();
   const [isIframeLoading, setIsIframeLoading] = React.useState(true);
-  const [iframeSrc, setIframeSrc] = React.useState('');
-  const [iframeError, setIframeError] = React.useState(false);
 
   const useChannelDocById = getApi(ApiEnum.UseChannelDocById);
   const { data: fileData, isLoading: fileLoading } = useChannelDocById({
@@ -117,13 +115,16 @@ const FilePreview: FC<IFilePreviewProps> = ({
   const isDownloading = downloadChannelFileMutation.isLoading;
 
   const file = fileData?.data?.result?.data as Doc;
-  const previewUrl = getPreviewUrl(data?.data?.result?.previewURL);
+  const originalPreviewUrl = data?.data?.result?.previewURL;
+  const previewUrl = getPreviewUrl(originalPreviewUrl);
   const isImage = file?.mimeType?.startsWith('image/');
   const isSupportedVideo = ['video/mp4', 'video/webm'].includes(file?.mimeType);
   const fileExtension = getExtension(file?.name || '');
+  const isLink = fileExtension === '.url';
   const allowIframePreview =
     isImage ||
-    ['.html', '.htm', '.md', '.url'].includes(fileExtension) ||
+    isLink ||
+    ['.html', '.htm', '.md'].includes(fileExtension) ||
     ['doc', 'pdf', 'ppt', 'xls'].includes(getIconFromMime(file?.mimeType));
 
   const showSpinner = isLoading;
@@ -131,27 +132,6 @@ const FilePreview: FC<IFilePreviewProps> = ({
     isError || (!isLoading && !isSupportedVideo && !allowIframePreview);
   const showVideo = !isLoading && !isError && isSupportedVideo;
   const showIframe = !isLoading && !isError && allowIframePreview;
-
-   useEffect(() => {
-  if (!previewUrl) return;
-  if (fileExtension === '.url') {
-    fetch(previewUrl, { method: 'HEAD' })
-    .then((res) => {
-      if (res.ok) {
-        setIframeSrc(previewUrl);
-      } else {
-        throw new Error('Invalid link');
-      }
-    })
-    .catch(() => {
-      setIframeError(true);
-    })
-    .finally(() => {
-      setIsIframeLoading(false);
-    });
-  }
-  setIframeSrc(previewUrl);
-}, [previewUrl]);
 
   return (
     <Modal
@@ -178,7 +158,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
           )}
         </div>
         <div className="flex absolute gap-3 right-4">
-          {canDownload && !fileLoading && !!file.downloadable && (
+          {canDownload && !fileLoading && !isLink && !!file.downloadable && (
             <div className="flex gap-2">
               {isDownloading && <Spinner />}
               <Icon
@@ -195,6 +175,19 @@ const FilePreview: FC<IFilePreviewProps> = ({
               />
             </div>
           )}
+          {isLink && originalPreviewUrl ? (
+            <Icon
+              name="launch"
+              color="text-neutral-900"
+              onClick={() => {
+                window.open(
+                  originalPreviewUrl,
+                  '_blank',
+                  'noopener,noreferrer',
+                );
+              }}
+            />
+          ) : null}
           <Icon name="close2" color="text-neutral-900" onClick={closeModal} />
         </div>
       </div>
