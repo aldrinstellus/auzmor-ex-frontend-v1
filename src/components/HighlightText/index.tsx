@@ -2,13 +2,13 @@ import React, { FC } from 'react';
 import { escapeRegExp } from 'lodash';
 
 interface IHighlightTextProps {
-  text: string;
+  text?: string;
   subString?: string;
   className?: string;
 }
 
 const HighlightText: FC<IHighlightTextProps> = ({
-  text,
+  text = '',
   subString,
   className = 'text-primary-500 font-bold',
 }) => {
@@ -16,7 +16,7 @@ const HighlightText: FC<IHighlightTextProps> = ({
     return <span>{text}</span>;
   }
 
-  const parts = text.split(new RegExp(`(${escapeRegExp(subString)})`, 'gi'));
+  const parts = text.split(new RegExp(`(${escapeRegExp(subString)})`, 'gi')) || [];
 
   return (
     <span>

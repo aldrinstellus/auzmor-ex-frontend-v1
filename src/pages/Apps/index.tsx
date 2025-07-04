@@ -215,6 +215,11 @@ const Apps: FC<IAppsProps> = () => {
 
   const handleSetSortFilter = (sortValue: any) => {
     setSortByFilter(sortValue);
+    if (sortValue) {
+      updateParam('sort', sortValue)
+    } else {
+      deleteParam('sort');
+    }
   };
 
   const handleTabChange = (tab: AppGroup) => {
