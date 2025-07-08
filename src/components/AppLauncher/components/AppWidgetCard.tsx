@@ -6,6 +6,7 @@ import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 
 import { IApp } from 'interfaces';
 import Tooltip from 'components/Tooltip';
+import { PUBLIC_URL } from 'utils/constants';
 
 interface IAppWidgetCardProps {
   data: IApp;
@@ -22,10 +23,7 @@ const AppWidgetCard: FC<IAppWidgetCardProps> = ({ data }) => {
     ariaLabel: data.label,
   };
   return (
-    <Link
-      to={`${window.location.origin}/apps/${data.id}/launch`}
-      target="_blank"
-    >
+    <Link to={PUBLIC_URL + `/apps/${data.id}/launch`} target="_blank">
       <div
         className="flex flex-col items-center gap-2"
         data-testid="app-launcher-app"

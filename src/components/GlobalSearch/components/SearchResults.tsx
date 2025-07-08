@@ -26,6 +26,7 @@ import IconButton, {
 } from 'components/IconButton';
 import useRole from 'hooks/useRole';
 import Spinner from 'components/Spinner';
+import { PUBLIC_URL } from 'utils/constants';
 
 interface ISearchResultsProps {
   searchResults: ISearchResultGroup[];
@@ -235,7 +236,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
     ) {
       navigate(url);
     } else if (entityType === ISearchResultType.APP) {
-      window.open(url, '_target');
+      window.open(PUBLIC_URL + url, '_target');
     } else {
       window.location.assign(url);
     }
