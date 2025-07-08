@@ -418,7 +418,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
             ) : null}
             <div className="min-w-0">
               <Truncate
-                text={result.name}
+                text={result.name || result.title}
                 className={textStyles}
                 textRenderer={(text) => (
                   <HighlightText text={text} subString={searchQuery} />

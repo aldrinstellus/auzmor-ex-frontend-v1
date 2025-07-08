@@ -12,8 +12,8 @@ const HighlightText: FC<IHighlightTextProps> = ({
   subString,
   className = 'text-primary-500 font-bold',
 }) => {
-  if (!subString) {
-    return <span>{text}</span>;
+  if (!subString || !text) {
+    return <span>{text || ''}</span>;
   }
 
   const parts = text.split(new RegExp(`(${escapeRegExp(subString)})`, 'gi'));
