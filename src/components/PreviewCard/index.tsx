@@ -10,6 +10,10 @@ type PreviewCardProps = {
   isLoading?: boolean;
   isError?: boolean;
   isAnnouncementWidgetPreview?: boolean;
+  previewUrl?: string;
+  showViewLink?: boolean;
+  imgHeight?: string;
+  textHeight?: string;
 };
 
 const PreviewCard: FC<PreviewCardProps> = ({
@@ -18,6 +22,10 @@ const PreviewCard: FC<PreviewCardProps> = ({
   isLoading,
   isError,
   isAnnouncementWidgetPreview,
+  previewUrl,
+  showViewLink,
+  imgHeight,
+  textHeight,
 }) =>
   useMemo(() => {
     if (metaData?.image) {
@@ -27,6 +35,10 @@ const PreviewCard: FC<PreviewCardProps> = ({
             metaData={metaData}
             isAnnouncementWidgetPreview={isAnnouncementWidgetPreview}
             dataTestId="feed-createpost-linkpreview"
+            previewUrl={previewUrl}
+            showViewLink={showViewLink}
+            imgHeight={imgHeight}
+            textHeight={textHeight}
           />
         </Card>
       );
@@ -38,6 +50,10 @@ const PreviewCard: FC<PreviewCardProps> = ({
           <IconPreview
             metaData={metaData}
             dataTestId="feed-createpost-linkpreview"
+            previewUrl={previewUrl}
+            showViewLink={showViewLink}
+            imgHeight={imgHeight}
+            textHeight={textHeight}
           />
         </Card>
       );
