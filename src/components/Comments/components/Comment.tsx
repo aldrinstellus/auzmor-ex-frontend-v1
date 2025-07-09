@@ -18,7 +18,7 @@ import {
   getProfileImage,
   getUserCardTooltipProps,
 } from 'utils/misc';
-import { CommentsRTE, PostCommentMode } from './CommentsRTE';
+import { CommentsRTE, Placeholder, PostCommentMode } from './CommentsRTE';
 import ConfirmationBox from 'components/ConfirmationBox';
 import { successToastConfig } from 'components/Toast/variants/SuccessToast';
 import { failureToastConfig } from 'components/Toast/variants/FailureToast';
@@ -36,9 +36,13 @@ import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
 interface CommentProps {
   commentId: string;
+  canPostComment?: boolean;
 }
 
-export const Comment: FC<CommentProps> = ({ commentId }) => {
+export const Comment: FC<CommentProps> = ({
+  commentId,
+  canPostComment = true,
+}) => {
   const { t: tp } = useTranslation('profile');
   const { t } = useTranslation('post', { keyPrefix: 'commentComponent' });
   const getPost = useFeedStore((state) => state.getPost);
@@ -80,12 +84,14 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
     onMutate: (variables) => {
       const previousData = storedcomments;
       const post = getPost(storedcomments[variables].entityId);
-      updateFeed(
+      if (post) {
+        updateFeed(
         post.id!,
         produce(post, (draft) => {
           draft.commentsCount = draft.commentsCount - 1;
         }),
       );
+      }
       setComment({ ...omit(storedcomments, [variables]) });
       closeConfirm();
       return { previousData };
@@ -148,7 +154,7 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
             </div>
           </div>
           <div className="text-neutral-500 font-normal text-xs mt-1">
-            {humanizeTime(comment.updatedAt)}
+            {humanizeTime(comment?.updatedAt)}
           </div>
           <div className="relative">
             {user?.id === comment?.createdBy?.userId && (
@@ -170,6 +176,7 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
                     },
                     stroke: 'text-neutral-900',
                     dataTestId: 'post-ellipsis-edit-comment',
+                    disabled: !canPostComment,
                   },
                   {
                     icon: 'delete',
@@ -191,6 +198,7 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
               entityId={comment?.id}
               entityType="post"
               mode={PostCommentMode.Edit}
+              placeholder={Placeholder.EditComment}
               setEditComment={setEditComment}
               commentData={comment}
               className="bg-white rounded-19xl"
@@ -208,7 +216,7 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
         <div className="flex items-center space-x-2">
           <Likes
             reaction={comment?.myReaction?.reaction || ''}
-            entityId={comment.id}
+            entityId={comment?.id}
             entityType="comment"
             reactionId={comment?.myReaction?.id || ''}
             queryKey="comments"
@@ -309,7 +317,7 @@ export const Comment: FC<CommentProps> = ({ commentId }) => {
 
       {showReplies ? (
         <div className="mt-4">
-          <ReplyCard entityId={comment.id} />
+          <ReplyCard entityId={comment?.id} canPostComment={canPostComment} />
         </div>
       ) : !previousShowReply.current && replies?.length ? (
         replies.map((reply) => (
