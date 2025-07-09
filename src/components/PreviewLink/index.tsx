@@ -23,12 +23,16 @@ export type PreviewLinkProps = {
   previewUrl?: string;
   setPreviewUrl?: (previewUrl: string) => void;
   setIsPreviewRemove?: (isPreviewRemove: boolean) => void;
+  showCloseIcon?: boolean;
+  variant?: string;
 };
 
 const PreviewLink: FC<PreviewLinkProps> = ({
   previewUrl = '',
   // setPreviewUrl = () => {},
   setIsPreviewRemove = () => {},
+  showCloseIcon = true,
+  variant,
 }) => {
   const { media, poll } = useContext(CreatePostContext);
   const debouncePreviewUrl = useDebounce(previewUrl, 1000);
@@ -46,8 +50,8 @@ const PreviewLink: FC<PreviewLinkProps> = ({
   );
 
   return (
-    <div className="relative m-6">
-      {isMetaDataPresent && !isLoading && media.length === 0 && !poll && (
+    <div className="relative m-6 h-full">
+      {showCloseIcon && isMetaDataPresent && !isLoading && media.length === 0 && !poll && (
         <IconButton
           icon="closeOutline"
           className="absolute bg-white top-4 right-4 border-1 border-neutral-200 border-solid !rounded-7xl p-2"
@@ -60,7 +64,13 @@ const PreviewLink: FC<PreviewLinkProps> = ({
         />
       )}
       {media.length === 0 && !poll && (
-        <PreviewCard metaData={data} isLoading={isLoading} isError={isError} />
+        <PreviewCard
+          previewUrl={previewUrl}
+          metaData={data}
+          isLoading={isLoading}
+          isError={isError}
+          variant={variant}
+        />
       )}
     </div>
   );

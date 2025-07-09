@@ -189,7 +189,7 @@ const getChannelDocumentStatus = async (payload: {
 };
 
 // Get preview url for document
-const getChannelFilePreview = async (payload: {
+export const getChannelFilePreview = async (payload: {
   channelId: string;
   fileId: string;
 }) => {

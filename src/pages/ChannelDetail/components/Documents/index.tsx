@@ -394,6 +394,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     }
   };
 
+  const getChannelFilePreviewApi = getApi(ApiEnum.GetChannelFilePreviewApi);
+
   // Api call: get sync status
   const useChannelDocSyncStatus = getApi(ApiEnum.UseChannelDocSyncStatus);
   useChannelDocSyncStatus(
@@ -456,11 +458,14 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   // A function that decides what options to show on each row of documents
   const getAllOptions = useCallback(
     (info: CellContext<DocType, unknown>) => {
+      const isLink = getExtension(info?.row?.original?.name) === '.url';
       const showDownload =
         !isCredExpired &&
         permissions.includes(ChannelPermissionEnum.CanDownloadDocuments) &&
         !!info?.row?.original?.downloadable &&
-        !!!info?.row?.original?.isFolder;
+        !!!info?.row?.original?.isFolder &&
+        !isLink;
+      const showLaunch = !isCredExpired && isLink;
       const canRename =
         !isCredExpired &&
         permissions.includes(ChannelPermissionEnum.CanRenameDocuments);
@@ -496,6 +501,20 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           dataTestId: 'folder-menu',
           className: '!px-6 !py-2',
           isHidden: !showDownload,
+        },
+        {
+          label: t('launch'),
+          onClick: async (e: Event) => {
+            e.stopPropagation();
+            const previewData = await getChannelFilePreviewApi({
+              channelId,
+              fileId: info?.row?.original?.id,
+            });
+            window.open(previewData?.data?.result?.previewURL, '_blank');
+          },
+          dataTestId: 'folder-menu',
+          className: '!px-6 !py-2',
+          isHidden: !showLaunch,
         },
         {
           label: tc('delete'),
@@ -572,7 +591,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             <div className="font-bold text-neutral-500">{t('owner')}</div>
           ),
           cell: (info: CellContext<DocType, unknown>) => (
-             <div className="flex gap-2 items-center">
+            <div className="flex gap-2 items-center">
               <Avatar
                 image={info.row.original?.ownerImage}
                 name={info.row.original?.ownerName}
@@ -594,14 +613,14 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 moment(info.getValue() as string).format(
                   'MMMM DD,YYYY',
                 ) as string
-            // <LocationField
-            //   pathItems={getMappedLocation(info?.row?.original)}
-            //   pathWithId={info?.row?.original.pathWithId}
-            //   channelId={channelId}
-            //   updateDocumentSearch={(value: string) =>
-            //     setValue('documentSearch', value)
-            //   }
-            // /> TODO: custom-fields
+                // <LocationField
+                //   pathItems={getMappedLocation(info?.row?.original)}
+                //   pathWithId={info?.row?.original.pathWithId}
+                //   channelId={channelId}
+                //   updateDocumentSearch={(value: string) =>
+                //     setValue('documentSearch', value)
+                //   }
+                // /> TODO: custom-fields
               }
             </div>
           ),

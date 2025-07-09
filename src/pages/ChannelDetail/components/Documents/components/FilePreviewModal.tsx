@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { FC, useEffect } from 'react';
 import Modal from 'components/Modal';
 import { usePermissions } from 'hooks/usePermissions';
@@ -16,6 +17,8 @@ import { useMutation } from '@tanstack/react-query';
 import { getIconFromMime } from './Doc';
 import NoDataFound from 'components/NoDataFound';
 import { getExtension } from '../../utils';
+import PreviewLink from 'components/PreviewLink';
+import { PREVIEW_CARD_VARIANT } from 'utils/constants';
 
 interface IFilePreviewProps {
   fileId: string;
@@ -23,24 +26,6 @@ interface IFilePreviewProps {
   open: boolean;
   canDownload: boolean;
   closeModal: () => void;
-}
-
-function getPreviewUrl(previewUrl: string | undefined): string {
-  if (!previewUrl) {
-    return '';
-  }
-
-  // Ensure the Youtube URL is properly formatted for embedding
-  if (previewUrl.includes('youtube.com') && !previewUrl.includes('/embed/')) {
-    previewUrl = previewUrl.replace('watch?v=', 'embed/');
-  } else if (
-    previewUrl.includes('youtu.be') &&
-    !previewUrl.includes('/embed/')
-  ) {
-    previewUrl = previewUrl.replace('youtu.be/', 'youtube.com/embed/');
-  }
-
-  return previewUrl;
 }
 
 const FilePreview: FC<IFilePreviewProps> = ({
@@ -114,20 +99,22 @@ const FilePreview: FC<IFilePreviewProps> = ({
   const isDownloading = downloadChannelFileMutation.isLoading;
 
   const file = fileData?.data?.result?.data as Doc;
-  const previewUrl = getPreviewUrl(data?.data?.result?.previewURL);
+  const previewUrl = data?.data?.result?.previewURL;
   const isImage = file?.mimeType?.startsWith('image/');
   const isSupportedVideo = ['video/mp4', 'video/webm'].includes(file?.mimeType);
   const fileExtension = getExtension(file?.name || '');
+  const isLink = fileExtension === '.url';
   const allowIframePreview =
     isImage ||
-    ['.html', '.htm', '.md', '.url'].includes(fileExtension) ||
+    isLink ||
+    ['.html', '.htm', '.md'].includes(fileExtension) ||
     ['doc', 'pdf', 'ppt', 'xls'].includes(getIconFromMime(file?.mimeType));
 
   const showSpinner = isLoading;
-  const showNoPreview =
-    isError || (!isLoading && !isSupportedVideo && !allowIframePreview);
+  const showNoPreview = !isLink
+    && (isError || (!isLoading && !isSupportedVideo && !allowIframePreview));
   const showVideo = !isLoading && !isError && isSupportedVideo;
-  const showIframe = !isLoading && !isError && allowIframePreview;
+  const showIframe = !isLink && !isLoading && !isError && allowIframePreview;
 
   return (
     <Modal
@@ -154,7 +141,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
           )}
         </div>
         <div className="flex absolute gap-3 right-4">
-          {canDownload && !fileLoading && !!file.downloadable && (
+          {canDownload && !fileLoading && !isLink && !!file.downloadable && (
             <div className="flex gap-2">
               {isDownloading && <Spinner />}
               <Icon
@@ -171,12 +158,25 @@ const FilePreview: FC<IFilePreviewProps> = ({
               />
             </div>
           )}
+          {isLink && previewUrl ? (
+            <Icon
+              name="launch"
+              color="text-neutral-900"
+              onClick={() => {
+                window.open(
+                  previewUrl,
+                  '_blank',
+                  'noopener,noreferrer',
+                );
+              }}
+            />
+          ) : null}
           <Icon name="close2" color="text-neutral-900" onClick={closeModal} />
         </div>
       </div>
       <Divider />
-      <div className="flex items-center justify-center w-full h-full">
-        {showSpinner ? <Spinner className="!h-24 !w-24" /> : null}
+      <div className="flex items-center justify-center w-full h-full bg-neutral-100 ">
+        {showSpinner ? <Spinner className="!h-24 !w-24 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" /> : null}
         {showNoPreview ? (
           <NoDataFound
             illustration="noPreviewAvailable"
@@ -199,7 +199,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
             />
           </div>
         ) : null}
-        {showIframe ? (
+        {(showIframe && !showSpinner) ? (
           <div className="w-full h-full relative">
             {isIframeLoading && (
               <Spinner className="absolute !h-24 !w-24 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
@@ -214,7 +214,13 @@ const FilePreview: FC<IFilePreviewProps> = ({
               sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-popups allow-popups-to-escape-sandbox" // downloads and modals are not allowed
             />
           </div>
-        ) : null}
+          ) : (<div className="w-full h-full relative">
+            <PreviewLink
+              previewUrl={previewUrl}
+              showCloseIcon={false}
+              variant={PREVIEW_CARD_VARIANT.document}
+            />
+          </div>)}
       </div>
     </Modal>
   );

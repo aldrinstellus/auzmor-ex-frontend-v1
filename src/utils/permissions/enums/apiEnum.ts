@@ -229,6 +229,7 @@ export enum ApiEnum {
   // GetChannelDocumentFields = 'GET_CHANNEL_DOCUMENT_FIELDS', TODO: custom-fields
   // UpdateChannelDocumentFields = 'UPDATE_CHANNEL_DOCUMENT_FIELDS', TODO: custom-fields
   GetChannelFilePreview = 'GET_CHANNEL_FILE_PREVIEW',
+  GetChannelFilePreviewApi = 'GET_CHANNEL_FILE_PREVIEW_API',
   CreateChannelDocFolder = 'CREATE_CHANNEL_DOC_FOLDER',
   GetChannelDocOwners = 'GET_CHANNEL_DOC_OWNERS',
   UpdateChannelFileFinish = 'UPDATE_CHANNEL_FILE_FINISH',

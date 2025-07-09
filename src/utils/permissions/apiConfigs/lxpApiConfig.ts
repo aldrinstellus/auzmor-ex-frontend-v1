@@ -234,6 +234,9 @@ export const apiConfigLxp = {
   [ApiEnum.GetChannelFilePreview]: {
     [Default]: queries.useChannelFilePreview,
   },
+  [ApiEnum.GetChannelFilePreviewApi]: {
+    [Default]: queries.getChannelFilePreview,
+  },
   [ApiEnum.CreateChannelDocFolder]: {
     [Default]: queries.createChannelDocFolder,
   },
