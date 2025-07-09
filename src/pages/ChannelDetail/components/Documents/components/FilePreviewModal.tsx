@@ -121,7 +121,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
       open={open}
       className="!h-[calc(100vh-62px)] !w-[calc(100vw-96px)] flex flex-col overflow-hidden"
     >
-      <div className="flex items-center relative px-6 py-4 shrink-0">
+      <div className="w-full h-[10%] flex items-center relative px-6 py-4 shrink-0">
         <div className="flex flex-grow items-start ">
           {fileLoading ? (
             <Skeleton width={256} height={40} />
@@ -175,7 +175,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
         </div>
       </div>
       <Divider />
-      <div className="flex items-center justify-center w-full h-full bg-neutral-100 ">
+      <div className="flex items-center justify-center w-full h-[90%] bg-neutral-100 ">
         {showSpinner ? <Spinner className="!h-24 !w-24 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" /> : null}
         {showNoPreview ? (
           <NoDataFound
@@ -195,7 +195,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
               src={previewUrl}
               controls
               controlsList="nodownload"
-              className="object-contain h-[calc(100%-72px)] w-full"
+              className="w-full h-full object-contain"
             />
           </div>
         ) : null}
@@ -211,16 +211,17 @@ const FilePreview: FC<IFilePreviewProps> = ({
               allow="all"
               name="iframe_a"
               onLoad={() => setIsIframeLoading(false)}
-              sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-popups allow-popups-to-escape-sandbox" // downloads and modals are not allowed
+              sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-popups allow-popups-to-escape-sandbox"
             />
           </div>
-          ) : (<div className="w-full h-full relative">
+          ) : isLink ? (<div className="w-full h-full flex items-center justify-center">
             <PreviewLink
               previewUrl={previewUrl}
               showCloseIcon={false}
               variant={PREVIEW_CARD_VARIANT.document}
+              className="h-[80%] max-h-[80%] mt-[60px]"
             />
-          </div>)}
+          </div>) : null}
       </div>
     </Modal>
   );

@@ -20,10 +20,10 @@ const IconPreview: FC<IconPreviewProps> = ({ metaData, dataTestId, previewUrl, v
           <img
             src={metaData?.favicon}
             alt={metaData?.title}
-            className="w-full h-[480px] object-contain p-4 rounded-t-9xl bg-neutral-100 border-[16px] border-white"
+            className="w-full h-[86%] object-contain px-4 rounded-t-9xl bg-neutral-100 border-t-[16px] border-s-[16px] border-e-[16px] border-white"
             data-testid="preview-img"
           />
-          <div className="flex items-center bg-white justify-between rounded-b-9xl p-4">
+          <div className="h-[14%] flex items-center bg-white justify-between rounded-b-9xl px-4 py-4">
             <div className="flex flex-col">
               <div className="font-bold text-sm text-neutral-900 break-normal [overflow-wrap:anywhere]" data-testid="preview-link-title">
                 {metaData?.title}
