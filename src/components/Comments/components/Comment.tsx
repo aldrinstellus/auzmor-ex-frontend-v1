@@ -176,6 +176,7 @@ export const Comment: FC<CommentProps> = ({
                     },
                     stroke: 'text-neutral-900',
                     dataTestId: 'post-ellipsis-edit-comment',
+                    disabled: !canPostComment,
                   },
                   {
                     icon: 'delete',
