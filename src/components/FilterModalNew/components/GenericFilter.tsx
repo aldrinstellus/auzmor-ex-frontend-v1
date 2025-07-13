@@ -9,9 +9,11 @@ import {
   Control,
   FieldValues,
   Path,
+  PathValue,
   UseFormSetValue,
   UseFormWatch,
 } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 interface IGenericFilterProps<TFilters extends FieldValues> {
   options: Record<string, any>[] | string[] | number[];
@@ -28,9 +30,7 @@ interface IGenericFilterProps<TFilters extends FieldValues> {
 const transformOptions = (
   options: Record<string, any>[] | string[] | number[],
 ): (ICheckboxListOption | IRadioListOption)[] => {
-  console.log(options);
   if (!Array.isArray(options)) return [];
-
   if (typeof options[0] === 'string' || typeof options[0] === 'number') {
     return (options as (string | number)[]).map((item) => ({
       data: {
@@ -42,10 +42,17 @@ const transformOptions = (
       datatestId: `${item}-filter-option-checkbox`,
     }));
   } else {
-    return (options as Record<string, any>[]).map((obj, index) => {
-      const id = obj.id ?? index;
-      const label = obj.label ?? obj.name ?? id;
-      const value = obj.value ?? id;
+    return (options as Record<string, any>[]).map((obj) => {
+      const id = obj.id ?? obj;
+      const label =
+        obj.label !== undefined
+          ? obj.label
+          : typeof obj === 'boolean'
+          ? obj
+            ? 'True'
+            : 'False'
+          : id;
+      const value = obj.value ?? obj;
       return {
         data: {
           id,
@@ -68,6 +75,7 @@ const GenericFilter = <TFilters extends Record<string, any>>({
   transform = transformOptions,
   listType = 'CHECKBOX',
 }: IGenericFilterProps<TFilters>) => {
+  const { t } = useTranslation('channelDetail');
   const searchField = [
     {
       type: FieldType.Input,
@@ -77,6 +85,7 @@ const GenericFilter = <TFilters extends Record<string, any>>({
       isClearable: true,
       leftIcon: 'search',
       dataTestId: `${name}-search`,
+      className: 'h-9 text-sm [&_input]:!h-9', 
     },
   ];
 
@@ -126,38 +135,38 @@ const GenericFilter = <TFilters extends Record<string, any>>({
     },
   ];
   return (
-    <div className="px-2 py-4">
-      <Layout fields={searchField} />
-      <div className="max-h-[330px] min-h-[330px] overflow-y-auto">
-        {!!selectedOptions?.length && (
+    <div className="flex flex-col h-full max-h-[400px] px-2 pt-2">
+      {listType !== 'RADIO' && (
+        <div className="mb-2 shrink-0">
+          <Layout fields={searchField} />
+        </div>
+      )}
+       <div className="flex-1 overflow-y-auto">
+        {(Array.isArray(selectedOptions) && !!selectedOptions?.length) && (
           <div className="flex mt-2 mb-3 flex-wrap">
             {selectedOptions.map(
               (checkboxOption: ICheckboxListOption | IRadioListOption) => (
                 <div
                   key={checkboxOption.data.id}
                   data-testid="filter-options"
-                  className="flex items-center px-3 py-2 bg-neutral-100 rounded-17xl border border-neutral-200 mr-2 my-1"
+                  className="flex items-center px-2 py-1 bg-neutral-100 rounded-17xl border border-neutral-200 mr-1 my-1"
                 >
                   <Truncate
                     text={checkboxOption.data.label}
-                    className="text-primary-500 text-sm font-medium whitespace-nowrap max-w-[128px]"
+                    className="text-primary-500 text-xs font-medium whitespace-nowrap max-w-[110px]"
                   />
                   <div className="ml-1">
                     <Icon
                       name="closeCircle"
-                      size={16}
+                      size={14}
                       color="text-neutral-900"
                       onClick={() =>
                         setValue(
                           name as Path<TFilters>,
                           selectedOptions.filter(
-                            (
-                              selectedRoles:
-                                | ICheckboxListOption
-                                | IRadioListOption,
-                            ) =>
+                            (selectedRoles: ICheckboxListOption | IRadioListOption) =>
                               selectedRoles.data.id !== checkboxOption.data.id,
-                          ),
+                          ) as PathValue<TFilters, Path<TFilters>>
                         )
                       }
                     />
@@ -167,14 +176,16 @@ const GenericFilter = <TFilters extends Record<string, any>>({
             )}
           </div>
         )}
-        {options?.length > 0 ? (
+        {optionList?.length > 0 ? (
           <Layout
             fields={listType === 'RADIO' ? radioFields : checkboxFields}
           />
         ) : (
           <NoDataFound
-            className="py-4 w-full h-full min-h-[330px] flex flex-col justify-center"
-            hideClearBtn
+            message={t('refineSearch')}
+            className="flex flex-col h-full items-center justify-center"
+            illustrationClassName="w-[30%] h-[30%]"
+            onClearSearch={() => setValue(`${name}-search` as Path<TFilters>, '' as PathValue<TFilters, Path<TFilters>>)}
           />
         )}
       </div>

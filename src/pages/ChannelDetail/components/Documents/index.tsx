@@ -74,6 +74,8 @@ import { useTranslation } from 'react-i18next';
 import { getUtcMiliseconds } from 'utils/time';
 import useNavigate from 'hooks/useNavigation';
 import { ColumnItem } from './components/ColumnSelector';
+import Truncate from 'components/Truncate';
+import clsx from 'clsx';
 // import { ICheckboxListOption } from 'components/CheckboxList';
 
 export enum DocIntegrationEnum {
@@ -95,8 +97,16 @@ interface IDocumentProps {
 }
 
 const fieldSize: Record<string, number> = {
+  Owner: 180,
   ownerName: 256,
   modifiedAt: 200,
+};
+
+const fieldSizeByType: Record<string, number> = {
+  hyperlink: 130,
+  date: 150,
+  boolean: 100,
+  number: 150,
 };
 
 const TimeField = ({ time }: { time: string }) => (
@@ -114,7 +124,7 @@ const NameField = ({
   mimeType: string;
   isFolder: boolean;
 }) => (
-  <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
+  <div className="flex gap-2 items-center font-medium text-neutral-900 leading-6 w-full">
     <div className="flex w-6">
       <Icon
         name={isFolder ? 'folder' : getIconFromMime(mimeType)}
@@ -122,7 +132,12 @@ const NameField = ({
         hover={false}
       />
     </div>
-    <span className="break-all truncate w-full">{name}</span>
+    <Truncate
+      maxLength={25}
+      toolTipClassName='!z-[999]'
+      text={name || ''}
+      className="text-neutral-900 font-medium"
+    />
   </div>
 );
 
@@ -187,6 +202,51 @@ const LocationField = ({
       )}
     />
   );
+};
+
+const renderCustomField = (type: string, value: any): React.ReactNode => {
+  if (value === null || value === undefined || value === '') return <span className='text-neutral-300'>-</span>;
+
+  switch (type) {
+    case 'text':
+    case 'number':
+    case 'currency':
+      return value;
+    case 'choice':
+      return (
+        <span className="bg-white text-sm rounded-full px-3 py-1 inline-block border border-neutral-200">
+          {value}
+        </span>
+      );
+    case 'hyperlink':
+      return (
+        <a
+          href={value}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 underline"
+        >
+          WEBSITE LINK
+        </a>
+      );
+    case 'boolean':
+      return value === true ? <Icon name="tick" tabIndex={0} size={16} />
+      : value === false ? <Icon name="close" tabIndex={0} size={16} /> : '-';
+    case 'date':
+      const dateTime = moment(value).format('MMMM DD,YYYY');
+      return dateTime;
+    case 'image':
+      return (
+        <img
+          src={value}
+          alt="field"
+          className="w-16 h-10 object-cover rounded border border-gray-300"
+        />
+      );
+
+    default:
+      return typeof value === 'string' ? value : JSON.stringify(value);
+  }
 };
 
 const Document: FC<IDocumentProps> = ({ permissions }) => {
@@ -553,8 +613,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               isFolder={isRootDir || info?.row?.original?.isFolder}
             />
           ),
-          thClassName: 'flex-1',
-          tdClassName: 'flex-1',
+          thClassName: 'flex-1 min-w-[250px] border-neutral-200 py-3 px-3',
+          tdClassName: 'flex-1 min-w-[250px] border-b-1 border-neutral-200 py-3 px-3',
         },
         {
           accessorKey: 'location',
@@ -597,18 +657,16 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               ) {
                 return <TimeField time={info.getValue() as string} />;
               } else {
-                return (
-                  <span>
-                    {(
-                      (info.row.original.customFields ?? []).find(
-                        (eachField: any) => field.id == eachField.id,
-                      ) as any
-                    )?.value ?? ''}
-                  </span>
-                );
+                 const matched = (info.row.original.customFields ?? []).find(
+                    (eachField: any) => field.fieldName === eachField.field_name
+                  ) as { field_values?: any } | undefined;
+
+                  return <>{renderCustomField(field.type, matched?.field_values)}</>;
               }
             },
-            size: field.size || fieldSize[field.fieldName] || 256,
+            size: field.size || fieldSize[field.fieldName] || fieldSizeByType[field.type] || 256,
+            thClassName: 'py-3 px-3',
+            tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
           })) || []),
         {
           accessorKey: 'more',
@@ -626,15 +684,15 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               <PopupMenu
                 triggerNode={
                   <div
-                    className="cursor-pointer relative"
-                    data-testid="feed-post-ellipsis"
+                    className="relative"
+                    data-testid="document-table-ellipsis"
                     title="more"
                   >
                     <Icon name="moreV2Filled" tabIndex={0} size={16} />
                   </div>
                 }
                 menuItems={options}
-                className="right-0 top-full border-1 border-neutral-200 focus-visible:outline-none w-44"
+                className="right-0 bg-white top-full border-1 border-neutral-200 focus-visible:outline-none w-44"
                 onClick={(e) => e.stopPropagation()}
               />
             ) : (
@@ -642,10 +700,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             );
           },
           size: 16,
-          tdClassName: 'items-center relative',
+          thClassName: '!w-[120px] sticky right-0 !z-10 bg-inherit border-l-1 border-neutral-200 py-3 px-3',
+          tdClassName: 'sticky right-0 !w-[120px] !z-20 relative bg-white flex items-center justify-center border-l-1 border-b-1 border-r-1 border-neutral-200 py-3 px-3',
         },
       ].filter((each) => {
-        if (each.accessorKey === 'ownerName' && isRootDir) {
+        if (each.accessorKey === 'Owner' && isRootDir) {
           return false;
         }
         if (
@@ -764,6 +823,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         )
     : [];
 
+  const dynamicGridHeightClass = totalRows > 0 ? '' : 'min-h-[400px]';
   // Get props for Datagrid component
   const dataGridProps = useDataGrid<DocType>({
     apiEnum: isDocSearchApplied
@@ -826,14 +886,20 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       },
       noDataFound: () => (
         <NoDataFound
+          className='h-full flex flex-col pt-[30px] pb-[20px] items-center justify-center border border-neutral-200'
+          illustrationClassName='!w-[30%]'
           labelHeader={t('noDataFound.docListing')}
-          clearBtnLabel="Upload now"
+          clearBtnLabel={t('uploadNow')}
           hideClearBtn={hideClearBtn}
           onClearSearch={() => fileInputRef?.current?.click()}
         />
       ),
-      trDataClassName: isCredExpired ? '' : 'cursor-pointer',
-      className: '!overflow-x-auto pb-4',
+      trDataClassName: isCredExpired ? '' : 'cursor-pointer !px-0 !py-0 !z-10 !gap-0 !border-l-1 !border-b-0 border-neutral-200',
+      thDataClassName: '!px-0 !py-0 !border-0 !gap-0 !z-10',
+      className: clsx(
+        '!overflow-x-auto',
+        dynamicGridHeightClass,
+      ),
     },
   });
 

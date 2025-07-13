@@ -1,4 +1,4 @@
-import {
+import React, {
   ElementType,
   FC,
   Fragment,
@@ -6,8 +6,10 @@ import {
   ReactElement,
   ReactNode,
   cloneElement,
-  useEffect,
+  useRef,
+  useState,
 } from 'react';
+import { createPortal } from 'react-dom';
 import { Menu } from '@headlessui/react';
 import PopupMenuItem from './PopupMenuItem';
 
@@ -53,66 +55,84 @@ const PopupMenu: FC<IPopupMenuProps> = ({
   isOpen,
   onClick,
 }) => {
-  useEffect(() => {
-    const triggers = document.getElementsByClassName('menu-trigger');
-    if (triggers.length) {
-      for (const node of triggers) {
-        node.removeAttribute('aria-expanded');
-      }
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const [coords, setCoords] = useState<{ top: number; left: number } | null>(
+    null
+  );
+
+  const handleOpen = () => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setCoords({
+        top: rect.bottom + window.scrollY,
+        left: rect.right - 176 + window.scrollX, // assuming width: w-44 (176px)
+      });
     }
-  }, []);
+  };
+
   return (
     <Menu>
-      <Menu.Button
-        as="menu"
-        disabled={disabled}
-        className={'menu-trigger'}
-        onClick={onClick}
-      >
-        {triggerNode}
-      </Menu.Button>
-      {(controlled ? isOpen : true) && (
-        <Menu.Items
-          static={controlled}
-          className={`bg-white rounded-9xl shadow-lg absolute z-[99999] overflow-hidden focus-visible:outline-none ${className}`}
+      <div ref={triggerRef} onClick={onClick}>
+        <Menu.Button
+          as="div"
+          disabled={disabled}
+          className="menu-trigger"
+          onClick={handleOpen}
         >
-          {title && title}
-          {menuItems.map((menuItem: IMenuItem, idx: number) =>
-            menuItem.isBanner ? (
-              menuItem?.renderNode || null
-            ) : (
-              <Fragment key={`menu-item-${idx}-fragment`}>
-                {!menuItem.disabled && (
-                  <Menu.Item
-                    key={`menu-item-${idx}`}
-                    as="button"
-                    onClick={menuItem?.onClick}
-                    className="w-full"
-                  >
-                    {({ active }) => {
-                      if (menuItem.renderNode) {
-                        const menuItemWithDataTestId = cloneElement(
-                          menuItem.renderNode,
-                          { 'data-testid': menuItem.dataTestId },
+          {triggerNode}
+        </Menu.Button>
+      </div>
+
+      {(controlled ? isOpen : true) &&
+        coords &&
+        createPortal(
+          <Menu.Items
+            static={controlled}
+            className={`bg-white rounded-9xl shadow-lg absolute z-[99999] overflow-hidden focus-visible:outline-none ${className}`}
+            style={{
+              position: 'absolute',
+              top: coords.top,
+              left: coords.left,
+            }}
+          >
+            {title && title}
+            {menuItems.map((menuItem: IMenuItem, idx: number) =>
+              menuItem.isBanner ? (
+                menuItem?.renderNode || null
+              ) : (
+                <Fragment key={`menu-item-${idx}-fragment`}>
+                  {!menuItem.disabled && (
+                    <Menu.Item
+                      key={`menu-item-${idx}`}
+                      as="button"
+                      onClick={menuItem?.onClick}
+                      className="w-full"
+                    >
+                      {({ active }) => {
+                        if (menuItem.renderNode) {
+                          const menuItemWithDataTestId = cloneElement(
+                            menuItem.renderNode,
+                            { 'data-testid': menuItem.dataTestId }
+                          );
+                          return menuItemWithDataTestId;
+                        }
+                        return (
+                          <PopupMenuItem
+                            menuItem={menuItem}
+                            border={idx !== menuItems?.length - 1}
+                            isActive={menuItem.isActive || active}
+                          />
                         );
-                        return menuItemWithDataTestId;
-                      }
-                      return (
-                        <PopupMenuItem
-                          menuItem={menuItem}
-                          border={idx !== menuItems?.length - 1}
-                          isActive={menuItem.isActive || active}
-                        />
-                      );
-                    }}
-                  </Menu.Item>
-                )}
-              </Fragment>
-            ),
-          )}
-          {footer && footer}
-        </Menu.Items>
-      )}
+                      }}
+                    </Menu.Item>
+                  )}
+                </Fragment>
+              )
+            )}
+            {footer && footer}
+          </Menu.Items>,
+          document.body
+        )}
     </Menu>
   );
 };

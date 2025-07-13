@@ -43,6 +43,7 @@ export interface IDataGridProps<T> {
   isRowSelected?: boolean;
   height?: number | 'auto';
   trDataClassName?: string;
+  thDataClassName?: string;
   view?: 'LIST' | 'GRID';
   noDataFound: (error: Record<string, any> | null) => JSX.Element;
   enableMultiRowSelection?: boolean;
@@ -72,6 +73,7 @@ const DataGrid = <T extends object>({
   tableRef,
   height = 'auto',
   trDataClassName = '',
+  thDataClassName = '',
   view = 'LIST',
   noDataFound,
   enableMultiRowSelection,
@@ -133,7 +135,9 @@ const DataGrid = <T extends object>({
   const getTdClassName = (cell: any) =>
     clsx({ flex: true, [cell?.column?.columnDef?.tdClassName || '']: true });
   const trHeaderClassName = () =>
-    clsx({ 'flex w-full px-5 py-3 bg-neutral-100 gap-2 group/row z-20': true });
+    clsx({ 'flex w-full px-5 py-3 bg-neutral-100 gap-2 group/row z-20': true,
+      [thDataClassName]: true,
+    });
   const getTrDataClassName = (row: Row<T>) =>
     clsx({
       'flex absolute w-full hover:bg-primary-100 px-5 py-3 gap-2 cursor-default border-b-1 select-none group/row':
@@ -197,9 +201,7 @@ const DataGrid = <T extends object>({
     );
   }
 
-  return flatData.length === 0 && !isLoading ? (
-    noDataFound(error || null)
-  ) : (
+  return (
     <div
       className={className}
       ref={tableContainerRef}
@@ -209,8 +211,8 @@ const DataGrid = <T extends object>({
       }}
     >
       {/* Even though we're still using sematic table tags, we must use CSS grid and flexbox for dynamic row heights */}
-      <table className="grid gap-2">
-        <thead className="grid z-20">
+      <table className="grid">
+        <thead className="grid z-10">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className={trHeaderClassName()}>
               {headerGroup.headers.map((header: Header<T, unknown>) => {
@@ -240,22 +242,27 @@ const DataGrid = <T extends object>({
         <tbody
           style={{
             display: 'grid',
-            height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
-            position: 'relative', //needed for absolute positioning of rows
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            position: 'relative',
           }}
         >
-          {rowVirtualizer
-            .getVirtualItems()
-            .map((virtualRow: any, rowIndex: number) => {
+          {flatData.length === 0 && !isLoading ? (
+            <tr className="w-full flex items-center justify-center mt-[20px] w-full h-full min-h-[200px]">
+              <td colSpan={table.getAllColumns().length} className="text-center w-full">
+                {noDataFound(error || null)}
+              </td>
+            </tr>
+          ) : (
+            rowVirtualizer.getVirtualItems().map((virtualRow: any, rowIndex: number) => {
               const row = rows[virtualRow.index] as Row<T>;
               return (
                 <tr
-                  data-index={virtualRow.index} //needed for dynamic row height measurement
-                  ref={(node) => rowVirtualizer.measureElement(node)} //measure dynamic row height
+                  data-index={virtualRow.index}
+                  ref={(node) => rowVirtualizer.measureElement(node)}
                   key={row.id}
                   className={getTrDataClassName(row)}
                   style={{
-                    transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
+                    transform: `translateY(${virtualRow.start}px)`,
                     zIndex: rows.length - rowIndex,
                   }}
                   onClick={(e) => {
@@ -263,25 +270,19 @@ const DataGrid = <T extends object>({
                     handleClick(e, table, row);
                   }}
                 >
-                  {row.getVisibleCells().map((cell) => {
-                    return (
-                      <td
-                        key={cell.id}
-                        className={getTdClassName(cell)}
-                        style={{
-                          width: cell.column.getSize(),
-                        }}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </td>
-                    );
-                  })}
+                  {row.getVisibleCells().map((cell) => (
+                    <td
+                      key={cell.id}
+                      className={getTdClassName(cell)}
+                      style={{ width: cell.column.getSize() }}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </td>
+                  ))}
                 </tr>
               );
-            })}
+            })
+          )}
         </tbody>
         {hasNextPage && !isFetchingNextPage && (
           <div className="flex" ref={ref} />

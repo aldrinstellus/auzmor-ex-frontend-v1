@@ -98,7 +98,12 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
   const dynamicFilters: IFilterNavigation<any>[] = useMemo(
     () =>
       columns
-        .filter((column) => column.isCustomField && column.visibility)
+      .filter(
+          (column) =>
+            column.isCustomField &&
+            column.visibility &&
+            !['text', 'image', 'hyperlink'].includes(column.type),
+        )
         .map((column) => ({
           key: column.fieldName,
           label: () => column.label,
@@ -107,6 +112,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
               options={column.values}
               name={column.fieldName}
               {...form}
+              listType={column.type === "boolean" ? "RADIO" : "CHECKBOX"}
             />
           ),
         })),

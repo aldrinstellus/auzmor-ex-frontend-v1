@@ -64,9 +64,9 @@ const RadioGroup: FC<RadioButtonProps> = ({
             value={option.data?.value}
             onChange={(e) => {
               // field.onChange(transform?.output ? transform?.output(e) : e)
-              const value = transform?.output
-                ? transform?.output(e)
-                : e.target.value;
+              const value =
+                transform?.output?.(e) ??
+                (e.target.value === 'true' ? true : e.target.value === 'false' ? false : e.target.value);
               field.onChange(value);
               option.data.onChange && option.data.onChange(value);
             }}

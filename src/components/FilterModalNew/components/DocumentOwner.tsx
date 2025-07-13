@@ -10,6 +10,7 @@ import { useChannelStore } from 'stores/channelStore';
 import { useDebounce } from 'hooks/useDebounce';
 import NoDataFound from 'components/NoDataFound';
 import ItemSkeleton from 'components/FilterModal/ItemSkeleton';
+import { useTranslation } from 'react-i18next';
 interface IVisibilityProps {
   control: Control<any>;
   watch: UseFormWatch<any>;
@@ -23,6 +24,7 @@ const DocumentOwner: FC<IVisibilityProps> = ({
   setValue,
   name,
 }) => {
+  const { t } = useTranslation('channelDetail');
   const { getApi } = usePermissions();
   const { channelId = '' } = useParams();
   const { rootFolderId } = useChannelStore();
@@ -45,11 +47,12 @@ const DocumentOwner: FC<IVisibilityProps> = ({
     {
       type: FieldType.Input,
       control,
-      name,
+      name: `${name}-search`,
       placeholder: 'Search',
       isClearable: true,
       leftIcon: 'search',
       dataTestId: `doc-owner-search`,
+      className: 'h-9 text-sm [&_input]:!h-9', 
     },
   ];
   const documentFields = useMemo(
@@ -74,31 +77,37 @@ const DocumentOwner: FC<IVisibilityProps> = ({
   );
 
   return (
-    <div className="px-2 py-4">
-      <Layout fields={searchField} />
-      {isLoading ? (
-        <>
-          {[...Array(6)].map((_value, i) => (
-            <div
-              key={`${i}-document-item-skeleton`}
-              className={`px-6 py-3 border-b-1 border-b-bg-neutral-200 flex items-center`}
-            >
-              <ItemSkeleton />
-            </div>
-          ))}
-        </>
-      ) : isError ? (
-        <div>Network error</div>
-      ) : !!owners.length ? (
-        <div className="max-h-[330px] min-h-[330px] overflow-y-auto">
-          <Layout fields={documentFields} />
-        </div>
-      ) : (
-        <NoDataFound
-          className="pt-8"
-          onClearSearch={() => setValue(name, '')}
-        />
-      )}
+    <div className="flex flex-col h-full max-h-[400px] px-2 pt-2">
+      <div className="shrink-0 mb-2">
+        <Layout fields={searchField} />
+      </div>
+      <div className="flex-1 overflow-y-auto">
+        {isLoading ? (
+          <>
+            {[...Array(6)].map((_value, i) => (
+              <div
+                key={`${i}-document-item-skeleton`}
+                className="px-6 py-3 border-b border-neutral-200 flex items-center"
+              >
+                <ItemSkeleton />
+              </div>
+            ))}
+          </>
+        ) : isError ? (
+          <div className="px-4 text-sm text-red-600">Network error</div>
+        ) : !!owners.length ? (
+          <div className="max-h-[330px] overflow-y-auto">
+            <Layout fields={documentFields} />
+          </div>
+        ) : (
+          <NoDataFound
+            message={t('refineSearch')}
+            className="flex flex-col h-full items-center justify-center"
+            illustrationClassName="w-[30%] h-[30%]"
+            onClearSearch={() => setValue(`${name}-search`, '')}
+          />
+        )}
+      </div>
     </div>
   );
 };

@@ -6,6 +6,7 @@ import Layout, { FieldType } from 'components/Form';
 import Popover from 'components/Popover';
 import { ICheckboxListOption } from 'components/CheckboxList';
 import { searchObjects } from 'utils/misc';
+import Input from 'components/Input';
 
 export interface ColumnItem {
   id: string;
@@ -63,16 +64,6 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
   const columnFields = useMemo(
     () => [
       {
-        type: FieldType.Input,
-        control,
-        name: 'columnSearch',
-        placeholder: 'Search',
-        isClearable: true,
-        leftIcon: 'search',
-        dataTestId: `doc-owner-search`,
-        className: 'px-4',
-      },
-      {
         type: FieldType.CheckboxList,
         name: 'columns',
         control,
@@ -86,12 +77,12 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
         ),
         labelRenderer: (option: ICheckboxListOption) => {
           return (
-            <div className="ml-2.5 cursor-pointer text-xs">
+            <div className="ml-2.5 cursor-pointer text-sm">
               {option.data.label || ''}
             </div>
           );
         },
-        rowClassName: 'px-6 py-3 border-b border-neutral-200',
+        rowClassName: 'px-4 py-3',
       },
     ],
     [columns, watchedColumnSearch],
@@ -113,10 +104,19 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
         }
         className="-right-2 top-[52px] rounded-9xl"
         contentRenderer={() => (
-          <div className="z-50 max-h-96 overflow-y-auto shadow-lg relative rounded-2xl overflow-hidden w-64">
-            <Layout fields={columnFields} className="gap-4" />
-            <div className="sticky bottom-0 px-6 py-3 bg-white font-sm font-bold text-neutral-500 hover:text-primary-500 text-center border-t-1 border-t-neutral-200">
-              {watchedColumns.length} of {columns.length}
+          <div className="flex flex-col h-[350px] shadow-lg relative rounded-9xl border border-neutral-100 w-64">
+            <Input
+              control={control}
+              name="columnSearch"
+              placeholder="Search"
+              isClearable
+              leftIcon="search"
+              dataTestId="doc-owner-search"
+              className="px-4 py-1 h-[60px]"
+            />
+            <Layout fields={columnFields} className="gap-4 h-[248px] overflow-y-auto" />
+            <div className="text-sm h-[40px] px-4 mt-[2px] flex items-center bg-white font-sm text-neutral-500 hover:text-primary-500 rounded-b-9xl border-t-1 border-t-neutral-200">
+              {t('selectedColumns', { selectedCount: watchedColumns.length, totalCount: columns.length })}
             </div>
           </div>
         )}
