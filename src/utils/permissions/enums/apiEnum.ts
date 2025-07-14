@@ -51,6 +51,9 @@ export enum ApiEnum {
   DeleteJoinChannelRequest = 'DELETE_JOIN_CHANNEL_REQUEST',
   UpdateChannelJoinRequests = 'UPDATE_CHANNEL_JOIN_REQUESTS',
 
+  GetChannelDocumentComments = 'GET_CHANNEL_DOCUMENT_COMMENTS',
+  CreateChannelDocumentComments = 'CREATE_CHANNEL_DOCUMENT_COMMENTS',
+
   //comments
   GetComments = 'GET_COMMENTS',
   CreateComment = 'CREATE_COMMENT',
@@ -226,8 +229,8 @@ export enum ApiEnum {
   GetChannelFiles = 'GET_CHANNEL_FILES',
   GetInfiniteChannelFiles = 'GET_INFINITE_CHANNEL_FILES',
   GetChannelDocumentStatus = 'GET_CHANNEL_DOCUMENT_STATUS',
-  // GetChannelDocumentFields = 'GET_CHANNEL_DOCUMENT_FIELDS', TODO: custom-fields
-  // UpdateChannelDocumentFields = 'UPDATE_CHANNEL_DOCUMENT_FIELDS', TODO: custom-fields
+  GetChannelDocumentFields = 'GET_CHANNEL_DOCUMENT_FIELDS',
+  UpdateChannelDocumentFields = 'UPDATE_CHANNEL_DOCUMENT_FIELDS',
   GetChannelFilePreview = 'GET_CHANNEL_FILE_PREVIEW',
   GetChannelFilePreviewApi = 'GET_CHANNEL_FILE_PREVIEW_API',
   CreateChannelDocFolder = 'CREATE_CHANNEL_DOC_FOLDER',

@@ -11,6 +11,7 @@ import { useCurrentTimezone } from 'hooks/useCurrentTimezone';
 import Icon from 'components/Icon';
 import {
   CommentsRTE,
+  Placeholder,
   PostCommentMode,
 } from 'components/Comments/components/CommentsRTE';
 import { useUploadState } from 'hooks/useUploadState';
@@ -177,6 +178,7 @@ const User: FC<UserProps> = ({
             className="w-full"
             wrapperClassName="!py-[7px]"
             mode={PostCommentMode.SendWish}
+            placeholder={Placeholder.SendWish}
             inputRef={inputRef}
             media={media}
             removeMedia={() => {

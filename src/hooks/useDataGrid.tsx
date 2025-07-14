@@ -75,7 +75,7 @@ export const useDataGrid = <T extends object>({
         isError
           ? []
           : data?.pages?.flatMap(
-              (page: { data: any }) => page.data.result.data,
+              (page: { data: any }) => page?.data?.result?.data,
             ) ?? [],
       [data, isError],
     );

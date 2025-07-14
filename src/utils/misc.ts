@@ -767,3 +767,36 @@ export function decompressString(encode: string) {
   const decompressed = pako.inflate(unit8, { to: 'string' });
   return decompressed;
 }
+
+/**
+ * Retrieves a nested value from an object using dot notation (e.g., "data.key1.subkey").
+ */
+const getNestedValue = (obj: any, path: string): any => {
+  return path.split('.').reduce((acc, part) => acc?.[part], obj);
+};
+
+/**
+ * Filters an array of objects based on a search string applied to specific (possibly nested) keys.
+ *
+ * @param data - The array of objects to search.
+ * @param keys - Array of keys (supports dot notation for nested keys).
+ * @param searchText - The string to search for.
+ * @returns A filtered array containing only the objects that match the search criteria.
+ */
+export const searchObjects = <T>(
+  data: T[],
+  keys: string[], // dot notation supported
+  searchText: string,
+): T[] => {
+  const lowerSearch = searchText.toLowerCase();
+
+  return data.filter((item) =>
+    keys.some((key) => {
+      const value = getNestedValue(item, key);
+      if (typeof value === 'string' || typeof value === 'number') {
+        return value.toString().toLowerCase().includes(lowerSearch);
+      }
+      return false;
+    }),
+  );
+};

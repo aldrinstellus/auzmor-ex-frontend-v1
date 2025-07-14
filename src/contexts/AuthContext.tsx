@@ -239,7 +239,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
         }
       }
     }
-    if (!!!token && isLxp) {
+    if (!!!token && isLxp && process.env.NODE_ENV !== 'development') {
       window.location.replace(getLearnUrl());
     } else {
       setLoading(false);

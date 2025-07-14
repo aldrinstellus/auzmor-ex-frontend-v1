@@ -107,7 +107,12 @@ const Post: FC<PostProps> = ({
     (total, count) => total + count,
     0,
   );
-
+  const cardContexts = normalizeToArray(post?.cardContext);
+  function normalizeToArray<T>(input: T | T[] | undefined | null): T[] {
+  if (Array.isArray(input)) return input;
+  if (input) return [input];
+  return [];
+}
   // Effects
   useEffect(() => {
     if (showComments) {
@@ -181,7 +186,7 @@ const Post: FC<PostProps> = ({
     }
   };
 
-  const CustomCard: FC = () => {
+  const CustomCard: FC<any> = ({ data }) => {
     const iconMap: Record<string, string> = {
       clock: 'clock',
       play: 'play',
@@ -218,7 +223,7 @@ const Post: FC<PostProps> = ({
     return (
       <Card className="w-full h-[266px] relative overflow-hidden group/card">
         <img
-          src={post?.cardContext?.image?.url}
+          src={data?.image?.url}
           className="w-full h-full object-cover group-hover/card:scale-[1.10] focus:scale-[1.10]"
           style={{
             transition: 'all 0.25s ease-in 0s',
@@ -226,7 +231,7 @@ const Post: FC<PostProps> = ({
           }}
           alt="Image"
           tabIndex={0}
-          aria-label={post?.cardContext?.title}
+          aria-label={data?.title}
           onKeyUp={(e) => (e.code === 'Enter' ? handleViewCourse() : '')}
         />
         <div
@@ -241,13 +246,13 @@ const Post: FC<PostProps> = ({
           }}
         />
         <div className="absolute top-4 left-4 px-2.5 py-1 text-xs bg-primary-500 text-white font-medium rounded">
-          {post?.cardContext?.resource}
+          {data?.resource}
         </div>
 
         <div className="absolute bottom-0 left-0 flex flex-col p-4 z-10 gap-2 w-full">
-          {post?.cardContext?.categories?.length && (
+          {data?.categories?.length && (
             <div className="flex gap-2">
-              {post?.cardContext?.categories
+              {data?.categories
                 ?.slice(0, 2)
                 ?.map((category: string) => (
                   <div
@@ -259,19 +264,19 @@ const Post: FC<PostProps> = ({
                     </p>
                   </div>
                 ))}
-              {post?.cardContext?.categories?.length > 2 && (
+              {data?.categories?.length > 2 && (
                 <div className="px-2 py-1 rounded bg-white border border-white flex bg-opacity-10 text-white border-opacity-20 text-xs font-medium">
-                  +{post?.cardContext?.categories?.length - 2}
+                  +{data?.categories?.length - 2}
                 </div>
               )}
             </div>
           )}
-          {post?.cardContext?.title && (
+          {data?.title && (
             <div className="flex gap-3 items-center">
               <div className="text-white font-bold text-base line-clamp-2 flex">
-                {post?.cardContext?.title}
+                {data?.title}
               </div>
-              {post?.cardContext?.cardBadgeIcon && (
+              {data?.cardBadgeIcon && (
                 <div className="flex items-center justify-center h-5 w-5 bg-primary-500 z-10 rounded">
                   <Icon
                     name="medalStar"
@@ -283,19 +288,19 @@ const Post: FC<PostProps> = ({
               )}
             </div>
           )}
-          {post?.cardContext?.avatar && (
+          {data?.avatar && (
             <div className="flex items-center gap-2">
               <Avatar
-                name={post?.cardContext?.avatar?.text || 'U'}
-                image={post?.cardContext?.avatar?.url}
+                name={data?.avatar?.text || 'U'}
+                image={data?.avatar?.url}
                 size={32}
               />
               <div className="text-white text-sm font-medium">
-                {post?.cardContext?.avatar?.text || 'User'}
+                {data?.avatar?.text || 'User'}
               </div>
             </div>
           )}
-          {post?.cardContext?.description && (
+          {data?.description && (
             <div className="text-sm text-white">
               <Markdown
                 components={components}
@@ -305,13 +310,13 @@ const Post: FC<PostProps> = ({
                   remarkGfm,
                 ]}
               >
-                {post?.cardContext?.description}
+                {data?.description}
               </Markdown>
             </div>
           )}
-          {post?.cardContext?.blockStrings?.length && (
+          {data?.blockStrings?.length && (
             <div className="flex gap-2 items-center">
-              {post?.cardContext?.blockStrings?.map((blockString, index) => (
+              {data?.blockStrings?.map((blockString: any, index: any) => (
                 <Fragment key={blockString?.text}>
                   <div className="flex gap-1 items-center">
                     <Icon
@@ -322,7 +327,7 @@ const Post: FC<PostProps> = ({
                     />
                     <p className="text-xs text-white">{blockString?.text}</p>
                   </div>
-                  {index < post?.cardContext?.blockStrings.length - 1 && (
+                  {index < data?.blockStrings.length - 1 && (
                     <div className="w-1 h-1 rounded-full bg-white"></div>
                   )}
                 </Fragment>
@@ -411,7 +416,10 @@ const Post: FC<PostProps> = ({
             </div>
           )}
           <RenderQuillContent readOnly={readOnly} data={post} />
-          {post?.cardContext && <CustomCard />}
+          {cardContexts.length > 0 &&
+            cardContexts.map((context, index) => (
+                <CustomCard key={index} data={context} />
+          ))}
           {post?.linkAttachments && !!post?.linkAttachments.length && (
             <LinkAttachments attachments={post?.linkAttachments} />
           )}
@@ -514,7 +522,7 @@ const Post: FC<PostProps> = ({
         ) : !previousShowComment.current && commentIds?.length ? (
           commentIds.map((id) => (
             <div className="mx-6 mb-3" key={id}>
-              <Comment commentId={id} />
+              <Comment commentId={id}/>
             </div>
           ))
         ) : null}

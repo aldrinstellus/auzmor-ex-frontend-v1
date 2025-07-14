@@ -76,6 +76,12 @@ export const apiConfigLxp = {
   [ApiEnum.UpdateChannelJoinRequests]: {
     [Default]: queries.bulkChannelRequestUpdate,
   },
+  [ApiEnum.GetChannelDocumentComments]: {
+    [Default]: queries.useInfiniteChannelDocumentComments,
+  },
+  [ApiEnum.CreateChannelDocumentComments]: {
+    [Default]: queries.createDocComment,
+  },
 
   //comments
   [ApiEnum.GetComments]: { [Default]: queries.useInfiniteComments },
@@ -225,12 +231,12 @@ export const apiConfigLxp = {
   [ApiEnum.GetChannelDocumentStatus]: {
     [Default]: queries.useChannelDocumentStatus,
   },
-  // [ApiEnum.GetChannelDocumentFields]: {
-  //   [Default]: queries.useChannelDocumentFields,
-  // }, TODO: custom-fields
-  // [ApiEnum.UpdateChannelDocumentFields]: {
-  //   [Default]: queries.updateChannelDocumentFields,
-  // }, TODO: custom-fields
+  [ApiEnum.GetChannelDocumentFields]: {
+    [Default]: queries.useChannelDocumentFields,
+  },
+  [ApiEnum.UpdateChannelDocumentFields]: {
+    [Default]: queries.updateChannelDocumentFields,
+  },
   [ApiEnum.GetChannelFilePreview]: {
     [Default]: queries.useChannelFilePreview,
   },

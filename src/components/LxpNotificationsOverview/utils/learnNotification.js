@@ -34,6 +34,7 @@ export const isLearnerRoute = () => {
   return (
     path.startsWith('/learn') ||
     path.startsWith('/user') ||
+    path.startsWith('/lxp/user') ||
     (path.startsWith('/user') && !path.includes('users'))
   );
 };

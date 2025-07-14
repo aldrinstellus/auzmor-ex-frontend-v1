@@ -6,7 +6,7 @@ import Spinner from 'components/Spinner';
 import LoadMore from 'components/Comments/components/LoadMore';
 import { useCommentStore } from 'stores/commentStore';
 import CommentSkeleton from 'components/Comments/components/CommentSkeleton';
-import { CommentsRTE } from 'components/Comments/components/CommentsRTE';
+import { CommentsRTE, Placeholder } from 'components/Comments/components/CommentsRTE';
 import { EntityType } from 'interfaces';
 import {
   IMG_FILE_SIZE_LIMIT,
@@ -21,6 +21,7 @@ import { usePermissions } from 'hooks/usePermissions';
 
 interface CommentsProps {
   entityId: string;
+  canPostComment?: boolean;
   className?: string;
 }
 
@@ -29,7 +30,11 @@ export interface activeCommentsDataType {
   type: string;
 }
 
-const Comments: FC<CommentsProps> = ({ entityId, className }) => {
+const Comments: FC<CommentsProps> = ({
+  entityId,
+  canPostComment = true,
+  className,
+}) => {
   const { user } = useAuth();
   const { getApi } = usePermissions();
   const {
@@ -66,7 +71,7 @@ const Comments: FC<CommentsProps> = ({ entityId, className }) => {
         </div>
       ) : (
         <div className="ml-8">
-          <div className="flex flex-row items-center justify-between mb-4 gap-2">
+          {canPostComment && (<div className="flex flex-row items-center justify-between mb-4 gap-2">
             <div>
               <Avatar
                 name={user?.name || t('nameNotSpecified')}
@@ -78,6 +83,7 @@ const Comments: FC<CommentsProps> = ({ entityId, className }) => {
               className="w-0 flex-grow py-1"
               entityId={entityId}
               entityType={EntityType.Comment.toLocaleLowerCase()}
+              placeholder={Placeholder.CreateReply}
               inputRef={inputRef}
               media={media}
               removeMedia={() => {
@@ -91,7 +97,7 @@ const Comments: FC<CommentsProps> = ({ entityId, className }) => {
               setMediaValidationErrors={setMediaValidationErrors}
               isCreateCommentLoading={isCreateCommentLoading}
             />
-          </div>
+          </div>)}
           {replyIds && replyIds.length > 0 && (
             <div>
               {isCreateCommentLoading && <CommentSkeleton />}

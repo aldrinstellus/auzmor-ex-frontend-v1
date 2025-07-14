@@ -26,6 +26,7 @@ import ConfirmationBox from 'components/ConfirmationBox';
 import useModal from 'hooks/useModal';
 import {
   CommentsRTE,
+  Placeholder,
   PostCommentMode,
 } from 'components/Comments/components/CommentsRTE';
 import Tooltip, { Variant as TooltipVariant } from 'components/Tooltip';
@@ -107,7 +108,7 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
                   bgColor={getAvatarColor(comment?.createdBy)}
                 />
               </div>
-              <div className="flex flex-col items-start p-0 w-64">
+              <div className="flex flex-col items-start p-0 w-55">
                 <Tooltip
                   tooltipContent={
                     <UserCard
@@ -157,7 +158,7 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
                         dataTestId="comment-reply-ecllipsis"
                       />
                     }
-                    className="left-0 rounded-9xl"
+                    className="right-0 rounded-9xl"
                   >
                     <div>
                       {!editReply && (
@@ -210,6 +211,7 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
                 mode={PostCommentMode.Edit}
                 setEditComment={setEditReply}
                 commentData={comment}
+                placeholder={Placeholder.EditReply}
               />
             </div>
           ) : (
