@@ -274,7 +274,11 @@
     "LxpShoutOut": "<0>{{actor}}</0>  gave you a <0>shout-out</0> for your outstanding efforts!",
     "LxpAnnouncementReminder": "Please acknowledge our recent <0>announcement</0>.",
     "LxpSchedulePrePublishPost": "Your <0>post</0> is going live in 1 hour. ",
-    "LxpSchedulePostPublishPost": "Your <0>post</0> is now live!"
+    "LxpSchedulePostPublishPost": "Your <0>post</0> is now live!",
+    "bulkAssign": "and {{count}} other",
+    "status": {
+      "assigned": "Assigned"
+    }
   },
   "reportsType": {
     "survey": "Survey",

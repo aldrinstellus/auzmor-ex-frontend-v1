@@ -36,6 +36,7 @@ import BreadCrumb, { BreadCrumbVariantEnum } from 'components/BreadCrumb';
 import DocumentPathProvider, {
   DocumentPathContext,
   Item,
+  // Item, TODO: Custom field
 } from 'contexts/DocumentPathContext';
 import RecentlyAddedEntities from './components/RecentlyAddedEntities';
 import Avatar from 'components/Avatar';
@@ -556,23 +557,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           thClassName: 'flex-1',
           tdClassName: 'flex-1',
         },
-        {
-          accessorKey: 'location',
-          header: () => (
-            <div className="font-bold text-neutral-500">{t('location')}</div>
-          ),
-          cell: (info: CellContext<DocType, unknown>) => (
-            <LocationField
-              pathItems={getMappedLocation(info?.row?.original)}
-              pathWithId={info?.row?.original.pathWithId}
-              channelId={channelId}
-              updateDocumentSearch={(value: string) =>
-                setValue('documentSearch', value)
-              }
-            />
-          ),
-          size: 260,
-        },
         ...((documentFields as ColumnItem[])
           ?.filter(
             (field: ColumnItem) =>
@@ -666,6 +650,136 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       downloadChannelFileMutation.isLoading,
       documentFields,
     ],
+  ); // TODO: removed with custom-fields
+
+  // Columns configuration for Datagrid component for List view
+  const columnsDeepSearchListView = React.useMemo<ColumnDef<DocType>[]>(
+    () => [
+      {
+        accessorKey: 'name',
+        header: () => (
+          <div className="font-bold text-neutral-500">
+            {t('nameColumn', { totalRows })}
+          </div>
+        ),
+        cell: (info: CellContext<DocType, unknown>) => (
+          <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
+            <div className="flex w-6">
+              <Icon
+                name={
+                  info?.row?.original?.isFolder
+                    ? 'folder'
+                    : getIconFromMime(info.row.original.mimeType)
+                }
+                className="!w-6"
+              />
+            </div>
+            <span className="break-all truncate w-full">
+              {info.getValue() as string}
+            </span>
+          </div>
+        ),
+        thClassName: 'flex-1',
+        tdClassName: 'flex-1',
+      },
+      {
+        accessorKey: 'ownerName',
+        header: () => (
+          <div className="font-bold text-neutral-500">{t('owner')}</div>
+        ),
+        cell: (info: CellContext<DocType, unknown>) => (
+          <div className="flex gap-2 items-center">
+            <Avatar
+              image={info.row.original?.ownerImage}
+              name={info.row.original?.ownerName}
+              size={24}
+            />
+            <span className="truncate">{info.row.original?.ownerName}</span>
+          </div>
+        ),
+        size: 256,
+      },
+      {
+        accessorKey: 'modifiedAt',
+        header: () => (
+          <div className="font-bold text-neutral-500">{t('lastUpdated')}</div>
+        ),
+        cell: (info: CellContext<DocType, unknown>) => (
+          <div className="flex gap-2 font-medium text-neutral-900 leading-6">
+            {moment(info.getValue() as string).format('MMMM DD,YYYY') as string}
+          </div>
+        ),
+        size: 200,
+      },
+      {
+        accessorKey: 'location',
+        header: () => (
+          <div className="font-bold text-neutral-500">{t('location')}</div>
+        ),
+        cell: (info: CellContext<DocType, unknown>) => {
+          return (
+            <Popover
+              triggerNode={
+                <BreadCrumb
+                  items={getMappedLocation(info?.row?.original)}
+                  onItemClick={() => {}}
+                />
+              }
+              triggerNodeClassName="w-full"
+              wrapperClassName="w-full"
+              contentRenderer={() => (
+                <div className="flex p-3 bg-primary-50 rounded-9xl border border-primary-50 shadow">
+                  <LocationField
+                    pathItems={getMappedLocation(info?.row?.original)}
+                    pathWithId={info?.row?.original?.pathWithId}
+                    channelId={channelId}
+                    updateDocumentSearch={(value: string) =>
+                      setValue('applyDocumentSearch', value)
+                    }
+                  />
+                </div>
+              )}
+            />
+          );
+        },
+        size: 260,
+      },
+      {
+        accessorKey: 'more',
+        header: () => '',
+        cell: (info: CellContext<DocType, unknown>) => {
+          if (
+            info?.row?.original?.id ===
+              downloadChannelFileMutation.variables?.itemId &&
+            downloadChannelFileMutation.isLoading
+          ) {
+            return <Spinner />;
+          }
+          const options = getAllOptions(info);
+          return options.length > 0 ? (
+            <PopupMenu
+              triggerNode={
+                <div
+                  className="cursor-pointer relative"
+                  data-testid="feed-post-ellipsis"
+                  title="more"
+                >
+                  <Icon name="moreV2Filled" tabIndex={0} size={16} />
+                </div>
+              }
+              menuItems={options}
+              className="right-0 top-full border-1 border-neutral-200 focus-visible:outline-none w-44"
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <></>
+          );
+        },
+        size: 16,
+        tdClassName: 'items-center relative',
+      },
+    ],
+    [totalRows, downloadChannelFileMutation.isLoading],
   );
 
   // Columns configuration for Datagrid component for Grid view
@@ -810,7 +924,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       />
     ),
     dataGridProps: {
-      columns: view === 'LIST' ? columnsListView : columnsGridView,
+      columns:
+        view === 'LIST'
+          ? isDocSearchApplied
+            ? columnsDeepSearchListView
+            : columnsListView
+          : columnsGridView,
+      // columns: view === 'LIST' ? columnsListView : columnsGridView, TODO: custom-fields
       isRowSelectionEnabled: false,
       view,
       onRowClick: (e, table, virtualRow) => {

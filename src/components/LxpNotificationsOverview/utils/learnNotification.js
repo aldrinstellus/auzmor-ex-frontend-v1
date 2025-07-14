@@ -18,6 +18,8 @@ import {
   TASK_CONFIG_ROLES,
   TASK_CREATION_SCOPE,
   TASK_CATEGORIES,
+  ELEARNING_TYPE,
+  LEARNER_ENROLLMENT_STATUS,
 } from './constants';
 import moment from 'moment';
 import NotificationTitle from '../components/NotificationTitle';
@@ -335,7 +337,7 @@ const getSourceList = (sourceNamesList = undefined, count) => {
       .join(', ');
     const othersLabel =
       sourceNamesList.length > 2
-        ? ` ${i18n.t('assessment.bulkUpload.moreErrors', {
+        ? ` ${i18n.t('learnNotifications:notifications.bulkAssign', {
             count: sourceNamesList.length - 2,
           })}`
         : '';
