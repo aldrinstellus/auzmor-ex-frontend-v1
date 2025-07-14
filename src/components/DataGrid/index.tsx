@@ -171,7 +171,7 @@ const DataGrid = <T extends object>({
     return flatData.length === 0 && !isLoading ? (
       noDataFound(error || null)
     ) : (
-      <div className="grid grid-cols-3 gap-6 justify-items-center lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
+      <div className="grid grid-cols-3 gap-x-8 gap-y-8 lg:grid-cols-3 1.5lg:grid-cols-4 1.5xl:grid-cols-5 2xl:grid-cols-5">
         {rows.map((row: Row<T>) => {
           return row.getVisibleCells().map((cell) => {
             return (

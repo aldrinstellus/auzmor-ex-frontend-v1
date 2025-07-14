@@ -168,6 +168,7 @@
     "charLimitFolderNameError": "Folder name cannot exceed {{limit}} characters.",
     "rename": "Rename",
     "download": "Download",
+    "launch": "Launch",
     "owner": "Owner",
     "location": "Location",
     "renameInputPlaceholder": "Enter new name",

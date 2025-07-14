@@ -403,6 +403,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     }
   };
 
+  const getChannelFilePreviewApi = getApi(ApiEnum.GetChannelFilePreviewApi);
+
   // Api call: get sync status
   const useChannelDocSyncStatus = getApi(ApiEnum.UseChannelDocSyncStatus);
   useChannelDocSyncStatus(
@@ -465,11 +467,14 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   // A function that decides what options to show on each row of documents
   const getAllOptions = useCallback(
     (info: CellContext<DocType, unknown>) => {
+      const isLink = getExtension(info?.row?.original?.name) === '.url';
       const showDownload =
         !isCredExpired &&
         permissions.includes(ChannelPermissionEnum.CanDownloadDocuments) &&
         !!info?.row?.original?.downloadable &&
-        !!!info?.row?.original?.isFolder;
+        !!!info?.row?.original?.isFolder &&
+        !isLink;
+      const showLaunch = !isCredExpired && isLink;
       const canRename =
         !isCredExpired &&
         permissions.includes(ChannelPermissionEnum.CanRenameDocuments);
@@ -505,6 +510,20 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           dataTestId: 'folder-menu',
           className: '!px-6 !py-2',
           isHidden: !showDownload,
+        },
+        {
+          label: t('launch'),
+          onClick: async (e: Event) => {
+            e.stopPropagation();
+            const previewData = await getChannelFilePreviewApi({
+              channelId,
+              fileId: info?.row?.original?.id,
+            });
+            window.open(previewData?.data?.result?.previewURL, '_blank');
+          },
+          dataTestId: 'folder-menu',
+          className: '!px-6 !py-2',
+          isHidden: !showLaunch,
         },
         {
           label: tc('delete'),
