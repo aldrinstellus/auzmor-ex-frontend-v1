@@ -36,7 +36,6 @@ import BreadCrumb, { BreadCrumbVariantEnum } from 'components/BreadCrumb';
 import DocumentPathProvider, {
   DocumentPathContext,
   Item,
-  // Item, TODO: Custom field
 } from 'contexts/DocumentPathContext';
 import RecentlyAddedEntities from './components/RecentlyAddedEntities';
 import Avatar from 'components/Avatar';
