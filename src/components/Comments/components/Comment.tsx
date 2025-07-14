@@ -118,7 +118,7 @@ export const Comment: FC<CommentProps> = ({
 
   return (
     <div className="flex flex-col">
-      <div className="bg-neutral-100 p-3 rounded-9xl mb-4">
+      <div className="bg-neutral-100 p-3 rounded-9xl mb-2">
         <div className="flex flex-row justify-between gap-4">
           <div>
             <Link to={profileUrl}>
@@ -212,7 +212,7 @@ export const Comment: FC<CommentProps> = ({
       </div>
 
       {/* Replies */}
-      <div className="flex items-center">
+      <div className="flex items-center mx-3">
         <div className="flex items-center space-x-2">
           <Likes
             reaction={comment?.myReaction?.reaction || ''}

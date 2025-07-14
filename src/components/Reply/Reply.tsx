@@ -224,7 +224,7 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
           )}
         </div>
 
-        <div className="flex items-center space-x-2 cursor-pointer mb-2">
+        <div className="flex items-center space-x-2 cursor-pointer mx-3 mb-2">
           <div className="flex items-center">
             <Likes
               reaction={comment?.myReaction?.reaction || ''}

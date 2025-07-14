@@ -234,10 +234,11 @@ const Comments: FC<CommentsProps> = ({
           <div className='w-full h-[80%] flex items-center justify-center'>
             <NoDataFound
                 illustration="noComments"
+                illustrationClassName="w-[150px] h-[150px]"
                 labelHeader={
                   <div className='flex flex-col items-center justify-center'>
                     {t('noComments.label')}
-                    <span className="text-sm font-semibold">
+                    <span className="text-sm text-neutral-400 font-semibold">
                       {t('noComments.desc')}
                     </span>
                   </div>
