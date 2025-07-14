@@ -35,6 +35,7 @@ import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 import BreadCrumb, { BreadCrumbVariantEnum } from 'components/BreadCrumb';
 import DocumentPathProvider, {
   DocumentPathContext,
+  Item,
   // Item, TODO: Custom field
 } from 'contexts/DocumentPathContext';
 import RecentlyAddedEntities from './components/RecentlyAddedEntities';
@@ -43,7 +44,11 @@ import Skeleton from 'react-loading-skeleton';
 import FilePreviewModal from './components/FilePreviewModal';
 import moment from 'moment';
 import { useChannelDocUpload } from 'hooks/useUpload';
-import { useAppliedFiltersStore } from 'stores/appliedFiltersStore';
+import {
+  checkboxTransform,
+  FilterKey,
+  useAppliedFiltersStore,
+} from 'stores/appliedFiltersStore';
 import {
   BackgroundJob,
   BackgroundJobStatusEnum,
@@ -57,6 +62,7 @@ import {
   downloadFromUrl,
   getLearnUrl,
   isThisAFile,
+  titleCase,
 } from 'utils/misc';
 import { useChannelStore } from 'stores/channelStore';
 import RenameChannelDocModal from './components/RenameChannelDocModal';
@@ -68,6 +74,8 @@ import { getExtension, trimExtension } from '../utils';
 import { useTranslation } from 'react-i18next';
 import { getUtcMiliseconds } from 'utils/time';
 import useNavigate from 'hooks/useNavigation';
+import { ColumnItem } from './components/ColumnSelector';
+// import { ICheckboxListOption } from 'components/CheckboxList';
 
 export enum DocIntegrationEnum {
   Sharepoint = 'SHAREPOINT',
@@ -77,7 +85,7 @@ export enum DocIntegrationEnum {
 export interface IForm {
   selectAll: boolean;
   documentSearch: string;
-  docType?: Record<string, any>;
+  fileOrFolder?: Record<string, any>;
   applyDocumentSearch: string;
   byTitle?: boolean;
   recentlyModified?: boolean;
@@ -87,100 +95,100 @@ interface IDocumentProps {
   permissions: ChannelPermissionEnum[];
 }
 
-// const fieldSize: Record<string, number> = {
-//   ownerName: 256,
-//   modifiedAt: 200,
-// }; TODO:Custom Field
+const fieldSize: Record<string, number> = {
+  ownerName: 256,
+  modifiedAt: 200,
+};
 
-// const TimeField = ({ time }: { time: string }) => (
-//   <div className="flex gap-2 font-medium text-neutral-900 leading-6">
-//     {moment(time).format('MMMM DD,YYYY') as string}
-//   </div>
-// ); Custom Field
+const TimeField = ({ time }: { time: string }) => (
+  <div className="flex gap-2 font-medium text-neutral-900 leading-6">
+    {moment(time).format('MMMM DD,YYYY') as string}
+  </div>
+);
 
-// const NameField = ({
-//   name,
-//   mimeType,
-//   isFolder,
-// }: {
-//   name: string;
-//   mimeType: string;
-//   isFolder: boolean;
-// }) => (
-//   <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
-//     <div className="flex w-6">
-//       <Icon
-//         name={isFolder ? 'folder' : getIconFromMime(mimeType)}
-//         className="!w-6"
-//         hover={false}
-//       />
-//     </div>
-//     <span className="break-all truncate w-full">{name}</span>
-//   </div>
-// ); TODO: Custom Field
+const NameField = ({
+  name,
+  mimeType,
+  isFolder,
+}: {
+  name: string;
+  mimeType: string;
+  isFolder: boolean;
+}) => (
+  <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
+    <div className="flex w-6">
+      <Icon
+        name={isFolder ? 'folder' : getIconFromMime(mimeType)}
+        className="!w-6"
+        hover={false}
+      />
+    </div>
+    <span className="break-all truncate w-full">{name}</span>
+  </div>
+);
 
-// const OwnerField = ({
-//   ownerName,
-//   ownerImage,
-// }: {
-//   ownerName: string;
-//   ownerImage?: string;
-// }) => (
-//   <div className="flex gap-2 items-center">
-//     <Avatar image={ownerImage} name={ownerName} size={24} />
-//     <span className="truncate">{ownerName}</span>
-//   </div>
-// ); TODO: Custom Field
+const OwnerField = ({
+  ownerName,
+  ownerImage,
+}: {
+  ownerName: string;
+  ownerImage?: string;
+}) => (
+  <div className="flex gap-2 items-center">
+    <Avatar image={ownerImage} name={ownerName} size={24} />
+    <span className="truncate">{ownerName}</span>
+  </div>
+);
 
-// const LocationField = ({
-//   pathItems,
-//   pathWithId,
-//   channelId,
-//   updateDocumentSearch,
-// }: {
-//   pathItems: Item[];
-//   pathWithId: object[];
-//   channelId: string;
-//   updateDocumentSearch: (value: string) => void;
-// }) => {
-//   const navigate = useNavigate();
-//   return (
-//     <Popover
-//       triggerNode={<BreadCrumb items={pathItems} onItemClick={() => {}} />}
-//       triggerNodeClassName="w-full"
-//       wrapperClassName="w-full"
-//       contentRenderer={() => (
-//         <div className="flex p-3 bg-primary-50 rounded-9xl border border-primary-50 shadow">
-//           <BreadCrumb
-//             items={pathItems}
-//             labelClassName="hover:text-primary-500 hover:underline min-w-max"
-//             onItemClick={(item, e) => {
-//               e?.stopPropagation();
-//               const sliceIndex = pathWithId.findIndex(
-//                 (folder: any) => folder.id === item.id,
-//               );
-//               const itemsToEncode = pathWithId.slice(0, sliceIndex + 1);
-//               const mappedItemsToEncode = itemsToEncode.map((each: any) => ({
-//                 id: each.id,
-//                 name: each.name,
-//                 type: 'Folder',
-//               }));
-//               const encodedPath = compressString(
-//                 JSON.stringify(mappedItemsToEncode),
-//               );
-//               if (!!mappedItemsToEncode.length) {
-//                 navigate(`/channels/${channelId}/documents/${encodedPath}`);
-//               } else {
-//                 navigate(`/channels/${channelId}/documents`);
-//               }
-//               updateDocumentSearch('');
-//             }}
-//           />
-//         </div>
-//       )}
-//     />
-//   );
-// }; Custom Field
+const LocationField = ({
+  pathItems,
+  pathWithId,
+  channelId,
+  updateDocumentSearch,
+}: {
+  pathItems: Item[];
+  pathWithId: object[];
+  channelId: string;
+  updateDocumentSearch: (value: string) => void;
+}) => {
+  const navigate = useNavigate();
+  return (
+    <Popover
+      triggerNode={<BreadCrumb items={pathItems} onItemClick={() => {}} />}
+      triggerNodeClassName="w-full"
+      wrapperClassName="w-full"
+      contentRenderer={() => (
+        <div className="flex p-3 bg-primary-50 rounded-9xl border border-primary-50 shadow">
+          <BreadCrumb
+            items={pathItems}
+            labelClassName="hover:text-primary-500 hover:underline min-w-max"
+            onItemClick={(item, e) => {
+              e?.stopPropagation();
+              const sliceIndex = pathWithId.findIndex(
+                (folder: any) => folder.id === item.id,
+              );
+              const itemsToEncode = pathWithId.slice(0, sliceIndex + 1);
+              const mappedItemsToEncode = itemsToEncode.map((each: any) => ({
+                id: each.id,
+                name: each.name,
+                type: 'Folder',
+              }));
+              const encodedPath = compressString(
+                JSON.stringify(mappedItemsToEncode),
+              );
+              if (!!mappedItemsToEncode.length) {
+                navigate(`/channels/${channelId}/documents/${encodedPath}`);
+              } else {
+                navigate(`/channels/${channelId}/documents`);
+              }
+              updateDocumentSearch('');
+            }}
+          />
+        </div>
+      )}
+    />
+  );
+};
 
 const Document: FC<IDocumentProps> = ({ permissions }) => {
   const { t } = useTranslation('channelDetail', {
@@ -206,7 +214,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const { channelId = '', documentPath = '' } = useParams();
   const { items, setItems } = useContext(DocumentPathContext);
   const { uploadMedia } = useChannelDocUpload(channelId);
-  const { filters } = useAppliedFiltersStore();
+  const { filters, validFilterKey, setValidFilterKeys } =
+    useAppliedFiltersStore();
   const { setRootFolderId } = useChannelStore();
   const {
     config,
@@ -219,8 +228,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   } = useBackgroundJobStore();
   const folderInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [docType, applyDocumentSearch, documentSearch, byTitle] = watch([
-    'docType',
+  const [fileOrFolder, applyDocumentSearch, documentSearch, byTitle] = watch([
+    'fileOrFolder',
     'applyDocumentSearch',
     'documentSearch',
     'byTitle',
@@ -240,29 +249,29 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     channelId,
   });
 
-  // // Api call: Get fields for the channel
-  // const useChannelDocumentFields = getApi(ApiEnum.GetChannelDocumentFields); Todo: Custom Field
-  // const { data: documentFields } = useChannelDocumentFields({ channelId });
+  // Api call: Get fields for the channel
+  const useChannelDocumentFields = getApi(ApiEnum.GetChannelDocumentFields);
+  const { data: documentFields } = useChannelDocumentFields({ channelId });
 
-  // // Api call: Update fields for the channel
-  // const updateChannelDocumentFields = getApi(
-  //   ApiEnum.UpdateChannelDocumentFields,
-  // );
-  // const updateChannelDocumentFieldsMutation = useMutation({
-  //   mutationKey: ['update-channel-doc-fields', channelId],
-  //   mutationFn: updateChannelDocumentFields,
-  //   onSuccess: async () => {
-  //     await queryClient.invalidateQueries(
-  //       ['get-channel-files', 'get-channel-document-fields'],
-  //       {
-  //         exact: false,
-  //       },
-  //     );
-  //   },
-  //   onError: () => {
-  //     failureToastConfig({ content: 'Failed to update columns' });
-  //   },
-  // });
+  // Api call: Update fields for the channel
+  const updateChannelDocumentFields = getApi(
+    ApiEnum.UpdateChannelDocumentFields,
+  );
+  const updateChannelDocumentFieldsMutation = useMutation({
+    mutationKey: ['update-channel-doc-fields', channelId],
+    mutationFn: updateChannelDocumentFields,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(
+        ['get-channel-files', 'get-channel-document-fields'],
+        {
+          exact: false,
+        },
+      );
+    },
+    onError: () => {
+      failureToastConfig({ content: 'Failed to update columns' });
+    },
+  });
 
   // Api call: Create folder mutation
   const createChannelDocFolder = getApi(ApiEnum.CreateChannelDocFolder);
@@ -442,10 +451,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const hideFilterRow = isRootDir;
   const disableFilter = isCredExpired || isLoading;
   const disableSort = isCredExpired || isLoading;
-  // const disableColumnSelector =
-  //   isCredExpired ||
-  //   isLoading ||
-  //   !permissions.includes(ChannelPermissionEnum.CanConnectChannelDoc); TODO: custom Field
+  const disableColumnSelector =
+    isCredExpired ||
+    isLoading ||
+    !permissions.includes(ChannelPermissionEnum.CanConnectChannelDoc);
   const showTitleFilter = isDocSearchApplied;
   const hideClearBtn =
     isRootDir ||
@@ -539,96 +548,52 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             </div>
           ),
           cell: (info: CellContext<DocType, unknown>) => (
-            <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
-              <div className="flex w-6">
-                <Icon
-                  name={
-                    isRootDir || info?.row?.original?.isFolder
-                      ? 'folder'
-                      : getIconFromMime(info.row.original.mimeType)
-                  }
-                  className="!w-6"
-                  hover={false}
-                />
-              </div>
-              <span className="break-all truncate w-full">
-                {info.getValue() as string}
-              </span>
-            </div>
-            // <NameField
-            //   name={info.getValue() as string}
-            //   mimeType={info?.row?.original?.mimeType}
-            //   isFolder={isRootDir || info?.row?.original?.isFolder}
-            // />
+            <NameField
+              name={info.getValue() as string}
+              mimeType={info?.row?.original?.mimeType}
+              isFolder={isRootDir || info?.row?.original?.isFolder}
+            />
           ),
           thClassName: 'flex-1',
           tdClassName: 'flex-1',
         },
-        {
-          accessorKey: 'ownerName',
-          // accessorKey: 'location', TODO: cyustom fields
-          header: () => (
-            // <div className="font-bold text-neutral-500">{t('location')}</div> TODO: Custom fields
-            <div className="font-bold text-neutral-500">{t('owner')}</div>
-          ),
-          cell: (info: CellContext<DocType, unknown>) => (
-             <div className="flex gap-2 items-center">
-              <Avatar
-                image={info.row.original?.ownerImage}
-                name={info.row.original?.ownerName}
-                size={24}
-              />
-              <span className="truncate">{info.row.original?.ownerName}</span>
-            </div>
-          ),
-          size: 256,
-        },
-        {
-          accessorKey: 'modifiedAt',
-          header: () => (
-            <div className="font-bold text-neutral-500">{t('lastUpdated')}</div>
-          ),
-          cell: (info: CellContext<DocType, unknown>) => (
-            <div className="flex gap-2 font-medium text-neutral-900 leading-6">
-              {
-                moment(info.getValue() as string).format(
-                  'MMMM DD,YYYY',
-                ) as string
-            // <LocationField
-            //   pathItems={getMappedLocation(info?.row?.original)}
-            //   pathWithId={info?.row?.original.pathWithId}
-            //   channelId={channelId}
-            //   updateDocumentSearch={(value: string) =>
-            //     setValue('documentSearch', value)
-            //   }
-            // /> TODO: custom-fields
+        ...((documentFields as ColumnItem[])
+          ?.filter(
+            (field: ColumnItem) =>
+              field.visibility && field.fieldName !== 'Name',
+          )
+          ?.map((field: any) => ({
+            accessorKey: field.fieldName,
+            header: () => (
+              <div className="font-bold text-neutral-500">{field.label}</div>
+            ),
+            cell: (info: CellContext<DocType, unknown>) => {
+              if (field.fieldName === 'Owner') {
+                return (
+                  <OwnerField
+                    ownerName={info.row.original?.ownerName}
+                    ownerImage={info.row.original?.ownerImage}
+                  />
+                );
+              } else if (
+                field.fieldName === 'Last Updated' ||
+                field.type === 'datetime'
+              ) {
+                return <TimeField time={info.getValue() as string} />;
+              } else {
+                return (
+                  <span>
+                    {(
+                      (info.row.original.customFields ?? []).find(
+                        (eachField: any) => field.id == eachField.id,
+                      ) as any
+                    )?.value ?? ''}
+                  </span>
+                );
               }
-            </div>
-          ),
-          // size: 260,
-          size: 200,
-        },
-        // ...(documentFields
-        //   ?.filter((field: any) => field.isVisible && field.name !== 'name')
-        //   ?.map((field: any) => ({
-        //     accessorKey: field.name,
-        //     header: () => (
-        //       <div className="font-bold text-neutral-500">{field.label}</div>
-        //     ),
-        //     cell: (info: CellContext<DocType, unknown>) => {
-        //       if (field.name === 'ownerName') {
-        //         return (
-        //           <OwnerField
-        //             ownerName={info.row.original?.ownerName}
-        //             ownerImage={info.row.original?.ownerImage}
-        //           />
-        //         );
-        //       } else if (field.type === 'datetime') {
-        //         return <TimeField time={info.getValue() as string} />;
-        //       }
-        //     },
-        //     size: field.size || fieldSize[field.name] || 256,
-        //   })) || []), TODO: custom-fields
+            },
+            size: field.size || fieldSize[field.fieldName] || 256,
+          })) || []),
         {
           accessorKey: 'more',
           header: () => '',
@@ -683,6 +648,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       isRootDir,
       isDocSearchApplied,
       downloadChannelFileMutation.isLoading,
+      documentFields,
     ],
   ); // TODO: removed with custom-fields
 
@@ -763,34 +729,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               wrapperClassName="w-full"
               contentRenderer={() => (
                 <div className="flex p-3 bg-primary-50 rounded-9xl border border-primary-50 shadow">
-                  <BreadCrumb
-                    items={getMappedLocation(info?.row?.original)}
-                    labelClassName="hover:text-primary-500 hover:underline min-w-max"
-                    onItemClick={(item, e) => {
-                      e?.stopPropagation();
-                      const sliceIndex =
-                        info?.row?.original.pathWithId.findIndex(
-                          (folder) => folder.id === item.id,
-                        );
-                      const itemsToEncode =
-                        info?.row?.original.pathWithId.slice(0, sliceIndex + 1);
-                      const mappedItemsToEncode = itemsToEncode.map((each) => ({
-                        id: each.id,
-                        name: each.name,
-                        type: 'Folder',
-                      }));
-                      const encodedPath = compressString(
-                        JSON.stringify(mappedItemsToEncode),
-                      );
-                      if (!!mappedItemsToEncode.length) {
-                        navigate(
-                          `/channels/${channelId}/documents/${encodedPath}`,
-                        );
-                      } else {
-                        navigate(`/channels/${channelId}/documents`);
-                      }
-                      setValue('documentSearch', '');
-                    }}
+                  <LocationField
+                    pathItems={getMappedLocation(info?.row?.original)}
+                    pathWithId={info?.row?.original?.pathWithId}
+                    channelId={channelId}
+                    updateDocumentSearch={(value: string) =>
+                      setValue('applyDocumentSearch', value)
+                    }
                   />
                 </div>
               )}
@@ -850,8 +795,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
 
   // Its a function to parse modified on filter that maps string to respected date param oo api
   const parseModifiedOnFilter = useMemo(() => {
-    if (filters?.docModifiedRadio?.includes('custom')) {
-      const [start, end] = filters?.docModifiedRadio
+    if (filters?.modifiedOn?.includes('custom')) {
+      const [start, end] = filters?.modifiedOn
         .replace('custom:', '')
         .split('-');
       if (parseNumber(start) && parseNumber(end)) {
@@ -861,8 +806,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         };
       }
     }
-    if (filters?.docModifiedRadio) {
-      switch (filters.docModifiedRadio) {
+    if (filters?.modifiedOn) {
+      switch (filters.modifiedOn) {
         case 'Today':
           return {
             modifiedAfter: getUtcMiliseconds(moment().startOf('day').valueOf()),
@@ -903,6 +848,36 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     return {};
   }, [filters]);
 
+  const staticFilterKeys: FilterKey[] = [
+    { key: 'owners', label: 'Owners', transform: checkboxTransform },
+    { key: 'type', label: 'Type', transform: checkboxTransform },
+    { key: 'modifiedOn', label: 'Modified on', transform: () => {} },
+    { key: 'sort', label: 'Sort by', transform: () => {} },
+  ];
+
+  const customFields = filters
+    ? validFilterKey
+        .filter((each) => {
+          return (
+            !!each.isDynamic &&
+            Object.keys(filters).includes(each.key) &&
+            filters[each.key].length
+          );
+        })
+        .map((each: FilterKey) =>
+          JSON.stringify({
+            custom_field_id: parseNumber(
+              (documentFields as ColumnItem[]).find(
+                (docField) => docField.fieldName == each.key,
+              )!.id,
+            ),
+            field_values: filters
+              ? each.transform(filters[each.key] ?? [])
+              : [],
+          }),
+        )
+    : [];
+
   // Get props for Datagrid component
   const dataGridProps = useDataGrid<DocType>({
     apiEnum: isDocSearchApplied
@@ -912,16 +887,21 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     payload: {
       channelId,
       params: {
+        ...(validFilterKey ?? [])
+          .filter((validField) => !validField.isDynamic)
+          .reduce((acc, current) => {
+            acc[current.key as string] = current.transform(
+              filters?.[current.key] || [],
+            );
+            return acc;
+          }, {} as Record<string, any>),
+        customFields: [...customFields],
         sort: filters?.sort ? filters?.sort.split(':')[0] : undefined,
         order: filters?.sort ? filters?.sort.split(':')[1] : undefined,
-        isFolder: docType ? !!(docType.value === 'folder') : undefined,
-        owners: (filters?.docOwnerCheckbox || []).map(
-          (owner: any) => owner.name,
-        ),
-        type: (filters?.docTypeCheckbox || []).map(
-          (type: any) => type.paramKey,
-        ),
         ...parseModifiedOnFilter,
+        isFolder: fileOrFolder
+          ? !!(fileOrFolder.value === 'folder')
+          : undefined,
         ...(isDocSearchApplied
           ? {
               q: applyDocumentSearch,
@@ -973,6 +953,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         />
       ),
       trDataClassName: isCredExpired ? '' : 'cursor-pointer',
+      className: '!overflow-x-auto pb-4',
     },
   });
 
@@ -1047,6 +1028,22 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     },
     [config.variant],
   );
+
+  // Set valid filter keys
+  useEffect(() => {
+    if (!documentFields) return;
+    setValidFilterKeys([
+      ...staticFilterKeys,
+      ...(documentFields as ColumnItem[])
+        .filter((column) => column.isCustomField && column.visibility)
+        .map((column) => ({
+          key: column.fieldName,
+          label: titleCase(column.label),
+          transform: checkboxTransform,
+          isDynamic: true,
+        })),
+    ]);
+  }, [documentFields]);
 
   // Component to render before connection.
   const NoConnection = () =>
@@ -1246,7 +1243,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   };
 
   return isLoading ? (
-    <Card className="flex flex-col gap-6 p-8 pb-16 w-full justify-center bg-white overflow-hidden">
+    <Card className="flex flex-col gap-6 p-8 w-full justify-center bg-white overflow-hidden">
       <p className="font-bold text-2xl text-neutral-900">{t('title')}</p>
       <Spinner className="flex w-full justify-center" />
     </Card>
@@ -1472,7 +1469,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           }
         }}
       />
-      <Card className="flex flex-col gap-6 p-8 pb-16 w-full justify-center bg-white">
+      <Card className="flex flex-col gap-6 p-8 w-full justify-center bg-white">
         {reAuthorizeForAdmin && (
           <div className="flex gap-2 w-full p-2 border border-orange-400 bg-orange-50 items-center">
             <Icon name="warning" />
@@ -1649,14 +1646,23 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 view={view}
                 hideFilter={disableFilter}
                 hideSort={disableSort}
-                // hideColumnSelector={disableColumnSelector}
-                // columns={documentFields}
-                // updateColumns={(columns: any) =>
-                //   updateChannelDocumentFieldsMutation.mutate({
-                //     channelId,
-                //     fields: columns,
-                //   } as any)
-                // } TODO: custom-fields
+                hideColumnSelector={disableColumnSelector}
+                columns={documentFields}
+                updateColumns={(columns: ColumnItem[]) =>
+                  updateChannelDocumentFieldsMutation.mutate(
+                    {
+                      channelId,
+                      fields: columns,
+                    } as any,
+                    {
+                      onSuccess: () =>
+                        queryClient.invalidateQueries(
+                          ['get-channel-document-fields'],
+                          { exact: false },
+                        ),
+                    },
+                  )
+                }
                 showTitleFilter={showTitleFilter}
                 changeView={(view) => setView(view)}
               />

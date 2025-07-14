@@ -1,16 +1,16 @@
 import Layout, { FieldType } from 'components/Form';
 import { FC } from 'react';
 import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
-import { IFilterForm } from '.';
 import { titleCase } from 'utils/misc';
 import { ICheckboxListOption } from 'components/CheckboxList';
 import { IDocType } from 'interfaces';
 import Icon from 'components/Icon';
 
 interface IVisibilityProps {
-  control: Control<IFilterForm, any>;
-  watch: UseFormWatch<IFilterForm>;
-  setValue: UseFormSetValue<IFilterForm>;
+  control: Control<any>;
+  watch: UseFormWatch<any>;
+  setValue: UseFormSetValue<any>;
+  name: string;
 }
 
 export const documentOptions: ICheckboxListOption[] = [
@@ -112,16 +112,6 @@ export const documentOptions: ICheckboxListOption[] = [
     },
     datatestId: `document-${IDocType.AUDIO}`,
   },
-  {
-    data: {
-      id: 'others',
-      value: ['others'],
-      label: 'Other',
-      icon: 'file',
-      paramKey: 'Others',
-    },
-    datatestId: `document-${IDocType.OTHERS}`,
-  },
   // {
   //   data: {
   //     id: 'archive',
@@ -154,11 +144,11 @@ export const documentOptions: ICheckboxListOption[] = [
   // },
 ];
 
-const DocumentType: FC<IVisibilityProps> = ({ control }) => {
+const DocumentType: FC<IVisibilityProps> = ({ control, name }) => {
   const documentFields = [
     {
       type: FieldType.CheckboxList,
-      name: 'documentTypeCheckbox',
+      name,
       control,
       options: documentOptions,
       labelRenderer: (option: ICheckboxListOption) => (

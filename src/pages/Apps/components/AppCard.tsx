@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
 import { isLearnerRoute } from 'components/LxpNotificationsOverview/utils/learnNotification';
+import { PUBLIC_URL } from 'utils/constants';
 
 type AppCardProps = {
   app: IApp;
@@ -165,7 +166,10 @@ const AppCard: FC<AppCardProps> = ({ app }) => {
   });
 
   const handleAppLaunch = () => {
-    window.open(`${window.location.origin}/lxp${isLearnerRoute() ? '/user' : ''}/apps/${app.id}/launch`, '_target');
+    window.open(
+      PUBLIC_URL + `${isLearnerRoute() ? '/user' : ''}/apps/${app.id}/launch`,
+      '_target',
+    );
   };
 
   return (

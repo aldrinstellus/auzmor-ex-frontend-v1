@@ -19,4 +19,5 @@ export enum IDocType {
   ARCHIVE = 'ARCHIVE',
   CSV = 'CSV',
   JSON = 'JSON',
+  OTHERS = 'OTHERS',
 }

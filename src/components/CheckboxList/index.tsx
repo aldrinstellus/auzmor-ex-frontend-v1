@@ -5,6 +5,7 @@ import { Control, FieldValues, useController } from 'react-hook-form';
 export interface ICheckboxListOption {
   data: Record<string, any>;
   datatestId: string;
+  disabled?: boolean;
 }
 
 interface ICheckboxListProps {
@@ -69,6 +70,7 @@ const CheckboxList: FC<ICheckboxListProps> = ({
               )
             }
             data-testid={option.datatestId}
+            disabled={!!option.disabled}
           />
           <label htmlFor={option.data.id} className="w-full">
             {labelRenderer(option)}

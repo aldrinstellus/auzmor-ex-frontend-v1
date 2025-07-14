@@ -22,7 +22,7 @@ const useProduct = () => {
     if (!!!favicon && product === ProductEnum.Lxp) {
       document
         .querySelector('link[rel="icon"]')
-        ?.setAttribute('href', '/lxp/lxp-favicon.svg');
+        ?.setAttribute('href', `${process.env.PUBLIC_URL}/lxp-favicon.svg`);
     }
   }, [product]);
 

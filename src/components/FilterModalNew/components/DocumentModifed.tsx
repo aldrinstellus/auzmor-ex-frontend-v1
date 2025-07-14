@@ -1,7 +1,6 @@
 import Layout, { FieldType } from 'components/Form';
 import { FC, useEffect, useState } from 'react';
 import { Control, UseFormSetValue, UseFormWatch } from 'react-hook-form';
-import { IFilterForm } from '.';
 import { enumToTitleCase } from 'utils/misc';
 import { IRadioListOption } from 'components/RadioGroup';
 import moment from 'moment';
@@ -15,17 +14,19 @@ import dayjs from 'dayjs';
 const { RangePicker } = DatePicker;
 
 interface IChannelTypeProps {
-  control: Control<IFilterForm, any>;
-  watch: UseFormWatch<IFilterForm>;
-  setValue: UseFormSetValue<IFilterForm>;
+  control: Control<any>;
+  watch: UseFormWatch<any>;
+  setValue: UseFormSetValue<any>;
+  name: string;
 }
 
 const DocumentModifed: FC<IChannelTypeProps> = ({
   control,
   watch,
   setValue,
+  name,
 }) => {
-  const documentModifiedRadio = watch('documentModifiedRadio');
+  const documentModifiedRadio = watch(name);
   const [customRange, setCustomRange] = useState<{
     min: number;
     max: number;
@@ -41,10 +42,7 @@ const DocumentModifed: FC<IChannelTypeProps> = ({
 
   useEffect(() => {
     if (customRange) {
-      setValue(
-        'documentModifiedRadio',
-        `custom:${customRange?.min}-${customRange?.max}`,
-      );
+      setValue(name, `custom:${customRange?.min}-${customRange?.max}`);
     }
   }, [customRange]);
 
@@ -111,7 +109,7 @@ const DocumentModifed: FC<IChannelTypeProps> = ({
   const documentModifiedFields = [
     {
       type: FieldType.Radio,
-      name: 'documentModifiedRadio',
+      name: name,
       control,
       radioList: documentModifiedOptions,
       labelRenderer: (option: IRadioListOption) => (
