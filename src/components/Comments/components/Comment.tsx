@@ -37,11 +37,13 @@ import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 interface CommentProps {
   commentId: string;
   canPostComment?: boolean;
+  canDeleteComment?: boolean;
 }
 
 export const Comment: FC<CommentProps> = ({
   commentId,
   canPostComment = true,
+  canDeleteComment = false,
 }) => {
   const { t: tp } = useTranslation('profile');
   const { t } = useTranslation('post', { keyPrefix: 'commentComponent' });
@@ -65,6 +67,10 @@ export const Comment: FC<CommentProps> = ({
 
   const comment = storedcomments[commentId];
   const replies = getComments(comment?.relevantComments || []);
+
+  const isOwner = user?.id === comment?.createdBy?.userId;
+  const canEdit = isOwner;
+  const canDelete = (canDeleteComment || isOwner);
 
   const totalCount = Object.values(comment?.reactionsCount || {}).reduce(
     (total, count) => total + count,
@@ -157,7 +163,7 @@ export const Comment: FC<CommentProps> = ({
             {humanizeTime(comment?.updatedAt)}
           </div>
           <div className="relative">
-            {user?.id === comment?.createdBy?.userId && (
+            {(canEdit || canDelete) && (
               <PopupMenu
                 triggerNode={
                   <div
@@ -168,23 +174,31 @@ export const Comment: FC<CommentProps> = ({
                   </div>
                 }
                 menuItems={[
-                  {
-                    icon: 'edit',
-                    label: t('editComment'),
-                    onClick: () => {
-                      setEditComment(true);
-                    },
-                    stroke: 'text-neutral-900',
-                    dataTestId: 'post-ellipsis-edit-comment',
-                    disabled: !canPostComment,
-                  },
-                  {
-                    icon: 'delete',
-                    label: t('deleteComment'),
-                    onClick: showConfirm,
-                    stroke: 'text-neutral-900',
-                    dataTestId: 'post-ellipsis-edit-comment',
-                  },
+                  ...(canEdit
+                    ? [
+                        {
+                          icon: 'edit',
+                          label: t('editComment'),
+                          onClick: () => {
+                            setEditComment(true);
+                          },
+                          stroke: 'text-neutral-900',
+                          dataTestId: 'post-ellipsis-edit-comment',
+                          disabled: !canPostComment,
+                        },
+                      ]
+                    : []),
+                  ...(canDelete
+                    ? [
+                        {
+                          icon: 'delete',
+                          label: t('deleteComment'),
+                          onClick: showConfirm,
+                          stroke: 'text-neutral-900',
+                          dataTestId: 'post-ellipsis-delete-comment',
+                        },
+                      ]
+                    : []),
                 ]}
                 className="mt-1 right-0 border-1 border-neutral-200 focus-visible:outline-none"
               />
@@ -316,13 +330,11 @@ export const Comment: FC<CommentProps> = ({
       </div>
 
       {showReplies ? (
-        <div className="mt-4">
-          <ReplyCard entityId={comment?.id} canPostComment={canPostComment} />
-        </div>
+        <ReplyCard entityId={comment?.id} canPostComment={canPostComment} canDeleteComment={canDeleteComment} />
       ) : !previousShowReply.current && replies?.length ? (
         replies.map((reply) => (
           <div className="mt-4 ml-8" key={reply.id}>
-            <Reply comment={reply} />
+            <Reply comment={reply} canDeleteComment={canDeleteComment} canPostComment={canPostComment} />
           </div>
         ))
       ) : null}

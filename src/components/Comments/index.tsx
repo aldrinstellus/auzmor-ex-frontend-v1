@@ -15,7 +15,7 @@ import {
 import Spinner from 'components/Spinner';
 import LoadMore from './components/LoadMore';
 import CommentSkeleton from './components/CommentSkeleton';
-import { CommentsRTE } from './components/CommentsRTE';
+import { CommentsRTE, Placeholder } from './components/CommentsRTE';
 import Divider from 'components/Divider';
 import {
   IMG_FILE_SIZE_LIMIT,
@@ -43,16 +43,21 @@ export interface GetParams {
   limit: number;
 }
 
+export enum CommentVariant {
+  Document = 'DOCUMENT_COMMENT',
+}
+
 interface CommentsProps<T = any> {
   entityId: string;
+  variant?: CommentVariant;
   getApiEnum?: ApiEnum;
   createApiEnum?: ApiEnum;
   getApiParams?: GetParams;
   createApiParams?: T;
   showEmptyState?: boolean;
   className?: string;
-  commentsWrapperClassName?: string;
   canPostComment?: boolean;
+  canDeleteComment?: boolean;
 }
 
 export interface IComment {
@@ -80,14 +85,15 @@ export interface IComment {
 
 const Comments: FC<CommentsProps> = ({
   entityId,
+  variant,
   getApiEnum,
   createApiEnum,
   getApiParams,
   createApiParams,
   showEmptyState = false,
   className= '',
-  commentsWrapperClassName= '',
   canPostComment = true,
+  canDeleteComment = true,
 }) => {
   const { t } = useTranslation('post', { keyPrefix: 'commentComponent' });
   const WORK_ANNIVERSARY_SUGGESTIONS = [
@@ -134,120 +140,245 @@ const Comments: FC<CommentsProps> = ({
   const [suggestions, setSuggestions] = useState<string>('');
   const getPost = useFeedStore((state) => state.getPost);
 
-  return (
-    <div className={className}>
-      {canPostComment && (<div className="flex flex-row items-center justify-between p-0 gap-2">
-        <div>
-          <Avatar
-            name={user?.name || 'U'}
-            size={32}
-            image={user?.profileImage}
-          />
-        </div>
-        <CommentsRTE
-          className="w-0 flex-grow"
-          entityId={entityId}
-          entityType="post"
-          createApiEnum={createApiEnum}
-          getApiParams={getApiParams}
-          createApiParams={createApiParams}
-          inputRef={inputRef}
-          media={media}
-          removeMedia={() => {
-            setMedia([]);
-            setFiles([]);
-            setMediaValidationErrors([]);
-            if (inputRef.current) {
-                inputRef.current.value = '';
-            }
-          }}
-          files={files}
-          mediaValidationErrors={mediaValidationErrors}
-          setIsCreateCommentLoading={setIsCreateCommentLoading}
-          setMediaValidationErrors={setMediaValidationErrors}
-          isCreateCommentLoading={isCreateCommentLoading}
-          suggestions={suggestions}
-        />
-      </div>)}
-      {getPost(entityId)?.occasionContext?.type === 'WORK_ANNIVERSARY' && (
-        <div className="flex mt-2 w-full justify-center">
-          {WORK_ANNIVERSARY_SUGGESTIONS.map((suggestions: string) => (
-            <div
-              className="px-3 py-1.5 rounded-17xl border border-neutral-200 mx-2 text-xxs font-medium cursor-pointer"
-              onClick={() => setSuggestions(suggestions)}
-              key={suggestions}
-            >
-              {suggestions}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {getPost(entityId)?.occasionContext?.type === 'BIRTHDAY' && (
-        <div className="flex mt-2 w-full justify-center">
-          {BIRTHDAY_SUGGESTIONS.map((suggestions: string) => (
-            <div
-              className="px-3 py-1.5 rounded-17xl border border-neutral-200 mx-2 text-xxs font-medium cursor-pointer"
-              onClick={() => setSuggestions(suggestions)}
-              key={suggestions}
-            >
-              {suggestions}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {isLoading ? (
-        <div>
-          <Divider className="my-4" />
-          <CommentSkeleton />
-        </div>
-      ) : (
-        commentIds &&
-        commentIds.length > 0 ? (
+  const renderCommentComponent = (variant?: CommentVariant) => {
+    switch (variant) {
+      case CommentVariant.Document:
+        return (
           <>
-            <Divider className="mt-4" />
-            <div className={`pt-4 ${commentsWrapperClassName}`}>
-              {isCreateCommentLoading && <CommentSkeleton />}
-              <div className="flex flex-col gap-4">
-                {commentIds
-                  ?.filter(({ id }) => !!comment[id])
-                  .map(({ id }, _i: any) => (
-                    <Comment key={id} canPostComment={canPostComment} commentId={id}/>
-                  ))}
-              </div>
-              {hasNextPage && !isFetchingNextPage && (
-                <LoadMore
-                  onClick={async () => await fetchNextPage()}
-                  label={t('loadMoreComments')}
-                  dataTestId="comments-loadmorecta"
-                />
-              )}
-              {isFetchingNextPage && (
-                <div className="flex justify-center items-center py-10">
-                  <Spinner />
+          <div className='font-semibold pb-2 border-b-1 border-neutral-200'>
+            {t('commentTitle')}
+          </div>
+          {getPost(entityId)?.occasionContext?.type === 'WORK_ANNIVERSARY' && (
+            <div className="flex mt-2 w-full justify-center">
+              {WORK_ANNIVERSARY_SUGGESTIONS.map((suggestions: string) => (
+                <div
+                  className="px-3 py-1.5 rounded-17xl border border-neutral-200 mx-2 text-xxs font-medium cursor-pointer"
+                  onClick={() => setSuggestions(suggestions)}
+                  key={suggestions}
+                >
+                  {suggestions}
                 </div>
-              )}
+              ))}
             </div>
-          </>
-        ) : showEmptyState ? (
-          <div className='w-full h-[80%] flex items-center justify-center'>
-            <NoDataFound
-                illustration="noComments"
-                illustrationClassName="w-[150px] h-[150px]"
-                labelHeader={
-                  <div className='flex flex-col items-center justify-center'>
-                    {t('noComments.label')}
-                    <span className="text-sm text-neutral-400 font-semibold">
-                      {t('noComments.desc')}
-                    </span>
+          )}
+          {getPost(entityId)?.occasionContext?.type === 'BIRTHDAY' && (
+            <div className="flex mt-2 w-full justify-center">
+              {BIRTHDAY_SUGGESTIONS.map((suggestions: string) => (
+                <div
+                  className="px-3 py-1.5 rounded-17xl border border-neutral-200 mx-2 text-xxs font-medium cursor-pointer"
+                  onClick={() => setSuggestions(suggestions)}
+                  key={suggestions}
+                >
+                  {suggestions}
+                </div>
+              ))}
+            </div>
+          )}
+          {isLoading ? (
+            <div>
+              <CommentSkeleton />
+            </div>
+          ) : (
+            commentIds &&
+            commentIds.length > 0 ? (
+              <>
+                <div className="pt-4 h-[86%] overflow-y-auto">
+                  {isCreateCommentLoading && <CommentSkeleton />}
+                  <div className="flex flex-col gap-4">
+                    {commentIds
+                      ?.filter(({ id }) => !!comment[id])
+                      .map(({ id }, _i: any) => (
+                        <Comment key={id} canPostComment={canPostComment} canDeleteComment={canDeleteComment} commentId={id}/>
+                      ))}
                   </div>
+                  {hasNextPage && !isFetchingNextPage && (
+                    <LoadMore
+                      onClick={async () => await fetchNextPage()}
+                      label={t('loadMoreComments')}
+                      dataTestId="comments-loadmorecta"
+                    />
+                  )}
+                  {isFetchingNextPage && (
+                    <div className="flex justify-center items-center py-10">
+                      <Spinner />
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : showEmptyState ? (
+              <div className='w-full h-[87%] flex items-center justify-center'>
+                <NoDataFound
+                    illustration="noComments"
+                    illustrationClassName="w-[150px] h-[150px]"
+                    labelHeader={
+                      <div className='flex flex-col items-center justify-center'>
+                        {t('noComments.label')}
+                        <span className="text-sm text-neutral-400 font-semibold">
+                          {t('noComments.desc')}
+                        </span>
+                      </div>
+                    }
+                    hideClearBtn
+                />
+              </div>
+            ) : null
+          )}
+          {canPostComment && (<div className="flex flex-row items-center justify-between p-0 gap-2">
+            <div>
+              <Avatar
+                name={user?.name || 'U'}
+                size={32}
+                image={user?.profileImage}
+              />
+            </div>
+            <CommentsRTE
+              className="w-0 flex-grow"
+              entityId={entityId}
+              entityType="post"
+              placeholder={Placeholder.DocumentComment}
+              createApiEnum={createApiEnum}
+              getApiParams={getApiParams}
+              createApiParams={createApiParams}
+              inputRef={inputRef}
+              media={media}
+              removeMedia={() => {
+                setMedia([]);
+                setFiles([]);
+                setMediaValidationErrors([]);
+                if (inputRef.current) {
+                    inputRef.current.value = '';
                 }
-                hideClearBtn
+              }}
+              files={files}
+              mediaValidationErrors={mediaValidationErrors}
+              setIsCreateCommentLoading={setIsCreateCommentLoading}
+              setMediaValidationErrors={setMediaValidationErrors}
+              isCreateCommentLoading={isCreateCommentLoading}
+              suggestions={suggestions}
+            />
+          </div>)}
+          </>
+        );
+      default:
+        return (
+          <>
+          <div className="flex flex-row items-center justify-between p-0 gap-2">
+            <div>
+              <Avatar
+                name={user?.name || 'U'}
+                size={32}
+                image={user?.profileImage}
+              />
+            </div>
+            <CommentsRTE
+              className="w-0 flex-grow"
+              entityId={entityId}
+              entityType="post"
+              createApiEnum={createApiEnum}
+              getApiParams={getApiParams}
+              createApiParams={createApiParams}
+              inputRef={inputRef}
+              media={media}
+              removeMedia={() => {
+                setMedia([]);
+                setFiles([]);
+                setMediaValidationErrors([]);
+                if (inputRef.current) {
+                    inputRef.current.value = '';
+                }
+              }}
+              files={files}
+              mediaValidationErrors={mediaValidationErrors}
+              setIsCreateCommentLoading={setIsCreateCommentLoading}
+              setMediaValidationErrors={setMediaValidationErrors}
+              isCreateCommentLoading={isCreateCommentLoading}
+              suggestions={suggestions}
             />
           </div>
-        ) : null
-      )}
+          {getPost(entityId)?.occasionContext?.type === 'WORK_ANNIVERSARY' && (
+            <div className="flex mt-2 w-full justify-center">
+              {WORK_ANNIVERSARY_SUGGESTIONS.map((suggestions: string) => (
+                <div
+                  className="px-3 py-1.5 rounded-17xl border border-neutral-200 mx-2 text-xxs font-medium cursor-pointer"
+                  onClick={() => setSuggestions(suggestions)}
+                  key={suggestions}
+                >
+                  {suggestions}
+                </div>
+              ))}
+            </div>
+          )}
+          {getPost(entityId)?.occasionContext?.type === 'BIRTHDAY' && (
+            <div className="flex mt-2 w-full justify-center">
+              {BIRTHDAY_SUGGESTIONS.map((suggestions: string) => (
+                <div
+                  className="px-3 py-1.5 rounded-17xl border border-neutral-200 mx-2 text-xxs font-medium cursor-pointer"
+                  onClick={() => setSuggestions(suggestions)}
+                  key={suggestions}
+                >
+                  {suggestions}
+                </div>
+              ))}
+            </div>
+          )}
+          {isLoading ? (
+            <div>
+              <Divider className="my-4" />
+              <CommentSkeleton />
+            </div>
+          ) : (
+            commentIds &&
+            commentIds.length > 0 ? (
+              <>
+                <Divider className="mt-4" />
+                <div className="pt-4">
+                  {isCreateCommentLoading && <CommentSkeleton />}
+                  <div className="flex flex-col gap-4">
+                    {commentIds
+                      ?.filter(({ id }) => !!comment[id])
+                      .map(({ id }, _i: any) => (
+                        <Comment key={id} commentId={id}/>
+                      ))}
+                  </div>
+                  {hasNextPage && !isFetchingNextPage && (
+                    <LoadMore
+                      onClick={async () => await fetchNextPage()}
+                      label={t('loadMoreComments')}
+                      dataTestId="comments-loadmorecta"
+                    />
+                  )}
+                  {isFetchingNextPage && (
+                    <div className="flex justify-center items-center py-10">
+                      <Spinner />
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : showEmptyState ? (
+              <div className='w-full h-[80%] flex items-center justify-center'>
+                <NoDataFound
+                    illustration="noComments"
+                    illustrationClassName="w-[150px] h-[150px]"
+                    labelHeader={
+                      <div className='flex flex-col items-center justify-center'>
+                        {t('noComments.label')}
+                        <span className="text-sm text-neutral-400 font-semibold">
+                          {t('noComments.desc')}
+                        </span>
+                      </div>
+                    }
+                    hideClearBtn
+                />
+              </div>
+            ) : null
+          )}
+          </>
+        );
+    }
+  }
+  return (
+    <div className={className}>
+      {renderCommentComponent(variant)}
       <input
         type="file"
         className="hidden"

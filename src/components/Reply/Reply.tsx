@@ -40,9 +40,11 @@ import { usePermissions } from 'hooks/usePermissions';
 interface ReplyProps {
   comment: IComment;
   className?: string;
+  canDeleteComment?: boolean;
+  canPostComment?: boolean;
 }
 
-export const Reply: FC<ReplyProps> = ({ comment }) => {
+export const Reply: FC<ReplyProps> = ({ comment, canDeleteComment, canPostComment }) => {
   const { t: tp } = useTranslation('profile');
   const { t } = useTranslation('components', { keyPrefix: 'Reply' });
   const { user } = useAuth();
@@ -52,6 +54,10 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
   const [showReactionModal, setShowReactionModal] = useState(false);
   const [editReply, setEditReply] = useState<boolean>(false);
   const { comment: storedComments, setComment } = useCommentStore();
+
+  const isOwner = user?.id === comment?.createdBy?.userId;
+  const canEdit = isOwner;
+  const canDelete = (canDeleteComment || isOwner);
 
   const deleteComment = getApi(ApiEnum.DeleteComment);
   const deleteReplyMutation = useMutation({
@@ -147,8 +153,8 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
               <div className="text-neutral-500 font-normal text-xs">
                 {humanizeTime(comment.createdAt)}
               </div>
-              {user?.id === comment.createdBy.userId && (
-                <div className="ml-4">
+              <div className="ml-4">
+                {(canEdit || canDelete) && (
                   <Popover
                     triggerNode={
                       <IconButton
@@ -163,7 +169,7 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
                     <div>
                       {!editReply && (
                         <div className="w-48">
-                          <div
+                          {(canEdit && canPostComment) && (<div
                             className={`${menuItemStyle} rounded-t-9xl`}
                             onClick={() => {
                               setEditReply(true);
@@ -178,8 +184,8 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
                             <div className="text-sm font-medium text-neutral-900">
                               {t('editReply')}
                             </div>
-                          </div>
-                          <div
+                          </div>)}
+                          {canDelete && (<div
                             className={`${menuItemStyle} rounded-b-9xl`}
                             onClick={() => {
                               showConfirm();
@@ -193,13 +199,14 @@ export const Reply: FC<ReplyProps> = ({ comment }) => {
                             <div className="text-sm font-medium text-neutral-900">
                               {t('deleteReply')}
                             </div>
-                          </div>
+                          </div>)}
                         </div>
                       )}
                     </div>
                   </Popover>
-                </div>
-              )}
+                )}
+              </div>
+
             </div>
           </div>
           {editReply ? (
