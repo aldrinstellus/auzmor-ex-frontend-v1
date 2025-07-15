@@ -250,6 +250,8 @@ const SearchResults: FC<ISearchResultsProps> = ({
     const textStyles = `text-sm leading-4 text-black ${
       isRecent ? 'font-semibold' : ''
     }`;
+    console.log(result);
+    console.log(entityType);
     switch (entityType) {
       case ISearchResultType.PEOPLE:
       case ISearchResultType.USER:
@@ -380,6 +382,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
           ? 'folder'
           : getIconFromMime(documentData?.mimeType);
         return (
+          <>
           <div className="flex gap-1.5 items-center w-full overflow-hidden">
             <Icon name={iconName} size={24} hover={false} />
             <div className="min-w-0">
@@ -401,6 +404,24 @@ const SearchResults: FC<ISearchResultsProps> = ({
               </div>
             </div>
           </div>
+          <div className='pl-[23px]'>
+            {result?.customFields && !Array.isArray(result?.customFields) && (
+          <div className="text-xs text-customBlue">
+            &quot;
+            <span className="text-primary">
+              {searchQuery}
+            </span>
+            &quot;
+            &nbsp;
+            {t('foundIn')}
+            &nbsp;
+            <span className="font-semibold">
+              {result?.customFields?.fieldName}
+            </span>
+          </div>
+        )}
+          </div>
+          </>
         );
       case ISearchResultType.COURSE:
       case ISearchResultType.PATH:
