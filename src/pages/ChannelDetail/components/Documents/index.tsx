@@ -75,7 +75,6 @@ import { getUtcMiliseconds } from 'utils/time';
 import useNavigate from 'hooks/useNavigation';
 import { ColumnItem } from './components/ColumnSelector';
 import Truncate from 'components/Truncate';
-import clsx from 'clsx';
 // import { ICheckboxListOption } from 'components/CheckboxList';
 
 export enum DocIntegrationEnum {
@@ -803,10 +802,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const customFields = filters
     ? validFilterKey
         .filter((each) => {
+          const field = filters[each.key];
           return (
             !!each.isDynamic &&
             Object.keys(filters).includes(each.key) &&
-            filters[each.key].length
+            Array.isArray(field) &&
+            field.length > 0
           );
         })
         .map((each: FilterKey) =>
@@ -823,7 +824,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         )
     : [];
 
-  const dynamicGridHeightClass = totalRows > 0 ? '' : 'min-h-[400px]';
   // Get props for Datagrid component
   const dataGridProps = useDataGrid<DocType>({
     apiEnum: isDocSearchApplied
@@ -896,10 +896,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       ),
       trDataClassName: isCredExpired ? '' : 'cursor-pointer !px-0 !py-0 !z-10 !gap-0 !border-l-1 !border-b-0 border-neutral-200',
       thDataClassName: '!px-0 !py-0 !border-0 !gap-0 !z-10',
-      className: clsx(
-        '!overflow-x-auto',
-        dynamicGridHeightClass,
-      ),
+      className: '!overflow-x-auto',
     },
   });
 

@@ -201,7 +201,9 @@ const DataGrid = <T extends object>({
     );
   }
 
-  return (
+  return flatData.length === 0 && !isLoading ? (
+    noDataFound(error || null)
+  ) : (
     <div
       className={className}
       ref={tableContainerRef}
@@ -242,27 +244,22 @@ const DataGrid = <T extends object>({
         <tbody
           style={{
             display: 'grid',
-            height: `${rowVirtualizer.getTotalSize()}px`,
-            position: 'relative',
+            height: `${rowVirtualizer.getTotalSize()}px`, //tells scrollbar how big the table is
+            position: 'relative', //needed for absolute positioning of rows
           }}
         >
-          {flatData.length === 0 && !isLoading ? (
-            <tr className="w-full flex items-center justify-center mt-[20px] w-full h-full min-h-[200px]">
-              <td colSpan={table.getAllColumns().length} className="text-center w-full">
-                {noDataFound(error || null)}
-              </td>
-            </tr>
-          ) : (
-            rowVirtualizer.getVirtualItems().map((virtualRow: any, rowIndex: number) => {
+          {rowVirtualizer
+            .getVirtualItems()
+            .map((virtualRow: any, rowIndex: number) => {
               const row = rows[virtualRow.index] as Row<T>;
               return (
                 <tr
-                  data-index={virtualRow.index}
-                  ref={(node) => rowVirtualizer.measureElement(node)}
+                  data-index={virtualRow.index} //needed for dynamic row height measurement
+                  ref={(node) => rowVirtualizer.measureElement(node)} //measure dynamic row height
                   key={row.id}
                   className={getTrDataClassName(row)}
                   style={{
-                    transform: `translateY(${virtualRow.start}px)`,
+                    transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
                     zIndex: rows.length - rowIndex,
                   }}
                   onClick={(e) => {
@@ -270,19 +267,25 @@ const DataGrid = <T extends object>({
                     handleClick(e, table, row);
                   }}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <td
-                      key={cell.id}
-                      className={getTdClassName(cell)}
-                      style={{ width: cell.column.getSize() }}
-                    >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
+                  {row.getVisibleCells().map((cell) => {
+                    return (
+                      <td
+                        key={cell.id}
+                        className={getTdClassName(cell)}
+                        style={{
+                          width: cell.column.getSize(),
+                        }}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </td>
+                    );
+                  })}
                 </tr>
               );
-            })
-          )}
+            })}
         </tbody>
         {hasNextPage && !isFetchingNextPage && (
           <div className="flex" ref={ref} />
