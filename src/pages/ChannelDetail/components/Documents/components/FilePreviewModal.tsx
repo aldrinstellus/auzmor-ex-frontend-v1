@@ -16,7 +16,7 @@ import { useMutation } from '@tanstack/react-query';
 import { getIconFromMime } from './Doc';
 import NoDataFound from 'components/NoDataFound';
 import { getExtension } from '../../utils';
-import CommentCard from 'components/Comments/index';
+import CommentCard, { CommentVariant } from 'components/Comments/index';
 import { ICommentPayload } from 'components/Comments/components/CommentsRTE';
 import PreviewLink from 'components/PreviewLink';
 import { PREVIEW_CARD_VARIANT } from 'utils/constants';
@@ -251,13 +251,13 @@ const FilePreview: FC<IFilePreviewProps> = ({
         {/* Comment Section */}
         <div
           className={`transition-all duration-300 ease-in-out ${
-            showComment ? 'w-[32%] px-2 pt-3 pb-2' : 'w-0 overflow-hidden'
+            showComment ? 'w-[32%] px-3 pt-3 pb-2' : 'w-0 overflow-hidden'
           } relative h-[100%] bg-white`}
         >
           {showComment && (
             <CommentCard
               className="h-full"
-              commentsWrapperClassName="h-[90%] overflow-y-auto"
+              variant={CommentVariant.Document}
               entityId={fileId || ''}
               getApiEnum={ApiEnum.GetChannelDocumentComments}
               createApiEnum={ApiEnum.CreateChannelDocumentComments}
