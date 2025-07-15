@@ -102,7 +102,7 @@ const fieldSize: Record<string, number> = {
 };
 
 const fieldSizeByType: Record<string, number> = {
-  hyperlink: 130,
+  hyperlink: 150,
   date: 150,
   boolean: 100,
   number: 150,
@@ -210,6 +210,7 @@ const renderCustomField = (type: string, value: any): React.ReactNode => {
     case 'text':
     case 'number':
     case 'currency':
+    case 'metadata':
       return value;
     case 'choice':
       return (
@@ -220,7 +221,7 @@ const renderCustomField = (type: string, value: any): React.ReactNode => {
     case 'hyperlink':
       return (
         <a
-          href={value}
+          href={value.Url}
           target="_blank"
           rel="noopener noreferrer"
           className="text-blue-600 underline"
@@ -706,7 +707,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         if (isRootDir) {
           return (
             each.accessorKey === 'name' ||
-            each.accessorKey === 'Owner' ||
             each.accessorKey === 'Last Updated'
           );
         } else {
@@ -896,7 +896,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       ),
       trDataClassName: isCredExpired ? '' : 'cursor-pointer !px-0 !py-0 !z-10 !gap-0 !border-l-1 !border-b-0 border-neutral-200',
       thDataClassName: '!px-0 !py-0 !border-0 !gap-0 !z-10',
-      className: '!overflow-x-auto',
+      className: '!overflow-x-auto border-r-1 border-neutral-200',
     },
   });
 

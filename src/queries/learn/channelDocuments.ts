@@ -122,6 +122,7 @@ const getChannelDocumentFields = async (payload: {
         label: 'Name',
         type: 'string',
         visibility: true,
+        isCustomField: false,
       },
       {
         id: 2,
@@ -129,6 +130,7 @@ const getChannelDocumentFields = async (payload: {
         label: 'Owner',
         type: 'string',
         visibility: true,
+        isCustomField: false,
       },
       {
         id: 3,
@@ -136,6 +138,7 @@ const getChannelDocumentFields = async (payload: {
         label: 'Last Updated',
         type: 'datetime',
         visibility: true,
+        isCustomField: false,
       },
     ]; // Mocked response for fields
   }
