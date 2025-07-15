@@ -237,10 +237,12 @@ export const Comment: FC<CommentProps> = ({
             dataTestIdPrefix="comment-reaction"
           />
           {/* ellipse */}
-          <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
+          
 
           {/* Show Reaction */}
           {totalCount > 0 ? (
+            <>
+            <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
             <div className="flex justify-between cursor-pointer">
               <div
                 className="flex items-center"
@@ -279,12 +281,16 @@ export const Comment: FC<CommentProps> = ({
                 />
               </div>
             </div>
+            </>
           ) : (
             <div />
           )}
         </div>
 
         <div className="flex items-center space-x-2">
+          {(comment?.repliesCount > 0 || canPostComment) && (
+          <>
+          <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
           <div
             className="flex space-x-1 cursor-pointer group outline-none"
             onClick={() => setShowReplies(!showReplies)}
@@ -302,6 +308,8 @@ export const Comment: FC<CommentProps> = ({
               {t('reply.single')}
             </div>
           </div>
+          </>
+          )}
 
           {comment?.repliesCount > 0 && (
             <>
