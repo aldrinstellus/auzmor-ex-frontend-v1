@@ -703,19 +703,19 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           tdClassName: 'sticky right-0 !w-[120px] !z-20 relative bg-white flex items-center justify-center border-l-1 border-b-1 border-r-1 border-neutral-200 py-3 px-3',
         },
       ].filter((each) => {
-        if (each.accessorKey === 'Owner' && isRootDir) {
-          return false;
+        if (isRootDir) {
+          return (
+            each.accessorKey === 'name' ||
+            each.accessorKey === 'Owner' ||
+            each.accessorKey === 'Last Updated'
+          );
+        } else {
+          // In non-root, allow all, but conditionally hide location and more if needed
+          if (each.accessorKey === 'location' && !isDocSearchApplied) {
+            return false;
+          }
+          return true;
         }
-        if (
-          each.accessorKey === 'location' &&
-          (isRootDir || !isDocSearchApplied)
-        ) {
-          return false;
-        }
-        if (each.accessorKey === 'more' && isRootDir) {
-          return false;
-        }
-        return true;
       }),
     [
       totalRows,
