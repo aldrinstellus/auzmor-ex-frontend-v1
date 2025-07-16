@@ -113,25 +113,8 @@ export const Comment: FC<CommentProps> = ({
         content: t('deleteFailToast'),
         dataTestId: 'comment-toaster',
       }),
-    onSuccess: (_, id) =>{
-      const key = ['comments', getApiParams || defaultParams];
-      queryClient.setQueryData(key, (old: any) => {
-        if (!old?.pages) return old;
-
-        return {
-          ...old,
-          pages: old.pages.map((page: any) => ({
-            ...page,
-            data: {
-              ...page.data,
-              result: {
-                ...page.data.result,
-                data: page.data.result.data.filter((c: any) => c.id !== id),
-              },
-            },
-          })),
-        };
-      });
+    onSuccess: () =>{
+      queryClient.invalidateQueries(['comments', getApiParams || defaultParams]);
       successToastConfig({
         content: t('deleteSuccessToast'),
         dataTestId: 'comment-toaster',
