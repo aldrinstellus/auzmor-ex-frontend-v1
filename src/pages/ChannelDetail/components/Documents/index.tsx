@@ -213,12 +213,34 @@ const renderCustomField = (type: string, value: any, tc: TFunction): React.React
     case 'currency':
     case 'metadata':
       return value;
-    case 'choice':
+    case 'choice':{
+      if (Array.isArray(value)) {
+        const displayed = value.slice(0, 2);
+        const remaining = value.length - 2;
+        return (
+          <div className="flex gap-2 flex-wrap">
+            {displayed.map((item, idx) => (
+              <span
+                key={idx}
+                className="bg-white text-sm rounded-full px-3 py-1 inline-block border border-neutral-200"
+              >
+                {item}
+              </span>
+            ))}
+            {remaining > 0 && (
+              <span className="bg-white text-sm rounded-full px-3 py-1 inline-block border border-neutral-200">
+                +{remaining}
+              </span>
+            )}
+          </div>
+        );
+      }
       return (
         <span className="bg-white text-sm rounded-full px-3 py-1 inline-block border border-neutral-200">
           {value}
         </span>
       );
+    }
     case 'hyperlink':
       return (
         <a
