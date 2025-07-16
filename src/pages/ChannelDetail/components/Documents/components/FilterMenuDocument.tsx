@@ -102,7 +102,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
           (column) =>
             column.isCustomField &&
             column.visibility &&
-            !['text', 'image', 'hyperlink'].includes(column.type),
+            ['boolean', 'choice', 'date'].includes(column.type),
         )
         .map((column) => ({
           key: column.fieldName,

@@ -16,13 +16,14 @@ const DocSearchRow = ({
   searchQuery = '',
   onClick = () => {},
 }: DocSearchProps) => {
+  console.log(data.customFields);
   const { t } = useTranslation('channelDetail', {
     keyPrefix: 'documentTab',
   });
   const iconName = data?.isFolder ? 'folder' : getIconFromMime(data?.mimeType);
   return (
     <div
-      className="flex gap-2 items-center hover:bg-primary-50 cursor-pointer border-2 border-black"
+      className="flex gap-2 items-center hover:bg-primary-50 cursor-pointer"
       onPointerDown={(e) => e.preventDefault()}
       onClick={() => onClick(data)}
     >
@@ -31,7 +32,7 @@ const DocSearchRow = ({
         <div className="text-xs">
           <HighlightText text={data?.name || ''} subString={searchQuery} />
         </div>
-        <div className="text-xs text-customBlue">
+        <div className="text-xs text-neutral-700">
           {t('updatedOn', {
             date: moment(data?.updatedAt).format('DD MMM YYYY'),
           })}{' '}
@@ -40,17 +41,25 @@ const DocSearchRow = ({
             t('updatedBy', { name: data?.externalModifiedBy })}
         </div>
         {data?.customFields && !Array.isArray(data?.customFields) && (
-          <div className="text-xs text-customBlue">
+          <div className="text-xs text-neutral-700">
             &quot;
-            <span className="text-primary">
-              {searchQuery}
-            </span>
+            {data?.customFields?.display_name
+            ?.split(new RegExp(`(${searchQuery})`, 'gi'))
+            .map((part: string, i: number) =>
+              part.toLowerCase() === searchQuery?.toLowerCase() ? (
+                <span key={i} className="text-primary-500 font-semibold">
+                  {part}
+                </span>
+              ) : (
+                <span key={i}>{part}</span>
+              )
+            )}
             &quot;
             &nbsp;
             {t('foundIn')}
             &nbsp;
             <span className="font-semibold">
-              {data?.customFields?.fieldName}
+              {data?.customFields?.field_name}
             </span>
           </div>
         )}

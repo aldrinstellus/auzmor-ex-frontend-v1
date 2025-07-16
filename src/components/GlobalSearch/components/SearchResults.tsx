@@ -406,11 +406,19 @@ const SearchResults: FC<ISearchResultsProps> = ({
           </div>
           <div className='pl-[23px]'>
             {result?.customFields && !Array.isArray(result?.customFields) && (
-          <div className="text-xs text-customBlue">
+          <div className="text-xs text-neutral-500">
             &quot;
-            <span className="text-primary">
-              {searchQuery}
-            </span>
+            {result?.customFields?.display_name
+            ?.split(new RegExp(`(${searchQuery})`, 'gi'))
+            .map((part: string, i: number) =>
+              part.toLowerCase() === searchQuery?.toLowerCase() ? (
+                <span key={i} className="text-primary-500 font-semibold">
+                  {part}
+                </span>
+              ) : (
+                <span key={i}>{part}</span>
+              )
+            )}
             &quot;
             &nbsp;
             {t('foundIn')}
