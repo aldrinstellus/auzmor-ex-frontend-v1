@@ -75,6 +75,7 @@ import { getUtcMiliseconds } from 'utils/time';
 import useNavigate from 'hooks/useNavigation';
 import { ColumnItem } from './components/ColumnSelector';
 import Truncate from 'components/Truncate';
+import type { TFunction } from 'i18next';
 // import { ICheckboxListOption } from 'components/CheckboxList';
 
 export enum DocIntegrationEnum {
@@ -203,7 +204,7 @@ const LocationField = ({
   );
 };
 
-const renderCustomField = (type: string, value: any): React.ReactNode => {
+const renderCustomField = (type: string, value: any, tc: TFunction): React.ReactNode => {
   if (value === null || value === undefined || value === '') return <span className='text-neutral-300'>-</span>;
 
   switch (type) {
@@ -226,7 +227,7 @@ const renderCustomField = (type: string, value: any): React.ReactNode => {
           rel="noopener noreferrer"
           className="text-sm text-blue-600 underline"
         >
-          WEBSITE LINK
+          {tc('websiteLink')}
         </a>
       );
     case 'boolean':
@@ -661,7 +662,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                     (eachField: any) => field.fieldName === eachField.field_name
                   ) as { field_values?: any } | undefined;
 
-                  return <>{renderCustomField(field.type, matched?.field_values)}</>;
+                  return <>{renderCustomField(field.type, matched?.field_values, tc)}</>;
               }
             },
             size: field.size || fieldSize[field.fieldName] || fieldSizeByType[field.type] || 256,
