@@ -681,27 +681,27 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             }
             const options = getAllOptions(info);
             return options.length > 0 ? (
-              <PopupMenu
-                triggerNode={
-                  <div
-                    className="relative"
-                    data-testid="document-table-ellipsis"
-                    title="more"
-                  >
-                    <Icon name="moreV2Filled" tabIndex={0} size={16} />
-                  </div>
-                }
-                menuItems={options}
-                className="right-0 bg-white top-full border-1 border-neutral-200 focus-visible:outline-none w-44"
-                onClick={(e) => e.stopPropagation()}
-              />
-            ) : (
-              <></>
-            );
+              <div className="relative z-[999999]">
+                <PopupMenu
+                  triggerNode={
+                    <div
+                      className="relative"
+                      title="more"
+                      data-testid="document-table-ellipsis"
+                    >
+                      <Icon name="moreV2Filled" tabIndex={0} size={16} />
+                    </div>
+                  }
+                  menuItems={options}
+                  className="right-0 bg-white top-auto bottom-full border-1 border-neutral-200 w-44"
+                  onClick={(e) => e.stopPropagation()}
+                />
+              </div>
+            ) : null;
           },
           size: 16,
-          thClassName: '!w-[120px] sticky right-0 !z-10 bg-inherit border-l-1 border-neutral-200 py-3 px-3',
-          tdClassName: 'sticky right-0 !w-[120px] !z-20 relative bg-white flex items-center justify-center border-l-1 border-b-1 border-r-1 border-neutral-200 py-3 px-3',
+          thClassName: '!w-[120px] sticky right-0 !z-[10] bg-inherit border-l-1 border-neutral-200 py-3 px-3',
+          tdClassName: 'sticky right-0 !w-[120px] !z-[10] bg-white flex items-center justify-center border-l-1 border-b-1 border-r-1 border-neutral-200 py-3 px-3',
         },
       ].filter((each) => {
         if (isRootDir) {
@@ -894,7 +894,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           onClearSearch={() => fileInputRef?.current?.click()}
         />
       ),
-      trDataClassName: isCredExpired ? '' : 'cursor-pointer !px-0 !py-0 !z-10 !gap-0 !border-l-1 !border-b-0 border-neutral-200',
+      trDataClassName: isCredExpired ? '' : 'cursor-pointer !px-0 !py-0 !z-[10] !gap-0 !border-l-1 !border-b-0 border-neutral-200',
       thDataClassName: '!px-0 !py-0 !border-0 !gap-0 !z-10',
       className: '!overflow-x-auto border-r-1 border-neutral-200',
     },

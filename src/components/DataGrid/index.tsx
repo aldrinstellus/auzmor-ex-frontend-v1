@@ -250,7 +250,7 @@ const DataGrid = <T extends object>({
         >
           {rowVirtualizer
             .getVirtualItems()
-            .map((virtualRow: any, rowIndex: number) => {
+            .map((virtualRow: any) => {
               const row = rows[virtualRow.index] as Row<T>;
               return (
                 <tr
@@ -260,7 +260,6 @@ const DataGrid = <T extends object>({
                   className={getTrDataClassName(row)}
                   style={{
                     transform: `translateY(${virtualRow.start}px)`, //this should always be a `style` as it changes on scroll
-                    zIndex: rows.length - rowIndex,
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
