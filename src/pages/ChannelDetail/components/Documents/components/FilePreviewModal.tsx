@@ -251,7 +251,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
         {/* Comment Section */}
         <div
           className={`transition-all duration-300 ease-in-out ${
-            showComment ? 'w-[32%] px-3 pt-3 pb-2' : 'w-0 overflow-hidden'
+            showComment ? 'w-[32%] px-3 pt-3 pb-3' : 'w-0 overflow-hidden'
           } relative h-[100%] bg-white`}
         >
           {showComment && (
