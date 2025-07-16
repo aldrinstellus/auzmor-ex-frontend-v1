@@ -37,11 +37,13 @@ import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 interface CommentProps {
   commentId: string;
   canPostComment?: boolean;
+  canDeleteComment?: boolean;
 }
 
 export const Comment: FC<CommentProps> = ({
   commentId,
   canPostComment = true,
+  canDeleteComment = false,
 }) => {
   const { t: tp } = useTranslation('profile');
   const { t } = useTranslation('post', { keyPrefix: 'commentComponent' });
@@ -65,6 +67,10 @@ export const Comment: FC<CommentProps> = ({
 
   const comment = storedcomments[commentId];
   const replies = getComments(comment?.relevantComments || []);
+
+  const isOwner = user?.id === comment?.createdBy?.userId;
+  const canEdit = isOwner;
+  const canDelete = (canDeleteComment || isOwner);
 
   const totalCount = Object.values(comment?.reactionsCount || {}).reduce(
     (total, count) => total + count,
@@ -118,7 +124,7 @@ export const Comment: FC<CommentProps> = ({
 
   return (
     <div className="flex flex-col">
-      <div className="bg-neutral-100 p-3 rounded-9xl mb-4">
+      <div className="bg-neutral-100 p-3 rounded-9xl mb-2">
         <div className="flex flex-row justify-between gap-4">
           <div>
             <Link to={profileUrl}>
@@ -157,7 +163,7 @@ export const Comment: FC<CommentProps> = ({
             {humanizeTime(comment?.updatedAt)}
           </div>
           <div className="relative">
-            {user?.id === comment?.createdBy?.userId && (
+            {(canEdit || canDelete) && (
               <PopupMenu
                 triggerNode={
                   <div
@@ -168,23 +174,31 @@ export const Comment: FC<CommentProps> = ({
                   </div>
                 }
                 menuItems={[
-                  {
-                    icon: 'edit',
-                    label: t('editComment'),
-                    onClick: () => {
-                      setEditComment(true);
-                    },
-                    stroke: 'text-neutral-900',
-                    dataTestId: 'post-ellipsis-edit-comment',
-                    disabled: !canPostComment,
-                  },
-                  {
-                    icon: 'delete',
-                    label: t('deleteComment'),
-                    onClick: showConfirm,
-                    stroke: 'text-neutral-900',
-                    dataTestId: 'post-ellipsis-edit-comment',
-                  },
+                  ...(canEdit
+                    ? [
+                        {
+                          icon: 'edit',
+                          label: t('editComment'),
+                          onClick: () => {
+                            setEditComment(true);
+                          },
+                          stroke: 'text-neutral-900',
+                          dataTestId: 'post-ellipsis-edit-comment',
+                          disabled: !canPostComment,
+                        },
+                      ]
+                    : []),
+                  ...(canDelete
+                    ? [
+                        {
+                          icon: 'delete',
+                          label: t('deleteComment'),
+                          onClick: showConfirm,
+                          stroke: 'text-neutral-900',
+                          dataTestId: 'post-ellipsis-delete-comment',
+                        },
+                      ]
+                    : []),
                 ]}
                 className="mt-1 right-0 border-1 border-neutral-200 focus-visible:outline-none"
               />
@@ -212,7 +226,7 @@ export const Comment: FC<CommentProps> = ({
       </div>
 
       {/* Replies */}
-      <div className="flex items-center">
+      <div className="flex items-center mx-3">
         <div className="flex items-center space-x-2">
           <Likes
             reaction={comment?.myReaction?.reaction || ''}
@@ -223,10 +237,12 @@ export const Comment: FC<CommentProps> = ({
             dataTestIdPrefix="comment-reaction"
           />
           {/* ellipse */}
-          <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
+          
 
           {/* Show Reaction */}
           {totalCount > 0 ? (
+            <>
+            <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
             <div className="flex justify-between cursor-pointer">
               <div
                 className="flex items-center"
@@ -265,12 +281,16 @@ export const Comment: FC<CommentProps> = ({
                 />
               </div>
             </div>
+            </>
           ) : (
             <div />
           )}
         </div>
 
         <div className="flex items-center space-x-2">
+          {(canPostComment) && (
+          <>
+          <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
           <div
             className="flex space-x-1 cursor-pointer group outline-none"
             onClick={() => setShowReplies(!showReplies)}
@@ -288,6 +308,8 @@ export const Comment: FC<CommentProps> = ({
               {t('reply.single')}
             </div>
           </div>
+          </>
+          )}
 
           {comment?.repliesCount > 0 && (
             <>
@@ -316,13 +338,11 @@ export const Comment: FC<CommentProps> = ({
       </div>
 
       {showReplies ? (
-        <div className="mt-4">
-          <ReplyCard entityId={comment?.id} canPostComment={canPostComment} />
-        </div>
+        <ReplyCard entityId={comment?.id} canPostComment={canPostComment} canDeleteComment={canDeleteComment} />
       ) : !previousShowReply.current && replies?.length ? (
         replies.map((reply) => (
           <div className="mt-4 ml-8" key={reply.id}>
-            <Reply comment={reply} />
+            <Reply comment={reply} canDeleteComment={canDeleteComment} canPostComment={canPostComment} />
           </div>
         ))
       ) : null}

@@ -85,7 +85,7 @@ const Doc: FC<IDocProps> = ({ doc, isFolder }) => {
   const style = useMemo(
     () =>
       clsx({
-        'flex flex-col gap-2 p-3 rounded-9xl border border-neutral-200 min-w-[223px] cursor-pointer [&>*]:select-none shadow-none':
+        'flex flex-col gap-2 rounded-9xl border border-neutral-200 min-w-[223px] h-[245px] cursor-pointer [&>*]:select-none shadow-none':
           true,
       }),
     [],
@@ -95,34 +95,36 @@ const Doc: FC<IDocProps> = ({ doc, isFolder }) => {
     doc.isFolder || isFolder ? 'folder' : getIconFromMime(doc.mimeType);
   return (
     <Card className={style}>
-      <div className="flex justify-center items-center py-[15px] bg-neutral-100 rounded-md">
+      <div className="flex justify-center items-center py-[30px] w-full border-b border-neutral-200 ">
         <Icon name={iconName} size={70} />
       </div>
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col justify-between px-4 pt-3 pb-4 flex-1">
         <Truncate
           text={doc.name}
-          className="text-xs font-medium leading-[18px] w-[200px] text-neutral-900"
+          maxLength={50}space-wrap
+          className="text-sm font-semibold leading-[18px] w-full break-all !whitespace-normal"
         />
         <div className="flex items-center gap-1">
           {doc?.ownerName && (
             <>
-              <div className="flex items-center gap-0.5">
+              <div className="flex items-center gap-2">
                 <Avatar
-                  size={16}
+                  size={24}
                   image={doc?.ownerImage}
                   name={doc.ownerName}
                 />
-                <span className="text-xxs text-neutral-500 font-medium">
-                  {doc.ownerName}
-                </span>
+                <div className='flex flex-col'>
+                  <span className="text-xs font-medium">
+                    {doc.ownerName}
+                  </span>
+                  {doc?.externalUpdatedAt && (
+                    <span className="text-xxs text-neutral-500 font-medium">
+                      {t('updated', { date: humanizeTime(doc.externalUpdatedAt) })}
+                    </span>
+                  )}
+                </div>
               </div>
-              <div className="flex w-[3px] h-[3px] bg-neutral-300"></div>
             </>
-          )}
-          {doc?.externalUpdatedAt && (
-            <span className="text-xxs text-neutral-500 font-medium">
-              {t('updated', { date: humanizeTime(doc.externalUpdatedAt) })}
-            </span>
           )}
         </div>
       </div>

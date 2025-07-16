@@ -64,6 +64,7 @@ export const useInfiniteComments = (q: IComments) => {
       getNextPageParam: (lastPage: any) => {
         const pageDataLen = lastPage?.data?.result?.data?.length;
         const pageLimit = lastPage?.data?.result?.paging?.limit;
+        console.log(lastPage?.data?.result);
         if (pageDataLen < pageLimit) {
           return null;
         }

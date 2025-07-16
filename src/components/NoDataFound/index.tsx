@@ -42,6 +42,10 @@ const illustrationMap: Record<string, any> = {
     type: 'image',
     src: require('images/png/PrivateChannelBanner.png'),
   },
+  noComments: {
+    type: 'image',
+    src: require('images/png/NoComments.png')
+  }
 };
 
 const NoDataFound: FC<INoDataFoundProps> = ({

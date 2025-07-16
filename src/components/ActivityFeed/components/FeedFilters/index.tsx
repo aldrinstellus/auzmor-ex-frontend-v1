@@ -162,14 +162,6 @@ const FeedFilter: FC<FeedFilterProps> = ({
       hidden: false,
     },
     {
-      label: t('training'),
-      value: PostType.Training,
-      filterKey: PostFilterKeys.PostType,
-      type: FeedFilterContentType.Filter,
-      dataTestId: 'filterby-training',
-      hidden: !(isLxp && !isChannelPage && isLearner), // if lxp and feed and learner view then show else dont
-    },
-    {
       label: t('event'),
       value: PostType.Event,
       filterKey: PostFilterKeys.PostType,

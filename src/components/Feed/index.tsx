@@ -737,9 +737,9 @@ const Feed: FC<IFeedProps> = ({
     } else if (totalPosts <= 10 && totalPosts > 3) {
       if (trendingCards.length > 1) {
         if (recentlyAssignedCards.length > 1) {
-          return { tIndex: 2, rIndex: 2 };
+          return { tIndex: 3, rIndex: 2 };
         } else {
-          return { tIndex: 2, rIndex: -1 };
+          return { tIndex: 3, rIndex: -1 };
         }
       } else {
         if (recentlyAssignedCards.length > 1) {
@@ -751,9 +751,9 @@ const Feed: FC<IFeedProps> = ({
     } else if (totalPosts >= 3 && totalPosts < 5) {
       if (trendingCards.length > 1) {
         if (recentlyAssignedCards.length > 1) {
-          return { tIndex: 2, rIndex: 2 };
+          return { tIndex: 3, rIndex: 2 };
         } else {
-          return { tIndex: 2, rIndex: -1 };
+          return { tIndex: 3, rIndex: -1 };
         }
       } else {
         if (recentlyAssignedCards.length > 1) {
@@ -765,9 +765,9 @@ const Feed: FC<IFeedProps> = ({
     } else if (totalPosts === 2) {
       if (trendingCards.length > 1) {
         if (recentlyAssignedCards.length > 1) {
-          return { tIndex: 2, rIndex: 2 };
+          return { tIndex: 3, rIndex: 2 };
         } else {
-          return { tIndex: 2, rIndex: -1 };
+          return { tIndex: 3, rIndex: -1 };
         }
       } else {
         if (recentlyAssignedCards.length > 1) {
@@ -802,26 +802,20 @@ const Feed: FC<IFeedProps> = ({
   };
 
   const handleRecentlyAssignedContent = () => {
-    if (user?.preferences?.learnerViewType === 'MODERN') {
-      window.location.assign(
-        `${getLearnUrl()}/user/trainings?filter=ASSIGNED&sort=updated_at&type=elearning`,
-      );
-    } else {
-      window.location.assign(
-        `${getLearnUrl()}/user/courses/shared?sort=created_at&viewAs=Grid`,
-      );
-    }
+    window.location.assign(
+      `${getLearnUrl()}/user/trainings?filter=ASSIGNED&sort=updated_at&type=elearning`,
+    );
   };
 
   const Recommendation =
-    getComponent(ComponentEnum.RecommendationWidget) || EmptyWidget;
+    getComponent(ComponentEnum.RecommendationWidget);
 
   const getListItem = (id: string, index: number) => {
     return (
       <Fragment key={`${id}-post-index-${index}-fragment`}>
         {mode === FeedModeEnum.Default && (
           <>
-            {index === recommendationIndex.tIndex && (
+            {(index === recommendationIndex.tIndex && Recommendation) && (
               <li data-testid={`trending-content-post`}>
                 <Recommendation
                   cards={trendingCards}
@@ -831,7 +825,7 @@ const Feed: FC<IFeedProps> = ({
                 />
               </li>
             )}
-            {index === recommendationIndex.rIndex && (
+            {(index === recommendationIndex.rIndex && Recommendation) && (
               <li data-testid={`recently-assigned-content-post`}>
                 <Recommendation
                   cards={recentlyAssignedCards}

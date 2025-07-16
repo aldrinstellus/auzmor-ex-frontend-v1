@@ -22,10 +22,7 @@ const AppWidgetCard: FC<IAppWidgetCardProps> = ({ data }) => {
     ariaLabel: data.label,
   };
   return (
-    <Link
-      to={`${window.location.origin}/apps/${data.id}/launch`}
-      target="_blank"
-    >
+    <Link to={`/apps/${data.id}/launch`} target="_blank">
       <div
         className="flex flex-col items-center gap-2"
         data-testid="app-launcher-app"

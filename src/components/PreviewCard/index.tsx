@@ -3,6 +3,7 @@ import IconPreview from 'components/PreviewLink/components/IconPreview';
 import ImagePreview from 'components/PreviewLink/components/ImagePreview';
 import { Metadata } from 'interfaces';
 import { FC, useMemo } from 'react';
+import { PREVIEW_CARD_VARIANT } from 'utils/constants';
 
 type PreviewCardProps = {
   metaData: Metadata;
@@ -10,6 +11,8 @@ type PreviewCardProps = {
   isLoading?: boolean;
   isError?: boolean;
   isAnnouncementWidgetPreview?: boolean;
+  previewUrl?: string;
+  variant?: string;
 };
 
 const PreviewCard: FC<PreviewCardProps> = ({
@@ -18,6 +21,8 @@ const PreviewCard: FC<PreviewCardProps> = ({
   isLoading,
   isError,
   isAnnouncementWidgetPreview,
+  previewUrl,
+  variant = PREVIEW_CARD_VARIANT.feed,
 }) =>
   useMemo(() => {
     if (metaData?.image) {
@@ -27,6 +32,8 @@ const PreviewCard: FC<PreviewCardProps> = ({
             metaData={metaData}
             isAnnouncementWidgetPreview={isAnnouncementWidgetPreview}
             dataTestId="feed-createpost-linkpreview"
+            previewUrl={previewUrl}
+            variant={variant}
           />
         </Card>
       );
@@ -38,6 +45,8 @@ const PreviewCard: FC<PreviewCardProps> = ({
           <IconPreview
             metaData={metaData}
             dataTestId="feed-createpost-linkpreview"
+            previewUrl={previewUrl}
+            variant={variant}
           />
         </Card>
       );

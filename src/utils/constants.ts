@@ -17,6 +17,7 @@ export const SESSION_ID = 'auz-session-id';
 export const IS_PROD = process.env.REACT_APP_ENV === 'PRODUCTION';
 export const IS_STAGING = process.env.REACT_APP_ENV === 'STAGING';
 export const IS_PROD_OR_STAGING = IS_PROD || IS_STAGING;
+export const PUBLIC_URL = process.env.PUBLIC_URL || '';
 
 export const validImageTypes = [
   'image/png',
@@ -48,3 +49,8 @@ export const validDocumentFileTypes = [
   'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   'application/vnd.ms-excel',
 ];
+
+export const PREVIEW_CARD_VARIANT = {
+  document: 'DOCUMENT',
+  feed: 'FEED',
+};
