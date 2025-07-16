@@ -250,8 +250,6 @@ const SearchResults: FC<ISearchResultsProps> = ({
     const textStyles = `text-sm leading-4 text-black ${
       isRecent ? 'font-semibold' : ''
     }`;
-    console.log(result);
-    console.log(entityType);
     switch (entityType) {
       case ISearchResultType.PEOPLE:
       case ISearchResultType.USER:
