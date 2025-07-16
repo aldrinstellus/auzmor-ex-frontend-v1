@@ -114,34 +114,29 @@ export const Comment: FC<CommentProps> = ({
         dataTestId: 'comment-toaster',
       }),
     onSuccess: (_, id) =>{
-      const queryKey = ['comments', getApiParams || defaultParams];
-      queryClient.setQueryData(queryKey, (oldData: any) => {
-        if (!oldData?.pages) return oldData;
-        const newPages = oldData.pages.map((page: any) => {
-          const updatedData = page?.data?.result?.data?.filter(
-            (c: any) => c.id !== id
-          );
-          return {
+      const key = ['comments', getApiParams || defaultParams];
+      queryClient.setQueryData(key, (old: any) => {
+        if (!old?.pages) return old;
+
+        return {
+          ...old,
+          pages: old.pages.map((page: any) => ({
             ...page,
             data: {
               ...page.data,
               result: {
                 ...page.data.result,
-                data: updatedData,
+                data: page.data.result.data.filter((c: any) => c.id !== id),
               },
             },
-          };
-        });
-        return {
-          ...oldData,
-          pages: newPages,
+          })),
         };
       });
-          successToastConfig({
-            content: t('deleteSuccessToast'),
-            dataTestId: 'comment-toaster',
-          });
-        },
+      successToastConfig({
+        content: t('deleteSuccessToast'),
+        dataTestId: 'comment-toaster',
+      });
+      },
   });
 
   const profileUrl = isLxp
