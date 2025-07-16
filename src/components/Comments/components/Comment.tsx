@@ -288,7 +288,7 @@ export const Comment: FC<CommentProps> = ({
         </div>
 
         <div className="flex items-center space-x-2">
-          {(comment?.repliesCount > 0 || canPostComment) && (
+          {(canPostComment) && (
           <>
           <div className="h-1 w-1 bg-neutral-500 rounded-full"></div>
           <div

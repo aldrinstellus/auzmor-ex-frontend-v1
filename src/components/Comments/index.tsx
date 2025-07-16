@@ -175,14 +175,14 @@ const Comments: FC<CommentsProps> = ({
             </div>
           )}
           {isLoading ? (
-            <div>
+            <div className='pt-4 h-[86%]'>
               <CommentSkeleton />
             </div>
           ) : (
             commentIds &&
             commentIds.length > 0 ? (
               <>
-                <div className="pt-4 h-[86%] overflow-y-auto">
+                <div className="pt-4 pb-2 h-[86%] overflow-y-auto">
                   {isCreateCommentLoading && <CommentSkeleton />}
                   <div className="flex flex-col gap-4">
                     {commentIds
@@ -231,31 +231,34 @@ const Comments: FC<CommentsProps> = ({
                 image={user?.profileImage}
               />
             </div>
-            <CommentsRTE
-              className="w-0 flex-grow"
-              entityId={entityId}
-              entityType="post"
-              placeholder={Placeholder.DocumentComment}
-              createApiEnum={createApiEnum}
-              getApiParams={getApiParams}
-              createApiParams={createApiParams}
-              inputRef={inputRef}
-              media={media}
-              removeMedia={() => {
-                setMedia([]);
-                setFiles([]);
-                setMediaValidationErrors([]);
-                if (inputRef.current) {
-                    inputRef.current.value = '';
-                }
-              }}
-              files={files}
-              mediaValidationErrors={mediaValidationErrors}
-              setIsCreateCommentLoading={setIsCreateCommentLoading}
-              setMediaValidationErrors={setMediaValidationErrors}
-              isCreateCommentLoading={isCreateCommentLoading}
-              suggestions={suggestions}
-            />
+            <div className="relative h-[60px] flex-grow !bg-white">
+              <CommentsRTE
+                className="absolute w-full bottom-[8px] overflow-y-auto z-[999]"
+                wrapperClassName='bg-white'
+                entityId={entityId}
+                entityType="post"
+                placeholder={Placeholder.DocumentComment}
+                createApiEnum={createApiEnum}
+                getApiParams={getApiParams}
+                createApiParams={createApiParams}
+                inputRef={inputRef}
+                media={media}
+                removeMedia={() => {
+                  setMedia([]);
+                  setFiles([]);
+                  setMediaValidationErrors([]);
+                  if (inputRef.current) {
+                      inputRef.current.value = '';
+                  }
+                }}
+                files={files}
+                mediaValidationErrors={mediaValidationErrors}
+                setIsCreateCommentLoading={setIsCreateCommentLoading}
+                setMediaValidationErrors={setMediaValidationErrors}
+                isCreateCommentLoading={isCreateCommentLoading}
+                suggestions={suggestions}
+              />
+            </div>
           </div>)}
           </>
         );
