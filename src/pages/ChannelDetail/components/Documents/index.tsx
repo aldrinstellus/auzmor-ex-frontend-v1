@@ -642,6 +642,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     () =>
       [
         {
+          id: 'name',
           accessorKey: 'name',
           header: () => (
             <div className="font-bold text-neutral-500">
@@ -664,6 +665,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               field.visibility && field.fieldName !== 'Name',
           )
           ?.map((field: any) => ({
+            id: field.id,
             accessorKey: field.fieldName,
             header: () => (
               <div className="font-bold text-neutral-500">{field.label}</div>
@@ -694,6 +696,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
           })) || []),
         {
+          id: 'more',
           accessorKey: 'more',
           header: () => '',
           cell: (info: CellContext<DocType, unknown>) => {
@@ -749,7 +752,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       downloadChannelFileMutation.isLoading,
       documentFields,
     ],
-  ); // TODO: removed with custom-fields
+  );
 
   // Columns configuration for Datagrid component for List view
   const columnsDeepSearchListView = React.useMemo<ColumnDef<DocType>[]>(
