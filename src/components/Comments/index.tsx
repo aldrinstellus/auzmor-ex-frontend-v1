@@ -139,7 +139,6 @@ const Comments: FC<CommentsProps> = ({
   const [isCreateCommentLoading, setIsCreateCommentLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<string>('');
   const getPost = useFeedStore((state) => state.getPost);
-  console.log(commentIds);
 
   const renderCommentComponent = (variant?: CommentVariant) => {
     switch (variant) {
@@ -183,7 +182,7 @@ const Comments: FC<CommentsProps> = ({
             commentIds &&
             commentIds.length > 0 ? (
               <>
-                <div className="pt-4 h-[84%] mb-3 overflow-y-auto">
+                <div className={`pt-4 ${canPostComment ? 'h-[84%] mb-3 ' : 'h-[92%]'} overflow-y-auto`}>
                   {isCreateCommentLoading && <CommentSkeleton />}
                   <div className="flex flex-col gap-4">
                     {commentIds

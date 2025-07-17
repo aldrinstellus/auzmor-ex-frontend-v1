@@ -21,6 +21,8 @@ import { ICommentPayload } from 'components/Comments/components/CommentsRTE';
 import PreviewLink from 'components/PreviewLink';
 import { PREVIEW_CARD_VARIANT } from 'utils/constants';
 import { useChannelRole } from 'hooks/useChannelRole';
+import useRole from 'hooks/useRole';
+import { isLearnerRoute } from 'components/LxpNotificationsOverview/utils/learnNotification';
 
 interface IFilePreviewProps {
   fileId: string;
@@ -102,7 +104,9 @@ const FilePreview: FC<IFilePreviewProps> = ({
     }
   });
 
+  const { isAdmin } = useRole();
   const { isChannelAdmin } = useChannelRole(channelId);
+  const canDeleteComment = (isChannelAdmin || isAdmin) && !isLearnerRoute();
 
   const isLoading = fileLoading || previewLoading;
   const isDownloading = downloadChannelFileMutation.isLoading;
@@ -273,7 +277,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
               })}
               showEmptyState={true}
               canPostComment={canPostComment}
-              canDeleteComment={isChannelAdmin}
+              canDeleteComment={canDeleteComment}
             />
           )}
         </div>
