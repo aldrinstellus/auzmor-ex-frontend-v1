@@ -118,7 +118,7 @@ export const useAppliedFilter = (initialFilters: Record<string, any>) => {
     return isFilterApplied ? (
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-4">
-          <span className="text-neutral-500">Filter by</span>
+          <span className="text-neutral-500">{ts('filterBy')}</span>
           {isFilterApplied &&
             filters &&
             Object.entries(filters).map(([key, value]) => {
@@ -178,7 +178,7 @@ export const useAppliedFilter = (initialFilters: Record<string, any>) => {
           onClick={clearFilters}
           data-testid="people-clear-filters"
         >
-          Clear all
+        {ts('clearAll')}
         </div>
       </div>
     ) : (
@@ -196,17 +196,17 @@ export const useAppliedFilter = (initialFilters: Record<string, any>) => {
     onClear: () => void;
   }) => (
     <div
-      onClick={onClear}
-      className="flex items-center px-3 py-1 border border-neutral-200 rounded-7xl gap-1 cursor-pointer hover:border-primary-600 group h-8"
+      className="flex items-center px-2 py-1 border border-neutral-200 rounded-7xl gap-2 cursor-default group h-8 bg-primary-50/10"
     >
-      <span className="text-neutral-500 font-medium">
-        {label}{' '}
-        <span className="text-primary-500 font-bold">
+      <span className="flex items-center text-sm">
+        <span className="text-neutral-500 bg-neutral-200 px-1 rounded-md">{label}</span>
+        :
+        <span className="text-primary-500 ml-1 font-bold">
           {values.slice(0, 2).join(', ')}
           {values.length > 2 && ` and + ${values.length - 2} more`}
         </span>
       </span>
-      <Icon name="close" size={16} />
+      <Icon name="close" size={14} className="text-neutral-500 group-hover:text-primary-500" onClick={onClear} />
     </div>
   );
 

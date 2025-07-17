@@ -42,6 +42,10 @@ const illustrationMap: Record<string, any> = {
     type: 'image',
     src: require('images/png/PrivateChannelBanner.png'),
   },
+  noComments: {
+    type: 'image',
+    src: require('images/png/NoComments.png')
+  }
 };
 
 const NoDataFound: FC<INoDataFoundProps> = ({
@@ -89,13 +93,13 @@ const NoDataFound: FC<INoDataFoundProps> = ({
                 !!searchString ? `for '${searchString}'` : ''
               }`}
           </div>
-          <div className="text-sm text-gray-500 mt-4">{message}</div>
+          <div className="text-sm text-gray-500 mt-2">{message}</div>
         </div>
       )}
       {!!customLabel && customLabel}
 
       {!hideClearBtn && (
-        <div className="flex justify-center mt-6 group">
+        <div className="flex justify-center mt-3 group">
           <Button
             label={clearBtnLabel}
             variant={Variant.Secondary}

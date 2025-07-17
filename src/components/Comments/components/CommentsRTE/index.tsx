@@ -46,6 +46,7 @@ export enum Placeholder {
   CreateReply = 'CREATE_REPLY',
   EditReply = 'EDIT_REPLY',
   SendWish = 'SEND_WISH',
+  DocumentComment = 'DOCUMENT_COMMENT',
 }
 
 interface CommentFormProps {
@@ -424,6 +425,8 @@ export const CommentsRTE: FC<CommentFormProps> = ({
         return t('editReplyPlaceholder');
       case Placeholder.EditComment:
         return t('editCommentPlaceholder');
+      case Placeholder.DocumentComment:
+        return t('documentCommentPlaceholder');
       default:
         return t('leaveCommentPlaceholder');
     }

@@ -184,7 +184,7 @@ const SingleSelect = forwardRef(
                   }}
                   onSearch={showSearch ? () => setOpen(true) : undefined}
                   className={`single-select ${selectClassName}`}
-                  suffixIcon={suffixIcon || <Icon name="arrowDown" size={18} />}
+                  suffixIcon={suffixIcon || <Icon name={open ? "arrowUp" : "arrowDown"} size={18} />}
                   clearIcon={clearIcon}
                   ref={ref}
                   allowClear={isClearable}

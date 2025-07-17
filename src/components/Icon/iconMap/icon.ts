@@ -207,6 +207,7 @@ import WarningIcon from '../components/Warning';
 import Close2Icon from '../components/Close2';
 import SessionIcon from '../components/Session';
 import ColumnSelectorIcon from '../components/ColumnSelector';
+import TickIcon from '../components/Tick';
 
 export const icon = {
   add: Add,
@@ -224,6 +225,7 @@ export const icon = {
   arrowUp: ArrowUp,
   audioFile: AudioFileIcon,
   boldTick: BoldTick,
+  tick: TickIcon,
   bookmarkOutline: BookmarkOutline,
   branding: Branding,
   briefcase: BriefcaseIcon,

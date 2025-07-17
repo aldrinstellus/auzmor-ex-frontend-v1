@@ -16,10 +16,11 @@ import { useMutation } from '@tanstack/react-query';
 import { getIconFromMime } from './Doc';
 import NoDataFound from 'components/NoDataFound';
 import { getExtension } from '../../utils';
-import CommentCard from 'components/Comments/index';
+import CommentCard, { CommentVariant } from 'components/Comments/index';
 import { ICommentPayload } from 'components/Comments/components/CommentsRTE';
 import PreviewLink from 'components/PreviewLink';
 import { PREVIEW_CARD_VARIANT } from 'utils/constants';
+import { useChannelRole } from 'hooks/useChannelRole';
 
 interface IFilePreviewProps {
   fileId: string;
@@ -101,6 +102,8 @@ const FilePreview: FC<IFilePreviewProps> = ({
     }
   });
 
+  const { isChannelAdmin } = useChannelRole(channelId);
+
   const isLoading = fileLoading || previewLoading;
   const isDownloading = downloadChannelFileMutation.isLoading;
 
@@ -148,7 +151,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
           )}
         </div>
         <div className="flex absolute gap-3 right-4">
-          {canComment && (
+          {(canComment || isChannelAdmin) && (
             <Icon
               name={showComment ? 'commentFilled' : 'comment'}
               color="text-red-500"
@@ -191,7 +194,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
         {/* Main Content */}
         <div
           className={`bg-gray-200 transition-all duration-300 ease-in-out ${
-            showComment ? 'w-[68%]' : 'w-full'
+            showComment ? 'w-[66%]' : 'w-full'
           } flex items-center justify-center h-full px-8 pt-8`}
         >
           {showSpinner ? (
@@ -248,13 +251,13 @@ const FilePreview: FC<IFilePreviewProps> = ({
         {/* Comment Section */}
         <div
           className={`transition-all duration-300 ease-in-out ${
-            showComment ? 'w-[32%] px-2 pt-3 pb-2' : 'w-0 overflow-hidden'
-          } relative h-[98%]`}
+            showComment ? 'w-[34%] px-3 pt-3 pb-3' : 'w-0 overflow-hidden'
+          } relative h-[100%] bg-white`}
         >
           {showComment && (
             <CommentCard
               className="h-full"
-              commentsWrapperClassName="h-[90%] overflow-y-auto"
+              variant={CommentVariant.Document}
               entityId={fileId || ''}
               getApiEnum={ApiEnum.GetChannelDocumentComments}
               createApiEnum={ApiEnum.CreateChannelDocumentComments}
@@ -270,6 +273,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
               })}
               showEmptyState={true}
               canPostComment={canPostComment}
+              canDeleteComment={isChannelAdmin}
             />
           )}
         </div>
