@@ -47,6 +47,7 @@ import {
   checkboxTransform,
   FilterKey,
   useAppliedFiltersStore,
+  radioTransform,
 } from 'stores/appliedFiltersStore';
 import {
   BackgroundJob,
@@ -268,7 +269,7 @@ const renderCustomField = (type: string, value: any): React.ReactNode => {
       const dateTime = moment(value).format('MMMM DD,YYYY');
       return dateTime;
     default:
-      return typeof value === 'string' ? value : JSON.stringify(value);
+      return value;
   }
 };
 
@@ -320,6 +321,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const { data: currentUser } = useCurrentUser();
   const syncIntervalRef = useRef<any>(null);
   const navigate = useNavigate();
+  const [documentFields, setDocumentFields] = useState<ColumnItem[]>([]);
 
   // Api call: Check connection status
   const useChannelDocumentStatus = getApi(ApiEnum.GetChannelDocumentStatus);
@@ -333,7 +335,15 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
 
   // Api call: Get fields for the channel
   const useChannelDocumentFields = getApi(ApiEnum.GetChannelDocumentFields);
-  const { data: documentFields } = useChannelDocumentFields({ channelId });
+  const {
+    data: documentFieldsData,
+    isSuccess: isFieldsFetched,
+  } = useChannelDocumentFields(
+    { channelId },
+    {
+      enabled: statusResponse?.status === 'ACTIVE', // ✅ Only run when ACTIVE
+    },
+  );
 
   // Api call: Update fields for the channel
   const updateChannelDocumentFields = getApi(
@@ -683,6 +693,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 field.type === 'datetime'
               ) {
                 return <TimeField time={info.getValue() as string} />;
+              } else if (field.type === 'image') {
+                return null;
               } else {
                  const matched = (info.row.original.customFields ?? []).find(
                     (eachField: any) => field.fieldName === eachField.field_name
@@ -964,8 +976,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           return (
             !!each.isDynamic &&
             Object.keys(filters).includes(each.key) &&
-            Array.isArray(field) &&
-            field.length > 0
+            ((Array.isArray(field) && field.length > 0) || typeof field === 'boolean')
           );
         })
         .map((each: FilterKey) =>
@@ -976,7 +987,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               )!.id,
             ),
             field_values: filters
-              ? each.transform(filters[each.key] ?? [])
+              ? each.transform(typeof filters[each.key] === 'boolean'
+              ? [filters[each.key]]
+              : filters[each.key] ?? [],
+            )
               : [],
           }),
         )
@@ -1071,6 +1085,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     );
   }, [dataGridProps.flatData]);
 
+  useEffect(() => {
+    if (isFieldsFetched && documentFieldsData) {
+      setDocumentFields(documentFieldsData);
+    }
+  }, [isFieldsFetched, documentFieldsData]);
+
   // Hook to update input tag attributes
   useEffect(() => {
     if (folderInputRef.current) {
@@ -1146,7 +1166,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         .map((column) => ({
           key: column.fieldName,
           label: titleCase(column.label),
-          transform: checkboxTransform,
+          transform: column.type === 'boolean' ? radioTransform : checkboxTransform,
           isDynamic: true,
         })),
     ]);
@@ -1755,7 +1775,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 hideSort={disableSort}
                 hideColumnSelector={disableColumnSelector}
                 columns={documentFields}
-                updateColumns={(columns: ColumnItem[]) =>
+                updateColumns={(columns: ColumnItem[]) =>{
                   updateChannelDocumentFieldsMutation.mutate(
                     {
                       channelId,
@@ -1769,7 +1789,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                         ),
                     },
                   )
-                }
+                }}
                 showTitleFilter={showTitleFilter}
                 changeView={(view) => setView(view)}
               />

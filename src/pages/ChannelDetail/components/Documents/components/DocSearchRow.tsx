@@ -43,7 +43,7 @@ const DocSearchRow = ({
           <div className="text-xs text-neutral-700">
             &quot;
             <HighlightText
-              text={data?.customFields?.display_name}
+              text={data?.customFields?.custom_field_values}
               subString={searchQuery}
             />
             &quot;
