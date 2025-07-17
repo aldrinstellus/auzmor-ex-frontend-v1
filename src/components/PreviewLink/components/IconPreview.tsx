@@ -34,7 +34,7 @@ const IconPreview: FC<IconPreviewProps> = ({ metaData, dataTestId, previewUrl, v
             {previewUrl && (
               <button
                 onClick={() => window.open(previewUrl, '_blank', 'noopener,noreferrer')}
-                className="text-xs sm:text-sm px-4 py-2 rounded-9xl bg-white border border-neutral-300 font-bold text-neutral-900
+                className="text-xs sm:text-sm px-4 py-2 rounded-full bg-white border border-neutral-300 font-bold text-neutral-900
                           hover:bg-neutral-100 hover:border-neutral-500 hover:shadow-md transition-all duration-200"
               >
                 {t('viewLink')}
