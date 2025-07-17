@@ -7,7 +7,7 @@ import {
   useMemo,
   useRef,
 } from 'react';
-import { Control, useController } from 'react-hook-form';
+import { useController } from 'react-hook-form';
 import Icon from 'components/Icon';
 
 export enum Variant {
@@ -41,7 +41,7 @@ export type InputProps = {
   labelClassName?: string;
   dataTestId?: string;
   errorDataTestId?: string;
-  control?: Control<Record<string, any>>;
+  control?: any;
   label?: string;
   onLeftIconClick?: (e: MouseEvent<HTMLDivElement>) => void;
   onRightIconClick?: (e: MouseEvent<HTMLDivElement>) => void;

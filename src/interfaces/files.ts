@@ -35,7 +35,7 @@ export type Doc = {
   createdAt: string;
   updatedAt: string;
   fileThumbnailUrl: string;
-  customFields?: [];
+  customFields?: any;
 };
 
 export type GetDirectoriesResponse = {

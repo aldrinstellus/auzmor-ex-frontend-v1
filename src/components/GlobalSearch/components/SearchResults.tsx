@@ -381,6 +381,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
           ? 'folder'
           : getIconFromMime(documentData?.mimeType);
         return (
+          <>
           <div className="flex gap-1.5 items-center w-full overflow-hidden">
             <Icon name={iconName} size={24} hover={false} />
             <div className="min-w-0">
@@ -402,6 +403,25 @@ const SearchResults: FC<ISearchResultsProps> = ({
               </div>
             </div>
           </div>
+          <div className='pl-[23px]'>
+            {result?.customFields && !Array.isArray(result?.customFields) && (
+          <div className="text-xs text-neutral-500">
+            &quot;
+            <HighlightText
+              text={result?.customFields?.display_name}
+              subString={searchQuery}
+            />
+            &quot;
+            &nbsp;
+            {t('foundIn')}
+            &nbsp;
+            <span className="font-semibold">
+              {result?.customFields?.field_name}
+            </span>
+          </div>
+        )}
+          </div>
+          </>
         );
       case ISearchResultType.COURSE:
       case ISearchResultType.PATH:

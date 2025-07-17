@@ -628,16 +628,11 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               <div className="flex items-center border border-neutral-600 rounded-7xl w-6 h-6 justify-center">
                 <Icon name="chart" size={16} className="text-white" />
               </div>
-              <div
-                className="text-white text-sm"
-                data-testid="channel-category"
-              >
-                {channelData?.categories
-                  ?.map((category: any) => (
-                    <Truncate key={category?.id} text={category.name || ''} />
-                  ))
-                  ?.map((truncateComponent) => truncateComponent.props.text)
-                  ?.join(', ') || ''}
+              <div className="relative z-10 overflow-visible" data-testid="channel-category">
+                <Truncate
+                  maxLength={15}
+                  text={channelData?.categories[0].name || ''}
+                />
               </div>
             </div>
           </div>

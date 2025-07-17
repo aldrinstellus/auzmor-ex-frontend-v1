@@ -218,7 +218,9 @@
     "noPreviewAvailable": "This file cannot be previewed.",
     "loadMoreComments": "Load more comments",
     "noComments": "No Commments yet",
-    "noCommentAvailable": "Be the first to leave a comment or ask a question."
+    "noCommentAvailable": "Be the first to leave a comment or ask a question.",
+    "uploadNow": "Upload Now",
+    "foundIn": "- found in"
   },
   "memberTab": {
     "title": "Members",
@@ -330,5 +332,6 @@
         "channelAdminDescription": "Only Channel Admins can post comments"
       }
     }
-  }
+  },
+  "refineSearch": "Please refine your search or filter."
 }

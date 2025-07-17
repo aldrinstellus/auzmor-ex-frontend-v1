@@ -23,6 +23,7 @@ interface CommentsProps {
   entityId: string;
   canPostComment?: boolean;
   className?: string;
+  canDeleteComment?: boolean;
 }
 
 export interface activeCommentsDataType {
@@ -32,7 +33,8 @@ export interface activeCommentsDataType {
 
 const Comments: FC<CommentsProps> = ({
   entityId,
-  canPostComment = true,
+  canPostComment,
+  canDeleteComment,
   className,
 }) => {
   const { user } = useAuth();
@@ -66,12 +68,12 @@ const Comments: FC<CommentsProps> = ({
   return (
     <div className={className}>
       {isLoading ? (
-        <div className="ml-8">
+        <div className="mt-4 ml-8">
           <CommentSkeleton />
         </div>
       ) : (
         <div className="ml-8">
-          {canPostComment && (<div className="flex flex-row items-center justify-between mb-4 gap-2">
+          {canPostComment && (<div className="flex flex-row items-center justify-between mt-4 mb-4 gap-2">
             <div>
               <Avatar
                 name={user?.name || t('nameNotSpecified')}
@@ -99,7 +101,7 @@ const Comments: FC<CommentsProps> = ({
             />
           </div>)}
           {replyIds && replyIds.length > 0 && (
-            <div>
+            <div className='mt-4'>
               {isCreateCommentLoading && <CommentSkeleton />}
               <div className="flex flex-col gap-4">
                 {replyIds
@@ -109,6 +111,8 @@ const Comments: FC<CommentsProps> = ({
                       // handleClick={handleClick}
                       comment={comment[id]}
                       key={id}
+                      canDeleteComment={canDeleteComment}
+                      canPostComment={canPostComment}
                     />
                   ))}
               </div>

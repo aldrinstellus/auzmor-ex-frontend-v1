@@ -57,16 +57,21 @@ const RenderQuillContent: FC<RenderQuillContent> = ({
 
   const [showSeeMore, setShowSeeMore] = useState(false);
 
+  const isLongContent = (text: string | undefined): boolean => {
+    if (!text) return false;
+    return text.length > 120;
+  };
+
   useEffect(() => {
-    const element = document.getElementById(`${data?.id}-content`);
-    if (
-      element &&
-      element.parentNode &&
-      element.scrollHeight > element.clientHeight
-    ) {
-      setShowSeeMore(true);
-    }
-  }, []);
+  if (!isLongContent(data?.content?.text)) {
+    setShowSeeMore(false);
+    return;
+  }
+  const element = document.getElementById(`${data?.id}-content`);
+  if (element && element.scrollHeight > element.clientHeight + 2) {
+    setShowSeeMore(true);
+  }
+}, [data?.id, data?.content?.text]);
 
   const updatedContent = transformContent(content);
 
