@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import Likes from 'components/Reactions';
 import Avatar from 'components/Avatar';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient  } from '@tanstack/react-query';
 import { humanizeTime } from 'utils/time';
 import useAuth from 'hooks/useAuth';
 import ReplyCard from 'components/Reply';
@@ -47,6 +47,7 @@ export const Comment: FC<CommentProps> = ({
 }) => {
   const { t: tp } = useTranslation('profile');
   const { t } = useTranslation('post', { keyPrefix: 'commentComponent' });
+  const queryClient = useQueryClient();
   const getPost = useFeedStore((state) => state.getPost);
   const [getComments, storedcomments, setComment] = useCommentStore(
     ({ getComments, comment, setComment }) => [
@@ -98,7 +99,7 @@ export const Comment: FC<CommentProps> = ({
         }),
       );
       }
-      setComment({ ...omit(storedcomments, [variables]) });
+      setComment(omit(storedcomments, [commentId]));
       closeConfirm();
       return { previousData };
     },
@@ -107,11 +108,13 @@ export const Comment: FC<CommentProps> = ({
         content: t('deleteFailToast'),
         dataTestId: 'comment-toaster',
       }),
-    onSuccess: () =>
+    onSuccess: () =>{
+      queryClient.invalidateQueries(['comments']);
       successToastConfig({
         content: t('deleteSuccessToast'),
         dataTestId: 'comment-toaster',
-      }),
+      });
+      },
   });
 
   const profileUrl = isLxp

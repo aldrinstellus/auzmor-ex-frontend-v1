@@ -151,7 +151,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
           )}
         </div>
         <div className="flex absolute gap-3 right-4">
-          {canComment && (
+          {(canComment || isChannelAdmin) && (
             <Icon
               name={showComment ? 'commentFilled' : 'comment'}
               color="text-red-500"
@@ -194,7 +194,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
         {/* Main Content */}
         <div
           className={`bg-gray-200 transition-all duration-300 ease-in-out ${
-            showComment ? 'w-[68%]' : 'w-full'
+            showComment ? 'w-[66%]' : 'w-full'
           } flex items-center justify-center h-full px-8 pt-8`}
         >
           {showSpinner ? (
@@ -251,7 +251,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
         {/* Comment Section */}
         <div
           className={`transition-all duration-300 ease-in-out ${
-            showComment ? 'w-[32%] px-3 pt-3 pb-2' : 'w-0 overflow-hidden'
+            showComment ? 'w-[34%] px-3 pt-3 pb-3' : 'w-0 overflow-hidden'
           } relative h-[100%] bg-white`}
         >
           {showComment && (

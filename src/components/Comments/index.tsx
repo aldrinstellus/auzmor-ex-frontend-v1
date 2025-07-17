@@ -139,6 +139,7 @@ const Comments: FC<CommentsProps> = ({
   const [isCreateCommentLoading, setIsCreateCommentLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<string>('');
   const getPost = useFeedStore((state) => state.getPost);
+  console.log(commentIds);
 
   const renderCommentComponent = (variant?: CommentVariant) => {
     switch (variant) {
@@ -182,13 +183,18 @@ const Comments: FC<CommentsProps> = ({
             commentIds &&
             commentIds.length > 0 ? (
               <>
-                <div className="pt-4 pb-2 h-[86%] overflow-y-auto">
+                <div className="pt-4 h-[84%] mb-3 overflow-y-auto">
                   {isCreateCommentLoading && <CommentSkeleton />}
                   <div className="flex flex-col gap-4">
                     {commentIds
                       ?.filter(({ id }) => !!comment[id])
                       .map(({ id }, _i: any) => (
-                        <Comment key={id} canPostComment={canPostComment} canDeleteComment={canDeleteComment} commentId={id}/>
+                        <Comment
+                          key={id}
+                          canPostComment={canPostComment}
+                          canDeleteComment={canDeleteComment}
+                          commentId={id}
+                        />
                       ))}
                   </div>
                   {hasNextPage && !isFetchingNextPage && (
@@ -223,7 +229,7 @@ const Comments: FC<CommentsProps> = ({
               </div>
             ) : null
           )}
-          {canPostComment && (<div className="flex flex-row items-center justify-between p-0 gap-2">
+          {canPostComment && (<div className="flex h-[60px] flex-row items-center justify-between p-0 gap-2 pb-2">
             <div>
               <Avatar
                 name={user?.name || 'U'}
@@ -231,7 +237,7 @@ const Comments: FC<CommentsProps> = ({
                 image={user?.profileImage}
               />
             </div>
-            <div className="relative h-[60px] flex-grow !bg-white">
+            <div className="relative h-full flex-grow !bg-white">
               <CommentsRTE
                 className="absolute w-full bottom-[8px] overflow-y-auto z-[999]"
                 wrapperClassName='bg-white'
