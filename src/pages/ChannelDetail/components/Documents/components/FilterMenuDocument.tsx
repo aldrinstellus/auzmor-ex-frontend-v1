@@ -102,7 +102,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
           (column) =>
             column.isCustomField &&
             column.visibility &&
-            ['boolean', 'choice', 'date'].includes(column.type),
+            ['boolean', 'choice'].includes(column.type),
         )
         .map((column) => ({
           key: column.fieldName,
@@ -262,7 +262,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
               />
             )}
             {!hideColumnSelector && (
-              <ColumnSelector columns={columns} updateColumns={updateColumns} />
+              <ColumnSelector columns={columns.filter((col) => col.type !== 'image')} updateColumns={updateColumns} />
             )}
           </div>
         </div>

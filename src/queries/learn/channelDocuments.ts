@@ -113,34 +113,14 @@ const getChannelDocumentFields = async (payload: {
       `/channels/${payload.channelId}/document-fields`,
       payload.params,
     );
-    return response.data.result.data.fields;
+    const rawFields = response.data.result.data.fields;
+    const fields = rawFields.map((field: any) => ({
+      ...field,
+      visibility: field.fieldName === 'Name' ? true : field.visibility,
+    }));
+    return fields;
   } catch (e) {
-    return [
-      {
-        id: 1,
-        fieldName: 'name',
-        label: 'Name',
-        type: 'string',
-        visibility: true,
-        isCustomField: false,
-      },
-      {
-        id: 2,
-        fieldName: 'ownerName',
-        label: 'Owner',
-        type: 'string',
-        visibility: true,
-        isCustomField: false,
-      },
-      {
-        id: 3,
-        fieldName: 'modifiedAt',
-        label: 'Last Updated',
-        type: 'datetime',
-        visibility: true,
-        isCustomField: false,
-      },
-    ]; // Mocked response for fields
+    console.log(e);
   }
 };
 
@@ -154,7 +134,7 @@ export const updateChannelDocumentFields = async (payload: {
       documentFields:
         payload.fields?.map((field) => ({
           id: parseInt(field.id),
-          visibility: field.visibility,
+          visibility: field.fieldName === 'Name' ? true : field.visibility,
           is_custom_field: field.isCustomField,
         })) || [],
     })

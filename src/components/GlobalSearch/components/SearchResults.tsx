@@ -408,7 +408,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
           <div className="text-xs text-neutral-500">
             &quot;
             <HighlightText
-              text={result?.customFields?.display_name}
+              text={result?.customFields?.custom_field_values}
               subString={searchQuery}
             />
             &quot;

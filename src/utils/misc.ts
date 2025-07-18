@@ -446,6 +446,7 @@ export const quillHashtagConversion = (
 };
 
 export const titleCase = (input: string) => {
+  if (!input || typeof input !== 'string') return '';
   return input
     .split(' ')
     .map((i) => capitalize(i))

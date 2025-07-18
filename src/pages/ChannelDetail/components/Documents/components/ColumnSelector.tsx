@@ -10,6 +10,7 @@ import Input from 'components/Input';
 
 export interface ColumnItem {
   id: string;
+  custom_field_id: string;
   fieldName: string;
   label: string;
   type: string;
@@ -59,7 +60,7 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
     }
   }, [watchedColumns]);
 
-  const disabledFieldName = ['Name', 'Owner', 'Last Updated'];
+  const disabledFieldName = ['Name'];
 
   const columnFields = useMemo(
     () => [

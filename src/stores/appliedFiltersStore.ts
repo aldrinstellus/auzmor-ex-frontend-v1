@@ -1,4 +1,5 @@
 import { ICheckboxListOption } from 'components/CheckboxList';
+import { IRadioListOptionData } from 'components/RadioGroup';
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 
@@ -25,6 +26,12 @@ export type FilterKey = {
 export const checkboxTransform = (values: ICheckboxListOption[]) => {
   return values.map(
     (value: ICheckboxListOption) => value.data.label ?? value.data.name ?? '',
+  );
+};
+
+export const radioTransform = (values: IRadioListOptionData[]) => {
+  return values.map(
+    (value: IRadioListOptionData) => value ?? '',
   );
 };
 

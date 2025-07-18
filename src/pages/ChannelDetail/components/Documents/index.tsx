@@ -47,6 +47,7 @@ import {
   checkboxTransform,
   FilterKey,
   useAppliedFiltersStore,
+  radioTransform,
 } from 'stores/appliedFiltersStore';
 import {
   BackgroundJob,
@@ -75,7 +76,6 @@ import { getUtcMiliseconds } from 'utils/time';
 import useNavigate from 'hooks/useNavigation';
 import { ColumnItem } from './components/ColumnSelector';
 import Truncate from 'components/Truncate';
-import type { TFunction } from 'i18next';
 // import { ICheckboxListOption } from 'components/CheckboxList';
 
 export enum DocIntegrationEnum {
@@ -150,7 +150,11 @@ const OwnerField = ({
 }) => (
   <div className="flex gap-2 items-center">
     <Avatar image={ownerImage} name={ownerName} size={24} />
-    <span className="truncate">{ownerName}</span>
+    <Truncate
+      maxLength={10}
+      toolTipClassName='!z-[999]'
+      text={ownerName}
+    />
   </div>
 );
 
@@ -204,7 +208,7 @@ const LocationField = ({
   );
 };
 
-const renderCustomField = (type: string, value: any, tc: TFunction): React.ReactNode => {
+const renderCustomField = (type: string, value: any): React.ReactNode => {
   if (value === null || value === undefined || value === '') return <span className='text-neutral-300'>-</span>;
 
   switch (type) {
@@ -247,9 +251,15 @@ const renderCustomField = (type: string, value: any, tc: TFunction): React.React
           href={value.Url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm text-blue-600 underline"
+          className="text-sm underline"
+          onClick={(e) => e.stopPropagation()}
         >
-          {tc('websiteLink')}
+          <Truncate
+            maxLength={10}
+            toolTipClassName='!z-[999]'
+            text={value.Description}
+            className="text-neutral-900 font-medium"
+          />
         </a>
       );
     case 'boolean':
@@ -258,17 +268,8 @@ const renderCustomField = (type: string, value: any, tc: TFunction): React.React
     case 'date':
       const dateTime = moment(value).format('MMMM DD,YYYY');
       return dateTime;
-    case 'image':
-      return (
-        <img
-          src={value}
-          alt="field"
-          className="w-16 h-10 object-cover rounded border border-gray-300"
-        />
-      );
-
     default:
-      return typeof value === 'string' ? value : JSON.stringify(value);
+      return value;
   }
 };
 
@@ -333,7 +334,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
 
   // Api call: Get fields for the channel
   const useChannelDocumentFields = getApi(ApiEnum.GetChannelDocumentFields);
-  const { data: documentFields } = useChannelDocumentFields({ channelId });
+  const { data: documentFields } = useChannelDocumentFields({ channelId }, { enabled: statusResponse?.status === 'ACTIVE' });
 
   // Api call: Update fields for the channel
   const updateChannelDocumentFields = getApi(
@@ -642,6 +643,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     () =>
       [
         {
+          id: 'name',
           accessorKey: 'name',
           header: () => (
             <div className="font-bold text-neutral-500">
@@ -664,6 +666,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               field.visibility && field.fieldName !== 'Name',
           )
           ?.map((field: any) => ({
+            id: field.id,
             accessorKey: field.fieldName,
             header: () => (
               <div className="font-bold text-neutral-500">{field.label}</div>
@@ -681,12 +684,14 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 field.type === 'datetime'
               ) {
                 return <TimeField time={info.getValue() as string} />;
+              } else if (field.type === 'image') {
+                return null;
               } else {
                  const matched = (info.row.original.customFields ?? []).find(
                     (eachField: any) => field.fieldName === eachField.field_name
                   ) as { field_values?: any } | undefined;
 
-                  return <>{renderCustomField(field.type, matched?.field_values, tc)}</>;
+                  return <>{renderCustomField(field.type, matched?.field_values)}</>;
               }
             },
             size: field.size || fieldSize[field.fieldName] || fieldSizeByType[field.type] || 256,
@@ -694,6 +699,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
           })) || []),
         {
+          id: 'more',
           accessorKey: 'more',
           header: () => '',
           cell: (info: CellContext<DocType, unknown>) => {
@@ -749,7 +755,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       downloadChannelFileMutation.isLoading,
       documentFields,
     ],
-  ); // TODO: removed with custom-fields
+  );
 
   // Columns configuration for Datagrid component for List view
   const columnsDeepSearchListView = React.useMemo<ColumnDef<DocType>[]>(
@@ -961,8 +967,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           return (
             !!each.isDynamic &&
             Object.keys(filters).includes(each.key) &&
-            Array.isArray(field) &&
-            field.length > 0
+            ((Array.isArray(field) && field.length > 0) || typeof field === 'boolean')
           );
         })
         .map((each: FilterKey) =>
@@ -970,10 +975,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             custom_field_id: parseNumber(
               (documentFields as ColumnItem[]).find(
                 (docField) => docField.fieldName == each.key,
-              )!.id,
+              )!.custom_field_id,
             ),
             field_values: filters
-              ? each.transform(filters[each.key] ?? [])
+              ? each.transform(typeof filters[each.key] === 'boolean'
+              ? [filters[each.key]]
+              : filters[each.key] ?? [],
+            )
               : [],
           }),
         )
@@ -1143,7 +1151,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         .map((column) => ({
           key: column.fieldName,
           label: titleCase(column.label),
-          transform: checkboxTransform,
+          transform: column.type === 'boolean' ? radioTransform : checkboxTransform,
           isDynamic: true,
         })),
     ]);
