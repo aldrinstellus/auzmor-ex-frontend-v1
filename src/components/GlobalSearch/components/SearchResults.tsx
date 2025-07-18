@@ -410,7 +410,11 @@ const SearchResults: FC<ISearchResultsProps> = ({
               <div className="text-xs text-neutral-500">
                 &quot;
                 <HighlightText
-                  text={result?.customFields?.display_name || ''}
+                  text={
+                    Array.isArray(result.customFields.custom_field_values)
+                      ? result.customFields.custom_field_values[0]
+                      : result.customFields.custom_field_values
+                  }
                   subString={searchQuery}
                 />
                 &quot;&nbsp;

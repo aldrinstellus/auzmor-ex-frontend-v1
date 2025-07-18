@@ -43,7 +43,11 @@ const DocSearchRow = ({
           <div className="text-xs text-neutral-700">
             &quot;
             <HighlightText
-              text={data?.customFields?.display_name || ''}
+              text={
+                Array.isArray(data.customFields.custom_field_values)
+                  ? data.customFields.custom_field_values[0]
+                  : data.customFields.custom_field_values
+              }
               subString={searchQuery}
             />
             &quot;
