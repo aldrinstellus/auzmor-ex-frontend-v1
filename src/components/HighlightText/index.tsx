@@ -15,6 +15,7 @@ const HighlightText: FC<IHighlightTextProps> = ({
   if (!subString || !text) {
     return <span>{text || ''}</span>;
   }
+  console.log(text);
 
   const parts = text.split(new RegExp(`(${escapeRegExp(subString)})`, 'gi')) || [];
 
