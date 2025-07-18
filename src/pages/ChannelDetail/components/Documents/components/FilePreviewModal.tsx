@@ -106,7 +106,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
 
   const { isAdmin } = useRole();
   const { isChannelAdmin } = useChannelRole(channelId);
-  const canDeleteComment = (isChannelAdmin || isAdmin) && !isLearnerRoute();
+  const canDeleteComment = isChannelAdmin || (isAdmin && !isLearnerRoute());
 
   const isLoading = fileLoading || previewLoading;
   const isDownloading = downloadChannelFileMutation.isLoading;
