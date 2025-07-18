@@ -334,14 +334,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
 
   // Api call: Get fields for the channel
   const useChannelDocumentFields = getApi(ApiEnum.GetChannelDocumentFields);
-  const {
-    data: documentFields,
-  } = useChannelDocumentFields(
-    { channelId },
-    {
-      enabled: statusResponse?.status === 'ACTIVE', // ✅ Only run when ACTIVE
-    },
-  );
+  const { data: documentFields } = useChannelDocumentFields({ channelId }, { enabled: statusResponse?.status === 'ACTIVE' });
 
   // Api call: Update fields for the channel
   const updateChannelDocumentFields = getApi(
@@ -982,7 +975,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             custom_field_id: parseNumber(
               (documentFields as ColumnItem[]).find(
                 (docField) => docField.fieldName == each.key,
-              )!.id,
+              )!.custom_field_id,
             ),
             field_values: filters
               ? each.transform(typeof filters[each.key] === 'boolean'
@@ -1767,7 +1760,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 hideSort={disableSort}
                 hideColumnSelector={disableColumnSelector}
                 columns={documentFields}
-                updateColumns={(columns: ColumnItem[]) =>{
+                updateColumns={(columns: ColumnItem[]) =>
                   updateChannelDocumentFieldsMutation.mutate(
                     {
                       channelId,
@@ -1781,7 +1774,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                         ),
                     },
                   )
-                }}
+                }
                 showTitleFilter={showTitleFilter}
                 changeView={(view) => setView(view)}
               />

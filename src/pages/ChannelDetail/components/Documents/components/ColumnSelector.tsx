@@ -10,6 +10,7 @@ import Input from 'components/Input';
 
 export interface ColumnItem {
   id: string;
+  custom_field_id: string;
   fieldName: string;
   label: string;
   type: string;

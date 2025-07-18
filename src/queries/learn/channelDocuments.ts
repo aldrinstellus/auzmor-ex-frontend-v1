@@ -116,7 +116,7 @@ const getChannelDocumentFields = async (payload: {
     const rawFields = response.data.result.data.fields;
     const fields = rawFields.map((field: any) => ({
       ...field,
-      visibility: field.fieldName === 'Name',
+      visibility: field.fieldName === 'Name' ? true : field.visibility,
     }));
     return fields;
   } catch (e) {
