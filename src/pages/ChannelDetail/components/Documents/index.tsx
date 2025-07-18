@@ -321,7 +321,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const { data: currentUser } = useCurrentUser();
   const syncIntervalRef = useRef<any>(null);
   const navigate = useNavigate();
-  const [documentFields, setDocumentFields] = useState<ColumnItem[]>([]);
 
   // Api call: Check connection status
   const useChannelDocumentStatus = getApi(ApiEnum.GetChannelDocumentStatus);
@@ -336,8 +335,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   // Api call: Get fields for the channel
   const useChannelDocumentFields = getApi(ApiEnum.GetChannelDocumentFields);
   const {
-    data: documentFieldsData,
-    isSuccess: isFieldsFetched,
+    data: documentFields,
   } = useChannelDocumentFields(
     { channelId },
     {
@@ -1084,12 +1082,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       dataGridProps?.totalCount || (dataGridProps?.flatData || []).length,
     );
   }, [dataGridProps.flatData]);
-
-  useEffect(() => {
-    if (isFieldsFetched && documentFieldsData) {
-      setDocumentFields(documentFieldsData);
-    }
-  }, [isFieldsFetched, documentFieldsData]);
 
   // Hook to update input tag attributes
   useEffect(() => {

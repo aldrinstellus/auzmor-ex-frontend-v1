@@ -59,7 +59,7 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
     }
   }, [watchedColumns]);
 
-  const disabledFieldName = ['Name', 'Owner', 'Last Updated'];
+  const disabledFieldName = ['Name'];
 
   const columnFields = useMemo(
     () => [
