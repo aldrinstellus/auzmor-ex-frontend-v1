@@ -382,8 +382,10 @@ const SearchResults: FC<ISearchResultsProps> = ({
           : getIconFromMime(documentData?.mimeType);
         return (
           <>
-          <div className="flex gap-1.5 items-center w-full overflow-hidden">
-            <Icon name={iconName} size={24} hover={false} />
+          <div className="flex gap-1.5 w-full overflow-hidden">
+          <Icon name={iconName} size={24} hover={false} />
+          <div>
+            <div>
             <div className="min-w-0">
               <Truncate
                 text={documentData.name}
@@ -393,6 +395,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
                 )}
               />
             </div>
+
             <div className="flex gap-2 items-center">
               <div className="flex w-[3px] h-[3px] bg-neutral-500 rounded-full" />
               <div className="text-xs text-neutral-500">
@@ -402,25 +405,27 @@ const SearchResults: FC<ISearchResultsProps> = ({
                 )}`}
               </div>
             </div>
-          </div>
-          <div className='pl-[23px]'>
+            </div>
             {result?.customFields && !Array.isArray(result?.customFields) && (
-          <div className="text-xs text-neutral-500">
-            &quot;
-            <HighlightText
-              text={result?.customFields?.custom_field_values}
-              subString={searchQuery}
-            />
-            &quot;
-            &nbsp;
-            {t('foundIn')}
-            &nbsp;
-            <span className="font-semibold">
-              {result?.customFields?.field_name}
-            </span>
+              <div className="text-xs text-neutral-500">
+                &quot;
+                <HighlightText
+                  text={
+                    Array.isArray(result.customFields.custom_field_values)
+                      ? result.customFields.custom_field_values[0]
+                      : result.customFields.custom_field_values
+                  }
+                  subString={searchQuery}
+                />
+                &quot;&nbsp;
+                {t('foundIn')}&nbsp;
+                <span className="font-semibold">
+                  {result?.customFields?.field_name}
+                </span>
+              </div>
+            )}
           </div>
-        )}
-          </div>
+        </div>
           </>
         );
       case ISearchResultType.COURSE:

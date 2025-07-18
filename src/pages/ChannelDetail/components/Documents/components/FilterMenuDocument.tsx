@@ -261,7 +261,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
                 sortOptions={sortOptions}
               />
             )}
-            {!hideColumnSelector && (
+            {!hideColumnSelector && columns.length > 0 && (
               <ColumnSelector columns={columns.filter((col) => col.type !== 'image')} updateColumns={updateColumns} />
             )}
           </div>
