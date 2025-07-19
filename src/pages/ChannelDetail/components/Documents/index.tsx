@@ -784,8 +784,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             </span>
           </div>
         ),
-        thClassName: 'flex-1',
-        tdClassName: 'flex-1',
+        thClassName: 'flex-1 min-w-[250px] border-neutral-200 py-3 px-3',
+        tdClassName: 'flex-1 min-w-[250px] border-b-1 border-neutral-200 py-3 px-3',
       },
       {
         accessorKey: 'ownerName',
@@ -803,6 +803,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           </div>
         ),
         size: 256,
+        thClassName: 'py-3 px-3',
+        tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
       },
       {
         accessorKey: 'modifiedAt',
@@ -815,6 +817,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           </div>
         ),
         size: 200,
+        thClassName: 'py-3 px-3',
+        tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
       },
       {
         accessorKey: 'location',
@@ -848,6 +852,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           );
         },
         size: 260,
+        thClassName: 'py-3 px-3',
+        tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
       },
       {
         accessorKey: 'more',
@@ -862,6 +868,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           }
           const options = getAllOptions(info);
           return options.length > 0 ? (
+            <div className="relative z-[999999]">
             <PopupMenu
               triggerNode={
                 <div
@@ -873,15 +880,17 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 </div>
               }
               menuItems={options}
-              className="right-0 top-full border-1 border-neutral-200 focus-visible:outline-none w-44"
+              className="right-5 bg-white bottom-[calc(100%-32px)] border-1 border-neutral-200 w-40"
               onClick={(e) => e.stopPropagation()}
             />
+            </div>
           ) : (
             <></>
           );
         },
         size: 16,
-        tdClassName: 'items-center relative',
+        thClassName: '!w-[80px] sticky right-0 !z-[10] bg-inherit border-l-1 border-neutral-200 py-3 px-3',
+        tdClassName: 'sticky right-0 !w-[80px] !z-[10] bg-white flex items-center justify-center border-l-1 border-b-1 border-r-1 border-neutral-200 py-3 px-3',
       },
     ],
     [totalRows, downloadChannelFileMutation.isLoading],
