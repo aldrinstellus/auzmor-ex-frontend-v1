@@ -344,7 +344,14 @@ export const getChannelPermissions: (
               ChannelPermissionEnum.CanDownloadDocuments,
               ChannelPermissionEnum.CanViewCommentDocuments,
               ChannelPermissionEnum.CanPostCommentsChannelDoc,
-            ];
+            ].filter((permission) => {
+              if (
+                permission === ChannelPermissionEnum.CanViewCommentDocuments &&
+                !canComment
+              )
+                return false;
+              return true;
+            });
           }
         }
       } else if (channelPrivacy === ChannelVisibilityEnum.Private) {
