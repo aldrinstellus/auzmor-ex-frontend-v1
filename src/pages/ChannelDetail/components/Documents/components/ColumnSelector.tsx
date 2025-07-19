@@ -98,7 +98,7 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
             variant={Variant.Secondary}
             size={Size.Medium}
             borderAround
-            className="bg-white !p-[10px]"
+            className="h-full flex items-center justify-center bg-white !p-[10px] "
             dataTestId="column-selector-button"
             ariaLabel={t('sort')}
           />
