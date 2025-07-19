@@ -44,13 +44,13 @@ const DocSearchRow = ({
             &quot;
             <HighlightText
               text={
-                Array.isArray(data.customFields?.[0]?.custom_field_values)
+                Array.isArray(data.customFields[0].custom_field_values)
                   ? data.customFields[0].custom_field_values.find((val: any) =>
                       typeof val === 'string' &&
                       searchQuery &&
                       val.toLowerCase().includes(searchQuery.toLowerCase())
                     ) || ''
-                  : typeof data.customFields?.[0]?.custom_field_values === 'string'
+                  : typeof data.customFields[0].custom_field_values === 'string'
                     ? data.customFields[0].custom_field_values
                     : ''
               }
