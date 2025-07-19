@@ -577,7 +577,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             });
           },
           dataTestId: 'folder-menu',
-          className: '!px-6 !py-2',
+          className: '!px-6 !py-[6px]',
           isHidden: !canRename,
         },
         {
@@ -591,7 +591,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             });
           },
           dataTestId: 'folder-menu',
-          className: '!px-6 !py-2',
+          className: '!px-6 !py-[6px]',
           isHidden: !showDownload,
         },
         {
@@ -605,7 +605,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             window.open(previewData?.data?.result?.previewURL, '_blank');
           },
           dataTestId: 'folder-menu',
-          className: '!px-6 !py-2',
+          className: '!px-6 !py-[6px]',
           isHidden: !showLaunch,
         },
         {
@@ -615,7 +615,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             showConfirm({ doc: info?.row?.original });
           },
           dataTestId: 'folder-menu',
-          className: '!px-6 !py-2 [&_*]:text-red-500',
+          className: '!px-6 !py-[6px] [&_*]:text-red-500',
           isHidden: !canDelete,
         },
       ].filter((option) => !option?.isHidden) as any as IMenuItem[];
@@ -724,15 +724,15 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                     </div>
                   }
                   menuItems={options}
-                  className="right-0 bg-white top-auto bottom-full border-1 border-neutral-200 w-44"
+                  className="right-5 bg-white bottom-[calc(100%-32px)] border-1 border-neutral-200 w-40"
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
             ) : null;
           },
           size: 16,
-          thClassName: '!w-[120px] sticky right-0 !z-[10] bg-inherit border-l-1 border-neutral-200 py-3 px-3',
-          tdClassName: 'sticky right-0 !w-[120px] !z-[10] bg-white flex items-center justify-center border-l-1 border-b-1 border-r-1 border-neutral-200 py-3 px-3',
+          thClassName: '!w-[80px] sticky right-0 !z-[10] bg-inherit border-l-1 border-neutral-200 py-3 px-3',
+          tdClassName: 'sticky right-0 !w-[80px] !z-[10] bg-white flex items-center justify-center border-l-1 border-b-1 border-r-1 border-neutral-200 py-3 px-3',
         },
       ].filter((each) => {
         if (isRootDir) {
