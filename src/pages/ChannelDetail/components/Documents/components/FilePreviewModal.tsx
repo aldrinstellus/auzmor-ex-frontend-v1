@@ -106,7 +106,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
 
   const { isAdmin } = useRole();
   const { isChannelAdmin } = useChannelRole(channelId);
-  const canDeleteComment = (isChannelAdmin || isAdmin) && !isLearnerRoute();
+  const canDeleteComment = isChannelAdmin || (isAdmin && !isLearnerRoute());
 
   const isLoading = fileLoading || previewLoading;
   const isDownloading = downloadChannelFileMutation.isLoading;
@@ -155,7 +155,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
           )}
         </div>
         <div className="flex absolute gap-3 right-4">
-          {(canComment || isChannelAdmin) && (
+          {(canComment || isChannelAdmin || isAdmin) && (
             <Icon
               name={showComment ? 'commentFilled' : 'comment'}
               color="text-red-500"

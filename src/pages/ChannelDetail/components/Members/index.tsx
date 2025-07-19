@@ -213,11 +213,7 @@ const Members: React.FC<MembersProp> = ({ channelData, permissions }) => {
   ].filter(Boolean); // request options only for admin
 
   useEffect(() => {
-    if (parsedTab !== 'All_Members') {
-      setGrid(false);
-    } else {
-      setGrid(true);
-    }
+    setGrid(true);
     return () => clearFilters();
   }, [parsedTab]);
 

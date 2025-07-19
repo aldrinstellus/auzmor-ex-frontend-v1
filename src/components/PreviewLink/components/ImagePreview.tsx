@@ -29,7 +29,7 @@ const ImagePreview: FC<ImagePreviewProps> = ({
             className="w-full px-4 pt-4 h-[88%] object-cover rounded-t-9xl"
             data-testid="preview-img"
           />
-          <div className="h-[12%] flex items-center justify-between px-4 py-3 rounded-b-9xl">
+          <div className="h-[12%] flex items-center justify-between px-4 py-3 rounded-b-9xl border-2">
             <div className="flex flex-col">
               <div className="font-bold text-sm text-neutral-900 break-normal [overflow-wrap:anywhere]" data-testid="link-preview-title">
                 {metaData?.title}
@@ -41,7 +41,7 @@ const ImagePreview: FC<ImagePreviewProps> = ({
             {previewUrl && (
               <button
                 onClick={() => window.open(previewUrl, '_blank', 'noopener,noreferrer')}
-                className="text-xs px-4 py-2 rounded-9xl bg-white border border-neutral-300 font-bold text-neutral-900
+                className="text-xs px-4 py-2 rounded-full bg-white border border-neutral-300 font-bold text-neutral-900
                           hover:bg-neutral-100 hover:border-neutral-500 hover:shadow-md transition-all duration-200"
               >
                 {t('viewLink')}
