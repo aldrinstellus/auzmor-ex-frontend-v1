@@ -277,7 +277,7 @@ const Comments: FC<CommentsProps> = ({
       default:
         return (
           <>
-           {canPostComment && (<div className="flex flex-row items-center justify-between p-0 gap-2">
+          <div className="flex flex-row items-center justify-between p-0 gap-2">
             <div>
               <Avatar
                 name={user?.name || 'U'}
@@ -309,7 +309,7 @@ const Comments: FC<CommentsProps> = ({
               isCreateCommentLoading={isCreateCommentLoading}
               suggestions={suggestions}
             />
-          </div>)}
+          </div>
           {getPost(entityId)?.occasionContext?.type === 'WORK_ANNIVERSARY' && (
             <div className="flex mt-2 w-full justify-center">
               {WORK_ANNIVERSARY_SUGGESTIONS.map((suggestions: string) => (
@@ -352,14 +352,7 @@ const Comments: FC<CommentsProps> = ({
                     {commentIds
                       ?.filter(({ id }) => !!comment[id])
                       .map(({ id }, _i: any) => (
-                        <Comment
-                          key={id}
-                          commentId={id}
-                          canPostComment={canPostComment}
-                          canDeleteComment={canDeleteComment}
-                          deleteApiEnum={deleteApiEnum}
-                          deleteApiParams={deleteApiParams}
-                        />
+                        <Comment key={id} commentId={id}/>
                       ))}
                   </div>
                   {hasNextPage && !isFetchingNextPage && (

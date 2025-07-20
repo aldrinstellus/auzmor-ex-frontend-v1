@@ -627,29 +627,18 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
 
   // A function to get formated props for location breadcrumb
   const getMappedLocation = (doc: DocType) => {
-  let items = [
-    {
-      id: '1',
-      label: 'Documents',
-      meta: {
-        name: 'DOcuments',
-        id: 1,
-        type: 'Folder',
-      },
-    },
-    ...(doc?.pathWithId || []).map((each) => ({
-      id: each.id,
-      label: each.name,
-      meta: each,
-    })),
-  ];
-
-  if (!doc.isFolder) {
-    items = items.slice(0, -1);
-  }
-
-  return items;
-};
+    let items = [
+      ...(doc?.pathWithId || []).map((each) => ({
+        id: each.id,
+        label: each.name,
+        meta: each,
+      })),
+    ];
+    if (!doc.isFolder) {
+      items = items.slice(0, -1);
+    }
+    return items;
+  };
 
   // Columns configuration for Datagrid component for List view
   const columnsListView = React.useMemo<ColumnDef<DocType>[]>(
@@ -893,7 +882,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             />
           );
         },
-        size: 300,
+        size: 260,
         thClassName: 'py-3 px-3',
         tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
       },

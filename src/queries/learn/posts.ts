@@ -437,9 +437,6 @@ const getPost = async (
 
   // Collecting all comments
   const post = response.data.result.data;
-  if (post.type === 'DOCUMENT'){
-    return post;
-  }
   if ((post as any)?.comment) {
     if ((post as any)?.comment?.comment) {
       comments.push((post as any)?.comment?.comment);
@@ -465,7 +462,9 @@ const getPost = async (
 
   // appending post to comment store
   appendComments(comments.flat());
-
+  if (post.type === 'DOCUMENT'){
+    return post;
+  }
   updateFeed(id, response.data.result.data);
   response.data.result.data = { id: response.data.result.data.id };
   return response;
