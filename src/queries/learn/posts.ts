@@ -437,6 +437,9 @@ const getPost = async (
 
   // Collecting all comments
   const post = response.data.result.data;
+  if (post.type === 'DOCUMENT'){
+    return post;
+  }
   if ((post as any)?.comment) {
     if ((post as any)?.comment?.comment) {
       comments.push((post as any)?.comment?.comment);

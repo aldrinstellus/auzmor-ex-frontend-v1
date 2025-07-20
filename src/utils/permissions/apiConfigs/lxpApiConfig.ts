@@ -82,6 +82,9 @@ export const apiConfigLxp = {
   [ApiEnum.CreateChannelDocumentComments]: {
     [Default]: queries.createDocComment,
   },
+  [ApiEnum.DeleteChannelDocumentComments]: {
+    [Default]: queries.deleteDocComment,
+  },
 
   //comments
   [ApiEnum.GetComments]: { [Default]: queries.useInfiniteComments },

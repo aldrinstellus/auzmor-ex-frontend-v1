@@ -265,6 +265,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
               entityId={fileId || ''}
               getApiEnum={ApiEnum.GetChannelDocumentComments}
               createApiEnum={ApiEnum.CreateChannelDocumentComments}
+              deleteApiEnum={ApiEnum.DeleteChannelDocumentComments}
               getApiParams={{
                 fileId,
                 channelId,
@@ -275,6 +276,10 @@ const FilePreview: FC<IFilePreviewProps> = ({
                 fileId,
                 payload,
               })}
+              deleteApiParams={{
+               channelId,
+               fileId,
+              }}
               showEmptyState={true}
               canPostComment={canPostComment && canViewComment}
               canDeleteComment={canDeleteComment}

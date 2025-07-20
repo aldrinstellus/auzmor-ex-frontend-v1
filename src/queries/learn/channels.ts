@@ -14,6 +14,7 @@ import {
 import apiService from 'utils/apiService';
 import { IComment } from 'components/Comments';
 import { useCommentStore } from 'stores/commentStore';
+import { deleteParams } from 'components/Comments/components/Comment';
 
 
 export const getAllChannels = async (
@@ -343,6 +344,11 @@ export const createDocComment = async (payload: any) => {
   const { channelId, fileId, payload: payloadValue } = payload || {};
   const { result } = await apiService.post(`/channels/${channelId}/files/${fileId}/comments`, payloadValue);
   return result?.data;
+};
+
+export const deleteDocComment = async (payload: deleteParams, commentId: string) => {
+  const { channelId, fileId } = payload || {};
+  await apiService.delete(`/channels/${channelId}/files/${fileId}/comments/${commentId}`);
 };
 
 // ------------------ React Query -----------------------

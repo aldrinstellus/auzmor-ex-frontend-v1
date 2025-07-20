@@ -1,6 +1,6 @@
 /* Comment RTE - Post Level Comment Editor */
 import { FC, useState } from 'react';
-import { Comment } from './components/Comment';
+import { Comment, deleteParams } from './components/Comment';
 import { DeltaStatic } from 'quill';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
@@ -52,7 +52,9 @@ interface CommentsProps<T = any> {
   variant?: CommentVariant;
   getApiEnum?: ApiEnum;
   createApiEnum?: ApiEnum;
+  deleteApiEnum?: ApiEnum;
   getApiParams?: GetParams;
+  deleteApiParams?: deleteParams;
   createApiParams?: T;
   showEmptyState?: boolean;
   className?: string;
@@ -88,8 +90,10 @@ const Comments: FC<CommentsProps> = ({
   variant,
   getApiEnum,
   createApiEnum,
+  deleteApiEnum,
   getApiParams,
   createApiParams,
+  deleteApiParams,
   showEmptyState = false,
   className= '',
   canPostComment = true,
@@ -193,6 +197,8 @@ const Comments: FC<CommentsProps> = ({
                           canPostComment={canPostComment}
                           canDeleteComment={canDeleteComment}
                           commentId={id}
+                          deleteApiEnum={deleteApiEnum}
+                          deleteApiParams={deleteApiParams}
                         />
                       ))}
                   </div>
@@ -271,7 +277,7 @@ const Comments: FC<CommentsProps> = ({
       default:
         return (
           <>
-          <div className="flex flex-row items-center justify-between p-0 gap-2">
+           {canPostComment && (<div className="flex flex-row items-center justify-between p-0 gap-2">
             <div>
               <Avatar
                 name={user?.name || 'U'}
@@ -303,7 +309,7 @@ const Comments: FC<CommentsProps> = ({
               isCreateCommentLoading={isCreateCommentLoading}
               suggestions={suggestions}
             />
-          </div>
+          </div>)}
           {getPost(entityId)?.occasionContext?.type === 'WORK_ANNIVERSARY' && (
             <div className="flex mt-2 w-full justify-center">
               {WORK_ANNIVERSARY_SUGGESTIONS.map((suggestions: string) => (
