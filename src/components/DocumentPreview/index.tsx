@@ -72,7 +72,7 @@ const DocumentPreview: FC<DocumentPreviewProps> = ({
       <Card className="flex flex-col">
         <div className="post-content px-4 py-3 flex flex-col gap-3">
           <div
-            className="bg-gray-200 transition-all duration-300 ease-in-out w-full flex items-center justify-center h-full px-8 pt-8">
+            className="bg-gray-200 min-h-[400px] transition-all duration-300 ease-in-out w-full flex items-center justify-center h-full px-8 pt-8">
             {showNoPreview ? (
               <NoDataFound
                 illustration="noPreviewAvailable"
