@@ -62,7 +62,6 @@ const DocumentPreview: FC<DocumentPreviewProps> = ({
     ['.html', '.htm', '.md'].includes(fileExtension) ||
     ['.doc', '.pdf', '.ppt', '.xlsx'].includes(fileExtension);
 
-  const showSpinner = previewLoading;
   const showNoPreview = !isLink &&
     (isError || (!previewLoading && !isSupportedVideo && !allowIframePreview));
   const showVideo = !previewLoading && !isError && isSupportedVideo;
@@ -75,9 +74,6 @@ const DocumentPreview: FC<DocumentPreviewProps> = ({
         <div className="post-content px-4 py-3 flex flex-col gap-3">
           <div
             className="bg-gray-200 transition-all duration-300 ease-in-out w-full flex items-center justify-center h-full px-8 pt-8">
-            {showSpinner ? (
-              <Spinner className="!h-24 !w-24 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-            ) : null}
             {showNoPreview ? (
               <NoDataFound
                 illustration="noPreviewAvailable"
@@ -100,7 +96,7 @@ const DocumentPreview: FC<DocumentPreviewProps> = ({
                 />
               </div>
             ) : null}
-            {showIframe && !showSpinner ? (
+            {showIframe ? (
               <div className="w-full h-full relative">
                 {isIframeLoading && (
                   <Spinner className="absolute !h-24 !w-24 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
