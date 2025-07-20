@@ -76,6 +76,7 @@ import { getUtcMiliseconds } from 'utils/time';
 import useNavigate from 'hooks/useNavigation';
 import { ColumnItem } from './components/ColumnSelector';
 import Truncate from 'components/Truncate';
+import HighlightText from 'components/HighlightText';
 // import { ICheckboxListOption } from 'components/CheckboxList';
 
 export enum DocIntegrationEnum {
@@ -175,8 +176,9 @@ const LocationField = ({
       triggerNode={<BreadCrumb items={pathItems} onItemClick={() => {}} />}
       triggerNodeClassName="w-full"
       wrapperClassName="w-full"
+      className='right-[-100px] top-[-10px] rounded-9xl'
       contentRenderer={() => (
-        <div className="flex p-3 bg-primary-50 rounded-9xl border border-primary-50 shadow">
+        <div className="flex p-3 bg-white rounded-9xl border border-primary-50 shadow">
           <BreadCrumb
             items={pathItems}
             labelClassName="hover:text-primary-500 hover:underline min-w-max"
@@ -779,13 +781,41 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 className="!w-6"
               />
             </div>
+            <div className='flex flex-col gap-1'>
             <span className="break-all truncate w-full">
               {info.getValue() as string}
             </span>
+            {info.row.original?.customFields && Array.isArray(info.row.original.customFields) && info.row.original?.customFields.length > 0 && (
+              <div className="text-xs text-neutral-700">
+                &quot;
+                <HighlightText
+                  text={
+                    Array.isArray(info.row.original.customFields[0].custom_field_values)
+                      ? info.row.original.customFields[0].custom_field_values.find((val: any) =>
+                        typeof val === 'string' &&
+                        applyDocumentSearch &&
+                        val.toLowerCase().includes(applyDocumentSearch.toLowerCase())
+                      ) || ''
+                      : typeof info.row.original.customFields[0].custom_field_values === 'string'
+                        ? info.row.original.customFields[0].custom_field_values
+                        : ''
+                  }
+                  subString={applyDocumentSearch}
+                />
+                &quot;
+                &nbsp;
+                {t('foundIn')}
+                &nbsp;
+                <span className="font-semibold">
+                  {info.row.original.customFields[0]?.display_name}
+                </span>
+              </div>
+            )}
+            </div>
           </div>
         ),
-        thClassName: 'flex-1',
-        tdClassName: 'flex-1',
+        thClassName: 'flex-1 min-w-[250px] border-neutral-200 py-3 px-3',
+        tdClassName: 'flex-1 min-w-[250px] border-b-1 border-neutral-200 py-3 px-3',
       },
       {
         accessorKey: 'ownerName',
@@ -793,7 +823,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           <div className="font-bold text-neutral-500">{t('owner')}</div>
         ),
         cell: (info: CellContext<DocType, unknown>) => (
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-2">
             <Avatar
               image={info.row.original?.ownerImage}
               name={info.row.original?.ownerName}
@@ -803,6 +833,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           </div>
         ),
         size: 256,
+        thClassName: 'py-3 px-3',
+        tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
       },
       {
         accessorKey: 'modifiedAt',
@@ -815,6 +847,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           </div>
         ),
         size: 200,
+        thClassName: 'py-3 px-3',
+        tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
       },
       {
         accessorKey: 'location',
@@ -830,10 +864,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                   onItemClick={() => {}}
                 />
               }
+              className='left-[-100px] top-0 rounded-9xl'
               triggerNodeClassName="w-full"
               wrapperClassName="w-full"
               contentRenderer={() => (
-                <div className="flex p-3 bg-primary-50 rounded-9xl border border-primary-50 shadow">
+                <div className="flex p-3 bg-white rounded-9xl border border-primary-50 shadow">
                   <LocationField
                     pathItems={getMappedLocation(info?.row?.original)}
                     pathWithId={info?.row?.original?.pathWithId}
@@ -848,6 +883,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           );
         },
         size: 260,
+        thClassName: 'py-3 px-3',
+        tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
       },
       {
         accessorKey: 'more',
@@ -862,6 +899,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           }
           const options = getAllOptions(info);
           return options.length > 0 ? (
+            <div className="relative z-[999999]">
             <PopupMenu
               triggerNode={
                 <div
@@ -873,15 +911,17 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 </div>
               }
               menuItems={options}
-              className="right-0 top-full border-1 border-neutral-200 focus-visible:outline-none w-44"
+              className="right-5 bg-white bottom-[calc(100%-32px)] border-1 border-neutral-200 w-40"
               onClick={(e) => e.stopPropagation()}
             />
+            </div>
           ) : (
             <></>
           );
         },
         size: 16,
-        tdClassName: 'items-center relative',
+        thClassName: '!w-[60px] sticky right-0 !z-[10] bg-inherit border-l-1 border-neutral-200 py-3 px-3',
+        tdClassName: 'sticky right-0 !w-[60px] !z-[10] bg-white flex items-center justify-center border-l-1 border-b-1 border-r-1 border-neutral-200 py-3 px-3',
       },
     ],
     [totalRows, downloadChannelFileMutation.isLoading],

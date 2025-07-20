@@ -462,7 +462,9 @@ const getPost = async (
 
   // appending post to comment store
   appendComments(comments.flat());
-
+  if (post.type === 'DOCUMENT'){
+    return post;
+  }
   updateFeed(id, response.data.result.data);
   response.data.result.data = { id: response.data.result.data.id };
   return response;
