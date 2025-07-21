@@ -268,7 +268,7 @@ const renderCustomField = (type: string, value: any): React.ReactNode => {
       return value === true ? <Icon name="tick" tabIndex={0} size={16} />
       : value === false ? <Icon name="close" tabIndex={0} size={16} /> : '-';
     case 'date':
-      const dateTime = moment(value).format('MMMM DD,YYYY');
+      const dateTime = moment.unix(value).format('MMMM DD, YYYY');
       return dateTime;
     default:
       return value;
