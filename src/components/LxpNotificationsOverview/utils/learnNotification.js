@@ -25,7 +25,7 @@ import moment from 'moment';
 import NotificationTitle from '../components/NotificationTitle';
 import NotificationText from '../components/NotificationText';
 
-import { convertKeysToCamelCase } from 'utils/misc';
+import { compressString, convertKeysToCamelCase } from 'utils/misc';
 import useAuth from 'hooks/useAuth';
 import { formatDateWithTimeZone } from 'utils/time';
 
@@ -398,6 +398,15 @@ const getSocialSourceRoute = (
         ?.find((item) => item.entityType === 'COMMENT');
       const targetPostId =
         target1Type === 'POST' ? targetId1 : targetPost?.entityId;
+      const channelId = targetPost?.channelId;
+      const pathWithId = targetPost?.pathWithId;
+
+      if (channelId && pathWithId) {
+        const encodedPath = compressString(JSON.stringify(pathWithId));
+        const basePath = isLearn ? '/user' : '';
+        const commentParam = targetComment ? `?commentId=${targetComment.entityId}` : '';
+        return `${basePath}/channels/${channelId}/documents/${encodedPath}${commentParam}`;
+      }
       const url = `${isLearn ? '/user' : ''}/posts/${targetPostId}${
         targetComment ? `?commentId=${targetComment.entityId}` : ''
       }`;

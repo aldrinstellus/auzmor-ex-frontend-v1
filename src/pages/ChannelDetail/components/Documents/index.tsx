@@ -1917,6 +1917,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           fileId={(filePreviewProps as DocType).id}
           rootFolderId={(filePreviewProps as DocType).pathWithId[0].id}
           open={filePreview}
+          pathWithId={(filePreviewProps as DocType).pathWithId}
           canDownload={permissions.includes(
             ChannelPermissionEnum.CanDownloadDocuments,
           )}

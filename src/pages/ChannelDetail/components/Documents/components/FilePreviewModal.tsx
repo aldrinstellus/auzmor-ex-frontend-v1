@@ -2,7 +2,7 @@ import React, { FC, useEffect } from 'react';
 import Modal from 'components/Modal';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import Icon from 'components/Icon';
 import Divider from 'components/Divider';
 import Spinner from 'components/Spinner';
@@ -23,11 +23,13 @@ import { PREVIEW_CARD_VARIANT } from 'utils/constants';
 import { useChannelRole } from 'hooks/useChannelRole';
 import useRole from 'hooks/useRole';
 import { isLearnerRoute } from 'components/LxpNotificationsOverview/utils/learnNotification';
+import { Comment } from 'components/Comments/components/Comment';
 
 interface IFilePreviewProps {
   fileId: string;
   rootFolderId: string;
   open: boolean;
+  pathWithId: { name: string; id: string; type: 'File' | 'Folder' }[];
   canDownload: boolean;
   canViewComment: boolean;
   canPostComment: boolean;
@@ -38,6 +40,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
   fileId,
   rootFolderId,
   open,
+  pathWithId,
   canDownload = false,
   canViewComment = false,
   canPostComment = false,
@@ -48,6 +51,10 @@ const FilePreview: FC<IFilePreviewProps> = ({
   });
   const { getApi } = usePermissions();
   const { channelId } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const commentId = searchParams.get('commentId') || '';
+
+  const [localCommentId, setLocalCommentId] = React.useState(commentId);
   const [isIframeLoading, setIsIframeLoading] = React.useState(true);
   const [showComment, setShowComment] = React.useState(false);
 
@@ -96,6 +103,12 @@ const FilePreview: FC<IFilePreviewProps> = ({
       });
     },
   });
+
+  useEffect(() => {
+  if (commentId) {
+    setShowComment(true);
+  }
+}, [commentId]);
 
   useEffect(() => {
     const elem = document.getElementById('videoplayer');
@@ -259,31 +272,63 @@ const FilePreview: FC<IFilePreviewProps> = ({
           } relative h-[100%] bg-white`}
         >
           {showComment && (
-            <CommentCard
-              className="h-full"
-              variant={CommentVariant.Document}
-              entityId={fileId || ''}
-              getApiEnum={ApiEnum.GetChannelDocumentComments}
-              createApiEnum={ApiEnum.CreateChannelDocumentComments}
-              deleteApiEnum={ApiEnum.DeleteChannelDocumentComments}
-              getApiParams={{
-                fileId,
-                channelId,
-                limit: 4,
-              }}
-              createApiParams={(payload: ICommentPayload) => ({
-                channelId,
-                fileId,
-                payload,
-              })}
-              deleteApiParams={{
-               channelId,
-               fileId,
-              }}
-              showEmptyState={true}
-              canPostComment={canPostComment && canViewComment}
-              canDeleteComment={canDeleteComment}
-            />
+            localCommentId ? (
+              <div className="px-2">
+                <div className='text-sm font-semibold pb-2 mb-2 border-b-1 border-neutral-200 flex items-center justify-between'>
+                  {t('commentTitle')}
+                  <div
+                    className='text-xs cursor-pointer hover:text-primary-500' 
+                    onClick={() => {
+                    {
+                      setLocalCommentId('');
+                      searchParams.delete('commentId');
+                      setSearchParams(searchParams);
+                    }
+                  }}>
+                    {t('viewAllComments')}
+                  </div>
+                </div>
+                <Comment
+                  commentId={commentId}
+                  deleteApiEnum={ApiEnum.DeleteChannelDocumentComments}
+                  deleteApiParams={{
+                  channelId,
+                  fileId,
+                  }}
+                  canPostComment={canPostComment && canViewComment}
+                  canDeleteComment={canDeleteComment}
+                />
+              </div>
+            ) : (
+              <CommentCard
+                className="h-full"
+                variant={CommentVariant.Document}
+                entityId={fileId || ''}
+                getApiEnum={ApiEnum.GetChannelDocumentComments}
+                createApiEnum={ApiEnum.CreateChannelDocumentComments}
+                deleteApiEnum={ApiEnum.DeleteChannelDocumentComments}
+                getApiParams={{
+                  fileId,
+                  channelId,
+                  limit: 4,
+                }}
+                createApiParams={(payload: ICommentPayload) => ({
+                  channelId,
+                  fileId,
+                  payload: {
+                    ...payload,
+                    pathWithId,
+                  },
+                })}
+                deleteApiParams={{
+                  channelId,
+                  fileId,
+                }}
+                showEmptyState={true}
+                canPostComment={canPostComment && canViewComment}
+                canDeleteComment={canDeleteComment}
+              />
+            )
           )}
         </div>
       </div>
