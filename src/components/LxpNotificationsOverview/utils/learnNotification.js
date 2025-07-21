@@ -404,7 +404,8 @@ const getSocialSourceRoute = (
         const encodedPath = compressString(JSON.stringify(pathWithId));
         const basePath = isLearn ? '/user' : '';
         const commentParam = targetComment ? `?commentId=${targetComment.entityId}` : '';
-        return `${basePath}/channels/${channelId}/documents/${encodedPath}${commentParam}`;
+        const postParam = commentParam && targetPostId ? `&postId=${targetPostId}` : '';
+        return `${basePath}/channels/${channelId}/documents/${encodedPath}${commentParam}${postParam}`;
       }
       const url = `${isLearn ? '/user' : ''}/posts/${targetPostId}${
         targetComment ? `?commentId=${targetComment.entityId}` : ''

@@ -25,6 +25,7 @@ import useRole from 'hooks/useRole';
 import { isLearnerRoute } from 'components/LxpNotificationsOverview/utils/learnNotification';
 import { Comment } from 'components/Comments/components/Comment';
 import CommentSkeleton from 'components/Comments/components/CommentSkeleton';
+import { useFeedStore } from 'stores/feedStore';
 
 interface IFilePreviewProps {
   fileId: string;
@@ -54,8 +55,11 @@ const FilePreview: FC<IFilePreviewProps> = ({
   const { channelId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const commentId = searchParams.get('commentId') || '';
+  const postId = searchParams.get('postId') || '';
+  const { getPost } = useFeedStore();
 
   const [localCommentId, setLocalCommentId] = React.useState(commentId || '');
+  const [localPostId, setLocalPostId] = React.useState(postId || '');
   const [isIframeLoading, setIsIframeLoading] = React.useState(true);
   const [showComment, setShowComment] = React.useState(false);
 
@@ -105,16 +109,17 @@ const FilePreview: FC<IFilePreviewProps> = ({
     },
   });
 
-  const useGetCommentById = getApi(ApiEnum.GetCommentById);
-  const { isLoading: isSingleCommentLoading } = useGetCommentById(localCommentId, {
-  enabled: !!localCommentId,
+  const useGetPost = getApi(ApiEnum.GetPost);
+  const { isLoading: isSingleCommentLoading } = useGetPost(localPostId, localCommentId, {
+  enabled: !!localCommentId && !!localPostId,
   });
+  const post = getPost(localPostId) as any;
 
   useEffect(() => {
   if (commentId) {
     setShowComment(true);
   }
-}, [commentId]);
+}, [commentId, postId]);
 
   useEffect(() => {
     const elem = document.getElementById('videoplayer');
@@ -158,6 +163,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
             className='text-xs cursor-pointer hover:!text-primary-400' 
             onClick={() => {
               setLocalCommentId('');
+              setLocalPostId('');
               const updatedParams = new URLSearchParams(searchParams.toString());
               updatedParams.delete('commentId');
               setSearchParams(updatedParams);
@@ -171,8 +177,8 @@ const FilePreview: FC<IFilePreviewProps> = ({
             <CommentSkeleton />
           </div>
          : <Comment
-            key={localCommentId}
-            commentId={localCommentId}
+            key={post?.comment?.id}
+            commentId={post?.comment?.id}
             deleteApiEnum={ApiEnum.DeleteChannelDocumentComments}
             deleteApiParams={{ channelId, fileId }}
             canPostComment={canPostComment && canViewComment}
