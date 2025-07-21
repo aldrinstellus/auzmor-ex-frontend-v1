@@ -351,6 +351,19 @@ export const deleteDocComment = async (payload: deleteParams, commentId: string)
   await apiService.delete(`/channels/${channelId}/files/${fileId}/comments/${commentId}`);
 };
 
+const getCommentById = async (
+  appendComments: (comments: IComment[]) => void,
+  commentId?: string,
+  apiPrefix = '',
+) => {
+  const comments: IComment[] = [];
+  const response = await apiService.get(`${apiPrefix}/feed-comments/${commentId}`);
+  const comment = response.data.result.data || {};
+  comments.push(comment);
+  appendComments(comments.flat());
+  return response;
+};
+
 // ------------------ React Query -----------------------
 
 export const useInfiniteChannels = (
@@ -555,4 +568,14 @@ export const useInfiniteChannelDocumentComments = ({
     }),
     comment,
   };
+};
+
+export const useGetCommentById = (commentId?: string) => {
+  const { appendComments } = useCommentStore();
+  return useQuery({
+    queryKey: ['comments', commentId],
+    queryFn: () => getCommentById(appendComments, commentId),
+    enabled: !!commentId,
+    cacheTime: 0,
+  });
 };

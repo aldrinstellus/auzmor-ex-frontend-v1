@@ -51,6 +51,7 @@ export enum ApiEnum {
   DeleteJoinChannelRequest = 'DELETE_JOIN_CHANNEL_REQUEST',
   UpdateChannelJoinRequests = 'UPDATE_CHANNEL_JOIN_REQUESTS',
 
+  GetCommentById = 'GET_COMMENT_BY_ID',
   GetChannelDocumentComments = 'GET_CHANNEL_DOCUMENT_COMMENTS',
   CreateChannelDocumentComments = 'CREATE_CHANNEL_DOCUMENT_COMMENTS',
   DeleteChannelDocumentComments = 'DELETE_CHANNEL_DOCUMENT_COMMENTS',

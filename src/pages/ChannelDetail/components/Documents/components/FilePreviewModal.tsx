@@ -24,6 +24,7 @@ import { useChannelRole } from 'hooks/useChannelRole';
 import useRole from 'hooks/useRole';
 import { isLearnerRoute } from 'components/LxpNotificationsOverview/utils/learnNotification';
 import { Comment } from 'components/Comments/components/Comment';
+import CommentSkeleton from 'components/Comments/components/CommentSkeleton';
 
 interface IFilePreviewProps {
   fileId: string;
@@ -54,7 +55,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
   const [searchParams, setSearchParams] = useSearchParams();
   const commentId = searchParams.get('commentId') || '';
 
-  const [localCommentId, setLocalCommentId] = React.useState(commentId);
+  const [localCommentId, setLocalCommentId] = React.useState(commentId || '');
   const [isIframeLoading, setIsIframeLoading] = React.useState(true);
   const [showComment, setShowComment] = React.useState(false);
 
@@ -104,6 +105,11 @@ const FilePreview: FC<IFilePreviewProps> = ({
     },
   });
 
+  const useGetCommentById = getApi(ApiEnum.GetCommentById);
+  const { isLoading: isSingleCommentLoading } = useGetCommentById(localCommentId, {
+  enabled: !!localCommentId,
+  });
+
   useEffect(() => {
   if (commentId) {
     setShowComment(true);
@@ -142,6 +148,40 @@ const FilePreview: FC<IFilePreviewProps> = ({
     (isError || (!isLoading && !isSupportedVideo && !allowIframePreview));
   const showVideo = !isLoading && !isError && isSupportedVideo;
   const showIframe = !isLink && !isLoading && !isError && allowIframePreview;
+
+  const renderSingleComment = () => {
+    return (
+      <div className="px-2">
+        <div className='text-sm font-semibold pb-2 mb-2 border-b-1 border-neutral-200 flex items-center justify-between'>
+          {t('commentTitle')}
+          <div
+            className='text-xs cursor-pointer hover:!text-primary-400' 
+            onClick={() => {
+              setLocalCommentId('');
+              const updatedParams = new URLSearchParams(searchParams.toString());
+              updatedParams.delete('commentId');
+              setSearchParams(updatedParams);
+            }}
+          >
+            {t('viewAllComments')}
+          </div>
+        </div>
+        {isSingleCommentLoading ? 
+          <div className='pt-4 h-[86%]'>
+            <CommentSkeleton />
+          </div>
+         : <Comment
+            key={localCommentId}
+            commentId={localCommentId}
+            deleteApiEnum={ApiEnum.DeleteChannelDocumentComments}
+            deleteApiParams={{ channelId, fileId }}
+            canPostComment={canPostComment && canViewComment}
+            canDeleteComment={canDeleteComment}
+          />
+        }
+      </div>
+    );
+  };
 
   return (
     <Modal
@@ -272,64 +312,37 @@ const FilePreview: FC<IFilePreviewProps> = ({
           } relative h-[100%] bg-white`}
         >
           {showComment && (
-            localCommentId ? (
-              <div className="px-2">
-                <div className='text-sm font-semibold pb-2 mb-2 border-b-1 border-neutral-200 flex items-center justify-between'>
-                  {t('commentTitle')}
-                  <div
-                    className='text-xs cursor-pointer hover:text-primary-500' 
-                    onClick={() => {
-                    {
-                      setLocalCommentId('');
-                      searchParams.delete('commentId');
-                      setSearchParams(searchParams);
-                    }
-                  }}>
-                    {t('viewAllComments')}
-                  </div>
-                </div>
-                <Comment
-                  commentId={commentId}
-                  deleteApiEnum={ApiEnum.DeleteChannelDocumentComments}
-                  deleteApiParams={{
-                  channelId,
-                  fileId,
-                  }}
-                  canPostComment={canPostComment && canViewComment}
-                  canDeleteComment={canDeleteComment}
-                />
-              </div>
-            ) : (
-              <CommentCard
-                className="h-full"
-                variant={CommentVariant.Document}
-                entityId={fileId || ''}
-                getApiEnum={ApiEnum.GetChannelDocumentComments}
-                createApiEnum={ApiEnum.CreateChannelDocumentComments}
-                deleteApiEnum={ApiEnum.DeleteChannelDocumentComments}
-                getApiParams={{
-                  fileId,
-                  channelId,
-                  limit: 4,
-                }}
-                createApiParams={(payload: ICommentPayload) => ({
-                  channelId,
-                  fileId,
-                  payload: {
-                    ...payload,
-                    pathWithId,
-                  },
-                })}
-                deleteApiParams={{
-                  channelId,
-                  fileId,
-                }}
-                showEmptyState={true}
-                canPostComment={canPostComment && canViewComment}
-                canDeleteComment={canDeleteComment}
-              />
-            )
-          )}
+          localCommentId ? renderSingleComment() : (
+            <CommentCard
+              className="h-full"
+              variant={CommentVariant.Document}
+              entityId={fileId || ''}
+              getApiEnum={ApiEnum.GetChannelDocumentComments}
+              createApiEnum={ApiEnum.CreateChannelDocumentComments}
+              deleteApiEnum={ApiEnum.DeleteChannelDocumentComments}
+              getApiParams={{
+                fileId,
+                channelId,
+                limit: 4,
+              }}
+              createApiParams={(payload: ICommentPayload) => ({
+                channelId,
+                fileId,
+                payload: {
+                  ...payload,
+                  pathWithId,
+                },
+              })}
+              deleteApiParams={{
+                channelId,
+                fileId,
+              }}
+              showEmptyState={true}
+              canPostComment={canPostComment && canViewComment}
+              canDeleteComment={canDeleteComment}
+            />
+          )
+        )}
         </div>
       </div>
     </Modal>

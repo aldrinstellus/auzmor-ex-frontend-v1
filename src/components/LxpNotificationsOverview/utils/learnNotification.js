@@ -398,8 +398,7 @@ const getSocialSourceRoute = (
         ?.find((item) => item.entityType === 'COMMENT');
       const targetPostId =
         target1Type === 'POST' ? targetId1 : targetPost?.entityId;
-      const channelId = targetPost?.channelId;
-      const pathWithId = targetPost?.pathWithId;
+      const { channelId = "" , pathWithId = {} } = targetPost || {};
 
       if (channelId && pathWithId) {
         const encodedPath = compressString(JSON.stringify(pathWithId));
