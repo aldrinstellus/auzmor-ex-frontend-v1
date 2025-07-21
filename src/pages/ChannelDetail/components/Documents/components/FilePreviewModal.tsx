@@ -155,7 +155,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
         <div className='text-sm font-semibold pb-2 mb-2 border-b-1 border-neutral-200 flex items-center justify-between'>
           {t('commentTitle')}
           <div
-            className='text-xs cursor-pointer hover:text-primary-500' 
+            className='text-xs cursor-pointer hover:!text-primary-400' 
             onClick={() => {
               setLocalCommentId('');
               const updatedParams = new URLSearchParams(searchParams.toString());

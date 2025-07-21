@@ -125,7 +125,7 @@ const NameField = ({
   mimeType: string;
   isFolder: boolean;
 }) => (
-  <div className="flex gap-2 items-center font-medium text-neutral-900 leading-6 w-full">
+  <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
     <div className="flex w-6">
       <Icon
         name={isFolder ? 'folder' : getIconFromMime(mimeType)}
@@ -149,7 +149,7 @@ const OwnerField = ({
   ownerName: string;
   ownerImage?: string;
 }) => (
-  <div className="flex gap-2 items-center">
+  <div className="flex gap-2">
     <Avatar image={ownerImage} name={ownerName} size={24} />
     <Truncate
       maxLength={10}
