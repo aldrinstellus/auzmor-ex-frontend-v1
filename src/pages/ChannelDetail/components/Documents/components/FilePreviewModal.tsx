@@ -54,7 +54,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
   const [searchParams, setSearchParams] = useSearchParams();
   const commentId = searchParams.get('commentId') || '';
 
-  const [localCommentId, setLocalCommentId] = React.useState(commentId);
+  const [localCommentId, setLocalCommentId] = React.useState(commentId || '');
   const [isIframeLoading, setIsIframeLoading] = React.useState(true);
   const [showComment, setShowComment] = React.useState(false);
 
