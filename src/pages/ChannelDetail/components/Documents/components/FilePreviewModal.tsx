@@ -28,6 +28,7 @@ interface IFilePreviewProps {
   fileId: string;
   rootFolderId: string;
   open: boolean;
+  pathWithId: { name: string; id: string; type: 'File' | 'Folder' }[];
   canDownload: boolean;
   canViewComment: boolean;
   canPostComment: boolean;
@@ -38,6 +39,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
   fileId,
   rootFolderId,
   open,
+  pathWithId,
   canDownload = false,
   canViewComment = false,
   canPostComment = false,
@@ -274,7 +276,10 @@ const FilePreview: FC<IFilePreviewProps> = ({
               createApiParams={(payload: ICommentPayload) => ({
                 channelId,
                 fileId,
-                payload,
+                payload: {
+                  ...payload,
+                  pathWithId,
+                },
               })}
               deleteApiParams={{
                channelId,
