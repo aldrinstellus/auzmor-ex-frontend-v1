@@ -49,8 +49,8 @@ const transformOptions = (
           ? obj.label
           : typeof obj === 'boolean'
           ? obj
-            ? 'True'
-            : 'False'
+            ? 'Yes'
+            : 'No'
           : id;
       const value = obj.value ?? obj;
       return {

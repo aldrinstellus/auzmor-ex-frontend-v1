@@ -21,13 +21,15 @@ import { ICommentPayload } from 'components/Comments/components/CommentsRTE';
 import PreviewLink from 'components/PreviewLink';
 import { PREVIEW_CARD_VARIANT } from 'utils/constants';
 import { useChannelRole } from 'hooks/useChannelRole';
+import useRole from 'hooks/useRole';
+import { isLearnerRoute } from 'components/LxpNotificationsOverview/utils/learnNotification';
 
 interface IFilePreviewProps {
   fileId: string;
   rootFolderId: string;
   open: boolean;
   canDownload: boolean;
-  canComment: boolean;
+  canViewComment: boolean;
   canPostComment: boolean;
   closeModal: () => void;
 }
@@ -37,7 +39,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
   rootFolderId,
   open,
   canDownload = false,
-  canComment = false,
+  canViewComment = false,
   canPostComment = false,
   closeModal,
 }) => {
@@ -102,7 +104,9 @@ const FilePreview: FC<IFilePreviewProps> = ({
     }
   });
 
+  const { isAdmin } = useRole();
   const { isChannelAdmin } = useChannelRole(channelId);
+  const canDeleteComment = isChannelAdmin || (isAdmin && !isLearnerRoute());
 
   const isLoading = fileLoading || previewLoading;
   const isDownloading = downloadChannelFileMutation.isLoading;
@@ -151,7 +155,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
           )}
         </div>
         <div className="flex absolute gap-3 right-4">
-          {(canComment || isChannelAdmin) && (
+          {(canViewComment || isChannelAdmin || isAdmin) && (
             <Icon
               name={showComment ? 'commentFilled' : 'comment'}
               color="text-red-500"
@@ -261,6 +265,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
               entityId={fileId || ''}
               getApiEnum={ApiEnum.GetChannelDocumentComments}
               createApiEnum={ApiEnum.CreateChannelDocumentComments}
+              deleteApiEnum={ApiEnum.DeleteChannelDocumentComments}
               getApiParams={{
                 fileId,
                 channelId,
@@ -271,9 +276,13 @@ const FilePreview: FC<IFilePreviewProps> = ({
                 fileId,
                 payload,
               })}
+              deleteApiParams={{
+               channelId,
+               fileId,
+              }}
               showEmptyState={true}
-              canPostComment={canPostComment}
-              canDeleteComment={isChannelAdmin}
+              canPostComment={canPostComment && canViewComment}
+              canDeleteComment={canDeleteComment}
             />
           )}
         </div>

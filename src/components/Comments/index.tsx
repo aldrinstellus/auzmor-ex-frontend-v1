@@ -1,6 +1,6 @@
 /* Comment RTE - Post Level Comment Editor */
 import { FC, useState } from 'react';
-import { Comment } from './components/Comment';
+import { Comment, deleteParams } from './components/Comment';
 import { DeltaStatic } from 'quill';
 import useAuth from 'hooks/useAuth';
 import Avatar from 'components/Avatar';
@@ -52,7 +52,9 @@ interface CommentsProps<T = any> {
   variant?: CommentVariant;
   getApiEnum?: ApiEnum;
   createApiEnum?: ApiEnum;
+  deleteApiEnum?: ApiEnum;
   getApiParams?: GetParams;
+  deleteApiParams?: deleteParams;
   createApiParams?: T;
   showEmptyState?: boolean;
   className?: string;
@@ -88,8 +90,10 @@ const Comments: FC<CommentsProps> = ({
   variant,
   getApiEnum,
   createApiEnum,
+  deleteApiEnum,
   getApiParams,
   createApiParams,
+  deleteApiParams,
   showEmptyState = false,
   className= '',
   canPostComment = true,
@@ -139,7 +143,6 @@ const Comments: FC<CommentsProps> = ({
   const [isCreateCommentLoading, setIsCreateCommentLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<string>('');
   const getPost = useFeedStore((state) => state.getPost);
-  console.log(commentIds);
 
   const renderCommentComponent = (variant?: CommentVariant) => {
     switch (variant) {
@@ -183,7 +186,7 @@ const Comments: FC<CommentsProps> = ({
             commentIds &&
             commentIds.length > 0 ? (
               <>
-                <div className="pt-4 h-[84%] mb-3 overflow-y-auto">
+                <div className={`pt-4 ${canPostComment ? 'h-[84%] mb-3 ' : 'h-[92%]'} overflow-y-auto`}>
                   {isCreateCommentLoading && <CommentSkeleton />}
                   <div className="flex flex-col gap-4">
                     {commentIds
@@ -194,6 +197,8 @@ const Comments: FC<CommentsProps> = ({
                           canPostComment={canPostComment}
                           canDeleteComment={canDeleteComment}
                           commentId={id}
+                          deleteApiEnum={deleteApiEnum}
+                          deleteApiParams={deleteApiParams}
                         />
                       ))}
                   </div>
@@ -230,7 +235,7 @@ const Comments: FC<CommentsProps> = ({
             ) : null
           )}
           {canPostComment && (<div className="flex h-[60px] flex-row items-center justify-between p-0 gap-2 pb-2">
-            <div>
+            <div className='mb-2'>
               <Avatar
                 name={user?.name || 'U'}
                 size={32}
@@ -239,11 +244,12 @@ const Comments: FC<CommentsProps> = ({
             </div>
             <div className="relative h-full flex-grow !bg-white">
               <CommentsRTE
-                className="absolute w-full bottom-[8px] overflow-y-auto z-[999]"
-                wrapperClassName='bg-white'
+                className="absolute w-full bottom-[6px] z-[999]"
+                wrapperClassName='bg-white max-h-[600px]'
                 entityId={entityId}
                 entityType="post"
                 placeholder={Placeholder.DocumentComment}
+                charLimit={1000}
                 createApiEnum={createApiEnum}
                 getApiParams={getApiParams}
                 createApiParams={createApiParams}

@@ -34,14 +34,22 @@ import { useTranslation } from 'react-i18next';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
+export interface deleteParams {
+  channelId?: string;
+  fileId: string;
+}
 interface CommentProps {
   commentId: string;
+  deleteApiEnum?: ApiEnum;
+  deleteApiParams?: deleteParams;
   canPostComment?: boolean;
   canDeleteComment?: boolean;
 }
 
 export const Comment: FC<CommentProps> = ({
   commentId,
+  deleteApiEnum,
+  deleteApiParams = {},
   canPostComment = true,
   canDeleteComment = false,
 }) => {
@@ -84,20 +92,24 @@ export const Comment: FC<CommentProps> = ({
     }
   }, [showReplies]);
 
-  const deleteComment = getApi(ApiEnum.DeleteComment);
+  const deleteComment = getApi(deleteApiEnum || ApiEnum.DeleteComment);
   const deleteCommentMutation = useMutation({
-    mutationKey: ['delete-comment-mutation'],
-    mutationFn: (id: string) => deleteComment(id),
+    mutationFn: async (id: string) => {
+      if (deleteApiEnum) {
+        return deleteComment(deleteApiParams, id);
+      }
+      return deleteComment(id);
+    },
     onMutate: (variables) => {
       const previousData = storedcomments;
-      const post = getPost(storedcomments[variables].entityId);
+      const post = getPost(storedcomments[variables]?.entityId);
       if (post) {
         updateFeed(
-        post.id!,
-        produce(post, (draft) => {
-          draft.commentsCount = draft.commentsCount - 1;
-        }),
-      );
+          post.id!,
+          produce(post, (draft) => {
+            draft.commentsCount = draft.commentsCount - 1;
+          }),
+        );
       }
       setComment(omit(storedcomments, [commentId]));
       closeConfirm();
@@ -108,13 +120,13 @@ export const Comment: FC<CommentProps> = ({
         content: t('deleteFailToast'),
         dataTestId: 'comment-toaster',
       }),
-    onSuccess: () =>{
+    onSuccess: () => {
       queryClient.invalidateQueries(['comments']);
       successToastConfig({
         content: t('deleteSuccessToast'),
         dataTestId: 'comment-toaster',
       });
-      },
+    },
   });
 
   const profileUrl = isLxp

@@ -71,6 +71,7 @@ interface CommentFormProps {
   suggestions?: string;
   toolbarId?: string;
   placeholder?: Placeholder;
+  charLimit?: number;
 }
 
 interface IUpdateCommentPayload {
@@ -118,6 +119,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
   suggestions,
   toolbarId,
   placeholder,
+  charLimit = 3000,
 }) => {
   const { t } = useTranslation('post', { keyPrefix: 'commentComponent' });
   const {
@@ -442,6 +444,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
           defaultValue={commentData?.content?.editor}
           placeholder={getPlaceholder(placeholder)}
           className="max-w-full flex-grow text-sm"
+          charLimit={charLimit}
           ref={quillRef}
           dataTestId="postcomment-textbox"
           onChangeEditor={onChangeEditor}
