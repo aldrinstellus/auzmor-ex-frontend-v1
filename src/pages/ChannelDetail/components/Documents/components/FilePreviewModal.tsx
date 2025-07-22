@@ -166,6 +166,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
               setLocalPostId('');
               const updatedParams = new URLSearchParams(searchParams.toString());
               updatedParams.delete('commentId');
+              updatedParams.delete('postId');
               setSearchParams(updatedParams);
             }}
           >
