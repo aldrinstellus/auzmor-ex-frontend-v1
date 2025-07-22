@@ -665,7 +665,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         ...((documentFields as ColumnItem[])
           ?.filter(
             (field: ColumnItem) =>
-              field.visibility && field.fieldName !== 'Name',
+              field.visibility && field.fieldName !== 'Name' && field.type !== 'image',
           )
           ?.map((field: any) => ({
             id: field.id,
@@ -686,8 +686,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 field.type === 'datetime'
               ) {
                 return <TimeField time={info.getValue() as string} />;
-              } else if (field.type === 'image') {
-                return null;
               } else {
                  const matched = (info.row.original.customFields ?? []).find(
                     (eachField: any) => field.fieldName === eachField.field_name
