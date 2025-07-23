@@ -122,6 +122,7 @@ export const Comment: FC<CommentProps> = ({
       }),
     onSuccess: () => {
       queryClient.invalidateQueries(['comments']);
+      queryClient.invalidateQueries(['posts']);
       successToastConfig({
         content: t('deleteSuccessToast'),
         dataTestId: 'comment-toaster',
@@ -136,6 +137,8 @@ export const Comment: FC<CommentProps> = ({
           ? '/users/' + comment.createdBy.userId
           : '/profile'
       }`;
+
+  if (!comment) return null;
 
   return (
     <div className="flex flex-col">
