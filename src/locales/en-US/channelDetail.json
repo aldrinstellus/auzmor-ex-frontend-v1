@@ -220,7 +220,9 @@
     "noComments": "No Commments yet",
     "noCommentAvailable": "Be the first to leave a comment or ask a question.",
     "uploadNow": "Upload Now",
-    "foundIn": "- found in"
+    "foundIn": "- found in",
+    "commentTitle": "Comment",
+    "viewAllComments": "View All Comments"
   },
   "memberTab": {
     "title": "Members",

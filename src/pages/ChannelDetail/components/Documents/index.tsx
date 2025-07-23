@@ -125,7 +125,7 @@ const NameField = ({
   mimeType: string;
   isFolder: boolean;
 }) => (
-  <div className="flex gap-2 items-center font-medium text-neutral-900 leading-6 w-full">
+  <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
     <div className="flex w-6">
       <Icon
         name={isFolder ? 'folder' : getIconFromMime(mimeType)}
@@ -149,7 +149,7 @@ const OwnerField = ({
   ownerName: string;
   ownerImage?: string;
 }) => (
-  <div className="flex gap-2 items-center">
+  <div className="flex gap-2">
     <Avatar image={ownerImage} name={ownerName} size={24} />
     <Truncate
       maxLength={10}
@@ -665,7 +665,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         ...((documentFields as ColumnItem[])
           ?.filter(
             (field: ColumnItem) =>
-              field.visibility && field.fieldName !== 'Name',
+              field.visibility && field.fieldName !== 'Name' && field.type !== 'image',
           )
           ?.map((field: any) => ({
             id: field.id,
@@ -686,8 +686,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 field.type === 'datetime'
               ) {
                 return <TimeField time={info.getValue() as string} />;
-              } else if (field.type === 'image') {
-                return null;
               } else {
                  const matched = (info.row.original.customFields ?? []).find(
                     (eachField: any) => field.fieldName === eachField.field_name
@@ -1917,6 +1915,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           fileId={(filePreviewProps as DocType).id}
           rootFolderId={(filePreviewProps as DocType).pathWithId[0].id}
           open={filePreview}
+          pathWithId={(filePreviewProps as DocType).pathWithId}
           canDownload={permissions.includes(
             ChannelPermissionEnum.CanDownloadDocuments,
           )}

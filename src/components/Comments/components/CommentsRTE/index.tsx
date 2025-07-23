@@ -81,6 +81,7 @@ interface IUpdateCommentPayload {
   hashtags: string[];
   mentions: Array<any>;
   files: string[];
+  pathWithId?: [];
 }
 
 export interface ICommentPayload {
@@ -96,6 +97,7 @@ export interface ICommentPayload {
   mentions: string[];
   hashtags: string[];
   files: string[];
+  pathWithId?: [];
 }
 
 export const CommentsRTE: FC<CommentFormProps> = ({
