@@ -228,13 +228,13 @@ const renderCustomField = (type: string, value: any): React.ReactNode => {
             {displayed.map((item, idx) => (
               <span
                 key={idx}
-                className="bg-white text-sm rounded-full px-3 py-1 inline-block border border-neutral-200"
+                className="bg-white h-[30px] text-sm rounded-full px-3 py-1 inline-block border border-neutral-200"
               >
                 {item}
               </span>
             ))}
             {remaining > 0 && (
-              <span className="bg-white text-sm rounded-full px-3 py-1 inline-block border border-neutral-200">
+              <span className="bg-white h-[30px] text-sm rounded-full px-3 py-1 inline-block border border-neutral-200">
                 +{remaining}
               </span>
             )}
@@ -242,7 +242,7 @@ const renderCustomField = (type: string, value: any): React.ReactNode => {
         );
       }
       return (
-        <span className="bg-white text-sm rounded-full px-3 py-1 inline-block border border-neutral-200">
+        <span className="bg-white h-[30px] text-sm rounded-full px-3 py-1 inline-block border border-neutral-200">
           {value}
         </span>
       );
@@ -333,10 +333,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   } = useChannelDocumentStatus({
     channelId,
   });
+  const isBaseFolderSet = statusResponse?.status === 'ACTIVE';
 
   // Api call: Get fields for the channel
   const useChannelDocumentFields = getApi(ApiEnum.GetChannelDocumentFields);
-  const { data: documentFields } = useChannelDocumentFields({ channelId }, { enabled: statusResponse?.status === 'ACTIVE' });
+  const { data: documentFields } = useChannelDocumentFields({ channelId }, { enabled: isBaseFolderSet });
 
   // Api call: Update fields for the channel
   const updateChannelDocumentFields = getApi(
@@ -497,6 +498,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       channelId,
     },
     {
+      enabled: isBaseFolderSet,
       onSuccess: (data: any) => {
         const syncResults = data?.data?.result?.data;
         if (!!syncResults?.length) {
@@ -514,7 +516,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   );
 
   // State management flags
-  const isBaseFolderSet = statusResponse?.status === 'ACTIVE';
   const isConnectionMade =
     isBaseFolderSet ||
     (statusResponse?.status === 'INACTIVE' &&
@@ -1062,7 +1063,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       },
     },
     options: {
-      enabled: !isLoading,
+      enabled: !isLoading && isBaseFolderSet,
     },
     loadingGrid: (
       <Skeleton
