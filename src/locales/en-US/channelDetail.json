@@ -217,12 +217,14 @@
     "sharepoint": "Sharepoint",
     "noPreviewAvailable": "This file cannot be previewed.",
     "loadMoreComments": "Load more comments",
-    "noComments": "No Commments yet",
     "noCommentAvailable": "Be the first to leave a comment or ask a question.",
     "uploadNow": "Upload Now",
     "foundIn": "- found in",
     "commentTitle": "Comment",
-    "viewAllComments": "View All Comments"
+    "viewAllComments": "View All Comments",
+    "noMentionedComments":{
+      "label": "Comment Not Found"
+    }
   },
   "memberTab": {
     "title": "Members",

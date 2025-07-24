@@ -110,10 +110,11 @@ const FilePreview: FC<IFilePreviewProps> = ({
   });
 
   const useGetPost = getApi(ApiEnum.GetPost);
-  const { isLoading: isSingleCommentLoading } = useGetPost(localPostId, localCommentId, {
+  const { data: commentData, isLoading: isSingleCommentLoading } = useGetPost(localPostId, localCommentId, {
   enabled: !!localCommentId && !!localPostId,
   });
   const post = getPost(localPostId) as any;
+  const isCommentPresent = commentData?.comment;
 
   useEffect(() => {
   if (commentId) {
@@ -173,11 +174,11 @@ const FilePreview: FC<IFilePreviewProps> = ({
             {t('viewAllComments')}
           </div>
         </div>
-        {isSingleCommentLoading ? 
+        {isSingleCommentLoading ?
           <div className='pt-4 h-[86%]'>
             <CommentSkeleton />
           </div>
-         : <Comment
+          : isCommentPresent ? <Comment
             key={post?.comment?.id}
             commentId={post?.comment?.id}
             deleteApiEnum={ApiEnum.DeleteChannelDocumentComments}
@@ -185,6 +186,18 @@ const FilePreview: FC<IFilePreviewProps> = ({
             canPostComment={canPostComment && canViewComment}
             canDeleteComment={canDeleteComment}
           />
+            : <div className='w-full h-[400px] flex items-center justify-center'>
+              <NoDataFound
+                illustration="noComments"
+                illustrationClassName="w-[150px] h-[150px]"
+                labelHeader={
+                  <div className='flex flex-col items-center justify-center'>
+                    {t('noMentionedComments.label')}
+                  </div>
+                }
+                hideClearBtn
+              />
+            </div>
         }
       </div>
     );
