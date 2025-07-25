@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 interface IDocSearchProps {
   control: Control<IForm, any>;
   watch: UseFormWatch<IForm>;
+  dirtyFields: any;
   onEnter: (documentSearchDebounceValue: string) => void;
   onClick: (doc: Doc) => void;
   disable: boolean;
@@ -25,6 +26,7 @@ const DocSearch: FC<IDocSearchProps> = ({
   disable,
   control,
   watch,
+  dirtyFields,
   onEnter,
   onClick,
 }) => {
@@ -37,12 +39,17 @@ const DocSearch: FC<IDocSearchProps> = ({
   const useChannelDocDeepSearch = getApi(ApiEnum.GetChannelDocDeepSearch);
   const { channelId } = useParams();
   const documentSearchDebounceValue = useDebounce(documentSearch, 500);
+  const shouldFetch = !!documentSearchDebounceValue && dirtyFields.documentSearch;
 
   // Api call: Get search results
-  const { data, isLoading, isError } = useChannelDocDeepSearch({
-    channelId,
-    params: { q: documentSearchDebounceValue || '' },
-  });
+  const { data, isLoading, isError } = useChannelDocDeepSearch(
+  shouldFetch
+    ? {
+        channelId,
+        params: { q: documentSearchDebounceValue },
+      }
+    : null
+  );
   const documents = isError
     ? []
     : data?.pages?.flatMap((page: { data: any }) => page?.data?.result?.data);

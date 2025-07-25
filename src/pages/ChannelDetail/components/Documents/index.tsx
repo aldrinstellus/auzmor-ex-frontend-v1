@@ -289,7 +289,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     useModal();
   const [renameModal, showRenameModal, closeRenameModal, renameModalProps] =
     useModal();
-  const { control, watch, setValue } = useForm<IForm>({
+  const { control, watch, setValue, formState: { dirtyFields }  } = useForm<IForm>({
     defaultValues: {
       applyDocumentSearch: '',
       documentSearch: '',
@@ -782,8 +782,14 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             </div>
             <div className='flex flex-col gap-1'>
             <span className="break-all truncate w-full">
-              {info.getValue() as string}
+              
             </span>
+            <Truncate
+              maxLength={25}
+              toolTipClassName='!z-[999]'
+              text={info.getValue() as string}
+              className="text-neutral-900 font-medium"
+            />
             {info.row.original?.customFields && Array.isArray(info.row.original.customFields) && info.row.original?.customFields.length > 0 && (
               <div className="text-xs text-neutral-700">
                 &quot;
@@ -1130,6 +1136,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   // Hook to reset document search param
   useEffect(() => {
     if (documentSearch === '' && isDocSearchApplied) {
+      console.log('applied');
       setValue('applyDocumentSearch', '');
     }
   }, [documentSearch, isDocSearchApplied]);
@@ -1698,6 +1705,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               <DocSearch
                 control={control}
                 watch={watch}
+                dirtyFields={dirtyFields}
                 onEnter={(value: string) =>
                   setValue('applyDocumentSearch', value)
                 }
