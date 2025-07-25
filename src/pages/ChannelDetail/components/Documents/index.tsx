@@ -218,7 +218,21 @@ const renderCustomField = (type: string, value: any): React.ReactNode => {
     case 'number':
     case 'currency':
     case 'metadata':
-      return value;
+      return typeof value === 'object' && value !== null ?
+        <a
+          href={value.Url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm underline"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <Truncate
+            maxLength={10}
+            toolTipClassName='!z-[999]'
+            text={value.Description}
+            className="text-neutral-900 font-medium"
+          />
+        </a> : value;
     case 'choice':{
       if (Array.isArray(value)) {
         const displayed = value.slice(0, 2);
