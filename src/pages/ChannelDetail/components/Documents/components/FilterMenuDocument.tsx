@@ -109,7 +109,7 @@ const FilterMenuDocument: FC<IFilterMenu> = ({
           label: () => column.label,
           component: (form: UseFormReturn<any>) => (
             <GenericFilter
-              options={column.values}
+              options={column.type === 'boolean' ? [true, false] : column.values}
               name={column.fieldName}
               {...form}
               listType={column.type === "boolean" ? "RADIO" : "CHECKBOX"}
