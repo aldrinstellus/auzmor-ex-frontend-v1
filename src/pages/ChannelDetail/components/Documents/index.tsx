@@ -176,7 +176,7 @@ const LocationField = ({
       triggerNode={<BreadCrumb items={pathItems} onItemClick={() => {}} />}
       triggerNodeClassName="w-full"
       wrapperClassName="w-full"
-      className='right-[-100px] top-[-10px] rounded-9xl'
+      className='right-[-10px] top-[-10px] rounded-9xl'
       contentRenderer={() => (
         <div className="flex p-3 bg-white rounded-9xl border border-primary-50 shadow">
           <BreadCrumb
@@ -829,29 +829,14 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         ),
         cell: (info: CellContext<DocType, unknown>) => {
           return (
-            <Popover
-              triggerNode={
-                <BreadCrumb
-                  items={getMappedLocation(info?.row?.original)}
-                  onItemClick={() => {}}
-                />
-              }
-              className='left-[-100px] top-0 rounded-9xl'
-              triggerNodeClassName="w-full"
-              wrapperClassName="w-full"
-              contentRenderer={() => (
-                <div className="flex p-3 bg-white rounded-9xl border border-primary-50 shadow">
-                  <LocationField
-                    pathItems={getMappedLocation(info?.row?.original)}
-                    pathWithId={info?.row?.original?.pathWithId}
-                    channelId={channelId}
-                    updateDocumentSearch={(value: string) =>
-                      setValue('applyDocumentSearch', value)
-                    }
-                  />
-                </div>
-              )}
-            />
+              <LocationField
+                pathItems={getMappedLocation(info?.row?.original)}
+                pathWithId={info?.row?.original?.pathWithId}
+                channelId={channelId}
+                updateDocumentSearch={(value: string) =>
+                  setValue('applyDocumentSearch', value)
+                }
+              />
           );
         },
         size: 260,
