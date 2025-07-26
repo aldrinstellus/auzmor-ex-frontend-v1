@@ -108,6 +108,8 @@ const fieldSizeByType: Record<string, number> = {
   date: 150,
   boolean: 150,
   number: 150,
+  text: 150,
+  choice: 140,
 };
 
 const TimeField = ({ time }: { time: string }) => (
@@ -230,8 +232,16 @@ const renderCustomField = (type: string, value: any): React.ReactNode => {
                 key={idx}
                 className="bg-white h-[30px] text-sm rounded-full px-3 py-1 inline-block border border-neutral-200"
               >
+                <Truncate
+                maxLength={10}
+                toolTipClassName='!z-[999]'
+                text={item}
+                className="text-neutral-900 font-medium"
+              />
                 {item}
               </span>
+              
+              
             ))}
             {remaining > 0 && (
               <span className="bg-white h-[30px] text-sm rounded-full px-3 py-1 inline-block border border-neutral-200">
@@ -243,7 +253,12 @@ const renderCustomField = (type: string, value: any): React.ReactNode => {
       }
       return (
         <span className="bg-white h-[30px] text-sm rounded-full px-3 py-1 inline-block border border-neutral-200">
-          {value}
+          <Truncate
+                maxLength={10}
+                toolTipClassName='!z-[999]'
+                text={value}
+                className="text-neutral-900 font-medium"
+              />
         </span>
       );
     }
