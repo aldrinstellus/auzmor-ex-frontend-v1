@@ -233,15 +233,12 @@ const renderCustomField = (type: string, value: any): React.ReactNode => {
                 className="bg-white h-[30px] text-sm rounded-full px-3 py-1 inline-block border border-neutral-200"
               >
                 <Truncate
-                maxLength={10}
+                maxLength={12}
                 toolTipClassName='!z-[999]'
                 text={item}
                 className="text-neutral-900 font-medium"
               />
-                {item}
               </span>
-              
-              
             ))}
             {remaining > 0 && (
               <span className="bg-white h-[30px] text-sm rounded-full px-3 py-1 inline-block border border-neutral-200">
@@ -710,7 +707,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                   return <>{renderCustomField(field.type, matched?.field_values)}</>;
               }
             },
-            size: field.size || fieldSize[field.fieldName] || fieldSizeByType[field.type] || 256,
+            minSize: field.size || fieldSize[field.fieldName] || fieldSizeByType[field.type] || 256,
+            maxSize: 256,
             thClassName: 'py-3 px-3',
             tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
           })) || []),
