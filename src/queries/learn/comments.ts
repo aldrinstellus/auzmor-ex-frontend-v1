@@ -6,6 +6,7 @@ import {
 import { IComment } from 'components/Comments';
 import { useCommentStore } from 'stores/commentStore';
 import apiService from 'utils/apiService';
+import { addCdnUrlParamsToComment } from 'utils/misc';
 
 interface IContent {
   html: string;
@@ -40,19 +41,18 @@ export const getComments = async (
   let response = null;
   if (!!!context.pageParam) {
     response = await apiService.get('/feed-comments', context.queryKey[1]);
-    appendComments(response.data.result.data);
-    response.data.result.data = response.data.result.data.map(
-      (eachPost: IComment) => ({ id: eachPost.id }),
-    );
-    return response;
   } else {
     response = await apiService.get(context.pageParam);
-    appendComments(response.data.result.data);
-    response.data.result.data = response.data.result.data.map(
-      (eachPost: IComment) => ({ id: eachPost.id }),
-    );
-    return response;
   }
+  const cdnUrlParams = response?.data?.result?.cdnUrlParams || '';
+  response?.data?.result?.data.forEach((comment: IComment) => {
+    addCdnUrlParamsToComment(comment, cdnUrlParams);
+  });
+  appendComments(response.data.result.data);
+  response.data.result.data = response.data.result.data.map(
+    (eachPost: IComment) => ({ id: eachPost.id }),
+  );
+  return response;
 };
 
 export const useInfiniteComments = (q: IComments) => {
@@ -80,10 +80,12 @@ export const useInfiniteComments = (q: IComments) => {
 
 export const createComment = async (payload: IComments) => {
   const { result } = await apiService.post(`/feed-comments`, payload);
+  addCdnUrlParamsToComment(result?.data, result?.cdnUrlParams || '');
   return result?.data;
 };
 
 export const updateComment = async (id: string, payload: any) => {
   const { result } = await apiService.put(`/feed-comments/${id}`, payload);
+  addCdnUrlParamsToComment(result?.data, result?.cdnUrlParams || '');
   return result.data;
 };

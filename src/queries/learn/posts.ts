@@ -4,30 +4,38 @@ import {
   useInfiniteQuery,
   useQuery,
 } from '@tanstack/react-query';
-import { chain } from 'utils/misc';
+import { addCdnUrlParamsToPost, chain } from 'utils/misc';
 import { IComment } from 'components/Comments';
 import { useFeedStore } from 'stores/feedStore';
 import { useCommentStore } from 'stores/commentStore';
 import { IPost, IPollVotes, IPostPayload } from 'interfaces';
 
 export const createPost = async (payload: IPostPayload) => {
-  const data = await apiService.post('/feed', payload);
-  return data;
+  const response = await apiService.post('/feed', payload);
+  addCdnUrlParamsToPost(
+    response.result.data,
+    response.result.cdnUrlParams || '',
+  );
+  return response;
 };
 export const createPostLearner = async (payload: IPostPayload) => {
-  const data = await apiService.post('/learner/feed', payload);
-  return data;
+  const response = await apiService.post('/learner/feed', payload);
+  addCdnUrlParamsToPost(
+    response.result.data,
+    response.result.cdnUrlParams || '',
+  );
+  return response;
 };
 export const markAsAnnouncement = async (id: string, payload: IPostPayload) => {
   const { announcement } = payload;
-  const data = await apiService.post(`/feed/${id}/mark_as_announcement`, {
+  const response = await apiService.post(`/feed/${id}/mark_as_announcement`, {
     announcement: announcement,
   });
-  return data;
+  return response;
 };
 export const removeAnnouncement = async (id: string) => {
-  const data = await apiService.delete(`/feed/${id}/mark_as_announcement`);
-  return data;
+  const response = await apiService.delete(`/feed/${id}/mark_as_announcement`);
+  return response;
 };
 
 export const updatePost = async (id: string, payload: IPostPayload) => {
@@ -50,14 +58,18 @@ export const updatePost = async (id: string, payload: IPostPayload) => {
     !payload.link || typeof payload.link === 'string'
       ? payload.link
       : payload.link.url;
-  const data = await apiService.put(`/feed/${id}`, {
+  const response = await apiService.put(`/feed/${id}`, {
     ...payload,
     files: fileIds,
     mentions: mentionIds,
     shoutoutRecipients: shoutoutRecipentIds,
     link: link,
   });
-  return data;
+  addCdnUrlParamsToPost(
+    response.result.data,
+    response.result.cdnUrlParams || '',
+  );
+  return response;
 };
 
 export const deletePost = async (id: string) => {
@@ -70,11 +82,12 @@ export const deletePostLearner = async (id: string) => {
 };
 
 export const fetchAnnouncement = async (limit: number) => {
-  const { data } = await apiService.get(`/feed/announcements`, {
+  const response = await apiService.get(`/feed/announcements`, {
     limit: limit,
     acknowledged: true,
   });
-  return data;
+  addCdnUrlParams(response);
+  return response.data;
 };
 
 export const useAnnouncementsWidget = (
@@ -86,6 +99,14 @@ export const useAnnouncementsWidget = (
     queryFn: () => fetchAnnouncement(limit),
     staleTime: 15 * 60 * 1000,
   });
+
+const addCdnUrlParams = (response: any) => {
+  const cdnUrlParams = response?.data?.result?.cdnUrlParams || '';
+  response?.data?.result?.data.forEach((post: IPost) => {
+    addCdnUrlParamsToPost(post, cdnUrlParams);
+  });
+};
+
 const collectComments = (response: any, comments: IComment[]) => {
   response?.data.result.data.forEach((eachPost: IPost) => {
     const postComments = eachPost.relevantComments || [];
@@ -189,6 +210,9 @@ export const fetchFeed = async (
     response = await apiService.get(context.pageParam, context.signal);
   }
 
+  // Add cdn url params
+  addCdnUrlParams(response);
+
   // Collecting all comments
   collectComments(response, comments);
 
@@ -235,6 +259,9 @@ export const fetchScheduledPosts = async (
     response = await apiService.get(context.pageParam);
   }
 
+  // Add cdn url params
+  addCdnUrlParams(response);
+
   // Updating feed store
   setFeed({
     ...feed,
@@ -280,6 +307,9 @@ export const fetchBookmarks = async (
   } else {
     response = await apiService.get(context.pageParam);
   }
+
+  // Add cdn url params
+  addCdnUrlParams(response);
 
   // Collecting all comments
   collectComments(response, comments);
@@ -331,6 +361,9 @@ export const fetchAnnouncements = async (
   } else {
     response = await apiService.get(context.pageParam);
   }
+
+  // Add cdn url params
+  addCdnUrlParams(response);
 
   // Collecting all comments
   collectComments(response, comments);
@@ -433,6 +466,11 @@ const getPost = async (
   const comments: IComment[] = [];
   const response = await apiService.get(
     `${apiPrefix}/feed/${id}${commentId ? '?commentId=' + commentId : ''}`,
+  );
+
+  addCdnUrlParamsToPost(
+    response.data.result.data,
+    response.data.result.cdnUrlParams || '',
   );
 
   // Collecting all comments
