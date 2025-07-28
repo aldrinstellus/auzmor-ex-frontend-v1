@@ -337,5 +337,6 @@
       }
     }
   },
-  "refineSearch": "Please refine your search or filter."
+  "refineSearch": "Please refine your search or filter.",
+  "noCategory": "No Category"
 }
