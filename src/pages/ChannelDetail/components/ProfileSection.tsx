@@ -631,7 +631,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               <div className="relative z-10 overflow-visible" data-testid="channel-category">
                 <Truncate
                   maxLength={15}
-                  text={channelData?.categories[0].name || ''}
+                  text={channelData?.categories?.[0]?.name || t('noCategory')}
                 />
               </div>
             </div>
