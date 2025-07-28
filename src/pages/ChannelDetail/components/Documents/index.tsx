@@ -296,6 +296,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const [isAddModalOpen, openAddModal, closeAddModal] = useModal();
   const [totalRows, setTotalRows] = useState<number>(0);
   const [view, setView] = useState<'LIST' | 'GRID'>('LIST');
+  const [tableData, setTableData] = useState([]);
   const [confirm, showConfirm, closeConfirm, deleteDocProps] = useModal();
   const [filePreview, openFilePreview, closeFilePreview, filePreviewProps] =
     useModal();
@@ -880,11 +881,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             ) {
               return <TimeField time={info.getValue() as string} />;
             } else {
-              const matched = (info.row.original.customFields ?? []).find(
+              const matchedSearch = tableData.find((data: any) => data.id === info.row.original.id) as any;
+              const matchedResult = matchedSearch?.customFields.find(
                 (eachField: any) => field.fieldName === eachField.field_name
               ) as { field_values?: any } | undefined;
-
-              return <>{renderCustomField(field.type, matched?.field_values)}</>;
+              return <>{renderCustomField(field.type, matchedResult?.field_values)}</>;
             }
           },
           size: field.size || fieldSize[field.fieldName] || fieldSizeByType[field.type] || 256,
@@ -1119,6 +1120,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     setTotalRows(
       dataGridProps?.totalCount || (dataGridProps?.flatData || []).length,
     );
+    if (!isDocSearchApplied) {
+      setTableData(dataGridProps.flatData);
+    }
   }, [dataGridProps.flatData]);
 
   // Hook to update input tag attributes
@@ -1133,7 +1137,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   // Hook to reset document search param
   useEffect(() => {
     if (documentSearch === '' && isDocSearchApplied) {
-      console.log('applied');
       setValue('applyDocumentSearch', '');
     }
   }, [documentSearch, isDocSearchApplied]);
