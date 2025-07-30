@@ -135,12 +135,7 @@ const NameField = ({
         hover={false}
       />
     </div>
-    <Truncate
-      maxLength={25}
-      toolTipClassName='!z-[999]'
-      text={name || ''}
-      className="text-neutral-900 font-medium"
-    />
+    {name || ''}
   </div>
 );
 
@@ -154,7 +149,7 @@ const OwnerField = ({
   <div className="flex gap-2">
     <Avatar image={ownerImage} name={ownerName} size={24} />
     <Truncate
-      maxLength={10}
+      maxLength={14}
       toolTipClassName='!z-[999]'
       text={ownerName}
     />

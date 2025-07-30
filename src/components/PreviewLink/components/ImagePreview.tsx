@@ -26,10 +26,10 @@ const ImagePreview: FC<ImagePreviewProps> = ({
           <img
             src={metaData?.image}
             alt={metaData?.title}
-            className="w-full px-4 pt-4 h-[88%] object-cover rounded-t-9xl"
+            className="w-full px-4 pt-4 h-[86%] object-cover rounded-t-9xl"
             data-testid="preview-img"
           />
-          <div className="h-[12%] flex items-center justify-between px-4 py-3 rounded-b-9xl border-2">
+          <div className="h-[14%] flex items-center justify-between px-4 py-3 rounded-b-9xl">
             <div className="flex flex-col">
               <div className="font-bold text-sm text-neutral-900 break-normal [overflow-wrap:anywhere]" data-testid="link-preview-title">
                 {metaData?.title}
