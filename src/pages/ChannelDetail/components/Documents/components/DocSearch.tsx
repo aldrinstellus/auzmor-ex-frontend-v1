@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 interface IDocSearchProps {
   control: Control<IForm, any>;
   watch: UseFormWatch<IForm>;
+  dirtyFields: any;
   onEnter: (documentSearchDebounceValue: string) => void;
   onClick: (doc: Doc) => void;
   disable: boolean;
@@ -25,6 +26,7 @@ const DocSearch: FC<IDocSearchProps> = ({
   disable,
   control,
   watch,
+  dirtyFields,
   onEnter,
   onClick,
 }) => {
@@ -37,12 +39,14 @@ const DocSearch: FC<IDocSearchProps> = ({
   const useChannelDocDeepSearch = getApi(ApiEnum.GetChannelDocDeepSearch);
   const { channelId } = useParams();
   const documentSearchDebounceValue = useDebounce(documentSearch, 500);
+  const shouldFetch = !!documentSearchDebounceValue && dirtyFields?.documentSearch;
 
   // Api call: Get search results
-  const { data, isLoading, isError } = useChannelDocDeepSearch({
+  const { data, isFetching, isError } = useChannelDocDeepSearch({
     channelId,
     params: { q: documentSearchDebounceValue || '' },
-  });
+  }, {enabled: shouldFetch});
+
   const documents = isError
     ? []
     : data?.pages?.flatMap((page: { data: any }) => page?.data?.result?.data);
@@ -100,7 +104,7 @@ const DocSearch: FC<IDocSearchProps> = ({
         className={style}
         style={{ boxShadow: '0px 4px 15px 0px rgba(0, 0, 0, 0.15)' }}
       >
-        {isLoading ? (
+        {isFetching ? (
           [...Array(3)].map((each, index: number) => (
             <li key={`doc-deep-search-skeleton-${index}`}>
               <div className="flex items-center gap-2">

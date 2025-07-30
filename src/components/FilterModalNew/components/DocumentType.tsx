@@ -162,10 +162,8 @@ const DocumentType: FC<IVisibilityProps> = ({ control, name }) => {
   ];
 
   return (
-    <div className="px-2 py-4">
-      <div className="max-h-[330px] min-h-[330px] overflow-y-auto">
-        <Layout fields={documentFields} />
-      </div>
+    <div className="h-full overflow-y-auto">
+      <Layout fields={documentFields} />
     </div>
   );
 };

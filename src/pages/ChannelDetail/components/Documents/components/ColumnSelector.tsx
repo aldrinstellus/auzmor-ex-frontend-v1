@@ -7,6 +7,7 @@ import Popover from 'components/Popover';
 import { ICheckboxListOption } from 'components/CheckboxList';
 import { searchObjects } from 'utils/misc';
 import Input from 'components/Input';
+import { useDebounce } from 'hooks/useDebounce';
 
 export interface ColumnItem {
   id: string;
@@ -33,7 +34,7 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
     keyPrefix: 'columnSelector',
   });
 
-  const { control, watch } = useForm({
+  const { control, watch, formState: { dirtyFields } } = useForm({
     defaultValues: {
       columns: columns
         .filter((column) => !!column.visibility)
@@ -47,18 +48,20 @@ const ColumnSelector: FC<IColumnSelecorProps> = ({
     'columnSearch',
   ]);
 
+  const debouncedWatchedColumns = useDebounce(watchedColumns, 500);
+
   useEffect(() => {
-    if (watchedColumns) {
+    if (debouncedWatchedColumns && dirtyFields?.columns) {
       updateColumns(
         columns.map((column) => ({
           ...column,
-          visibility: !!watchedColumns.find(
-            (watchedColumn) => watchedColumn.data.id === column.id,
+          visibility: !!debouncedWatchedColumns.find(
+            (watchedColumn: any) => watchedColumn.data.id === column.id,
           ),
         })),
       );
     }
-  }, [watchedColumns]);
+  }, [debouncedWatchedColumns, dirtyFields]);
 
   const disabledFieldName = ['Name'];
 

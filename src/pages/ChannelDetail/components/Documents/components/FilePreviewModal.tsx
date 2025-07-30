@@ -320,7 +320,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
                 previewUrl={previewUrl}
                 showCloseIcon={false}
                 variant={PREVIEW_CARD_VARIANT.document}
-                cardClassName="w-[70%] h-[80%] max-h-[80%]"
+                cardClassName="w-[85%] h-[90%] max-h-[90%] mb-[40px]"
               />
             </div>
           ) : null}

@@ -66,12 +66,12 @@ const FilterModalNew = <TFilters extends Record<string, any>>({
         title={t('title')}
         onClose={closeModal}
         closeBtnDataTestId="close-filters"
-        className='shrink-0'
+        className='h-[15%]'
       />
 
-      <form className="flex flex-1 overflow-hidden">
+      <form className="flex flex-1 h-[70%] overflow-hidden">
         <div className="flex w-full h-full border-t border-neutral-200">
-          <div className="w-1/3 border-r border-neutral-200 overflow-y-auto">
+          <div className="w-1/3 h-full border-r border-neutral-200 overflow-y-auto">
             <ul className="border-b-2 border-b-bg-neutral-200">
               {filterNavigation.map((item, index) => (
                 <li
@@ -92,11 +92,11 @@ const FilterModalNew = <TFilters extends Record<string, any>>({
               ))}
             </ul>
           </div>
-          <div className="w-2/3 overflow-y-auto px-2">{activeFilter.component(form)}</div>
+          <div className="w-2/3 h-full">{activeFilter.component(form)}</div>
         </div>
       </form>
 
-      <div className="shrink-0 flex justify-end items-center p-4 border-t border-neutral-200 bg-blue-50">
+      <div className="h-[15%] flex justify-end items-center p-4 border-t border-neutral-200 bg-blue-50">
         <Button
           label={t('clearFilterCTA')}
           variant={ButtonVariant.Secondary}

@@ -106,8 +106,10 @@ const fieldSize: Record<string, number> = {
 const fieldSizeByType: Record<string, number> = {
   hyperlink: 150,
   date: 150,
-  boolean: 100,
+  boolean: 150,
   number: 150,
+  text: 150,
+  choice: 140,
 };
 
 const TimeField = ({ time }: { time: string }) => (
@@ -133,12 +135,9 @@ const NameField = ({
         hover={false}
       />
     </div>
-    <Truncate
-      maxLength={25}
-      toolTipClassName='!z-[999]'
-      text={name || ''}
-      className="text-neutral-900 font-medium"
-    />
+     <div className="break-words overflow-hidden">
+      {name || ''}
+    </div>
   </div>
 );
 
@@ -152,7 +151,7 @@ const OwnerField = ({
   <div className="flex gap-2">
     <Avatar image={ownerImage} name={ownerName} size={24} />
     <Truncate
-      maxLength={10}
+      maxLength={14}
       toolTipClassName='!z-[999]'
       text={ownerName}
     />
@@ -176,7 +175,7 @@ const LocationField = ({
       triggerNode={<BreadCrumb items={pathItems} onItemClick={() => {}} />}
       triggerNodeClassName="w-full"
       wrapperClassName="w-full"
-      className='right-[-100px] top-[-10px] rounded-9xl'
+      className='right-[-10px] top-[-10px] rounded-9xl'
       contentRenderer={() => (
         <div className="flex p-3 bg-white rounded-9xl border border-primary-50 shadow">
           <BreadCrumb
@@ -228,13 +227,18 @@ const renderCustomField = (type: string, value: any): React.ReactNode => {
             {displayed.map((item, idx) => (
               <span
                 key={idx}
-                className="bg-white text-sm rounded-full px-3 py-1 inline-block border border-neutral-200"
+                className="bg-white h-[30px] text-sm rounded-full px-3 py-1 inline-block border border-neutral-200"
               >
-                {item}
+                <Truncate
+                maxLength={12}
+                toolTipClassName='!z-[999]'
+                text={item}
+                className="text-neutral-900 font-medium"
+              />
               </span>
             ))}
             {remaining > 0 && (
-              <span className="bg-white text-sm rounded-full px-3 py-1 inline-block border border-neutral-200">
+              <span className="bg-white h-[30px] text-sm rounded-full px-3 py-1 inline-block border border-neutral-200">
                 +{remaining}
               </span>
             )}
@@ -242,8 +246,13 @@ const renderCustomField = (type: string, value: any): React.ReactNode => {
         );
       }
       return (
-        <span className="bg-white text-sm rounded-full px-3 py-1 inline-block border border-neutral-200">
-          {value}
+        <span className="bg-white h-[30px] text-sm rounded-full px-3 py-1 inline-block border border-neutral-200">
+          <Truncate
+                maxLength={12}
+                toolTipClassName='!z-[999]'
+                text={value}
+                className="text-neutral-900 font-medium"
+              />
         </span>
       );
     }
@@ -284,12 +293,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const [isAddModalOpen, openAddModal, closeAddModal] = useModal();
   const [totalRows, setTotalRows] = useState<number>(0);
   const [view, setView] = useState<'LIST' | 'GRID'>('LIST');
+  const [tableData, setTableData] = useState([]);
   const [confirm, showConfirm, closeConfirm, deleteDocProps] = useModal();
   const [filePreview, openFilePreview, closeFilePreview, filePreviewProps] =
     useModal();
   const [renameModal, showRenameModal, closeRenameModal, renameModalProps] =
     useModal();
-  const { control, watch, setValue } = useForm<IForm>({
+  const { control, watch, setValue, formState: { dirtyFields }  } = useForm<IForm>({
     defaultValues: {
       applyDocumentSearch: '',
       documentSearch: '',
@@ -333,10 +343,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   } = useChannelDocumentStatus({
     channelId,
   });
+  const isBaseFolderSet = statusResponse?.status === 'ACTIVE';
 
   // Api call: Get fields for the channel
   const useChannelDocumentFields = getApi(ApiEnum.GetChannelDocumentFields);
-  const { data: documentFields } = useChannelDocumentFields({ channelId }, { enabled: statusResponse?.status === 'ACTIVE' });
+  const { data: documentFields } = useChannelDocumentFields({ channelId }, { enabled: isBaseFolderSet });
 
   // Api call: Update fields for the channel
   const updateChannelDocumentFields = getApi(
@@ -497,6 +508,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       channelId,
     },
     {
+      enabled: isBaseFolderSet,
       onSuccess: (data: any) => {
         const syncResults = data?.data?.result?.data;
         if (!!syncResults?.length) {
@@ -514,7 +526,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   );
 
   // State management flags
-  const isBaseFolderSet = statusResponse?.status === 'ACTIVE';
   const isConnectionMade =
     isBaseFolderSet ||
     (statusResponse?.status === 'INACTIVE' &&
@@ -671,7 +682,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             id: field.id,
             accessorKey: field.fieldName,
             header: () => (
-              <div className="font-bold text-neutral-500">{field.label}</div>
+              <div className="font-bold text-neutral-500 truncate">{field.label}</div>
             ),
             cell: (info: CellContext<DocType, unknown>) => {
               if (field.fieldName === 'Owner') {
@@ -781,8 +792,14 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             </div>
             <div className='flex flex-col gap-1'>
             <span className="break-all truncate w-full">
-              {info.getValue() as string}
+              
             </span>
+            <Truncate
+              maxLength={25}
+              toolTipClassName='!z-[999]'
+              text={info.getValue() as string}
+              className="text-neutral-900 font-medium"
+            />
             {info.row.original?.customFields && Array.isArray(info.row.original.customFields) && info.row.original?.customFields.length > 0 && (
               <div className="text-xs text-neutral-700">
                 &quot;
@@ -816,74 +833,62 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         tdClassName: 'flex-1 min-w-[250px] border-b-1 border-neutral-200 py-3 px-3',
       },
       {
-        accessorKey: 'ownerName',
-        header: () => (
-          <div className="font-bold text-neutral-500">{t('owner')}</div>
-        ),
-        cell: (info: CellContext<DocType, unknown>) => (
-          <div className="flex gap-2">
-            <Avatar
-              image={info.row.original?.ownerImage}
-              name={info.row.original?.ownerName}
-              size={24}
-            />
-            <span className="truncate">{info.row.original?.ownerName}</span>
-          </div>
-        ),
-        size: 256,
-        thClassName: 'py-3 px-3',
-        tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
-      },
-      {
-        accessorKey: 'modifiedAt',
-        header: () => (
-          <div className="font-bold text-neutral-500">{t('lastUpdated')}</div>
-        ),
-        cell: (info: CellContext<DocType, unknown>) => (
-          <div className="flex gap-2 font-medium text-neutral-900 leading-6">
-            {moment(info.getValue() as string).format('MMMM DD,YYYY') as string}
-          </div>
-        ),
-        size: 200,
-        thClassName: 'py-3 px-3',
-        tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
-      },
-      {
         accessorKey: 'location',
         header: () => (
           <div className="font-bold text-neutral-500">{t('location')}</div>
         ),
         cell: (info: CellContext<DocType, unknown>) => {
           return (
-            <Popover
-              triggerNode={
-                <BreadCrumb
-                  items={getMappedLocation(info?.row?.original)}
-                  onItemClick={() => {}}
-                />
-              }
-              className='left-[-100px] top-0 rounded-9xl'
-              triggerNodeClassName="w-full"
-              wrapperClassName="w-full"
-              contentRenderer={() => (
-                <div className="flex p-3 bg-white rounded-9xl border border-primary-50 shadow">
-                  <LocationField
-                    pathItems={getMappedLocation(info?.row?.original)}
-                    pathWithId={info?.row?.original?.pathWithId}
-                    channelId={channelId}
-                    updateDocumentSearch={(value: string) =>
-                      setValue('applyDocumentSearch', value)
-                    }
-                  />
-                </div>
-              )}
-            />
+              <LocationField
+                pathItems={getMappedLocation(info?.row?.original)}
+                pathWithId={info?.row?.original?.pathWithId}
+                channelId={channelId}
+                updateDocumentSearch={(value: string) =>
+                  setValue('applyDocumentSearch', value)
+                }
+              />
           );
         },
         size: 260,
         thClassName: 'py-3 px-3',
         tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
       },
+      ...((documentFields as ColumnItem[])
+        ?.filter(
+          (field: ColumnItem) =>
+            field.visibility && field.fieldName !== 'Name' && field.type !== 'image',
+        )
+        ?.map((field: any) => ({
+          id: field.id,
+          accessorKey: field.fieldName,
+          header: () => (
+            <div className="font-bold text-neutral-500">{field.label}</div>
+          ),
+          cell: (info: CellContext<DocType, unknown>) => {
+            if (field.fieldName === 'Owner') {
+              return (
+                <OwnerField
+                  ownerName={info.row.original?.ownerName}
+                  ownerImage={info.row.original?.ownerImage}
+                />
+              );
+            } else if (
+              field.fieldName === 'Last Updated' ||
+              field.type === 'datetime'
+            ) {
+              return <TimeField time={info.getValue() as string} />;
+            } else {
+              const matchedSearch = tableData.find((data: any) => data.id === info.row.original.id) as any;
+              const matchedResult = matchedSearch?.customFields.find(
+                (eachField: any) => field.fieldName === eachField.field_name
+              ) as { field_values?: any } | undefined;
+              return <>{renderCustomField(field.type, matchedResult?.field_values)}</>;
+            }
+          },
+          size: field.size || fieldSize[field.fieldName] || fieldSizeByType[field.type] || 256,
+          thClassName: 'py-3 px-3',
+          tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
+        })) || []),
       {
         accessorKey: 'more',
         header: () => '',
@@ -922,7 +927,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         tdClassName: 'sticky right-0 !w-[60px] !z-[10] bg-white flex items-center justify-center border-l-1 border-b-1 border-r-1 border-neutral-200 py-3 px-3',
       },
     ],
-    [totalRows, downloadChannelFileMutation.isLoading],
+    [totalRows, downloadChannelFileMutation.isLoading, documentFields],
   );
 
   // Columns configuration for Datagrid component for Grid view
@@ -1062,7 +1067,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       },
     },
     options: {
-      enabled: !isLoading,
+      enabled: !isLoading && isBaseFolderSet,
     },
     loadingGrid: (
       <Skeleton
@@ -1112,6 +1117,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     setTotalRows(
       dataGridProps?.totalCount || (dataGridProps?.flatData || []).length,
     );
+    if (!isDocSearchApplied) {
+      setTableData(dataGridProps.flatData);
+    }
   }, [dataGridProps.flatData]);
 
   // Hook to update input tag attributes
@@ -1694,6 +1702,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               <DocSearch
                 control={control}
                 watch={watch}
+                dirtyFields={dirtyFields}
                 onEnter={(value: string) =>
                   setValue('applyDocumentSearch', value)
                 }

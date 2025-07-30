@@ -124,9 +124,10 @@ export const useAppliedFilter = (initialFilters: Record<string, any>) => {
             Object.entries(filters).map(([key, value]) => {
               if (key === 'modifiedOn' || key === 'sort') return <></>;
               if (
-                !value ||
-                (Array.isArray(value) && value.length === 0) ||
-                !filterKeys.map((eachFilter) => eachFilter.key).includes(key)
+                (value === undefined ||
+                  (Array.isArray(value) && value.length === 0) ||
+                  (!filterKeys.map((eachFilter) => eachFilter.key).includes(key) &&
+                    typeof value !== 'boolean'))
               )
                 return null;
 
@@ -139,7 +140,9 @@ export const useAppliedFilter = (initialFilters: Record<string, any>) => {
                       ? v
                       : v?.data?.label || v?.data?.name || JSON.stringify(v),
                   )
-                : [typeof value === 'string' ? value : JSON.stringify(value)];
+                : typeof value === 'boolean'
+                  ? [value ? 'Yes' : 'No']
+                  : [typeof value === 'string' ? value : JSON.stringify(value)];
 
               return (
                 <FilterChip

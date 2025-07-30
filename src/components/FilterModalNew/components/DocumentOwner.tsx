@@ -77,7 +77,7 @@ const DocumentOwner: FC<IVisibilityProps> = ({
   );
 
   return (
-    <div className="flex flex-col h-full max-h-[400px] px-2 pt-2">
+    <div className="flex flex-col h-full px-2 pt-2">
       <div className="shrink-0 mb-2">
         <Layout fields={searchField} />
       </div>
