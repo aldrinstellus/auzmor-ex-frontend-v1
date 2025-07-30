@@ -1108,7 +1108,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       ),
       trDataClassName: isCredExpired ? '' : 'cursor-pointer !px-0 !py-0 !z-[10] !gap-0 !border-l-1 !border-b-0 border-neutral-200',
       thDataClassName: '!px-0 !py-0 !border-0 !gap-0 !z-10',
-      className: '!overflow-x-auto border-r-1 border-neutral-200',
+      className: '!overflow-auto border-r-1 border-neutral-200 !max-h-[450px]',
     },
   });
 

@@ -385,7 +385,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
           <div className="flex gap-1.5 w-full overflow-hidden">
           <Icon name={iconName} size={24} hover={false} />
           <div>
-            <div>
+            <div className='flex gap-1 items-center'>
             <div className="min-w-0">
               <Truncate
                 text={documentData.name}

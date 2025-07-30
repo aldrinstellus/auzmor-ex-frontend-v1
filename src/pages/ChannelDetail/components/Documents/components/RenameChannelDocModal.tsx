@@ -36,7 +36,7 @@ const RenameChannelDocModal: FC<IRenameChannelDocModalProps> = ({
       .string()
       .trim()
       .min(1, t('emptyRenameError'))
-      .max(250, t('charLimitRenameError', { limit: 250 })),
+      .max(251, t('charLimitRenameError', { limit: 251 })),
   });
 
   const {
@@ -73,6 +73,8 @@ const RenameChannelDocModal: FC<IRenameChannelDocModalProps> = ({
             error: errors.name?.message,
             autofocus: true,
             onEnter: handleKeyDown,
+            maxLength: 251,
+            showCounter: true,
           },
         ]}
       />

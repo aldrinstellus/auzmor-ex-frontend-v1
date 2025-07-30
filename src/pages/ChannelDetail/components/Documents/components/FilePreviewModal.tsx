@@ -227,7 +227,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
             </div>
           )}
         </div>
-        <div className="flex absolute gap-3 right-4">
+        <div className="flex gap-3 right-4">
           {(canViewComment || isChannelAdmin || isAdmin) && (
             <Icon
               name={showComment ? 'commentFilled' : 'comment'}
