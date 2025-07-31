@@ -53,6 +53,7 @@ const SearchModal: FC<ISearchModalProps> = ({
         limit,
       },
       {
+        enabled: !showRecentSearchResults,
         onSuccess: async () => {
           await queryClient.invalidateQueries(['global-recent-search-terms']);
         },
