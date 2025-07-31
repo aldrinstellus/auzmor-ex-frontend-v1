@@ -380,7 +380,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
         const iconName = documentData?.isFolder
           ? 'folder'
           : getIconFromMime(documentData?.mimeType);
-        const matched = result?.customFields?.find((field: any) => field.is_matched === true);
+        const matched = result?.customFields?.find((field: any) => field.isMatched === true);
         return (
           <>
           <div className="flex gap-1.5 w-full overflow-hidden">
@@ -411,15 +411,15 @@ const SearchResults: FC<ISearchResultsProps> = ({
               <div className="text-xs text-neutral-500">
                 &quot;
                 <HighlightText
-                  text={Array.isArray(matched.field_values)
-                    ? matched.field_values.find((val: any) => val?.toLowerCase?.().includes(searchQuery?.toLowerCase?.()))
-                    : matched.field_values}
+                  text={Array.isArray(matched.fieldValues)
+                    ? matched.fieldValues.find((val: any) => val?.toLowerCase?.().includes(searchQuery?.toLowerCase?.()))
+                    : matched.fieldValues}
                   subString={searchQuery}
                 />
                 &quot;&nbsp;
                 {t('foundIn')}&nbsp;
                 <span className="font-semibold text-neutral-700">
-                  {matched.field_name}
+                  {matched.fieldName}
                 </span>
               </div>
             )}
