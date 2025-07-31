@@ -380,6 +380,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
         const iconName = documentData?.isFolder
           ? 'folder'
           : getIconFromMime(documentData?.mimeType);
+        const matched = result?.customFields?.find((field: any) => field.is_matched === true);
         return (
           <>
           <div className="flex gap-1.5 w-full overflow-hidden">
@@ -406,27 +407,19 @@ const SearchResults: FC<ISearchResultsProps> = ({
               </div>
             </div>
             </div>
-            {result?.customFields && Array.isArray(result.customFields) && result.customFields.length > 0 && (
+            {result?.customFields && Array.isArray(result.customFields) && result.customFields.length > 0 && matched && (
               <div className="text-xs text-neutral-500">
                 &quot;
                 <HighlightText
-                  text={
-                    Array.isArray(result.customFields[0].customFieldValues)
-                      ? result.customFields[0].customFieldValues.find((val: any) =>
-                          typeof val === 'string' &&
-                          searchQuery &&
-                          val.toLowerCase().includes(searchQuery.toLowerCase())
-                        ) || ''
-                      : typeof result.customFields[0].customFieldValues === 'string'
-                        ? result.customFields[0].customFieldValues
-                        : ''
-                  }
+                  text={Array.isArray(matched.field_values)
+                    ? matched.field_values.find((val: any) => val?.toLowerCase?.().includes(searchQuery?.toLowerCase?.()))
+                    : matched.field_values}
                   subString={searchQuery}
                 />
                 &quot;&nbsp;
                 {t('foundIn')}&nbsp;
                 <span className="font-semibold text-neutral-700">
-                  {result.customFields[0].displayName}
+                  {matched.field_name}
                 </span>
               </div>
             )}
