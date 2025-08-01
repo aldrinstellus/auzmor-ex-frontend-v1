@@ -86,15 +86,14 @@ const FilePreview: FC<IFilePreviewProps> = ({
     fileId,
   });
 
-  const getDocCommentsCount = getApi(ApiEnum.GetCommentsCount);
+  const useCommentCount = getApi(ApiEnum.GetCommentsCount);
   const {
     data: commentInfo,
     isFetching: isLoadingComments,
-  } = getDocCommentsCount({
+  } = useCommentCount({
     fileId,
     channelId,
   }, { enabled: (canViewComment || isChannelAdmin || isAdmin) });
-  console.log(commentInfo);
 
   const downloadChannelFile = getApi(ApiEnum.GetChannelDocDownloadUrl);
   const downloadChannelFileMutation = useMutation({
@@ -139,12 +138,9 @@ const FilePreview: FC<IFilePreviewProps> = ({
 }, [commentId, postId]);
 
 useEffect(() => {
-  if (!isLoadingComments && commentInfo?.pages?.length > 0) {
-    const firstPage = commentInfo.pages?.[0]?.data?.data;
-    if (firstPage?.totalCount > 0) {
-      setTotalComments(firstPage.totalCount);
-      setShowComment(true);
-    }
+  if (!isLoadingComments && commentInfo.count > 0) {
+    setTotalComments(commentInfo.count);
+    setShowComment(true);
   }
 }, [isLoadingComments, commentInfo]);
 
@@ -262,7 +258,7 @@ useEffect(() => {
                 setShowComment(!showComment);
                 }}
               />
-              {isLoadingComments ? (
+              {(isLoadingComments && !showComment) ? (
                 <Spinner className="!w-4 !h-4 absolute -top-1 -right-1 bg-red-600 text-white text-xxs font-semibold bg-red-600 flex items-center justify-center rounded-full" />
               ) : (totalComments > 0 && !showComment) ? (
                 <div className="absolute -top-1 -right-1 bg-red-600 text-white text-xxs font-semibold w-4 h-4 flex items-center justify-center rounded-full">

@@ -112,23 +112,6 @@ const fieldSizeByType: Record<string, number> = {
   choice: 140,
 };
 
-const getWidthClass = (type: string) => {
-switch(type) {
- case 'text':
-  return `min-w-[30%] max-w-[256px]`;
- case 'hyperlink':
- case 'boolean':
- case 'number':
-  return `w-[150px] max-w-[150px]`;
- case 'choice':
-  return `w-[140px] max-w-[140px]`;
- case 'metadata':
-  return `min-w-[10%] max-w-[256px]`;
-  default :``
-  return '';
-} 
-};
-
 const TimeField = ({ time }: { time: string }) => (
   <div className="flex gap-2 font-medium text-neutral-900 leading-6">
     {moment(time).format('MMMM DD,YYYY') as string}
@@ -153,7 +136,7 @@ const NameField = ({
       />
     </div>
     <div className="break-words overflow-hidden">
-      <div className="line-clamp-3">
+      <div className="line-clamp-2">
         {name || ''}
       </div>
     </div>
@@ -235,7 +218,7 @@ const renderCustomField = (type: string, value: any): React.ReactNode => {
     case 'text':
       return (
         <div className='break-words overflow-hidden'>
-          <div className='line-clamp-3'>
+          <div className='line-clamp-2'>
             {value}
           </div>
         </div>
@@ -704,9 +687,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             (field: ColumnItem) =>
               field.visibility && field.fieldName !== 'Name' && field.type !== 'image',
           )
-          ?.map((field: any) => {
-            const widthClass = getWidthClass(field.type);
-            return {
+          ?.map((field: any) => ({
             id: field.id,
             accessorKey: field.fieldName,
             header: () => (
@@ -734,10 +715,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               }
             },
             size: field.size || fieldSize[field.fieldName] || fieldSizeByType[field.type] || 256,
-            thClassName: `${widthClass} py-3 px-3 border-2 border-black`,
-            tdClassName: `${widthClass} border-b-1 border-neutral-200 py-3 px-3 border-2 border-black`,
-          };
-        }) || []),
+            thClassName: 'relative py-3 px-3',
+            tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
+          })) || []),
         {
           id: 'more',
           accessorKey: 'more',

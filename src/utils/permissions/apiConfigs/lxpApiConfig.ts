@@ -89,7 +89,7 @@ export const apiConfigLxp = {
     [Default]: queries.deleteDocComment,
   },
   [ApiEnum.GetCommentsCount]: {
-    [Default]: queries.getDocCommentsCount,
+    [Default]: queries.useCommentCount,
   },
 
   //comments
