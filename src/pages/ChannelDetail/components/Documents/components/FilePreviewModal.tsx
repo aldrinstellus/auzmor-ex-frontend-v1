@@ -94,6 +94,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
     fileId,
     channelId,
   }, { enabled: (canViewComment || isChannelAdmin || isAdmin) });
+  console.log(commentInfo);
 
   const downloadChannelFile = getApi(ApiEnum.GetChannelDocDownloadUrl);
   const downloadChannelFileMutation = useMutation({
@@ -393,7 +394,6 @@ useEffect(() => {
               showEmptyState={true}
               canPostComment={canPostComment && canViewComment}
               canDeleteComment={canDeleteComment}
-              totalCommentCount={totalComments}
             />
           )
         )}

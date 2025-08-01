@@ -115,8 +115,16 @@ const fieldSizeByType: Record<string, number> = {
 const getWidthClass = (type: string) => {
 switch(type) {
  case 'text':
-  return `min-w-[px]`;
-  default :
+  return `min-w-[30%] max-w-[256px]`;
+ case 'hyperlink':
+ case 'boolean':
+ case 'number':
+  return `w-[150px] max-w-[150px]`;
+ case 'choice':
+  return `w-[140px] max-w-[140px]`;
+ case 'metadata':
+  return `min-w-[10%] max-w-[256px]`;
+  default :``
   return '';
 } 
 };
@@ -726,8 +734,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               }
             },
             size: field.size || fieldSize[field.fieldName] || fieldSizeByType[field.type] || 256,
-            thClassName: `${widthClass} py-3 px-3`,
-            tdClassName: `${widthClass} border-b-1 border-neutral-200 py-3 px-3`,
+            thClassName: `${widthClass} py-3 px-3 border-2 border-black`,
+            tdClassName: `${widthClass} border-b-1 border-neutral-200 py-3 px-3 border-2 border-black`,
           };
         }) || []),
         {
