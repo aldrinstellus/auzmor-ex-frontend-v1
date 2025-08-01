@@ -98,18 +98,27 @@ interface IDocumentProps {
 }
 
 const fieldSize: Record<string, number> = {
-  Owner: 180,
+  Owner: 200,
   ownerName: 256,
   modifiedAt: 200,
 };
 
 const fieldSizeByType: Record<string, number> = {
   hyperlink: 150,
-  date: 150,
+  date: 200,
   boolean: 150,
   number: 150,
-  text: 150,
+  text: 250,
   choice: 140,
+};
+
+const getWidthClass = (type: string) => {
+switch(type) {
+ case 'text':
+  return `min-w-[px]`;
+  default :
+  return '';
+} 
 };
 
 const TimeField = ({ time }: { time: string }) => (
@@ -128,15 +137,17 @@ const NameField = ({
   isFolder: boolean;
 }) => (
   <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
-    <div className="flex w-6">
+    <div className="flex w-6 shrink-0">
       <Icon
         name={isFolder ? 'folder' : getIconFromMime(mimeType)}
         className="!w-6"
         hover={false}
       />
     </div>
-     <div className="break-words overflow-hidden">
-      {name || ''}
+    <div className="break-words overflow-hidden">
+      <div className="line-clamp-3">
+        {name || ''}
+      </div>
     </div>
   </div>
 );
@@ -151,7 +162,7 @@ const OwnerField = ({
   <div className="flex gap-2">
     <Avatar image={ownerImage} name={ownerName} size={24} />
     <Truncate
-      maxLength={14}
+      maxLength={12}
       toolTipClassName='!z-[999]'
       text={ownerName}
     />
@@ -214,6 +225,13 @@ const renderCustomField = (type: string, value: any): React.ReactNode => {
 
   switch (type) {
     case 'text':
+      return (
+        <div className='break-words overflow-hidden'>
+          <div className='line-clamp-3'>
+            {value}
+          </div>
+        </div>
+      )
     case 'number':
     case 'currency':
     case 'metadata':
@@ -670,15 +688,17 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               isFolder={isRootDir || info?.row?.original?.isFolder}
             />
           ),
-          thClassName: 'flex-1 min-w-[250px] border-neutral-200 py-3 px-3',
-          tdClassName: 'flex-1 min-w-[250px] border-b-1 border-neutral-200 py-3 px-3',
+          thClassName: 'flex-1 min-w-[30%] border-neutral-200 py-3 px-3',
+          tdClassName: 'flex-1 min-w-[30%] border-b-1 border-neutral-200 py-3 px-3',
         },
         ...((documentFields as ColumnItem[])
           ?.filter(
             (field: ColumnItem) =>
               field.visibility && field.fieldName !== 'Name' && field.type !== 'image',
           )
-          ?.map((field: any) => ({
+          ?.map((field: any) => {
+            const widthClass = getWidthClass(field.type);
+            return {
             id: field.id,
             accessorKey: field.fieldName,
             header: () => (
@@ -706,9 +726,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               }
             },
             size: field.size || fieldSize[field.fieldName] || fieldSizeByType[field.type] || 256,
-            thClassName: 'py-3 px-3',
-            tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
-          })) || []),
+            thClassName: `${widthClass} py-3 px-3`,
+            tdClassName: `${widthClass} border-b-1 border-neutral-200 py-3 px-3`,
+          };
+        }) || []),
         {
           id: 'more',
           accessorKey: 'more',
@@ -829,8 +850,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             </div>
           </div>
         ),
-        thClassName: 'flex-1 min-w-[250px] border-neutral-200 py-3 px-3',
-        tdClassName: 'flex-1 min-w-[250px] border-b-1 border-neutral-200 py-3 px-3',
+        thClassName: 'flex-1 min-w-[30%] border-neutral-200 py-3 px-3',
+        tdClassName: 'flex-1 min-w-[30%] border-b-1 border-neutral-200 py-3 px-3',
       },
       {
         accessorKey: 'location',

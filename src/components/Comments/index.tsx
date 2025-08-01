@@ -60,6 +60,7 @@ interface CommentsProps<T = any> {
   className?: string;
   canPostComment?: boolean;
   canDeleteComment?: boolean;
+  totalCommentCount?: number;
 }
 
 export interface IComment {
@@ -98,6 +99,7 @@ const Comments: FC<CommentsProps> = ({
   className= '',
   canPostComment = true,
   canDeleteComment = true,
+  totalCommentCount = 0,
 }) => {
   const { t } = useTranslation('post', { keyPrefix: 'commentComponent' });
   const WORK_ANNIVERSARY_SUGGESTIONS = [
@@ -150,7 +152,7 @@ const Comments: FC<CommentsProps> = ({
         return (
           <>
           <div className='font-semibold pb-2 border-b-1 border-neutral-200'>
-            {t('commentTitle')}
+            {t('commentTitle', {count: totalCommentCount})}
           </div>
           {getPost(entityId)?.occasionContext?.type === 'WORK_ANNIVERSARY' && (
             <div className="flex mt-2 w-full justify-center">

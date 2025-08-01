@@ -44,7 +44,7 @@
     "createReplyPlaceholder": "Reply to this thread…",
     "createWishPlaceholder": "Wish them now...",
     "documentCommentPlaceholder": "Add a comment…",
-    "commentTitle": "Comments"
+    "commentTitle": "Comments ({{count}})"
   },
   "announcementAnalytics": {
     "title": "Acknowledgement Report",

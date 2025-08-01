@@ -351,6 +351,11 @@ export const deleteDocComment = async (payload: deleteParams, commentId: string)
   await apiService.delete(`/channels/${channelId}/files/${fileId}/comments/${commentId}`);
 };
 
+export const getDocCommentsCount = async (payload: any) => {
+  const { channelId, fileId } = payload || {};
+  await apiService.get(`/channels/${channelId}/files/${fileId}/comments/count`);
+};
+
 const getCommentById = async (
   appendComments: (comments: IComment[]) => void,
   commentId?: string,
