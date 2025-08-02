@@ -100,36 +100,38 @@ const DocSearch: FC<IDocSearchProps> = ({
         ]}
         className="w-[480px]"
       />
-      <ul
-        className={style}
-        style={{ boxShadow: '0px 4px 15px 0px rgba(0, 0, 0, 0.15)' }}
-      >
-        {isFetching ? (
-          [...Array(3)].map((each, index: number) => (
-            <li key={`doc-deep-search-skeleton-${index}`}>
-              <div className="flex items-center gap-2">
-                <Skeleton height={32} width={32} />
-                <div className="flex flex-col flex-grow">
-                  <Skeleton className="w-full" />
-                  <Skeleton className="w-full" />
+      {dirtyFields?.documentSearch && (
+        <ul
+          className={style}
+          style={{ boxShadow: '0px 4px 15px 0px rgba(0, 0, 0, 0.15)' }}
+        >
+          {isFetching ? (
+            [...Array(3)].map((each, index: number) => (
+              <li key={`doc-deep-search-skeleton-${index}`}>
+                <div className="flex items-center gap-2">
+                  <Skeleton height={32} width={32} />
+                  <div className="flex flex-col flex-grow">
+                    <Skeleton className="w-full" />
+                    <Skeleton className="w-full" />
+                  </div>
                 </div>
-              </div>
-            </li>
-          ))
-        ) : (documents || []).length <= 0 ? (
-          <NoDataFound illustrationClassName="h-24" hideClearBtn />
-        ) : (
-          (documents || []).map((doc: Doc) => (
-            <li key={doc.id}>
-              <DocSearchRow
-                data={doc}
-                searchQuery={documentSearchDebounceValue}
-                onClick={onClick}
-              />
-            </li>
-          ))
-        )}
-      </ul>
+              </li>
+            ))
+          ) : (documents || []).length <= 0 ? (
+            <NoDataFound illustrationClassName="h-24" hideClearBtn />
+          ) : (
+            (documents || []).map((doc: Doc) => (
+              <li key={doc.id}>
+                <DocSearchRow
+                  data={doc}
+                  searchQuery={documentSearchDebounceValue}
+                  onClick={onClick}
+                />
+              </li>
+            ))
+          )}
+        </ul>
+    )}
     </div>
   );
 };

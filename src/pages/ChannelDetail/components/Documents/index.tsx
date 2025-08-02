@@ -179,10 +179,12 @@ const LocationField = ({
       wrapperClassName="w-full"
       className='right-[-10px] top-[-10px] rounded-9xl'
       contentRenderer={() => (
-        <div className="flex p-3 bg-white rounded-9xl border border-primary-50 shadow">
+        <div className="flex w-[200px] p-3 bg-white rounded-9xl border border-primary-50 shadow">
           <BreadCrumb
             items={pathItems}
-            labelClassName="hover:text-primary-500 hover:underline min-w-max"
+            labelClassName="hover:text-primary-500 hover:underline text-sm w-full"
+            folderIconSize={16}
+            iconSize={12}
             onItemClick={(item, e) => {
               e?.stopPropagation();
               const sliceIndex = pathWithId.findIndex(
@@ -789,7 +791,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         ),
         cell: (info: CellContext<DocType, unknown>) => (
           <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
-            <div className="flex w-6">
+            <div className="w-6">
               <Icon
                 name={
                   info?.row?.original?.isFolder
@@ -799,16 +801,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 className="!w-6"
               />
             </div>
-            <div className='flex flex-col gap-1'>
-            <span className="break-all truncate w-full">
-              
-            </span>
-            <Truncate
-              maxLength={25}
-              toolTipClassName='!z-[999]'
-              text={info.getValue() as string}
-              className="text-neutral-900 font-medium"
-            />
+            <div className="break-words overflow-hidden">
+              <div className="line-clamp-2">
+                {info.getValue() as string}
+              </div>
             {info.row.original?.customFields && Array.isArray(info.row.original.customFields) && info.row.original?.customFields.length > 0 && (
               <div className="text-xs text-neutral-700">
                 &quot;
@@ -858,9 +854,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               />
           );
         },
-        size: 260,
-        thClassName: 'py-3 px-3',
-        tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
+        thClassName: '!w-[320px] truncate py-3 px-3',
+        tdClassName: '!w-[320px] truncate border-b-1 border-neutral-200 py-3 px-3',
       },
       ...((documentFields as ColumnItem[])
         ?.filter(

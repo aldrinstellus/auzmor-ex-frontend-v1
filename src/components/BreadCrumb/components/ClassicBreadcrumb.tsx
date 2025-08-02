@@ -7,6 +7,7 @@ interface IClassicBreadcrumbProps {
   items: Item[];
   labelClassName?: string;
   iconSize?: number;
+  folderIconSize?: number;
   onItemClick?: (
     item: Item,
     e?: React.MouseEvent<HTMLSpanElement, MouseEvent>,
@@ -17,6 +18,7 @@ const ClassicBreadcrumb: FC<IClassicBreadcrumbProps> = ({
   items,
   labelClassName = '',
   iconSize = 16,
+  folderIconSize,
   onItemClick = () => {},
 }) => {
   const labelStyle = clsx({
@@ -24,10 +26,10 @@ const ClassicBreadcrumb: FC<IClassicBreadcrumbProps> = ({
     'flex font-medium text-neutral-500 cursor-pointer truncate': true,
   });
   return (
-    <div className="flex items-center gap-2 w-full overflow-hidden">
+    <div className="flex items-center gap-2 w-full">
       {items.map((each, index) => (
         <div key={each.id} className="flex items-center gap-2 h-6">
-          <Icon name="folder" size={20} />
+          <Icon name="folder" size={folderIconSize || 20} />
           <span
             className={`${
               index === items.length - 1 &&
