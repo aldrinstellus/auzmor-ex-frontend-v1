@@ -30,6 +30,7 @@ import {
   validImageTypes,
 } from './constants';
 import pako from 'pako';
+import { IComment } from 'components/Comments';
 
 export const toCamelCase = (str: string) => {
   return str.replace(/_([a-z])/g, (_, letter) => letter.toUpperCase());
@@ -800,4 +801,45 @@ export const searchObjects = <T>(
       return false;
     }),
   );
+};
+
+export const addCdnUrlParamstoFile = (file: IMedia, cdnUrlParams: string) => {
+  if (file?.original) {
+    file.original = `${file.original}?${cdnUrlParams}`;
+  }
+  const imageData = file?.transcodedData?.image as
+    | Record<string, string>
+    | undefined;
+  if (imageData) {
+    Object.keys(imageData).forEach((size: string) => {
+      imageData[size] = imageData[size]
+        ? imageData[size] + `?${cdnUrlParams}`
+        : '';
+    });
+  }
+};
+
+export const addCdnUrlParamsToComment = (
+  comment: IComment,
+  cdnUrlParams: string,
+) => {
+  comment.files?.forEach((file: IMedia) => {
+    addCdnUrlParamstoFile(file, cdnUrlParams);
+  });
+  const commentReplies = (comment as any).relevantComments || [];
+  commentReplies?.forEach((reply: IComment) => {
+    reply.files?.forEach((file: IMedia) => {
+      addCdnUrlParamstoFile(file, cdnUrlParams);
+    });
+  });
+};
+
+export const addCdnUrlParamsToPost = (post: IPost, cdnUrlParams: string) => {
+  (post?.files as IMedia[])?.forEach((file: IMedia) => {
+    addCdnUrlParamstoFile(file, cdnUrlParams);
+  });
+  const postComments: IComment[] = (post?.relevantComments as any) || [];
+  postComments?.forEach((comment: IComment) => {
+    addCdnUrlParamsToComment(comment, cdnUrlParams);
+  });
 };
