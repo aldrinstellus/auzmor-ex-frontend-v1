@@ -98,17 +98,17 @@ interface IDocumentProps {
 }
 
 const fieldSize: Record<string, number> = {
-  Owner: 180,
+  Owner: 200,
   ownerName: 256,
   modifiedAt: 200,
 };
 
 const fieldSizeByType: Record<string, number> = {
   hyperlink: 150,
-  date: 150,
+  date: 200,
   boolean: 150,
   number: 150,
-  text: 150,
+  text: 250,
   choice: 140,
 };
 
@@ -128,15 +128,17 @@ const NameField = ({
   isFolder: boolean;
 }) => (
   <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
-    <div className="flex w-6">
+    <div className="flex w-6 shrink-0">
       <Icon
         name={isFolder ? 'folder' : getIconFromMime(mimeType)}
         className="!w-6"
         hover={false}
       />
     </div>
-     <div className="break-words overflow-hidden">
-      {name || ''}
+    <div className="break-words overflow-hidden">
+      <div className="line-clamp-2">
+        {name || ''}
+      </div>
     </div>
   </div>
 );
@@ -151,7 +153,7 @@ const OwnerField = ({
   <div className="flex gap-2">
     <Avatar image={ownerImage} name={ownerName} size={24} />
     <Truncate
-      maxLength={14}
+      maxLength={12}
       toolTipClassName='!z-[999]'
       text={ownerName}
     />
@@ -177,10 +179,12 @@ const LocationField = ({
       wrapperClassName="w-full"
       className='right-[-10px] top-[-10px] rounded-9xl'
       contentRenderer={() => (
-        <div className="flex p-3 bg-white rounded-9xl border border-primary-50 shadow">
+        <div className="flex w-[200px] p-3 bg-white rounded-9xl border border-primary-50 shadow">
           <BreadCrumb
             items={pathItems}
-            labelClassName="hover:text-primary-500 hover:underline min-w-max"
+            labelClassName="hover:text-primary-500 hover:underline text-sm w-full"
+            folderIconSize={16}
+            iconSize={12}
             onItemClick={(item, e) => {
               e?.stopPropagation();
               const sliceIndex = pathWithId.findIndex(
@@ -214,6 +218,13 @@ const renderCustomField = (type: string, value: any): React.ReactNode => {
 
   switch (type) {
     case 'text':
+      return (
+        <div className='break-words overflow-hidden'>
+          <div className='line-clamp-2'>
+            {value}
+          </div>
+        </div>
+      )
     case 'number':
     case 'currency':
     case 'metadata':
@@ -669,8 +680,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               isFolder={isRootDir || info?.row?.original?.isFolder}
             />
           ),
-          thClassName: 'flex-1 min-w-[250px] border-neutral-200 py-3 px-3',
-          tdClassName: 'flex-1 min-w-[250px] border-b-1 border-neutral-200 py-3 px-3',
+          thClassName: 'flex-1 min-w-[30%] border-neutral-200 py-3 px-3',
+          tdClassName: 'flex-1 min-w-[30%] border-b-1 border-neutral-200 py-3 px-3',
         },
         ...((documentFields as ColumnItem[])
           ?.filter(
@@ -705,7 +716,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               }
             },
             size: field.size || fieldSize[field.fieldName] || fieldSizeByType[field.type] || 256,
-            thClassName: 'py-3 px-3',
+            thClassName: 'relative py-3 px-3',
             tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
           })) || []),
         {
@@ -781,7 +792,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           const matched = info.row.original?.customFields.find((field: any) => field.is_matched === true);
           return (
           <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
-            <div className="flex w-6">
+            <div className="w-6">
               <Icon
                 name={
                   info?.row?.original?.isFolder
@@ -791,16 +802,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 className="!w-6"
               />
             </div>
-            <div className='flex flex-col gap-1'>
-            <span className="break-all truncate w-full">
-              
-            </span>
-            <Truncate
-              maxLength={25}
-              toolTipClassName='!z-[999]'
-              text={info.getValue() as string}
-              className="text-neutral-900 font-medium"
-            />
+            <div className="break-words overflow-hidden">
+              <div className="line-clamp-2">
+                {info.getValue() as string}
+              </div>
             {info.row.original?.customFields && Array.isArray(info.row.original.customFields) && info.row.original?.customFields.length > 0 && matched && (
               <div className="text-xs text-neutral-700">
                 &quot;
@@ -822,8 +827,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             </div>
           </div>
         )},
-        thClassName: 'flex-1 min-w-[250px] border-neutral-200 py-3 px-3',
-        tdClassName: 'flex-1 min-w-[250px] border-b-1 border-neutral-200 py-3 px-3',
+        thClassName: 'flex-1 min-w-[30%] border-neutral-200 py-3 px-3',
+        tdClassName: 'flex-1 min-w-[30%] border-b-1 border-neutral-200 py-3 px-3',
       },
       {
         accessorKey: 'location',
@@ -842,9 +847,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               />
           );
         },
-        size: 260,
-        thClassName: 'py-3 px-3',
-        tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
+        thClassName: '!w-[320px] truncate py-3 px-3',
+        tdClassName: '!w-[320px] truncate border-b-1 border-neutral-200 py-3 px-3',
       },
       ...((documentFields as ColumnItem[])
         ?.filter(
@@ -1100,7 +1104,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       ),
       trDataClassName: isCredExpired ? '' : 'cursor-pointer !px-0 !py-0 !z-[10] !gap-0 !border-l-1 !border-b-0 border-neutral-200',
       thDataClassName: '!px-0 !py-0 !border-0 !gap-0 !z-10',
-      className: '!overflow-x-auto border-r-1 border-neutral-200',
+      className: '!overflow-auto border-r-1 border-neutral-200 !max-h-[450px]',
     },
   });
 

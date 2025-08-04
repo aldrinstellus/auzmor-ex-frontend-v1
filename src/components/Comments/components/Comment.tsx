@@ -123,6 +123,7 @@ export const Comment: FC<CommentProps> = ({
     onSuccess: () => {
       queryClient.invalidateQueries(['comments']);
       queryClient.invalidateQueries(['posts']);
+      queryClient.invalidateQueries(['comment-count']);
       successToastConfig({
         content: t('deleteSuccessToast'),
         dataTestId: 'comment-toaster',

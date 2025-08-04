@@ -14,6 +14,7 @@ interface IBreadCrumbProps {
   width?: number | '100%' | '100vw' | '100vh';
   labelClassName?: string;
   iconSize?: number;
+  folderIconSize?: number;
   onItemClick?: (
     item: Item,
     e?: React.MouseEvent<HTMLElement, MouseEvent>,
@@ -26,6 +27,7 @@ const BreadCrumb: FC<IBreadCrumbProps> = ({
   width,
   labelClassName,
   iconSize,
+  folderIconSize,
   onItemClick = () => {},
 }) => {
   const Component = useMemo(() => {
@@ -44,6 +46,7 @@ const BreadCrumb: FC<IBreadCrumbProps> = ({
       onItemClick={onItemClick}
       labelClassName={labelClassName}
       iconSize={iconSize}
+      folderIconSize={folderIconSize}
     />
   );
 };

@@ -221,6 +221,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
           [entityId]: updatedComment,
         });
       }
+      queryClient.invalidateQueries(['comment-count']);
     },
     onSettled: () => {
       setIsCreateCommentLoading(false);

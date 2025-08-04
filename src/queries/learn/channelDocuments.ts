@@ -491,7 +491,7 @@ export const useChannelDocDeepSearch = (
     getPreviousPageParam: (currentPage: any) => {
       return currentPage?.data?.result?.paging?.prev;
     },
-    staleTime: 1 * 60 * 1000, // 1min
+    staleTime: 0,
     ...{ ...options, networkMode: 'always' },
   });
 };
