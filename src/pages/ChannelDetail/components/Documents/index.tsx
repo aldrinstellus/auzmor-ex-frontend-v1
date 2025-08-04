@@ -293,7 +293,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const [isAddModalOpen, openAddModal, closeAddModal] = useModal();
   const [totalRows, setTotalRows] = useState<number>(0);
   const [view, setView] = useState<'LIST' | 'GRID'>('LIST');
-  const [tableData, setTableData] = useState([]);
   const [confirm, showConfirm, closeConfirm, deleteDocProps] = useModal();
   const [filePreview, openFilePreview, closeFilePreview, filePreviewProps] =
     useModal();
@@ -778,7 +777,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             {t('nameColumn', { totalRows })}
           </div>
         ),
-        cell: (info: CellContext<DocType, unknown>) => (
+        cell: (info: CellContext<DocType, unknown>) => {
+          const matched = info.row.original?.customFields.find((field: any) => field.is_matched === true);
+          return (
           <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
             <div className="flex w-6">
               <Icon
@@ -800,21 +801,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               text={info.getValue() as string}
               className="text-neutral-900 font-medium"
             />
-            {info.row.original?.customFields && Array.isArray(info.row.original.customFields) && info.row.original?.customFields.length > 0 && (
+            {info.row.original?.customFields && Array.isArray(info.row.original.customFields) && info.row.original?.customFields.length > 0 && matched && (
               <div className="text-xs text-neutral-700">
                 &quot;
                 <HighlightText
-                  text={
-                    Array.isArray(info.row.original.customFields[0].custom_field_values)
-                      ? info.row.original.customFields[0].custom_field_values.find((val: any) =>
-                        typeof val === 'string' &&
-                        applyDocumentSearch &&
-                        val.toLowerCase().includes(applyDocumentSearch.toLowerCase())
-                      ) || ''
-                      : typeof info.row.original.customFields[0].custom_field_values === 'string'
-                        ? info.row.original.customFields[0].custom_field_values
-                        : ''
-                  }
+                  text={Array.isArray(matched.field_values)
+                    ? matched.field_values.find((val: any) => val?.toLowerCase?.().includes(applyDocumentSearch?.toLowerCase?.()))
+                    : matched.field_values?.Description ?? matched.field_values}
                   subString={applyDocumentSearch}
                 />
                 &quot;
@@ -822,13 +815,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 {t('foundIn')}
                 &nbsp;
                 <span className="font-semibold">
-                  {info.row.original.customFields[0]?.display_name}
+                  {matched.field_name}
                 </span>
               </div>
             )}
             </div>
           </div>
-        ),
+        )},
         thClassName: 'flex-1 min-w-[250px] border-neutral-200 py-3 px-3',
         tdClassName: 'flex-1 min-w-[250px] border-b-1 border-neutral-200 py-3 px-3',
       },
@@ -878,11 +871,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             ) {
               return <TimeField time={info.getValue() as string} />;
             } else {
-              const matchedSearch = tableData.find((data: any) => data.id === info.row.original.id) as any;
-              const matchedResult = matchedSearch?.customFields.find(
-                (eachField: any) => field.fieldName === eachField.field_name
-              ) as { field_values?: any } | undefined;
-              return <>{renderCustomField(field.type, matchedResult?.field_values)}</>;
+              const matched = (info.row.original.customFields ?? []).find(
+                    (eachField: any) => field.fieldName === eachField.field_name
+                  ) as { field_values?: any } | undefined;
+              return <>{renderCustomField(field.type, matched?.field_values)}</>;
             }
           },
           size: field.size || fieldSize[field.fieldName] || fieldSizeByType[field.type] || 256,
@@ -1117,9 +1109,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     setTotalRows(
       dataGridProps?.totalCount || (dataGridProps?.flatData || []).length,
     );
-    if (!isDocSearchApplied) {
-      setTableData(dataGridProps.flatData);
-    }
   }, [dataGridProps.flatData]);
 
   // Hook to update input tag attributes
