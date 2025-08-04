@@ -46,7 +46,7 @@ const DocSearchRow = ({
             <HighlightText
               text={Array.isArray(matched.field_values)
                 ? matched.field_values.find((val: any) => val?.toLowerCase?.().includes(searchQuery?.toLowerCase?.()))
-                : matched.field_values}
+                : matched.field_values?.Description ?? matched.field_values}
               subString={searchQuery}
             />
             &quot;
