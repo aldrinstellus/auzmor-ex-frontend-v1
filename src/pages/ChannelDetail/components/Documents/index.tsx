@@ -182,7 +182,7 @@ const LocationField = ({
           <BreadCrumb
             items={pathItems}
             labelClassName="hover:text-primary-500 hover:underline text-sm"
-            iconWrapperClassName=" rounded-l-9xl bg-white pl-2 pr-1"
+            iconWrapperClassName="rounded-l-9xl bg-white pl-2 pr-1"
             wrapperClassName='overflow-x-auto'
             folderIconSize={16}
             iconSize={12}
