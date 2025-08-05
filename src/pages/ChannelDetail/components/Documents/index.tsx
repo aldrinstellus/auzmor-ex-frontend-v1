@@ -1682,6 +1682,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 const encodedPath = compressString(
                   JSON.stringify(mappedItemsToEncode),
                 );
+                setValue('documentSearch', '');
                 if (!!mappedItemsToEncode.length) {
                   navigate(`/channels/${channelId}/documents/${encodedPath}`);
                 } else {
