@@ -591,7 +591,7 @@ export const useCommentCount = (
 ) => {
   return {
     ...useQuery({
-      queryKey: ['comment-count'],
+      queryKey: ['comment-count', payload?.fileId],
       queryFn: () => getDocCommentsCount(payload),
     }),
   };
