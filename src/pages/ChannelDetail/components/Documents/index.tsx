@@ -177,7 +177,7 @@ const LocationField = ({
       triggerNode={<BreadCrumb items={pathItems} onItemClick={() => {}} />}
       triggerNodeClassName="w-full"
       wrapperClassName="w-full"
-      className='right-[-10px] top-[-10px] flex w-[200px] h-[50px] bg-white rounded-9xl border border-primary-50 shadow'
+      className='right-[-10px] top-[-10px] flex w-[250px] h-[50px] bg-white rounded-9xl border border-primary-50 shadow'
       contentRenderer={() => (
           <BreadCrumb
             items={pathItems}
