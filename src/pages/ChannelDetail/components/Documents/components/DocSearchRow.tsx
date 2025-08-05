@@ -31,8 +31,8 @@ const DocSearchRow = ({
         <Icon name={iconName} />
       </div>
       <div className="flex flex-col gap-1 w-[93%]">
-        <div className="text-xs break-words overflow-hidden">
-          <div className='line-clamp-2'>
+        <div className="text-xs flex-1 min-w-0 overflow-hidden">
+          <div className='line-clamp-2 break-all'>
             <HighlightText text={data?.name || ''} subString={searchQuery} />
           </div>
         </div>
