@@ -23,12 +23,14 @@ const DocSearchRow = ({
   const matched = data?.customFields.find((field: any) => field.is_matched === true);
   return (
     <div
-      className="flex gap-2 items-center hover:bg-primary-50 cursor-pointer"
+      className="flex gap-2 hover:bg-primary-50 cursor-pointer truncate"
       onPointerDown={(e) => e.preventDefault()}
       onClick={() => onClick(data)}
     >
-      <Icon name={iconName} />
-      <div className="flex flex-col gap-1">
+      <div>
+        <Icon name={iconName} />
+      </div>
+      <div className="flex flex-col gap-1 line-clamp-3">
         <div className="text-xs">
           <HighlightText text={data?.name || ''} subString={searchQuery} />
         </div>
