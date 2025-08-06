@@ -821,8 +821,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 className="!w-6"
               />
             </div>
-            <div className="break-words overflow-hidden">
-              <div className="line-clamp-2">
+            <div className="flex-1 min-w-0 overflow-hidden">
+              <div className="line-clamp-2 break-all">
                 {info.getValue() as string}
               </div>
             {info.row.original?.customFields && Array.isArray(info.row.original.customFields) && info.row.original?.customFields.length > 0 && matched && (
