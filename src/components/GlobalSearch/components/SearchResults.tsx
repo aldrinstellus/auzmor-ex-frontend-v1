@@ -248,7 +248,8 @@ const SearchResults: FC<ISearchResultsProps> = ({
     entityType: ISearchResultType,
     isRecent: boolean,
   ) => {
-    const textStyles = `text-sm leading-4 text-black max-w-[250px] ${
+    const textStyles = `text-sm leading-4 text-black max-w-[460px]
+     ${
       isRecent ? 'font-semibold' : ''
     }`;
     switch (entityType) {
@@ -388,7 +389,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
             <Icon name={iconName} size={24} hover={false} />
           </div>
           <div>
-            <div className='flex gap-1 items-center'>
+            <div className='flex gap-1 w-full items-center'>
             <div className="min-w-0">
               <Truncate
                 text={documentData.name}
