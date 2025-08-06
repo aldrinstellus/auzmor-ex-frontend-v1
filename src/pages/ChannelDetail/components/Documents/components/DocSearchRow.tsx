@@ -41,8 +41,8 @@ const DocSearchRow = ({
             date: moment(data?.updatedAt).format('DD MMM YYYY'),
           })}{' '}
           &nbsp;
-          {data?.externalModifiedBy &&
-            t('updatedBy', { name: data?.externalModifiedBy })}
+          {data?.ownerName &&
+            t('updatedBy', { name: data?.ownerName })}
         </div>
         {data?.customFields && Array.isArray(data.customFields) && data.customFields.length > 0 && matched && (
           <div className="text-xs text-neutral-700">
