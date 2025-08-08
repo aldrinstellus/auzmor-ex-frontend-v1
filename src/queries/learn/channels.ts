@@ -15,6 +15,7 @@ import apiService from 'utils/apiService';
 import { IComment } from 'components/Comments';
 import { useCommentStore } from 'stores/commentStore';
 import { deleteParams } from 'components/Comments/components/Comment';
+import { addCdnUrlParamsToComment } from 'utils/misc';
 
 
 export const getAllChannels = async (
@@ -329,26 +330,35 @@ export const getChannelDocumentComments = async (
   } else {
     response = await apiService.get(context.pageParam);
   }
+  const cdnUrlParams = response?.data?.result?.cdnUrlParams || '';
+  response?.data?.result?.data.forEach((comment: IComment) => {
+    addCdnUrlParamsToComment(comment, cdnUrlParams);
+  });
 
-  const comments = response.data?.data?.comments || [];
+  const comments = response.data?.result?.data || [];
   appendComments(comments);
 
   // Replace with only comment IDs for caching
-  response.data.result = {
-    data: comments.map((comment: IComment) => ({ id: comment.id })),
-  };
+  response.data.result.data = comments.map((comment: IComment) => ({ id: comment.id }));
   return response;
 };
 
 export const createDocComment = async (payload: any) => {
   const { channelId, fileId, payload: payloadValue } = payload || {};
   const { result } = await apiService.post(`/channels/${channelId}/files/${fileId}/comments`, payloadValue);
+  addCdnUrlParamsToComment(result?.data, result?.cdnUrlParams || '');
   return result?.data;
 };
 
 export const deleteDocComment = async (payload: deleteParams, commentId: string) => {
   const { channelId, fileId } = payload || {};
   await apiService.delete(`/channels/${channelId}/files/${fileId}/comments/${commentId}`);
+};
+
+export const getDocCommentsCount = async (payload: any) => {
+  const { channelId, fileId } = payload || {};
+  const response = await apiService.get(`/channels/${channelId}/files/${fileId}/comments/count`);
+  return response.data.result.data;
 };
 
 const getCommentById = async (
@@ -556,15 +566,15 @@ export const useInfiniteChannelDocumentComments = ({
       queryFn: (context) =>
         getChannelDocumentComments(channelId, fileId, context, appendComments),
       getNextPageParam: (lastPage: any) => {
-        const pageDataLen = lastPage?.data?.data?.comments.length;
-        const pageLimit = lastPage?.data?.data?.paging?.limit;
+        const pageDataLen = lastPage?.data?.result?.data?.length;
+        const pageLimit = lastPage?.data?.result?.paging?.limit;
         if (pageDataLen < pageLimit) {
           return null;
         }
-        return lastPage?.data?.data?.paging?.next;
+        return lastPage?.data?.result?.paging?.next;
       },
       getPreviousPageParam: (currentPage: any) =>
-        currentPage?.data?.data?.paging?.prev,
+        currentPage?.data?.result?.paging?.prev,
     }),
     comment,
   };
@@ -578,4 +588,15 @@ export const useGetCommentById = (commentId?: string) => {
     enabled: !!commentId,
     cacheTime: 0,
   });
+};
+
+export const useCommentCount = (
+  payload?: Record<string, any>,
+) => {
+  return {
+    ...useQuery({
+      queryKey: ['comment-count', payload?.fileId],
+      queryFn: () => getDocCommentsCount(payload),
+    }),
+  };
 };

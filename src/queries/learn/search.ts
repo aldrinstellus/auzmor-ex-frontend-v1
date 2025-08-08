@@ -70,7 +70,7 @@ export const useSearchResults = (
     ...useQuery({
       queryKey: ['global-search', params],
       queryFn: () => getSearchResults({ ...params, scope: 'ADMIN' }),
-      staleTime: 5 * 60 * 1000,
+      staleTime: 0,
       ...options,
     }),
   };
@@ -84,7 +84,7 @@ export const useLearnerSearchResults = (
     ...useQuery({
       queryKey: ['global-search-learner', params],
       queryFn: () => getSearchResults({ ...params, scope: 'LEARNER' }),
-      staleTime: 5 * 60 * 1000,
+      staleTime: 0,
       ...options,
     }),
   };

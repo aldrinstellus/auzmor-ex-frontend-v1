@@ -45,6 +45,7 @@ const EvaluationRequestRow: FC<EvaluationRequestRowProps> = ({
           </Tooltip>
           <Truncate
             className={'text-sm font-bold'}
+            maxLength={16}
             toolTipTextClassName="overflow-hidden"
             text={
               (data?.module === 'EventSession'
@@ -85,6 +86,7 @@ const EvaluationRequestRow: FC<EvaluationRequestRowProps> = ({
           <div className="flex items-center justify-between w-full">
             <Truncate
               className={'text-sm font-bold'}
+              maxLength={14}
               text={data?.user?.full_name}
             />
             <div className="flex items-center gap-1">
@@ -92,7 +94,7 @@ const EvaluationRequestRow: FC<EvaluationRequestRowProps> = ({
               <span className="text-xs text-neutral-500">{data?.attempt}</span>
             </div>
           </div>
-          <div className="flex items-center gap-2 w-full">
+          <div className="flex items-center justify-between gap-2 w-full">
             <div className="flex items-center gap-1">
               <Icon name="calendar" className="w-4 h-4" />
               <span className="text-xs text-neutral-500">
