@@ -17,5 +17,5 @@
 #emoji-palette {
   width: 100%;
   position: absolute;
-  left: 10px !important;
+  z-index: 1000;
 }
