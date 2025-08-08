@@ -53,7 +53,7 @@ const PreviewLink: FC<PreviewLinkProps> = ({
   );
 
   return (
-    <div className={`relative m-6 h-full ${variant === PREVIEW_CARD_VARIANT.document ? 'w-full m-0 flex items-center justify-center' :' m-6 h-full'}`}>
+    <div className={`relative m-6 h-full ${variant === PREVIEW_CARD_VARIANT.document && 'w-full !m-0 flex items-center justify-center'}`}>
       {showCloseIcon && isMetaDataPresent && !isLoading && media.length === 0 && !poll && (
         <IconButton
           icon="closeOutline"

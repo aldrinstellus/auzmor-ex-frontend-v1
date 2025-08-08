@@ -26,6 +26,7 @@ import { isLearnerRoute } from 'components/LxpNotificationsOverview/utils/learnN
 import { Comment } from 'components/Comments/components/Comment';
 import CommentSkeleton from 'components/Comments/components/CommentSkeleton';
 import { useFeedStore } from 'stores/feedStore';
+import Truncate from 'components/Truncate';
 
 interface IFilePreviewProps {
   fileId: string;
@@ -62,6 +63,11 @@ const FilePreview: FC<IFilePreviewProps> = ({
   const [localPostId, setLocalPostId] = React.useState(postId || '');
   const [isIframeLoading, setIsIframeLoading] = React.useState(true);
   const [showComment, setShowComment] = React.useState(false);
+  const [totalComments, setTotalComments] = React.useState(0);
+
+  const { isAdmin } = useRole();
+  const { isChannelAdmin } = useChannelRole(channelId);
+  const canDeleteComment = isChannelAdmin || (isAdmin && !isLearnerRoute());
 
   const useChannelDocById = getApi(ApiEnum.UseChannelDocById);
   const { data: fileData, isLoading: fileLoading } = useChannelDocById({
@@ -79,6 +85,15 @@ const FilePreview: FC<IFilePreviewProps> = ({
     channelId,
     fileId,
   });
+
+  const useCommentCount = getApi(ApiEnum.GetCommentsCount);
+  const {
+    data: commentInfo,
+    isFetching: isLoadingComments,
+  } = useCommentCount({
+    fileId,
+    channelId,
+  }, { enabled: (canViewComment || isChannelAdmin || isAdmin) });
 
   const downloadChannelFile = getApi(ApiEnum.GetChannelDocDownloadUrl);
   const downloadChannelFileMutation = useMutation({
@@ -122,16 +137,19 @@ const FilePreview: FC<IFilePreviewProps> = ({
   }
 }, [commentId, postId]);
 
+useEffect(() => {
+  if (!isLoadingComments) {
+    setTotalComments(commentInfo?.count);
+    setShowComment(true);
+  }
+}, [isLoadingComments, commentInfo]);
+
   useEffect(() => {
     const elem = document.getElementById('videoplayer');
     if (elem) {
       elem?.setAttribute('oncontextmenu', 'return false;');
     }
   });
-
-  const { isAdmin } = useRole();
-  const { isChannelAdmin } = useChannelRole(channelId);
-  const canDeleteComment = isChannelAdmin || (isAdmin && !isLearnerRoute());
 
   const isLoading = fileLoading || previewLoading;
   const isDownloading = downloadChannelFileMutation.isLoading;
@@ -209,14 +227,17 @@ const FilePreview: FC<IFilePreviewProps> = ({
       className="!h-[calc(100vh-62px)] !w-[calc(100vw-96px)] flex flex-col overflow-hidden"
     >
       <div className="w-full h-[10%] flex items-center relative px-6 py-4 shrink-0">
-        <div className="flex flex-grow items-start ">
+        <div className="w-[70%] flex flex-grow items-start">
           {fileLoading ? (
             <Skeleton width={256} height={40} />
           ) : (
-            <div>
-              <div className="text-base leading-normal text-neutral-900 font-semibold">
-                {file?.name || ''}
-              </div>
+            <div className='w-full flex flex-col'>
+              <Truncate
+                maxLength={100}
+                toolTipClassName='max-w-[450px] !z-[999]'
+                text={file?.name || ''}
+                className='text-base leading-normal text-neutral-900 font-semibold'
+              />
               <div className="text-xs text-neutral-900">
                 {t('lastUpdatedDate', {
                   date: moment(file?.externalUpdatedAt || '').format(
@@ -227,15 +248,24 @@ const FilePreview: FC<IFilePreviewProps> = ({
             </div>
           )}
         </div>
-        <div className="flex absolute gap-3 right-4">
+        <div className="w-[30%] flex justify-end items-center gap-3 right-4">
           {(canViewComment || isChannelAdmin || isAdmin) && (
-            <Icon
-              name={showComment ? 'commentFilled' : 'comment'}
-              color="text-red-500"
-              onClick={() => {
+             <div className="relative">
+              <Icon
+                name={showComment ? 'commentFilled' : 'comment'}
+                color="text-neutral-900"
+                onClick={() => {
                 setShowComment(!showComment);
-              }}
-            />
+                }}
+              />
+              {(isLoadingComments && !showComment) ? (
+                <Spinner className="!w-4 !h-4 absolute -top-1 -right-1 bg-red-600 text-white text-xxs font-semibold bg-red-600 flex items-center justify-center rounded-full" />
+              ) : (totalComments > 0 && !showComment) ? (
+                <div className="absolute -top-1 -right-1 bg-red-600 text-white text-xxs font-semibold w-4 h-4 flex items-center justify-center rounded-full">
+                  {totalComments}
+                </div>
+              ) : null}
+            </div>
           )}
           {canDownload && !fileLoading && !isLink && !!file.downloadable && (
             <div className="flex gap-2">
@@ -320,7 +350,7 @@ const FilePreview: FC<IFilePreviewProps> = ({
                 previewUrl={previewUrl}
                 showCloseIcon={false}
                 variant={PREVIEW_CARD_VARIANT.document}
-                cardClassName="w-[70%] h-[80%] max-h-[80%]"
+                cardClassName="w-[85%] h-[90%] max-h-[90%] mb-[40px]"
               />
             </div>
           ) : null}

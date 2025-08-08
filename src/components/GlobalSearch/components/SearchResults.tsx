@@ -14,7 +14,6 @@ import { compressString, getLearnUrl } from 'utils/misc';
 import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 import { getIconFromMime } from 'pages/ChannelDetail/components/Documents/components/Doc';
 import HighlightText from 'components/HighlightText';
-import Truncate from 'components/Truncate';
 import { usePermissions } from 'hooks/usePermissions';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
@@ -27,6 +26,7 @@ import IconButton, {
 import useRole from 'hooks/useRole';
 import Spinner from 'components/Spinner';
 import { PUBLIC_URL } from 'utils/constants';
+import Truncate from 'components/Truncate';
 
 interface ISearchResultsProps {
   searchResults: ISearchResultGroup[];
@@ -248,7 +248,8 @@ const SearchResults: FC<ISearchResultsProps> = ({
     entityType: ISearchResultType,
     isRecent: boolean,
   ) => {
-    const textStyles = `text-sm leading-4 text-black ${
+    const textStyles = `text-sm leading-4 text-black max-w-[460px]
+     ${
       isRecent ? 'font-semibold' : ''
     }`;
     switch (entityType) {
@@ -380,16 +381,20 @@ const SearchResults: FC<ISearchResultsProps> = ({
         const iconName = documentData?.isFolder
           ? 'folder'
           : getIconFromMime(documentData?.mimeType);
+        const matched = result?.customFields?.find((field: any) => field.isMatched === true);
         return (
           <>
           <div className="flex gap-1.5 w-full overflow-hidden">
-          <Icon name={iconName} size={24} hover={false} />
           <div>
-            <div>
+            <Icon name={iconName} size={24} hover={false} />
+          </div>
+          <div>
+            <div className='flex gap-1 w-full items-center'>
             <div className="min-w-0">
               <Truncate
                 text={documentData.name}
                 className={textStyles}
+                toolTipClassName='!w-[450px] break-words'
                 textRenderer={(text) => (
                   <HighlightText text={text} subString={searchQuery} />
                 )}
@@ -406,27 +411,19 @@ const SearchResults: FC<ISearchResultsProps> = ({
               </div>
             </div>
             </div>
-            {result?.customFields && Array.isArray(result.customFields) && result.customFields.length > 0 && (
+            {result?.customFields && Array.isArray(result.customFields) && result.customFields.length > 0 && matched && (
               <div className="text-xs text-neutral-500">
                 &quot;
                 <HighlightText
-                  text={
-                    Array.isArray(result.customFields[0].customFieldValues)
-                      ? result.customFields[0].customFieldValues.find((val: any) =>
-                          typeof val === 'string' &&
-                          searchQuery &&
-                          val.toLowerCase().includes(searchQuery.toLowerCase())
-                        ) || ''
-                      : typeof result.customFields[0].customFieldValues === 'string'
-                        ? result.customFields[0].customFieldValues
-                        : ''
-                  }
+                  text={Array.isArray(matched.fieldValues)
+                    ? matched.fieldValues.find((val: any) => val?.toLowerCase?.().includes(searchQuery?.toLowerCase?.()))
+                    : matched.fieldValues?.Description ?? matched.fieldValues}
                   subString={searchQuery}
                 />
                 &quot;&nbsp;
                 {t('foundIn')}&nbsp;
                 <span className="font-semibold text-neutral-700">
-                  {result.customFields[0].displayName}
+                  {matched.fieldName}
                 </span>
               </div>
             )}

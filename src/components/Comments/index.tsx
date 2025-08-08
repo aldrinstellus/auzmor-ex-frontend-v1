@@ -136,6 +136,7 @@ const Comments: FC<CommentsProps> = ({
   fetchNextPage,
   hasNextPage,
   comment,
+  totalCommentsCount,
 } = useCommentsFetcher({
   useApiHook,
   hookParams: getApiParams || defaultParams,
@@ -150,7 +151,7 @@ const Comments: FC<CommentsProps> = ({
         return (
           <>
           <div className='font-semibold pb-2 border-b-1 border-neutral-200'>
-            {t('commentTitle')}
+            {t('commentTitle', { count: commentIds?.length })}
           </div>
           {getPost(entityId)?.occasionContext?.type === 'WORK_ANNIVERSARY' && (
             <div className="flex mt-2 w-full justify-center">
@@ -186,7 +187,7 @@ const Comments: FC<CommentsProps> = ({
             commentIds &&
             commentIds.length > 0 ? (
               <>
-                <div className={`pt-4 ${canPostComment ? 'h-[84%] mb-3 ' : 'h-[92%]'} overflow-y-auto`}>
+                <div className={`my-4 ${canPostComment ? 'h-[82%] mb-3 ' : 'h-[92%]'} overflow-y-auto`}>
                   {isCreateCommentLoading && <CommentSkeleton />}
                   <div className="flex flex-col gap-4">
                     {commentIds
@@ -202,11 +203,12 @@ const Comments: FC<CommentsProps> = ({
                         />
                       ))}
                   </div>
-                  {hasNextPage && !isFetchingNextPage && (
+                  {hasNextPage && !isFetchingNextPage && (totalCommentsCount !== commentIds?.length) && (
                     <LoadMore
                       onClick={async () => await fetchNextPage()}
                       label={t('loadMoreComments')}
                       dataTestId="comments-loadmorecta"
+                      textClassName='!text-xs hover:text-black'
                     />
                   )}
                   {isFetchingNextPage && (

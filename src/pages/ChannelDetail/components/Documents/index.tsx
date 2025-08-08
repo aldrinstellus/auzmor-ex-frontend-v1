@@ -98,17 +98,17 @@ interface IDocumentProps {
 }
 
 const fieldSize: Record<string, number> = {
-  Owner: 180,
+  Owner: 200,
   ownerName: 256,
   modifiedAt: 200,
 };
 
 const fieldSizeByType: Record<string, number> = {
   hyperlink: 150,
-  date: 150,
+  date: 200,
   boolean: 150,
   number: 150,
-  text: 150,
+  text: 250,
   choice: 140,
 };
 
@@ -128,19 +128,18 @@ const NameField = ({
   isFolder: boolean;
 }) => (
   <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
-    <div className="flex w-6">
+    <div className="flex w-6 shrink-0">
       <Icon
         name={isFolder ? 'folder' : getIconFromMime(mimeType)}
         className="!w-6"
         hover={false}
       />
     </div>
-    <Truncate
-      maxLength={25}
-      toolTipClassName='!z-[999]'
-      text={name || ''}
-      className="text-neutral-900 font-medium"
-    />
+    <div className="flex-1 min-w-0 overflow-hidden">
+      <div className="line-clamp-2 break-all">
+        {name || ''}
+      </div>
+    </div>
   </div>
 );
 
@@ -154,7 +153,7 @@ const OwnerField = ({
   <div className="flex gap-2">
     <Avatar image={ownerImage} name={ownerName} size={24} />
     <Truncate
-      maxLength={10}
+      maxLength={12}
       toolTipClassName='!z-[999]'
       text={ownerName}
     />
@@ -175,15 +174,37 @@ const LocationField = ({
   const navigate = useNavigate();
   return (
     <Popover
-      triggerNode={<BreadCrumb items={pathItems} onItemClick={() => {}} />}
+      triggerNode={
+        <div className="w-full flex items-center overflow-hidden font-medium">
+        <Icon name="folder" size={20} className="shrink-0 mr-1 text-neutral-500" />
+        <div className="flex items-center overflow-hidden min-w-0">
+          {pathItems.map((item, index) => (
+            <div
+              key={item.id}
+              className="flex items-center min-w-0"
+            >
+              <span className="truncate max-w-[250px] inline-block overflow-hidden whitespace-nowrap text-ellipsis">
+                {item.label}
+              </span>
+              {index < pathItems.length - 1 && (
+                <Icon name="arrowRight" size={16} className="mx-1 shrink-0" />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+      }
       triggerNodeClassName="w-full"
       wrapperClassName="w-full"
-      className='right-[-10px] top-[-10px] rounded-9xl'
+      className='right-[-10px] top-[-10px] flex w-[250px] h-[50px] bg-white rounded-9xl border border-primary-50 shadow'
       contentRenderer={() => (
-        <div className="flex p-3 bg-white rounded-9xl border border-primary-50 shadow">
           <BreadCrumb
             items={pathItems}
-            labelClassName="hover:text-primary-500 hover:underline min-w-max"
+            labelClassName="hover:text-primary-500 hover:underline text-sm"
+            iconWrapperClassName="rounded-l-9xl bg-white pl-2 pr-1 shrink-0"
+            wrapperClassName='overflow-x-auto'
+            folderIconSize={16}
+            iconSize={12}
             onItemClick={(item, e) => {
               e?.stopPropagation();
               const sliceIndex = pathWithId.findIndex(
@@ -206,7 +227,6 @@ const LocationField = ({
               updateDocumentSearch('');
             }}
           />
-        </div>
       )}
     />
   );
@@ -217,6 +237,13 @@ const renderCustomField = (type: string, value: any): React.ReactNode => {
 
   switch (type) {
     case 'text':
+      return (
+        <div className='break-words overflow-hidden'>
+          <div className='line-clamp-2'>
+            {value}
+          </div>
+        </div>
+      )
     case 'number':
     case 'currency':
     case 'metadata':
@@ -296,7 +323,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const [isAddModalOpen, openAddModal, closeAddModal] = useModal();
   const [totalRows, setTotalRows] = useState<number>(0);
   const [view, setView] = useState<'LIST' | 'GRID'>('LIST');
-  const [tableData, setTableData] = useState([]);
   const [confirm, showConfirm, closeConfirm, deleteDocProps] = useModal();
   const [filePreview, openFilePreview, closeFilePreview, filePreviewProps] =
     useModal();
@@ -673,8 +699,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               isFolder={isRootDir || info?.row?.original?.isFolder}
             />
           ),
-          thClassName: 'flex-1 min-w-[250px] border-neutral-200 py-3 px-3',
-          tdClassName: 'flex-1 min-w-[250px] border-b-1 border-neutral-200 py-3 px-3',
+          thClassName: 'flex-1 min-w-[30%] border-neutral-200 py-3 px-3',
+          tdClassName: 'flex-1 min-w-[30%] border-b-1 border-neutral-200 py-3 px-3',
         },
         ...((documentFields as ColumnItem[])
           ?.filter(
@@ -699,7 +725,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 field.fieldName === 'Last Updated' ||
                 field.type === 'datetime'
               ) {
-                return <TimeField time={info.getValue() as string} />;
+                return <TimeField time={info.row.original?.modifiedAt} />;
               } else {
                  const matched = (info.row.original.customFields ?? []).find(
                     (eachField: any) => field.fieldName === eachField.field_name
@@ -709,7 +735,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               }
             },
             size: field.size || fieldSize[field.fieldName] || fieldSizeByType[field.type] || 256,
-            thClassName: 'py-3 px-3',
+            thClassName: 'relative py-3 px-3',
             tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
           })) || []),
         {
@@ -781,9 +807,11 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             {t('nameColumn', { totalRows })}
           </div>
         ),
-        cell: (info: CellContext<DocType, unknown>) => (
+        cell: (info: CellContext<DocType, unknown>) => {
+          const matched = info.row.original?.customFields.find((field: any) => field.is_matched === true);
+          return (
           <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
-            <div className="flex w-6">
+            <div className="w-6">
               <Icon
                 name={
                   info?.row?.original?.isFolder
@@ -793,31 +821,17 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 className="!w-6"
               />
             </div>
-            <div className='flex flex-col gap-1'>
-            <span className="break-all truncate w-full">
-              
-            </span>
-            <Truncate
-              maxLength={25}
-              toolTipClassName='!z-[999]'
-              text={info.getValue() as string}
-              className="text-neutral-900 font-medium"
-            />
-            {info.row.original?.customFields && Array.isArray(info.row.original.customFields) && info.row.original?.customFields.length > 0 && (
+            <div className="flex-1 min-w-0 overflow-hidden">
+              <div className="line-clamp-2 break-all">
+                {info.getValue() as string}
+              </div>
+            {info.row.original?.customFields && Array.isArray(info.row.original.customFields) && info.row.original?.customFields.length > 0 && matched && (
               <div className="text-xs text-neutral-700">
                 &quot;
                 <HighlightText
-                  text={
-                    Array.isArray(info.row.original.customFields[0].custom_field_values)
-                      ? info.row.original.customFields[0].custom_field_values.find((val: any) =>
-                        typeof val === 'string' &&
-                        applyDocumentSearch &&
-                        val.toLowerCase().includes(applyDocumentSearch.toLowerCase())
-                      ) || ''
-                      : typeof info.row.original.customFields[0].custom_field_values === 'string'
-                        ? info.row.original.customFields[0].custom_field_values
-                        : ''
-                  }
+                  text={Array.isArray(matched.field_values)
+                    ? matched.field_values.find((val: any) => val?.toLowerCase?.().includes(applyDocumentSearch?.toLowerCase?.()))
+                    : matched.field_values?.Description ?? matched.field_values}
                   subString={applyDocumentSearch}
                 />
                 &quot;
@@ -825,15 +839,15 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 {t('foundIn')}
                 &nbsp;
                 <span className="font-semibold">
-                  {info.row.original.customFields[0]?.display_name}
+                  {matched.field_name}
                 </span>
               </div>
             )}
             </div>
           </div>
-        ),
-        thClassName: 'flex-1 min-w-[250px] border-neutral-200 py-3 px-3',
-        tdClassName: 'flex-1 min-w-[250px] border-b-1 border-neutral-200 py-3 px-3',
+        )},
+        thClassName: 'flex-1 min-w-[30%] border-neutral-200 py-3 px-3',
+        tdClassName: 'flex-1 min-w-[30%] border-b-1 border-neutral-200 py-3 px-3',
       },
       {
         accessorKey: 'location',
@@ -852,9 +866,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               />
           );
         },
-        size: 260,
-        thClassName: 'py-3 px-3',
-        tdClassName: 'border-b-1 border-neutral-200 py-3 px-3',
+        thClassName: '!w-[320px] truncate py-3 px-3',
+        tdClassName: '!w-[320px] truncate border-b-1 border-neutral-200 py-3 px-3',
       },
       ...((documentFields as ColumnItem[])
         ?.filter(
@@ -879,13 +892,12 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               field.fieldName === 'Last Updated' ||
               field.type === 'datetime'
             ) {
-              return <TimeField time={info.getValue() as string} />;
+              return <TimeField time={info.row.original?.modifiedAt} />;
             } else {
-              const matchedSearch = tableData.find((data: any) => data.id === info.row.original.id) as any;
-              const matchedResult = matchedSearch?.customFields.find(
-                (eachField: any) => field.fieldName === eachField.field_name
-              ) as { field_values?: any } | undefined;
-              return <>{renderCustomField(field.type, matchedResult?.field_values)}</>;
+              const matched = (info.row.original.customFields ?? []).find(
+                    (eachField: any) => field.fieldName === eachField.field_name
+                  ) as { field_values?: any } | undefined;
+              return <>{renderCustomField(field.type, matched?.field_values)}</>;
             }
           },
           size: field.size || fieldSize[field.fieldName] || fieldSizeByType[field.type] || 256,
@@ -1111,7 +1123,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       ),
       trDataClassName: isCredExpired ? '' : 'cursor-pointer !px-0 !py-0 !z-[10] !gap-0 !border-l-1 !border-b-0 border-neutral-200',
       thDataClassName: '!px-0 !py-0 !border-0 !gap-0 !z-10',
-      className: '!overflow-x-auto border-r-1 border-neutral-200',
+      className: '!overflow-auto border-r-1 border-neutral-200 !max-h-[450px]',
     },
   });
 
@@ -1120,9 +1132,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     setTotalRows(
       dataGridProps?.totalCount || (dataGridProps?.flatData || []).length,
     );
-    if (!isDocSearchApplied) {
-      setTableData(dataGridProps.flatData);
-    }
   }, [dataGridProps.flatData]);
 
   // Hook to update input tag attributes
@@ -1692,6 +1701,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 const encodedPath = compressString(
                   JSON.stringify(mappedItemsToEncode),
                 );
+                setValue('documentSearch', '');
                 if (!!mappedItemsToEncode.length) {
                   navigate(`/channels/${channelId}/documents/${encodedPath}`);
                 } else {
