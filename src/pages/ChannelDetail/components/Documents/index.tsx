@@ -599,7 +599,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         !!info?.row?.original?.downloadable &&
         !!!info?.row?.original?.isFolder &&
         !isLink;
-      const showLaunch = !isCredExpired && isLink;
+      const showLaunch = !isCredExpired && !!!info?.row?.original?.isFolder;
       const canRename =
         !isCredExpired &&
         permissions.includes(ChannelPermissionEnum.CanRenameDocuments);
@@ -764,7 +764,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                     </div>
                   }
                   menuItems={options}
-                  className="right-5 bg-white bottom-[calc(100%-32px)] border-1 border-neutral-200 w-40"
+                  className="right-5 bg-white bottom-[calc(100%-32px)] border-1 border-neutral-200 w-40 h-[100px] overflow-y-auto"
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
@@ -929,7 +929,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 </div>
               }
               menuItems={options}
-              className="right-5 bg-white bottom-[calc(100%-32px)] border-1 border-neutral-200 w-40"
+              className="right-5 bg-white bottom-[calc(100%-32px)] border-1 border-neutral-200 w-40 h-[100px] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             />
             </div>

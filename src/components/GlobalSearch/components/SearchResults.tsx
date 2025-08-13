@@ -27,6 +27,7 @@ import useRole from 'hooks/useRole';
 import Spinner from 'components/Spinner';
 import { PUBLIC_URL } from 'utils/constants';
 import Truncate from 'components/Truncate';
+import apiService from 'utils/apiService';
 
 interface ISearchResultsProps {
   searchResults: ISearchResultGroup[];
@@ -92,6 +93,8 @@ const SearchResults: FC<ISearchResultsProps> = ({
   const [deletedResult, setDeletedResult] = useState<IDeletedResult | null>(
     null,
   );
+  const [fetchingPreviewId, setFetchingPreviewId] = useState(null);
+
   const { user } = useAuth();
   const { isAdmin } = useRole();
 
@@ -138,6 +141,20 @@ const SearchResults: FC<ISearchResultsProps> = ({
       setDeletedResult(null);
     },
   });
+
+  const fetchPreviewApi = async (channelId: string, fileId: string) => {
+    const { data } = await apiService.get(`/channels/${channelId}/file/${fileId}/preview`);
+    return data;
+  };
+
+  const handlePreviewClick = async (channelId: any, fileId: any) => {
+    setFetchingPreviewId(fileId);
+    const previewData = await fetchPreviewApi(channelId, fileId);
+    setFetchingPreviewId(null);
+    if (previewData) {
+      window.open(previewData.result.previewURL, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   const isDeleting =
     deleteRecentSearchTermMutation.isLoading ||
@@ -626,52 +643,33 @@ const SearchResults: FC<ISearchResultsProps> = ({
                         aria-selected={selectedIndex === index}
                       >
                         {getEntityRenderer(result, entityType, isRecent)}
-                        {entityType === ISearchResultType.DOCUMENT && (
-                          <div className='relative w-4 h-4 shrink-0'>
-                            {true ? (
-                              <Icon
-                                name="launch"
-                                size={20}
-                                color="text-neutral-900"
-                                hoverColor='text-primary-500'
-                                className={`absolute -top-[1px] -right-[1px] ${selectedIndex === index
-                                  ? 'visible'
-                                  : 'invisible'
-                                  } group-hover/result:visible !rounded-none `}
-                                onClick={() => {
-                                  window.open('www.google.com', '_blank', 'noopener,noreferrer');
-                                }}
-                              />
-                            ) : null}
-                          </div>
-                        )}
-                        {isRecent && (
-                          <div className='flex gap-2 items-center'>
-                            <div className='relative w-4 h-4 shrink-0'>
-                              {true ? (
+                        <div className='flex gap-2 items-center'>
+                          {entityType === ISearchResultType.DOCUMENT && !result?.additionalInfo?.isFolder && (
+                            <div className="relative w-4 h-4 shrink-0">
+                              {fetchingPreviewId === result?.additionalInfo?.id ? (
+                                <Spinner className="absolute -top-1 -right-1 !text-black" />
+                              ) : (
                                 <Icon
                                   name="launch"
                                   size={18}
-                                  color="text-neutral-900"
-                                  hoverColor='text-primary-500'
-                                  className={`absolute -top-[1px] -right-[1px] ${selectedIndex === index
-                                      ? 'visible'
-                                      : 'invisible'
-                                    } group-hover/result:visible !rounded-none `}
-                                  onClick={() => {
-                                    window.open('www.google.com', '_blank', 'noopener,noreferrer');
+                                  color="!text-neutral-900"
+                                  className={`absolute -top-[1px] -right-[1px] ${selectedIndex === index ? 'visible' : 'invisible'} group-hover/result:visible !rounded-none`}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handlePreviewClick(result?.additionalInfo?.channelId, result?.additionalInfo?.id);
                                   }}
                                 />
-                              ) : null}
+                              )}
                             </div>
+                          )}
+                          {isRecent ? (
                             <div className="relative w-4 h-4 shrink-0">
                               {!isDeleting ? (
                                 <IconButton
                                   icon={'close2'}
-                                  className={`absolute -top-[1px] -right-[1px] ${selectedIndex === index
-                                      ? 'visible'
-                                      : 'invisible'
-                                    } group-hover/result:visible !rounded-none `}
+                                  className={`absolute -top-[1px] -right-[1px] ${
+                                    selectedIndex === index ? 'visible' : 'invisible'
+                                  } group-hover/result:visible !rounded-none`}
                                   color="!text-neutral-900"
                                   iconClassName="group-hover:!text-red-500 group-focus:!text-red-500"
                                   size={18}
@@ -683,16 +681,10 @@ const SearchResults: FC<ISearchResultsProps> = ({
                                       id: result.id,
                                       resultClickedId: result.resultClickedId,
                                     });
-                                    if (
-                                      entity.module === ISearchResultType.KEYWORD
-                                    )
-                                      deleteRecentSearchTermMutation.mutate(
-                                        result.id,
-                                      );
+                                    if (entity.module === ISearchResultType.KEYWORD)
+                                      deleteRecentSearchTermMutation.mutate(result.id);
                                     else
-                                      deleteRecentClickedResultMutation.mutate(
-                                        result.resultClickedId,
-                                      );
+                                      deleteRecentClickedResultMutation.mutate(result.resultClickedId);
                                   }}
                                 />
                               ) : null}
@@ -700,8 +692,8 @@ const SearchResults: FC<ISearchResultsProps> = ({
                                 <Spinner className="absolute -top-1 -right-1 !text-black" />
                               ) : null}
                             </div>
-                          </div>
-                        )}
+                          ) : null}
+                        </div>
                       </li>
                     );
                   })}
