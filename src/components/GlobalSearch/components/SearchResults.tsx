@@ -248,7 +248,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
     entityType: ISearchResultType,
     isRecent: boolean,
   ) => {
-    const textStyles = `text-sm leading-4 text-black max-w-[460px]
+    const textStyles = `text-sm leading-4 text-black max-w-[380px]
      ${
       isRecent ? 'font-semibold' : ''
     }`;
@@ -394,7 +394,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
               <Truncate
                 text={documentData.name}
                 className={textStyles}
-                toolTipClassName='!w-[450px] break-words'
+                toolTipClassName='!w-[450px] break-all'
                 textRenderer={(text) => (
                   <HighlightText text={text} subString={searchQuery} />
                 )}
@@ -626,43 +626,80 @@ const SearchResults: FC<ISearchResultsProps> = ({
                         aria-selected={selectedIndex === index}
                       >
                         {getEntityRenderer(result, entityType, isRecent)}
-                        {isRecent && (
-                          <div className="relative w-4 h-4 shrink-0">
-                            {!isDeleting ? (
-                              <IconButton
-                                icon={'close2'}
-                                className={`absolute -top-[1px] -right-[1px] ${
-                                  selectedIndex === index
-                                    ? 'visible'
-                                    : 'invisible'
-                                } group-hover/result:visible !rounded-none `}
-                                color="!text-neutral-900"
-                                iconClassName="group-hover:!text-red-500 group-focus:!text-red-500"
-                                size={18}
-                                variant={IconButtonVariant.Secondary}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setDeletedResult({
-                                    module: entity.module,
-                                    id: result.id,
-                                    resultClickedId: result.resultClickedId,
-                                  });
-                                  if (
-                                    entity.module === ISearchResultType.KEYWORD
-                                  )
-                                    deleteRecentSearchTermMutation.mutate(
-                                      result.id,
-                                    );
-                                  else
-                                    deleteRecentClickedResultMutation.mutate(
-                                      result.resultClickedId,
-                                    );
+                        {entityType === ISearchResultType.DOCUMENT && (
+                          <div className='relative w-4 h-4 shrink-0'>
+                            {true ? (
+                              <Icon
+                                name="launch"
+                                size={20}
+                                color="text-neutral-900"
+                                hoverColor='text-primary-500'
+                                className={`absolute -top-[1px] -right-[1px] ${selectedIndex === index
+                                  ? 'visible'
+                                  : 'invisible'
+                                  } group-hover/result:visible !rounded-none `}
+                                onClick={() => {
+                                  window.open('www.google.com', '_blank', 'noopener,noreferrer');
                                 }}
                               />
                             ) : null}
-                            {isDeleting && isResultDeleted(result) ? (
-                              <Spinner className="absolute -top-1 -right-1 !text-black" />
-                            ) : null}
+                          </div>
+                        )}
+                        {isRecent && (
+                          <div className='flex gap-2 items-center'>
+                            <div className='relative w-4 h-4 shrink-0'>
+                              {true ? (
+                                <Icon
+                                  name="launch"
+                                  size={18}
+                                  color="text-neutral-900"
+                                  hoverColor='text-primary-500'
+                                  className={`absolute -top-[1px] -right-[1px] ${selectedIndex === index
+                                      ? 'visible'
+                                      : 'invisible'
+                                    } group-hover/result:visible !rounded-none `}
+                                  onClick={() => {
+                                    window.open('www.google.com', '_blank', 'noopener,noreferrer');
+                                  }}
+                                />
+                              ) : null}
+                            </div>
+                            <div className="relative w-4 h-4 shrink-0">
+                              {!isDeleting ? (
+                                <IconButton
+                                  icon={'close2'}
+                                  className={`absolute -top-[1px] -right-[1px] ${selectedIndex === index
+                                      ? 'visible'
+                                      : 'invisible'
+                                    } group-hover/result:visible !rounded-none `}
+                                  color="!text-neutral-900"
+                                  iconClassName="group-hover:!text-red-500 group-focus:!text-red-500"
+                                  size={18}
+                                  variant={IconButtonVariant.Secondary}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setDeletedResult({
+                                      module: entity.module,
+                                      id: result.id,
+                                      resultClickedId: result.resultClickedId,
+                                    });
+                                    if (
+                                      entity.module === ISearchResultType.KEYWORD
+                                    )
+                                      deleteRecentSearchTermMutation.mutate(
+                                        result.id,
+                                      );
+                                    else
+                                      deleteRecentClickedResultMutation.mutate(
+                                        result.resultClickedId,
+                                      );
+                                  }}
+                                />
+                              ) : null}
+                              {isDeleting && isResultDeleted(result) ? (
+                                <Spinner className="absolute -top-1 -right-1 !text-black" />
+                              ) : null}
+                            </div>
                           </div>
                         )}
                       </li>

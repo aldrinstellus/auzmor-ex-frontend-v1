@@ -109,7 +109,7 @@ const fieldSizeByType: Record<string, number> = {
   boolean: 150,
   number: 150,
   text: 250,
-  choice: 140,
+  choice: 180,
 };
 
 const TimeField = ({ time }: { time: string }) => (
