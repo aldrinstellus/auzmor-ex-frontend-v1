@@ -140,7 +140,9 @@ const FilePreview: FC<IFilePreviewProps> = ({
 useEffect(() => {
   if (!isLoadingComments) {
     setTotalComments(commentInfo?.count);
-    setShowComment(true);
+    if (commentInfo?.count > 0) {
+      setShowComment(true);
+    }
   }
 }, [isLoadingComments, commentInfo]);
 
