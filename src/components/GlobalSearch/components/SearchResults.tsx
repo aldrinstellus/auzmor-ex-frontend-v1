@@ -27,6 +27,7 @@ import useRole from 'hooks/useRole';
 import Spinner from 'components/Spinner';
 import { PUBLIC_URL } from 'utils/constants';
 import Truncate from 'components/Truncate';
+import { Link } from 'react-router-dom';
 
 interface ISearchResultsProps {
   searchResults: ISearchResultGroup[];
@@ -614,17 +615,21 @@ const SearchResults: FC<ISearchResultsProps> = ({
                         className={`flex px-3 py-[4px] gap-2 items-center group/result hover:bg-primary-50 cursor-pointer ${
                           index === selectedIndex && 'bg-primary-50'
                         }`}
-                        onClick={() => handleItemClick(entityType, result)}
-                        onKeyUp={(e) =>
-                          e.code === 'Enter'
-                            ? handleItemClick(entityType, result)
-                            : ''
-                        }
                         ref={(el: HTMLLIElement) =>
                           (itemRefs.current[index] = el)
                         }
                         aria-selected={selectedIndex === index}
                       >
+                        <Link
+                          to={getItemUrl(entityType, result)}
+                          className="flex flex-1 gap-2 items-center"
+                          onClick={() => handleItemClick(entityType, result)}
+                          onKeyUp={(e) =>
+                            e.code === 'Enter'
+                              ? handleItemClick(entityType, result)
+                              : ''
+                          }
+                        >
                         {getEntityRenderer(result, entityType, isRecent)}
                         {isRecent && (
                           <div className="relative w-4 h-4 shrink-0">
@@ -665,6 +670,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
                             ) : null}
                           </div>
                         )}
+                        </Link>
                       </li>
                     );
                   })}
