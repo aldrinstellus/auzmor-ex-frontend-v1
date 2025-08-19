@@ -680,6 +680,17 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     return items;
   };
 
+  const getRowUrl = (pathWithId: any) => {
+    if (pathWithId) {
+      const encodedPath = compressString(
+        JSON.stringify(pathWithId),
+      );
+      const url = `/channels/${channelId}/documents/${encodedPath}`;
+      return url;
+    }
+    return '';
+  }
+
   // Columns configuration for Datagrid component for List view
   const columnsListView = React.useMemo<ColumnDef<DocType>[]>(
     () =>
@@ -692,13 +703,17 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               {t('nameColumn', { totalRows })}
             </div>
           ),
-          cell: (info: CellContext<DocType, unknown>) => (
-            <NameField
-              name={info.getValue() as string}
-              mimeType={info?.row?.original?.mimeType}
-              isFolder={isRootDir || info?.row?.original?.isFolder}
-            />
-          ),
+          cell: (info: CellContext<DocType, unknown>) => {
+            return (
+            <Link to={getRowUrl(info?.row?.original?.pathWithId)} onClick={(e)=> e.preventDefault}>
+              <NameField
+                name={info.getValue() as string}
+                mimeType={info?.row?.original?.mimeType}
+                isFolder={isRootDir || info?.row?.original?.isFolder}
+              />
+            </Link>
+          );
+        },
           thClassName: 'flex-1 min-w-[30%] border-neutral-200 py-3 px-3',
           tdClassName: 'flex-1 min-w-[30%] border-b-1 border-neutral-200 py-3 px-3',
         },
@@ -810,41 +825,43 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         cell: (info: CellContext<DocType, unknown>) => {
           const matched = info.row.original?.customFields.find((field: any) => field.is_matched === true);
           return (
-          <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
-            <div className="w-6">
-              <Icon
-                name={
-                  info?.row?.original?.isFolder
-                    ? 'folder'
-                    : getIconFromMime(info.row.original.mimeType)
-                }
-                className="!w-6"
-              />
-            </div>
-            <div className="flex-1 min-w-0 overflow-hidden">
-              <div className="line-clamp-2 break-all">
-                {info.getValue() as string}
+            <Link to={getRowUrl(info?.row?.original?.pathWithId)} onClick={(e) => e.preventDefault}>
+              <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
+                <div className="w-6">
+                  <Icon
+                    name={
+                      info?.row?.original?.isFolder
+                        ? 'folder'
+                        : getIconFromMime(info.row.original.mimeType)
+                    }
+                    className="!w-6"
+                  />
+                </div>
+                <div className="flex-1 min-w-0 overflow-hidden">
+                  <div className="line-clamp-2 break-all">
+                    {info.getValue() as string}
+                  </div>
+                  {info.row.original?.customFields && Array.isArray(info.row.original.customFields) && info.row.original?.customFields.length > 0 && matched && (
+                    <div className="text-xs text-neutral-700">
+                      &quot;
+                      <HighlightText
+                        text={Array.isArray(matched.field_values)
+                          ? matched.field_values.find((val: any) => val?.toLowerCase?.().includes(applyDocumentSearch?.toLowerCase?.()))
+                          : matched.field_values?.Description ?? matched.field_values}
+                        subString={applyDocumentSearch}
+                      />
+                      &quot;
+                      &nbsp;
+                      {t('foundIn')}
+                      &nbsp;
+                      <span className="font-semibold">
+                        {matched.field_name}
+                      </span>
+                    </div>
+                  )}
+                </div>
               </div>
-            {info.row.original?.customFields && Array.isArray(info.row.original.customFields) && info.row.original?.customFields.length > 0 && matched && (
-              <div className="text-xs text-neutral-700">
-                &quot;
-                <HighlightText
-                  text={Array.isArray(matched.field_values)
-                    ? matched.field_values.find((val: any) => val?.toLowerCase?.().includes(applyDocumentSearch?.toLowerCase?.()))
-                    : matched.field_values?.Description ?? matched.field_values}
-                  subString={applyDocumentSearch}
-                />
-                &quot;
-                &nbsp;
-                {t('foundIn')}
-                &nbsp;
-                <span className="font-semibold">
-                  {matched.field_name}
-                </span>
-              </div>
-            )}
-            </div>
-          </div>
+            </Link>
         )},
         thClassName: 'flex-1 min-w-[30%] border-neutral-200 py-3 px-3',
         tdClassName: 'flex-1 min-w-[30%] border-b-1 border-neutral-200 py-3 px-3',
@@ -950,7 +967,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
     () => [
       {
         accessorKey: 'name',
-        cell: (info) => <Doc doc={info.row.original} isFolder={isRootDir} />,
+        cell: (info) => <Link to={getRowUrl(info?.row?.original?.pathWithId)} onClick={(e)=> e.preventDefault}>
+          <Doc doc={info.row.original} isFolder={isRootDir} />
+          </Link>,
       },
     ],
     [isRootDir],
@@ -1729,6 +1748,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                     navigate(`/channels/${channelId}/documents`);
                   }
                 }}
+                getRowUrl={getRowUrl}
                 disable={isCredExpired || isLoading}
               />
               {permissions.includes(ChannelPermissionEnum.CanEditChannelDoc) &&

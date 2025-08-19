@@ -5,7 +5,7 @@ import { IForm } from '..';
 import clsx from 'clsx';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useDebounce } from 'hooks/useDebounce';
 import DocSearchRow from './DocSearchRow';
 import { Doc } from 'interfaces';
@@ -19,6 +19,7 @@ interface IDocSearchProps {
   dirtyFields: any;
   onEnter: (documentSearchDebounceValue: string) => void;
   onClick: (doc: Doc) => void;
+  getRowUrl: (pathWithId: any) => string;
   disable: boolean;
 }
 
@@ -29,6 +30,7 @@ const DocSearch: FC<IDocSearchProps> = ({
   dirtyFields,
   onEnter,
   onClick,
+  getRowUrl,
 }) => {
   const { t } = useTranslation('channelDetail', {
     keyPrefix: 'documentTab',
@@ -122,11 +124,13 @@ const DocSearch: FC<IDocSearchProps> = ({
           ) : (
             (documents || []).map((doc: Doc) => (
               <li key={doc.id}>
-                <DocSearchRow
-                  data={doc}
-                  searchQuery={documentSearchDebounceValue}
-                  onClick={onClick}
-                />
+                <Link to={getRowUrl(doc?.pathWithId)} onClick={(e) => e.preventDefault}>
+                  <DocSearchRow
+                    data={doc}
+                    searchQuery={documentSearchDebounceValue}
+                    onClick={onClick}
+                  />
+                </Link>
               </li>
             ))
           )}

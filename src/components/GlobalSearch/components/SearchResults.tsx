@@ -27,6 +27,7 @@ import useRole from 'hooks/useRole';
 import Spinner from 'components/Spinner';
 import { PUBLIC_URL } from 'utils/constants';
 import Truncate from 'components/Truncate';
+import { Link } from 'react-router-dom';
 
 interface ISearchResultsProps {
   searchResults: ISearchResultGroup[];
@@ -383,53 +384,56 @@ const SearchResults: FC<ISearchResultsProps> = ({
           : getIconFromMime(documentData?.mimeType);
         const matched = result?.customFields?.find((field: any) => field.isMatched === true);
         return (
-          <>
-          <div className="flex gap-1.5 w-full overflow-hidden">
-          <div>
-            <Icon name={iconName} size={24} hover={false} />
-          </div>
-          <div>
-            <div className='flex gap-1 w-full items-center'>
-            <div className="min-w-0">
-              <Truncate
-                text={documentData.name}
-                className={textStyles}
-                toolTipClassName='!w-[450px] break-words'
-                textRenderer={(text) => (
-                  <HighlightText text={text} subString={searchQuery} />
-                )}
-              />
-            </div>
+          <Link
+            to={getItemUrl(entityType, result)}
+            onClick={(e) => e.preventDefault}
+          >
+            <div className="flex gap-1.5 w-full overflow-hidden">
+              <div>
+                <Icon name={iconName} size={24} hover={false} />
+              </div>
+              <div>
+                <div className='flex gap-1 w-full items-center'>
+                  <div className="min-w-0">
+                    <Truncate
+                      text={documentData.name}
+                      className={textStyles}
+                      toolTipClassName='!w-[450px] break-words'
+                      textRenderer={(text) => (
+                        <HighlightText text={text} subString={searchQuery} />
+                      )}
+                    />
+                  </div>
 
-            <div className="flex gap-2 items-center">
-              <div className="flex w-[3px] h-[3px] bg-neutral-500 rounded-full" />
-              <div className="text-xs text-neutral-500">
-                {`Created on ${getFormattedDate(
-                  documentData.externalCreatedAt || documentData.createdAt,
-                  user?.timezone,
-                )}`}
+                  <div className="flex gap-2 items-center">
+                    <div className="flex w-[3px] h-[3px] bg-neutral-500 rounded-full" />
+                    <div className="text-xs text-neutral-500">
+                      {`Created on ${getFormattedDate(
+                        documentData.externalCreatedAt || documentData.createdAt,
+                        user?.timezone,
+                      )}`}
+                    </div>
+                  </div>
+                </div>
+                {result?.customFields && Array.isArray(result.customFields) && result.customFields.length > 0 && matched && (
+                  <div className="text-xs text-neutral-500">
+                    &quot;
+                    <HighlightText
+                      text={Array.isArray(matched.fieldValues)
+                        ? matched.fieldValues.find((val: any) => val?.toLowerCase?.().includes(searchQuery?.toLowerCase?.()))
+                        : matched.fieldValues?.Description ?? matched.fieldValues}
+                      subString={searchQuery}
+                    />
+                    &quot;&nbsp;
+                    {t('foundIn')}&nbsp;
+                    <span className="font-semibold text-neutral-700">
+                      {matched.fieldName}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
-            </div>
-            {result?.customFields && Array.isArray(result.customFields) && result.customFields.length > 0 && matched && (
-              <div className="text-xs text-neutral-500">
-                &quot;
-                <HighlightText
-                  text={Array.isArray(matched.fieldValues)
-                    ? matched.fieldValues.find((val: any) => val?.toLowerCase?.().includes(searchQuery?.toLowerCase?.()))
-                    : matched.fieldValues?.Description ?? matched.fieldValues}
-                  subString={searchQuery}
-                />
-                &quot;&nbsp;
-                {t('foundIn')}&nbsp;
-                <span className="font-semibold text-neutral-700">
-                  {matched.fieldName}
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
-          </>
+          </Link>
         );
       case ISearchResultType.COURSE:
       case ISearchResultType.PATH:

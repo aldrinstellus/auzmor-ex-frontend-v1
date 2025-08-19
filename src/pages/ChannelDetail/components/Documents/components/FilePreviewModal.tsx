@@ -269,7 +269,7 @@ useEffect(() => {
               ) : null}
             </div>
           )}
-          {canDownload && !fileLoading && !isLink && !!file.downloadable && (
+          {canDownload && !fileLoading && !isLink && !!file?.downloadable && (
             <div className="flex gap-2">
               {isDownloading && <Spinner />}
               <Icon
