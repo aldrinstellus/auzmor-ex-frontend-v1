@@ -86,6 +86,8 @@
     "textPlaceholder": "eg: Design Document",
     "linkTextLabel": "Text",
     "pasteUrl": "Paste the URL",
+    "emptyTextMsg": "Text is Required",
+    "emptyUrlMsg": "URL is required",
     "invalidUrlMsg": "Please enter a valid URL",
     "cancelLabel": "Cancel",
     "saveLabel": "Save"

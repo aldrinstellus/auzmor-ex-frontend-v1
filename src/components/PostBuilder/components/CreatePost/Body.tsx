@@ -122,24 +122,18 @@ const Body = forwardRef(
       if (editingRange) {
         const { index, length } = editingRange;
 
-        // Formats at start of the link (bold/italic/etc.)
         const baseFormats = editor.getFormat(index, 1);
 
-        // If text didn't change, only update the URL (preserves all inline formats)
         if (linkText === selectedText) {
           editor.formatText(index, length, 'link', normalizedUrl);
         } else {
-          // Replace text but preserve other formats
           const formats = { ...baseFormats, link: normalizedUrl };
-          // Remove existing text
           editor.deleteText(index, length);
-          // Insert new text with preserved formats
           editor.insertText(index, linkText, formats);
         }
 
         setEditingRange(null);
       } else {
-        // Creating a brand-new link at the current selection
         const range = editor.getSelection(true);
         if (range) {
           editor.deleteText(range.index, range.length);

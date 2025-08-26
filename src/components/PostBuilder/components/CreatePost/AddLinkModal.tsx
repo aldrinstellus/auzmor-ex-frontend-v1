@@ -24,10 +24,10 @@ const AddLinkModal: React.FC<AddLinkModalProps> = ({ isOpen, onClose, onSave, se
   const { t } = useTranslation('postBuilder');
 
   const schema = yup.object().shape({
-    linkText: yup.string().optional(),
+    linkText: yup.string().required(t('hyperlink.emptyTextMsg')),
     textUrl: yup
       .string()
-      .required("URL is required")
+      .required(t('hyperlink.emptyUrlMsg'))
       .test("is-url-valid", t('hyperlink.invalidUrlMsg'), (value) => {
         if (!value) return false;
         try {
@@ -77,7 +77,7 @@ const AddLinkModal: React.FC<AddLinkModalProps> = ({ isOpen, onClose, onSave, se
         </div>
         <div className="px-4 pt-2 h-[57.5%]">
           <Layout
-            className="w-full flex flex-col gap-4"
+            className="w-full flex flex-col gap-5"
             fields={[
               {
                 type: FieldType.Input,
@@ -86,6 +86,7 @@ const AddLinkModal: React.FC<AddLinkModalProps> = ({ isOpen, onClose, onSave, se
                 label: t("hyperlink.linkTextLabel"),
                 placeholder: t("hyperlink.textPlaceholder"),
                 dataTestId: `${dataTestId}-text`,
+                required: true,
                 autoFocus: selectedText ? false : true,
                 error: errors.linkText?.message,
               },
