@@ -1181,7 +1181,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   // Hook to reset document search param
   useEffect(() => {
     if (documentSearch === '' && isDocSearchApplied) {
-      setValue('applyDocumentSearch', '');
+      setValue('applyDocumentSearch', '', { shouldDirty: true });
     }
   }, [documentSearch, isDocSearchApplied]);
 
@@ -1717,7 +1717,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               className="!py-[7px]"
               variant={ButtonVariant.Secondary}
               onClick={() => {
-                setValue('documentSearch', '');
+                setValue('documentSearch', '', { shouldDirty: true });
               }}
             />
           ) : (
@@ -1736,7 +1736,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 const encodedPath = compressString(
                   JSON.stringify(mappedItemsToEncode),
                 );
-                setValue('documentSearch', '');
+                setValue('documentSearch', '', { shouldDirty: true });
                 if (!!mappedItemsToEncode.length) {
                   navigate(`/channels/${channelId}/documents/${encodedPath}`);
                 } else {
