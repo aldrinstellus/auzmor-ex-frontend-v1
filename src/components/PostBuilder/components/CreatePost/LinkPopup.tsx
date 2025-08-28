@@ -26,7 +26,7 @@ const LinkPopup = ({ url, position, onEdit, onClose }: LinkPopupProps) => {
   return (
     <div
       ref={popupRef}
-      className="absolute z-50 bg-white border rounded shadow p-2 flex items-center gap-2 rounded-9xl
+      className="absolute z-50 max-w-[400px] bg-white border rounded shadow p-2 flex items-center gap-2 rounded-9xl
       before:content-[''] before:absolute before:-top-1.5 before:left-4
       before:block before:w-3 before:h-3 before:bg-white
        before:border-l before:border-t before:border-gray-300
@@ -36,7 +36,7 @@ const LinkPopup = ({ url, position, onEdit, onClose }: LinkPopupProps) => {
         left: position.left,
       }}
     >
-      <span className="text-sm font-medium text-neutral-600">{url}</span>
+      <span className="text-sm font-medium text-neutral-600 truncate w-[95%]">{url}</span>
       <Icon name="edit" size={16} onClick={onEdit} />
     </div>
   );
