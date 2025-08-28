@@ -198,7 +198,8 @@ const SearchResults: FC<ISearchResultsProps> = ({
         const channelId = entity.additionalInfo?.channelId || entity.channelId;
         const pathWithId =
           entity.additionalInfo?.pathWithId || entity.pathWithId;
-        return `/channels/${channelId}/documents/${compressString(
+        const baseUrl = !isAdmin ? '/user' : '';
+        return `${baseUrl}/channels/${channelId}/documents/${compressString(
           JSON.stringify(pathWithId),
         )}`;
       case ISearchResultType.COURSE:
