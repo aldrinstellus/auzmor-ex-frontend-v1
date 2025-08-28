@@ -77,6 +77,7 @@ import useNavigate from 'hooks/useNavigation';
 import { ColumnItem } from './components/ColumnSelector';
 import Truncate from 'components/Truncate';
 import HighlightText from 'components/HighlightText';
+import useRole from 'hooks/useRole';
 // import { ICheckboxListOption } from 'components/CheckboxList';
 
 export enum DocIntegrationEnum {
@@ -109,7 +110,7 @@ const fieldSizeByType: Record<string, number> = {
   boolean: 150,
   number: 150,
   text: 250,
-  choice: 140,
+  choice: 180,
 };
 
 const TimeField = ({ time }: { time: string }) => (
@@ -362,6 +363,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const { data: currentUser } = useCurrentUser();
   const syncIntervalRef = useRef<any>(null);
   const navigate = useNavigate();
+  const { isAdmin } = useRole();
 
   // Api call: Check connection status
   const useChannelDocumentStatus = getApi(ApiEnum.GetChannelDocumentStatus);
@@ -599,14 +601,27 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
         !!info?.row?.original?.downloadable &&
         !!!info?.row?.original?.isFolder &&
         !isLink;
-      const showLaunch = !isCredExpired && isLink;
+      const showLaunch = !isCredExpired && !!!info?.row?.original?.isFolder;
       const canRename =
         !isCredExpired &&
         permissions.includes(ChannelPermissionEnum.CanRenameDocuments);
       const canDelete =
         !isCredExpired &&
         permissions.includes(ChannelPermissionEnum.CanDeleteDocuments);
+      const showCopyLink = !isCredExpired;
       return [
+        {
+          label: t('copyLink'),
+          onClick: (e: Event) => {
+            e.stopPropagation();
+            const lxpBaseUrl = `${window.location.origin}/lxp${!isAdmin ? '/user' : ''}`;
+            const url = `${lxpBaseUrl}${getRowUrl(info?.row?.original?.pathWithId)}`;
+            navigator.clipboard.writeText(url);
+          },
+          dataTestId: 'folder-menu',
+          className: '!px-6 !py-[6px]',
+          isHidden: !showCopyLink,
+        },
         {
           label: t('rename'),
           onClick: (e: Event) => {
@@ -685,7 +700,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       const encodedPath = compressString(
         JSON.stringify(pathWithId),
       );
-      const url = `/channels/${channelId}/documents/${encodedPath}`;
+      const base = !isAdmin ? '/user' : '';
+      const url = `${base}/channels/${channelId}/documents/${encodedPath}`;
       return url;
     }
     return '';
@@ -779,7 +795,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                     </div>
                   }
                   menuItems={options}
-                  className="right-5 bg-white bottom-[calc(100%-32px)] border-1 border-neutral-200 w-40"
+                  className="right-5 bg-white bottom-[calc(100%-32px)] border-1 border-neutral-200 w-40 h-[100px] overflow-y-auto"
                   onClick={(e) => e.stopPropagation()}
                 />
               </div>
@@ -946,7 +962,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 </div>
               }
               menuItems={options}
-              className="right-5 bg-white bottom-[calc(100%-32px)] border-1 border-neutral-200 w-40"
+              className="right-5 bg-white bottom-[calc(100%-32px)] border-1 border-neutral-200 w-40 h-[100px] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             />
             </div>
@@ -1127,6 +1143,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           const encodedPath = compressString(
             JSON.stringify(virtualRow?.original.pathWithId),
           );
+          if (isDocSearchApplied && virtualRow.original.isFolder) {
+            setValue('documentSearch', '', { shouldDirty: true });
+          }
           navigate(`/channels/${channelId}/documents/${encodedPath}`);
         }
       },
@@ -1165,7 +1184,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   // Hook to reset document search param
   useEffect(() => {
     if (documentSearch === '' && isDocSearchApplied) {
-      setValue('applyDocumentSearch', '');
+      setValue('applyDocumentSearch', '', { shouldDirty: true });
     }
   }, [documentSearch, isDocSearchApplied]);
 
@@ -1701,7 +1720,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               className="!py-[7px]"
               variant={ButtonVariant.Secondary}
               onClick={() => {
-                setValue('documentSearch', '');
+                setValue('documentSearch', '', { shouldDirty: true });
               }}
             />
           ) : (
@@ -1720,7 +1739,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 const encodedPath = compressString(
                   JSON.stringify(mappedItemsToEncode),
                 );
-                setValue('documentSearch', '');
+                setValue('documentSearch', '', { shouldDirty: true });
                 if (!!mappedItemsToEncode.length) {
                   navigate(`/channels/${channelId}/documents/${encodedPath}`);
                 } else {

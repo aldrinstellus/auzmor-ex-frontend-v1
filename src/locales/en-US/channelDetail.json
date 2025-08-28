@@ -166,6 +166,7 @@
     "folderNameInputPlaceholder": "Enter folder name",
     "emptyFolderNameError": "Folder name cannot be empty.",
     "charLimitFolderNameError": "Folder name cannot exceed {{limit}} characters.",
+    "copyLink": "Copy Link",
     "rename": "Rename",
     "download": "Download",
     "launch": "Launch",

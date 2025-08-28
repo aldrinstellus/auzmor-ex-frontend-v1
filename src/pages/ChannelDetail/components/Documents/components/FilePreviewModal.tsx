@@ -236,7 +236,7 @@ useEffect(() => {
             <div className='w-full flex flex-col'>
               <Truncate
                 maxLength={100}
-                toolTipClassName='max-w-[450px] !z-[999]'
+                toolTipClassName='max-w-[450px] break-all'
                 text={file?.name || ''}
                 className='text-base leading-normal text-neutral-900 font-semibold'
               />
@@ -286,10 +286,11 @@ useEffect(() => {
               />
             </div>
           )}
-          {isLink && previewUrl ? (
+          {previewUrl ? (
             <Icon
               name="launch"
               color="text-neutral-900"
+              hoverColor='text-primary-500'
               onClick={() => {
                 window.open(previewUrl, '_blank', 'noopener,noreferrer');
               }}
