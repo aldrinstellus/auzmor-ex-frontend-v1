@@ -19,3 +19,8 @@
   position: absolute;
   z-index: 1000;
 }
+
+.custom-popover {
+  text-decoration: underline;
+  cursor: pointer;
+}

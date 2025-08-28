@@ -79,5 +79,17 @@
     "more": "More",
     "shareAsAnnouncement": "Share as an Announcement",
     "saveAsDraft": "Save as Drafts"
+  },
+  "hyperlink": {
+    "modalTitle": "Add link",
+    "placeholder": "ex. www.abc.com",
+    "textPlaceholder": "eg: Design Document",
+    "linkTextLabel": "Text",
+    "pasteUrl": "Paste the URL",
+    "emptyTextMsg": "Text is Required",
+    "emptyUrlMsg": "URL is required",
+    "invalidUrlMsg": "Please enter a valid URL",
+    "cancelLabel": "Cancel",
+    "saveLabel": "Save"
   }
 }
