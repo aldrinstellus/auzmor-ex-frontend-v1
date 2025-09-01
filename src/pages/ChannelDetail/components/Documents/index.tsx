@@ -77,6 +77,7 @@ import useNavigate from 'hooks/useNavigation';
 import { ColumnItem } from './components/ColumnSelector';
 import Truncate from 'components/Truncate';
 import HighlightText from 'components/HighlightText';
+import useRole from 'hooks/useRole';
 // import { ICheckboxListOption } from 'components/CheckboxList';
 
 export enum DocIntegrationEnum {
@@ -362,6 +363,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const { data: currentUser } = useCurrentUser();
   const syncIntervalRef = useRef<any>(null);
   const navigate = useNavigate();
+  const { isAdmin } = useRole();
 
   // Api call: Check connection status
   const useChannelDocumentStatus = getApi(ApiEnum.GetChannelDocumentStatus);
@@ -685,7 +687,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       const encodedPath = compressString(
         JSON.stringify(pathWithId),
       );
-      const url = `/channels/${channelId}/documents/${encodedPath}`;
+      const base = !isAdmin ? '/user' : '';
+      const url = `${base}/channels/${channelId}/documents/${encodedPath}`;
       return url;
     }
     return '';
