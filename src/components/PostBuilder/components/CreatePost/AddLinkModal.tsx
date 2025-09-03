@@ -5,7 +5,7 @@ import Layout, { FieldType } from "components/Form";
 import Icon from "components/Icon";
 import { useTranslation } from "react-i18next";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 interface AddLinkModalProps {
   isOpen: boolean;
@@ -22,6 +22,7 @@ enum AddFlow {
 
 const AddLinkModal: React.FC<AddLinkModalProps> = ({ isOpen, onClose, onSave, selectedText, url }) => {
   const { t } = useTranslation('postBuilder');
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const schema = yup.object().shape({
     linkText: yup.string().required(t('hyperlink.emptyTextMsg')),
@@ -66,11 +67,22 @@ const AddLinkModal: React.FC<AddLinkModalProps> = ({ isOpen, onClose, onSave, se
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+        onClose();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [onClose]);
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 pt-[270px]">
-      <div className="bg-white rounded-9xl shadow-xl border border-neutral-100 w-[460px] h-[340px]">
+      <div ref={modalRef} className="bg-white rounded-9xl shadow-xl border border-neutral-100 w-[460px] h-[340px]">
         <div className="flex justify-between items-center p-4 border-b-2 border-neutral-100">
           <h2 className="text-lg font-bold">{t('hyperlink.modalTitle')}</h2>
           <Icon name="close" size={20} onClick={() => onClose()} />
