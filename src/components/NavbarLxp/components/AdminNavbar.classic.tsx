@@ -40,7 +40,6 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
   };
 
   const isLxpEnabled = user?.organization.type === 'LXP';
-  console.log(user);
 
   switch (pathname) {
     case '/user/apps':
@@ -261,7 +260,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           dataTestId: 'reports-menu',
           onClick: () => window.location.assign(`${getLearnUrl('/custom-reports')}`),
           isBeta: true,
-          show: true,
+          show: !!user?.organization?.setting?.enableCustomReports,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
             '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
