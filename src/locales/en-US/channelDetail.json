@@ -225,7 +225,8 @@
     "viewAllComments": "View All Comments",
     "noMentionedComments":{
       "label": "Comment Not Found"
-    }
+    },
+    "linkCopied": "Link copied to the clipboard!"
   },
   "memberTab": {
     "title": "Members",
