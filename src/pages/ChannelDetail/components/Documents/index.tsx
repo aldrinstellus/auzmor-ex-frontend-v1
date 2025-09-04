@@ -614,7 +614,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           label: t('copyLink'),
           onClick: (e: Event) => {
             e.stopPropagation();
-            const lxpBaseUrl = `${window.location.origin}/lxp${!isAdmin ? '/user' : ''}`;
+            const lxpBaseUrl = `${window.location.origin}/lxp`;
             const url = `${lxpBaseUrl}${getRowUrl(info?.row?.original?.pathWithId)}`;
             navigator.clipboard.writeText(url);
             successToastConfig({content: t('linkCopied')});
@@ -706,7 +706,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       return url;
     }
     return '';
-  }
+  };
 
   // Columns configuration for Datagrid component for List view
   const columnsListView = React.useMemo<ColumnDef<DocType>[]>(
@@ -784,7 +784,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             }
             const options = getAllOptions(info);
             return options.length > 0 ? (
-              <div className="relative z-[999999]">
                 <PopupMenu
                   triggerNode={
                     <div
@@ -796,10 +795,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                     </div>
                   }
                   menuItems={options}
-                  className="right-5 bg-white bottom-[calc(100%-32px)] border-1 border-neutral-200 w-40 max-h-[100px] overflow-y-auto"
+                  className={`border-1 border-neutral-200 w-40`}
                   onClick={(e) => e.stopPropagation()}
+                  useCustomPopupPosition
                 />
-              </div>
             ) : null;
           },
           size: 16,
@@ -951,7 +950,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           }
           const options = getAllOptions(info);
           return options.length > 0 ? (
-            <div className="relative z-[999999]">
             <PopupMenu
               triggerNode={
                 <div
@@ -963,10 +961,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 </div>
               }
               menuItems={options}
-              className="right-5 bg-white bottom-[calc(100%-32px)] border-1 border-neutral-200 w-40 h-[100px] overflow-y-auto"
+              className="border-1 border-neutral-200 w-40"
               onClick={(e) => e.stopPropagation()}
+              useCustomPopupPosition
             />
-            </div>
           ) : (
             <></>
           );
