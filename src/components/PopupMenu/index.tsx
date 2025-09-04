@@ -68,7 +68,7 @@ const PopupMenu: FC<IPopupMenuProps> = ({
     if (triggerRef.current) {
       const rect = triggerRef.current.getBoundingClientRect();
       setCoords({
-        top: rect.top - 100,
+        top: rect.top,
         left: rect.left - 170,
       })
     }
