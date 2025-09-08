@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   ElementType,
   FC,
@@ -109,7 +108,7 @@ const PopupMenu: FC<IPopupMenuProps> = ({
           : {}
       }
     >
-      {title && title}
+      {title}
       {menuItems.map((menuItem: IMenuItem, idx: number) =>
         menuItem.isBanner ? (
           menuItem?.renderNode || null
