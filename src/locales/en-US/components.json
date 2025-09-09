@@ -59,7 +59,8 @@
       "task": "Tasks",
       "mentorship": "Mentorship"
     },
-    "foundIn": "- found in"
+    "foundIn": "- found in",
+    "failedToOpenPreview": "Failed to open the preview"
   },
   "SubscriptionBanner": {
     "productNameLearn": "Auzmor Learn",

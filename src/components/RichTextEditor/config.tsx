@@ -43,7 +43,7 @@ interface IHashtags {
   updatedAt: string;
 }
 
-export const previewLinkRegex = /(http|https):\/\/[^\s]+/gi;
+export const previewLinkRegex = /(?<![\[\(])\bhttps?:\/\/[^\s\]]+(?![\]\)])/gi;
 
 const mentionEntityFetch = async (character: string, searchTerm: string) => {
   const isContainWhiteSpace = /^\s/.test(searchTerm);

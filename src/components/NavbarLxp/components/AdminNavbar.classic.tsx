@@ -254,7 +254,18 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           labelClassName:
             '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
         },
-      ],
+        {
+          id: 'customReports',
+          label: t('learn.customReports'),
+          dataTestId: 'reports-menu',
+          onClick: () => window.location.assign(`${getLearnUrl('/custom-reports')}`),
+          isBeta: true,
+          show: !!user?.organization?.setting?.enableCustomReports,
+          className: '!py-[11px] !px-3 hover:!bg-neutral-100',
+          labelClassName:
+            '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
+        },
+      ].filter(option => option.show),
     },
     {
       id: 'ecommerce',
@@ -324,6 +335,15 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
     });
   };
 
+  const getCustomWidth = (id: string) => {
+    switch (id) {
+      case "analytics":
+        return "!w-[180px]";
+      default:
+        return "";
+    }
+  };
+
   return (
     <div className="sticky top-0 w-full z-50">
       <div className="h-[78px] flex items-center justify-center bg-white px-14">
@@ -372,7 +392,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
                           menuItems={item.options}
                           className={`dropdown-menu-option group-hover/item:visible invisible h-[39px] !transition-[height] !duration-300 w-full left-1/2 -translate-x-1/2 ${getOptionHeight(
                             item.options.length,
-                          )}`}
+                          )} ${getCustomWidth(item.id)}`}
                           controlled
                           isOpen
                         />

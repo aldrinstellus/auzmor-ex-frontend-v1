@@ -3,6 +3,7 @@ import Icon from 'components/Icon';
 import useHover from 'hooks/useHover';
 import clsx from 'clsx';
 import { FC } from 'react';
+import BetaTag from 'components/BetaTag';
 
 type PopupMenuItemProps = {
   menuItem: IMenuItem;
@@ -61,6 +62,9 @@ const PopupMenuItem: FC<PopupMenuItemProps> = ({
       >
         {menuItem.label}
       </div>
+      {menuItem.isBeta && (
+        <BetaTag type='small' />
+      )}
     </div>
   );
 };

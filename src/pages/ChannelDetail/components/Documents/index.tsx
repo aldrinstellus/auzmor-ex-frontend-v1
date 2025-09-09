@@ -110,7 +110,7 @@ const fieldSizeByType: Record<string, number> = {
   boolean: 150,
   number: 150,
   text: 250,
-  choice: 140,
+  choice: 180,
 };
 
 const TimeField = ({ time }: { time: string }) => (
@@ -608,7 +608,21 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       const canDelete =
         !isCredExpired &&
         permissions.includes(ChannelPermissionEnum.CanDeleteDocuments);
+      const showCopyLink = !isCredExpired;
       return [
+        {
+          label: t('copyLink'),
+          onClick: (e: Event) => {
+            e.stopPropagation();
+            const lxpBaseUrl = `${window.location.origin}/lxp`;
+            const url = `${lxpBaseUrl}${getRowUrl(info?.row?.original?.pathWithId)}`;
+            navigator.clipboard.writeText(url);
+            successToastConfig({content: t('linkCopied')});
+          },
+          dataTestId: 'folder-menu',
+          className: '!px-6 !py-[6px]',
+          isHidden: !showCopyLink,
+        },
         {
           label: t('rename'),
           onClick: (e: Event) => {
@@ -692,7 +706,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
       return url;
     }
     return '';
-  }
+  };
 
   // Columns configuration for Datagrid component for List view
   const columnsListView = React.useMemo<ColumnDef<DocType>[]>(
@@ -770,7 +784,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
             }
             const options = getAllOptions(info);
             return options.length > 0 ? (
-              <div className="relative z-[999999]">
                 <PopupMenu
                   triggerNode={
                     <div
@@ -782,10 +795,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                     </div>
                   }
                   menuItems={options}
-                  className="right-5 bg-white bottom-[calc(100%-32px)] border-1 border-neutral-200 w-40"
+                  className={`border-1 border-neutral-200 w-40`}
                   onClick={(e) => e.stopPropagation()}
+                  useCustomPopupPosition
                 />
-              </div>
             ) : null;
           },
           size: 16,
@@ -937,7 +950,6 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           }
           const options = getAllOptions(info);
           return options.length > 0 ? (
-            <div className="relative z-[999999]">
             <PopupMenu
               triggerNode={
                 <div
@@ -949,10 +961,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 </div>
               }
               menuItems={options}
-              className="right-5 bg-white bottom-[calc(100%-32px)] border-1 border-neutral-200 w-40"
+              className="border-1 border-neutral-200 w-40"
               onClick={(e) => e.stopPropagation()}
+              useCustomPopupPosition
             />
-            </div>
           ) : (
             <></>
           );
@@ -1130,6 +1142,9 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           const encodedPath = compressString(
             JSON.stringify(virtualRow?.original.pathWithId),
           );
+          if (isDocSearchApplied && virtualRow.original.isFolder) {
+            setValue('documentSearch', '', { shouldDirty: true });
+          }
           navigate(`/channels/${channelId}/documents/${encodedPath}`);
         }
       },
@@ -1168,7 +1183,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   // Hook to reset document search param
   useEffect(() => {
     if (documentSearch === '' && isDocSearchApplied) {
-      setValue('applyDocumentSearch', '');
+      setValue('applyDocumentSearch', '', { shouldDirty: true });
     }
   }, [documentSearch, isDocSearchApplied]);
 
@@ -1704,7 +1719,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
               className="!py-[7px]"
               variant={ButtonVariant.Secondary}
               onClick={() => {
-                setValue('documentSearch', '');
+                setValue('documentSearch', '', { shouldDirty: true });
               }}
             />
           ) : (
@@ -1723,7 +1738,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                 const encodedPath = compressString(
                   JSON.stringify(mappedItemsToEncode),
                 );
-                setValue('documentSearch', '');
+                setValue('documentSearch', '', { shouldDirty: true });
                 if (!!mappedItemsToEncode.length) {
                   navigate(`/channels/${channelId}/documents/${encodedPath}`);
                 } else {

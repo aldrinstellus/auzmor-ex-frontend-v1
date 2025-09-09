@@ -4,8 +4,8 @@ import PreviewLink from 'components/PreviewLink';
 import { CreatePostContext, CreatePostFlow } from 'contexts/CreatePostContext';
 import useAuth from 'hooks/useAuth';
 import { IPost } from 'interfaces';
-import { ForwardedRef, RefObject, forwardRef, useContext } from 'react';
-import ReactQuill from 'react-quill';
+import { ForwardedRef, RefObject, forwardRef, useContext, useEffect, useState } from 'react';
+import ReactQuill, { Quill } from 'react-quill';
 import RichTextEditor from '../RichTextEditor';
 import Toolbar from '../RichTextEditor/toolbar';
 import Icon from 'components/Icon';
@@ -16,6 +16,8 @@ import Button, { Size, Variant } from 'components/Button';
 import { operatorXOR } from 'utils/misc';
 import { useTranslation } from 'react-i18next';
 import Truncate from 'components/Truncate';
+import AddLinkModal from './AddLinkModal';
+import LinkPopup from './LinkPopup';
 
 export interface IBodyProps {
   data?: IPost;
@@ -44,6 +46,15 @@ const Body = forwardRef(
     const { user } = useAuth();
     const { t } = useTranslation('postBuilder');
     const { currentTimezone } = useCurrentTimezone();
+    const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
+    const [selectedText, setSelectedText] = useState('');
+    const [editingUrl, setEditingUrl] = useState('');
+    const [linkPopup, setLinkPopup] = useState<{
+      url: string;
+      position: any;
+      target: HTMLElement;
+    } | null>(null);
+    const [editingRange, setEditingRange] = useState<{ index: number; length: number } | null>(null);
     const updateContext = () => {
       setEditorValue({
         text: (ref as RefObject<ReactQuill>)
@@ -63,6 +74,107 @@ const Body = forwardRef(
           .getContents(),
       });
     };
+    const onRequestLink = () => {
+      const editor = quillRef.current?.getEditor();
+      if (editor) {
+        const range = editor.getSelection();
+        if (range && range.length > 0) {
+          setSelectedText(editor.getText(range.index, range.length));
+        } else {
+          setSelectedText('');
+        }
+      }
+      setIsLinkModalOpen(true);
+    };
+
+    const closeLinkPopup = () => setLinkPopup(null);
+    
+    const normalizeUrl = (url: string) => {
+      if (!url) return '';
+      if (/^(https?:)?\/\//i.test(url)) return url;
+      return `https://${url}`;
+    };
+
+    const handleEditLink = () => {
+      const editor = quillRef.current?.getEditor();
+      if (!editor || !linkPopup) return;
+
+      const anchor = linkPopup.target as HTMLAnchorElement;
+      const blot = Quill.find(anchor);
+      if (!blot) return;
+
+      const startIndex = blot.offset(editor.scroll);
+      const length = (anchor.textContent || '').length;
+
+      setEditingRange({ index: startIndex, length });
+      setSelectedText(anchor.textContent || '');
+      setEditingUrl(linkPopup.url);
+
+      setIsLinkModalOpen(true);
+      closeLinkPopup();
+    };
+
+    const handleAddLink = (linkText: string, url: string) => {
+      const editor = quillRef.current?.getEditor();
+      if (!editor) return;
+
+      const normalizedUrl = normalizeUrl(url);
+      if (editingRange) {
+        const { index, length } = editingRange;
+
+        const baseFormats = editor.getFormat(index, 1);
+
+        if (linkText === selectedText) {
+          editor.formatText(index, length, 'link', normalizedUrl);
+        } else {
+          const formats = { ...baseFormats, link: normalizedUrl };
+          editor.deleteText(index, length);
+          editor.insertText(index, linkText, formats);
+        }
+
+        setEditingRange(null);
+      } else {
+        const range = editor.getSelection(true);
+        if (range) {
+          editor.deleteText(range.index, range.length);
+          editor.insertText(range.index, linkText, { link: normalizedUrl });
+        }
+      }
+
+      setSelectedText('');
+      setEditingUrl('');
+      setIsLinkModalOpen(false);
+    };
+
+    useEffect(() => {
+      const editor = quillRef.current?.getEditor();
+      if (!editor) return;
+
+      const handleClick = (e: MouseEvent) => {
+        const target = e.target as HTMLElement;
+        if (target.tagName === 'A') {
+          e.preventDefault();
+          const linkUrl = target.getAttribute('href') || '';
+          const containerRect = editor.root.getBoundingClientRect();
+          const rect = target.getBoundingClientRect();
+          setLinkPopup({
+            url: linkUrl,
+            position: {
+              top: rect.top - containerRect.top + 158,
+              left: rect.left - containerRect.left - 10,
+              width: rect.width,
+              height: rect.height,
+            },
+            target
+          });
+        }
+      };
+
+      editor.root.addEventListener('click', handleClick);
+      return () => editor.root.removeEventListener('click', handleClick);
+    }, []);
+
+
     return (
       <div className="text-sm text-neutral-900">
         <div className="max-h-[75vh] overflow-y-auto flex flex-col gap-2">
@@ -207,6 +319,7 @@ const Body = forwardRef(
                   isCharLimit={isCharLimit}
                   dataTestId={dataTestId}
                   quillRef={quillRef}
+                  onAddLink={onRequestLink}
                 />
               );
             }}
@@ -222,6 +335,21 @@ const Body = forwardRef(
               />
             )}
             dataTestId={dataTestId}
+          />
+          {linkPopup && (
+            <LinkPopup
+              url={linkPopup.url}
+              position={linkPopup.position}
+              onEdit={handleEditLink}
+              onClose={closeLinkPopup}
+            />
+          )}
+          <AddLinkModal
+            isOpen={isLinkModalOpen}
+            onClose={() => setIsLinkModalOpen(false)}
+            onSave={handleAddLink}
+            selectedText={selectedText}
+            url={editingUrl}
           />
         </div>
       </div>

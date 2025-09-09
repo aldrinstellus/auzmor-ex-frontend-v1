@@ -27,7 +27,9 @@ import useRole from 'hooks/useRole';
 import Spinner from 'components/Spinner';
 import { PUBLIC_URL } from 'utils/constants';
 import Truncate from 'components/Truncate';
+import apiService from 'utils/apiService';
 import { Link } from 'react-router-dom';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 
 interface ISearchResultsProps {
   searchResults: ISearchResultGroup[];
@@ -93,6 +95,12 @@ const SearchResults: FC<ISearchResultsProps> = ({
   const [deletedResult, setDeletedResult] = useState<IDeletedResult | null>(
     null,
   );
+  const [fetchingPreview, setFetchingPreview] = useState<{ id: number | null, index: number | null }>({
+  id: null,
+  index: null,
+});
+
+
   const { user } = useAuth();
   const { isAdmin } = useRole();
 
@@ -139,6 +147,25 @@ const SearchResults: FC<ISearchResultsProps> = ({
       setDeletedResult(null);
     },
   });
+
+  const fetchPreviewApi = async (channelId: number, fileId: number) => {
+    const { data } = await apiService.get(`/channels/${channelId}/file/${fileId}/preview`);
+    return data;
+  };
+
+  const handlePreviewClick = async (channelId: number, fileId: number, index: number) => {
+    setFetchingPreview({ id: fileId, index });
+    const previewData = await fetchPreviewApi(channelId, fileId)
+    .catch(() => {
+      failureToastConfig({ content: t('failedToOpenPreview')});
+      setFetchingPreview({ id: null, index: null });
+      return null;
+    });
+    setFetchingPreview({ id: null, index: null });
+    if (previewData) {
+      window.open(previewData.result.previewURL, '_blank', 'noopener,noreferrer');
+    }
+  };
 
   const isDeleting =
     deleteRecentSearchTermMutation.isLoading ||
@@ -250,7 +277,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
     entityType: ISearchResultType,
     isRecent: boolean,
   ) => {
-    const textStyles = `text-sm leading-4 text-black max-w-[460px]
+    const textStyles = `text-sm leading-4 text-black max-w-[420px]
      ${
       isRecent ? 'font-semibold' : ''
     }`;
@@ -612,11 +639,12 @@ const SearchResults: FC<ISearchResultsProps> = ({
                       isRecent && result?.sourceType
                         ? (result.sourceType.toLowerCase() as ISearchResultType)
                         : entity.module;
+                    const isFolder = isRecent ? result?.additionalInfo?.isFolder : result?.isFolder;
                     return (
                       <li
                         id={`search-item-${index}`}
                         key={`search-item-${index}`}
-                        className={`flex px-3 py-[4px] gap-2 items-center group/result hover:bg-primary-50 cursor-pointer ${
+                        className={`flex justify-between px-3 py-[4px] gap-2 items-center group/result hover:bg-primary-50 cursor-pointer ${
                           index === selectedIndex && 'bg-primary-50'
                         }`}
                         onClick={() => handleItemClick(entityType, result)}
@@ -631,45 +659,63 @@ const SearchResults: FC<ISearchResultsProps> = ({
                         aria-selected={selectedIndex === index}
                       >
                         {getEntityRenderer(result, entityType, isRecent)}
-                        {isRecent && (
-                          <div className="relative w-4 h-4 shrink-0">
-                            {!isDeleting ? (
-                              <IconButton
-                                icon={'close2'}
-                                className={`absolute -top-[1px] -right-[1px] ${
-                                  selectedIndex === index
-                                    ? 'visible'
-                                    : 'invisible'
-                                } group-hover/result:visible !rounded-none `}
-                                color="!text-neutral-900"
-                                iconClassName="group-hover:!text-red-500 group-focus:!text-red-500"
-                                size={18}
-                                variant={IconButtonVariant.Secondary}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setDeletedResult({
-                                    module: entity.module,
-                                    id: result.id,
-                                    resultClickedId: result.resultClickedId,
-                                  });
-                                  if (
-                                    entity.module === ISearchResultType.KEYWORD
-                                  )
-                                    deleteRecentSearchTermMutation.mutate(
-                                      result.id,
+                        <div className='flex gap-2 items-center'>
+                          {entityType === ISearchResultType.DOCUMENT && !isFolder && (
+                            <div className="relative w-4 h-4 shrink-0">
+                              {(fetchingPreview.id === (result?.additionalInfo?.id || result?.id) && fetchingPreview.index === index) ?  (
+                                <Spinner className={`absolute -top-1 -right-1 !text-black ${
+                                    selectedIndex === index ? 'visible' : 'invisible'
+                                  } group-hover/result:visible !rounded-none`} />
+                              ) : (
+                                <Icon
+                                  name="launch"
+                                  size={18}
+                                  color="!text-neutral-900"
+                                  className={`absolute -top-[1px] -right-[1px] ${selectedIndex === index ? 'visible' : 'invisible'} group-hover/result:visible !rounded-none`}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handlePreviewClick(
+                                      result?.additionalInfo?.channelId || result?.channelId,
+                                      result?.additionalInfo?.id || result?.id,
+                                      resultIndex
                                     );
-                                  else
-                                    deleteRecentClickedResultMutation.mutate(
-                                      result.resultClickedId,
-                                    );
-                                }}
-                              />
-                            ) : null}
-                            {isDeleting && isResultDeleted(result) ? (
-                              <Spinner className="absolute -top-1 -right-1 !text-black" />
-                            ) : null}
-                          </div>
-                        )}
+                                  }}
+                                />
+                              )}
+                            </div>
+                          )}
+                          {isRecent ? (
+                            <div className="relative w-4 h-4 shrink-0">
+                              {!isDeleting ? (
+                                <IconButton
+                                  icon={'close2'}
+                                  className={`absolute -top-[1px] -right-[1px] ${
+                                    selectedIndex === index ? 'visible' : 'invisible'
+                                  } group-hover/result:visible !rounded-none`}
+                                  color="!text-neutral-900"
+                                  iconClassName="group-hover:!text-red-500 group-focus:!text-red-500"
+                                  size={18}
+                                  variant={IconButtonVariant.Secondary}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setDeletedResult({
+                                      module: entity.module,
+                                      id: result.id,
+                                      resultClickedId: result.resultClickedId,
+                                    });
+                                    if (entity.module === ISearchResultType.KEYWORD)
+                                      deleteRecentSearchTermMutation.mutate(result.id);
+                                    else
+                                      deleteRecentClickedResultMutation.mutate(result.resultClickedId);
+                                  }}
+                                />
+                              ) : null}
+                              {isDeleting && isResultDeleted(result) ? (
+                                <Spinner className="absolute -top-1 -right-1 !text-black" />
+                              ) : null}
+                            </div>
+                          ) : null}
+                        </div>
                       </li>
                     );
                   })}
