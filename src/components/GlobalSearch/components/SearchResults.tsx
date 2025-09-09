@@ -1,3 +1,5 @@
+import isBoolean from 'lodash/isBoolean';
+import isEmpty from 'lodash/isEmpty';
 import Avatar from 'components/Avatar';
 import Icon from 'components/Icon';
 import NoDataFound from 'components/NoDataFound';
@@ -410,7 +412,9 @@ const SearchResults: FC<ISearchResultsProps> = ({
         const iconName = documentData?.isFolder
           ? 'folder'
           : getIconFromMime(documentData?.mimeType);
-        const matched = result?.customFields?.find((field: any) => field.isMatched === true);
+        const matchedValue = Array.isArray(result?.customFields)
+          ? result?.customFields?.find((field: any) => field.isMatched === true)
+          : {};
         return (
           <Link
             to={getItemUrl(entityType, result)}
@@ -443,19 +447,19 @@ const SearchResults: FC<ISearchResultsProps> = ({
                     </div>
                   </div>
                 </div>
-                {result?.customFields && Array.isArray(result.customFields) && result.customFields.length > 0 && matched && (
+                {!isEmpty(matchedValue) && !isBoolean(matchedValue.fieldValues) && (
                   <div className="text-xs text-neutral-500">
                     &quot;
                     <HighlightText
-                      text={Array.isArray(matched.fieldValues)
-                        ? matched.fieldValues.find((val: any) => val?.toLowerCase?.().includes(searchQuery?.toLowerCase?.()))
-                        : matched.fieldValues?.Description ?? matched.fieldValues}
+                      text={Array.isArray(matchedValue.fieldValues)
+                        ? matchedValue.fieldValues.find((val: any) => val?.toLowerCase?.().includes(searchQuery?.toLowerCase?.()))
+                        : matchedValue.fieldValues?.Description ?? matchedValue.fieldValues}
                       subString={searchQuery}
                     />
                     &quot;&nbsp;
                     {t('foundIn')}&nbsp;
                     <span className="font-semibold text-neutral-700">
-                      {matched.fieldName}
+                      {matchedValue.fieldName}
                     </span>
                   </div>
                 )}
