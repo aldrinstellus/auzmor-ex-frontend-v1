@@ -64,6 +64,7 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
     'byPeople',
     'byPeopleSearch',
   ]);
+  const selectAll = getValues('selectAll');
 
   const debouncedByPeopleSearchValue = useDebounce(byPeopleSearch || '', 300);
   const byPeopleData: IBypeople[] = [
@@ -135,6 +136,7 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
         }
         return true;
       }) || [];
+  const usersTotalCount: number = fetchedUsers?.pages?.[0]?.totalCount;
 
   // fetch teams data
   const debouncedTeamSearchValue = useDebounce(teamSearch || '', 500);
@@ -193,14 +195,13 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
   }, [inView]);
 
   const selectAllEntity = () => {
-    console.log('selecting all');
     usersData?.forEach((user: IGetUser) =>
       setValue(`channelMembers.users.id-${user.id}.user`, user),
     );
     teamsData?.forEach((team: ITeam) =>
       setValue(`channelMembers.teams.id-${team.id}.team`, team),
     );
-    console.log('done selecting all');
+
   };
 
   const deselectAll = () => {
@@ -216,11 +217,27 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
   const teamKeys = Object.keys(channelMembers?.teams || {});
 
   useEffect(() => {
+    if (!selectAll) return;
+
+    usersData?.forEach((user: IGetUser) => {
+      if (!channelMembers?.users?.[`id-${user.id}`]?.user) {
+        setValue(`channelMembers.users.id-${user.id}.user`, user);
+      }
+    });
+
+    teamsData?.forEach((team: ITeam) => {
+      if (!channelMembers?.teams?.[`id-${team.id}`]?.team) {
+        setValue(`channelMembers.teams.id-${team.id}.team`, team);
+      }
+    });
+  }, [usersData, teamsData, selectAll]);
+
+  useEffect(() => {
     if (!showSelectedMembers) {
       unregisterMembers();
     }
     updateSelectAll();
-  }, [userKeys, teamKeys, usersData, teamsData, showSelectedMembers]);
+  }, [userKeys, teamKeys, showSelectedMembers]);
 
   const unregisterMembers = () => {
     userKeys.forEach((key) => {
@@ -249,24 +266,20 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
       .map((key) => channelMembers?.teams[key]?.team)
       .filter(Boolean),
   };
-  const selectedCount =
-    selectedMembers.users.length + selectedMembers.teams.length;
+  const selectedCount = selectAll ? usersTotalCount - 1
+    : selectedMembers.users.length + selectedMembers.teams.length;
 
   const updateSelectAll = () => {
-    if (
-      usersData?.length === 0 ||
-      usersData?.some(
-        (user: IGetUser) => !channelMembers?.users?.[`id-${user.id}`]?.user,
-      ) ||
-      (usersData?.length === 0 && teamsData?.length === 0) ||
-      teamsData?.some(
-        (team: ITeam) => !channelMembers?.teams?.[`id-${team.id}`]?.team,
-      ) ||
-      showSelectedMembers
-    ) {
-      setValue('selectAll', false);
-    } else {
-      setValue('selectAll', true);
+    const allUsersSelected = usersData.every(
+      (u: IGetUser) => !!channelMembers?.users?.[`id-${u.id}`]?.user
+    );
+
+    const allTeamsSelected = teamsData.every(
+      (t: ITeam) => !!channelMembers?.teams?.[`id-${t.id}`]?.team
+    );
+
+    if (!(allUsersSelected && allTeamsSelected) && selectAll) {
+      setValue("selectAll", false);
     }
   };
 
@@ -528,12 +541,14 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
                         className: 'flex item-center mr-4',
                         transform: {
                           input: (value: IGetUser | boolean) => {
-                            updateSelectAll();
                             return !!value;
                           },
                           output: (e: ChangeEvent<HTMLInputElement>) => {
                             if (e.target.checked) return user;
-                            return undefined;
+                            else {
+                              setValue("selectAll", false);
+                              return undefined;
+                            }
                           },
                         },
                         defaultChecked: false,
@@ -680,12 +695,14 @@ const ChannelMembersBody: FC<IMembersBodyProps> = ({
                           className: 'flex item-center mr-4',
                           transform: {
                             input: (value: ITeam | boolean) => {
-                              updateSelectAll();
                               return !!value;
                             },
                             output: (e: ChangeEvent<HTMLInputElement>) => {
                               if (e.target.checked) return team;
-                              return undefined;
+                              else {
+                                setValue("selectAll", false);
+                                return undefined;
+                              }
                             },
                           },
                           defaultChecked: false,

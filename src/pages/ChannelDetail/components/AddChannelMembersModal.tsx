@@ -49,6 +49,7 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
 
   const { form, setForm } = useEntitySearchFormStore();
   const channelMembers = form?.watch('channelMembers');
+  const selectAll = form?.getValues('selectAll');
 
   useEffect(() => {
     setForm(audienceForm);
@@ -61,10 +62,12 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
     mutationFn: ({
       id,
       payload,
+      addAllUsers,
     }: {
       id: string;
       payload: IChannelMembersPayload;
-    }) => addChannelMembers(id, payload),
+      addAllUsers: boolean;
+    }) => addChannelMembers(id, payload, addAllUsers),
     onError: () => {
       failureToastConfig({
         content: t('addChannelMembers.failure'),
@@ -120,9 +123,11 @@ const AddChannelMembersModal: FC<IAddChannelMembersModalProps> = ({
       }));
 
     const payload: IChannelMembersPayload = {};
+    let addAllUsers = false;
     if (selectedUsers && selectedUsers.length) payload.users = selectedUsers;
     if (selectedTeams && selectedTeams.length) payload.teams = selectedTeams;
-    addChannelMembersMutation.mutate({ id: channelData.id, payload });
+    if (selectAll) addAllUsers = true;
+    addChannelMembersMutation.mutate({ id: channelData.id, payload, addAllUsers});
   }
 
   const dataTestId = 'add-members';
