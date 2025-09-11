@@ -10,12 +10,14 @@ type LoadMoreProps = {
   ) => Promise<InfiniteQueryObserverResult<any, unknown>>;
   label: string;
   dataTestId?: string;
+  textClassName?: string;
 };
 
 const LoadMore: FC<LoadMoreProps> = ({
   onClick,
   label,
   dataTestId,
+  textClassName,
 }): ReactElement => {
   return (
     <div
@@ -23,7 +25,7 @@ const LoadMore: FC<LoadMoreProps> = ({
       onClick={() => onClick()}
       data-testid={dataTestId}
     >
-      <p className="text-neutral-500 font-bold text-sm">{label}</p>
+      <p className={`text-neutral-500 font-bold text-sm ${textClassName}`}>{label}</p>
     </div>
   );
 };

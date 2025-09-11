@@ -114,7 +114,7 @@ function fn_showEmojiPalette(quill: {
   quill.container.appendChild(ele_emoji_area);
   ele_emoji_area.id = 'emoji-palette';
   ele_emoji_area.style.left = `${
-    paletteLeft > 310 ? 310 : paletteLeft < 0 ? 90 : paletteLeft
+    paletteLeft > 150 ? 150 : paletteLeft < 0 ? 90 : paletteLeft
   }px`;
   ele_emoji_area.style.top = `${paletteTop}px`;
 

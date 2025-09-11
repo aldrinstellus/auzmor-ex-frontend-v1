@@ -55,6 +55,7 @@ export enum ApiEnum {
   GetChannelDocumentComments = 'GET_CHANNEL_DOCUMENT_COMMENTS',
   CreateChannelDocumentComments = 'CREATE_CHANNEL_DOCUMENT_COMMENTS',
   DeleteChannelDocumentComments = 'DELETE_CHANNEL_DOCUMENT_COMMENTS',
+  GetCommentsCount = 'GET_COMMENTS_COUNT',
 
   //comments
   GetComments = 'GET_COMMENTS',

@@ -6,9 +6,10 @@ interface IToolbarProps {
   isCharLimit: boolean;
   dataTestId?: string;
   quillRef: RefObject<ReactQuill>;
+  onAddLink: () => void;
 }
 
-const Toolbar: FC<IToolbarProps> = ({ isCharLimit, dataTestId, quillRef }) => {
+const Toolbar: FC<IToolbarProps> = ({ isCharLimit, dataTestId, quillRef, onAddLink }) => {
   return (
     <div id="toolbar">
       <div className="relative">
@@ -47,10 +48,18 @@ const Toolbar: FC<IToolbarProps> = ({ isCharLimit, dataTestId, quillRef }) => {
                 aria-label="italic"
               />
               <button
-                className="ql-underline ql-underline-button !h-[16px] !w-[16px] !m-0"
+                className="ql-underline ql-underline-button !h-[16px] !w-[16px] !m-0 text-neutral-200"
                 data-testid={`${dataTestId}-content-underline`}
                 aria-label="underline"
               />
+              <button
+                className='!w-[16px] !h-[16px] !m-0'
+                onClick={() => onAddLink()}
+                data-testid={`${dataTestId}-content-link`}
+                aria-label="add-link"
+              >
+                <Icon name="link" size={16} color="text-neutral-900" />
+              </button>
               <button
                 className="ql-emoji mt-[2px] text-neutral-900 !h-[16px] !w-[16px] !mr-0"
                 data-testid={`${dataTestId}-content-emoji`}

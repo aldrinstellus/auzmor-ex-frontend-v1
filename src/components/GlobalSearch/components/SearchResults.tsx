@@ -14,7 +14,6 @@ import { compressString, getLearnUrl } from 'utils/misc';
 import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 import { getIconFromMime } from 'pages/ChannelDetail/components/Documents/components/Doc';
 import HighlightText from 'components/HighlightText';
-import Truncate from 'components/Truncate';
 import { usePermissions } from 'hooks/usePermissions';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
@@ -27,6 +26,10 @@ import IconButton, {
 import useRole from 'hooks/useRole';
 import Spinner from 'components/Spinner';
 import { PUBLIC_URL } from 'utils/constants';
+import Truncate from 'components/Truncate';
+import apiService from 'utils/apiService';
+import { Link } from 'react-router-dom';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 
 interface ISearchResultsProps {
   searchResults: ISearchResultGroup[];
@@ -92,6 +95,12 @@ const SearchResults: FC<ISearchResultsProps> = ({
   const [deletedResult, setDeletedResult] = useState<IDeletedResult | null>(
     null,
   );
+  const [fetchingPreview, setFetchingPreview] = useState<{ id: number | null, index: number | null }>({
+  id: null,
+  index: null,
+});
+
+
   const { user } = useAuth();
   const { isAdmin } = useRole();
 
@@ -139,6 +148,25 @@ const SearchResults: FC<ISearchResultsProps> = ({
     },
   });
 
+  const fetchPreviewApi = async (channelId: number, fileId: number) => {
+    const { data } = await apiService.get(`/channels/${channelId}/file/${fileId}/preview`);
+    return data;
+  };
+
+  const handlePreviewClick = async (channelId: number, fileId: number, index: number) => {
+    setFetchingPreview({ id: fileId, index });
+    const previewData = await fetchPreviewApi(channelId, fileId)
+    .catch(() => {
+      failureToastConfig({ content: t('failedToOpenPreview')});
+      setFetchingPreview({ id: null, index: null });
+      return null;
+    });
+    setFetchingPreview({ id: null, index: null });
+    if (previewData) {
+      window.open(previewData.result.previewURL, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   const isDeleting =
     deleteRecentSearchTermMutation.isLoading ||
     deleteRecentClickedResultMutation.isLoading;
@@ -170,7 +198,8 @@ const SearchResults: FC<ISearchResultsProps> = ({
         const channelId = entity.additionalInfo?.channelId || entity.channelId;
         const pathWithId =
           entity.additionalInfo?.pathWithId || entity.pathWithId;
-        return `/channels/${channelId}/documents/${compressString(
+        const baseUrl = !isAdmin ? '/user' : '';
+        return `${baseUrl}/channels/${channelId}/documents/${compressString(
           JSON.stringify(pathWithId),
         )}`;
       case ISearchResultType.COURSE:
@@ -248,7 +277,8 @@ const SearchResults: FC<ISearchResultsProps> = ({
     entityType: ISearchResultType,
     isRecent: boolean,
   ) => {
-    const textStyles = `text-sm leading-4 text-black ${
+    const textStyles = `text-sm leading-4 text-black max-w-[420px]
+     ${
       isRecent ? 'font-semibold' : ''
     }`;
     switch (entityType) {
@@ -382,50 +412,56 @@ const SearchResults: FC<ISearchResultsProps> = ({
           : getIconFromMime(documentData?.mimeType);
         const matched = result?.customFields?.find((field: any) => field.isMatched === true);
         return (
-          <>
-          <div className="flex gap-1.5 w-full overflow-hidden">
-          <Icon name={iconName} size={24} hover={false} />
-          <div>
-            <div>
-            <div className="min-w-0">
-              <Truncate
-                text={documentData.name}
-                className={textStyles}
-                textRenderer={(text) => (
-                  <HighlightText text={text} subString={searchQuery} />
-                )}
-              />
-            </div>
+          <Link
+            to={getItemUrl(entityType, result)}
+            onClick={(e) => e.preventDefault}
+          >
+            <div className="flex gap-1.5 w-full overflow-hidden">
+              <div>
+                <Icon name={iconName} size={24} hover={false} />
+              </div>
+              <div>
+                <div className='flex gap-1 w-full items-center'>
+                  <div className="min-w-0">
+                    <Truncate
+                      text={documentData.name}
+                      className={textStyles}
+                      toolTipClassName='!w-[450px] break-words'
+                      textRenderer={(text) => (
+                        <HighlightText text={text} subString={searchQuery} />
+                      )}
+                    />
+                  </div>
 
-            <div className="flex gap-2 items-center">
-              <div className="flex w-[3px] h-[3px] bg-neutral-500 rounded-full" />
-              <div className="text-xs text-neutral-500">
-                {`Created on ${getFormattedDate(
-                  documentData.externalCreatedAt || documentData.createdAt,
-                  user?.timezone,
-                )}`}
+                  <div className="flex gap-2 items-center">
+                    <div className="flex w-[3px] h-[3px] bg-neutral-500 rounded-full" />
+                    <div className="text-xs text-neutral-500">
+                      {`Created on ${getFormattedDate(
+                        documentData.externalCreatedAt || documentData.createdAt,
+                        user?.timezone,
+                      )}`}
+                    </div>
+                  </div>
+                </div>
+                {result?.customFields && Array.isArray(result.customFields) && result.customFields.length > 0 && matched && (
+                  <div className="text-xs text-neutral-500">
+                    &quot;
+                    <HighlightText
+                      text={Array.isArray(matched.fieldValues)
+                        ? matched.fieldValues.find((val: any) => val?.toLowerCase?.().includes(searchQuery?.toLowerCase?.()))
+                        : matched.fieldValues?.Description ?? matched.fieldValues}
+                      subString={searchQuery}
+                    />
+                    &quot;&nbsp;
+                    {t('foundIn')}&nbsp;
+                    <span className="font-semibold text-neutral-700">
+                      {matched.fieldName}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
-            </div>
-            {result?.customFields && Array.isArray(result.customFields) && result.customFields.length > 0 && matched && (
-              <div className="text-xs text-neutral-500">
-                &quot;
-                <HighlightText
-                  text={Array.isArray(matched.fieldValues)
-                    ? matched.fieldValues.find((val: any) => val?.toLowerCase?.().includes(searchQuery?.toLowerCase?.()))
-                    : matched.fieldValues?.Description ?? matched.fieldValues}
-                  subString={searchQuery}
-                />
-                &quot;&nbsp;
-                {t('foundIn')}&nbsp;
-                <span className="font-semibold text-neutral-700">
-                  {matched.fieldName}
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
-          </>
+          </Link>
         );
       case ISearchResultType.COURSE:
       case ISearchResultType.PATH:
@@ -603,11 +639,12 @@ const SearchResults: FC<ISearchResultsProps> = ({
                       isRecent && result?.sourceType
                         ? (result.sourceType.toLowerCase() as ISearchResultType)
                         : entity.module;
+                    const isFolder = isRecent ? result?.additionalInfo?.isFolder : result?.isFolder;
                     return (
                       <li
                         id={`search-item-${index}`}
                         key={`search-item-${index}`}
-                        className={`flex px-3 py-[4px] gap-2 items-center group/result hover:bg-primary-50 cursor-pointer ${
+                        className={`flex justify-between px-3 py-[4px] gap-2 items-center group/result hover:bg-primary-50 cursor-pointer ${
                           index === selectedIndex && 'bg-primary-50'
                         }`}
                         onClick={() => handleItemClick(entityType, result)}
@@ -622,45 +659,63 @@ const SearchResults: FC<ISearchResultsProps> = ({
                         aria-selected={selectedIndex === index}
                       >
                         {getEntityRenderer(result, entityType, isRecent)}
-                        {isRecent && (
-                          <div className="relative w-4 h-4 shrink-0">
-                            {!isDeleting ? (
-                              <IconButton
-                                icon={'close2'}
-                                className={`absolute -top-[1px] -right-[1px] ${
-                                  selectedIndex === index
-                                    ? 'visible'
-                                    : 'invisible'
-                                } group-hover/result:visible !rounded-none `}
-                                color="!text-neutral-900"
-                                iconClassName="group-hover:!text-red-500 group-focus:!text-red-500"
-                                size={18}
-                                variant={IconButtonVariant.Secondary}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setDeletedResult({
-                                    module: entity.module,
-                                    id: result.id,
-                                    resultClickedId: result.resultClickedId,
-                                  });
-                                  if (
-                                    entity.module === ISearchResultType.KEYWORD
-                                  )
-                                    deleteRecentSearchTermMutation.mutate(
-                                      result.id,
+                        <div className='flex gap-2 items-center'>
+                          {entityType === ISearchResultType.DOCUMENT && !isFolder && (
+                            <div className="relative w-4 h-4 shrink-0">
+                              {(fetchingPreview.id === (result?.additionalInfo?.id || result?.id) && fetchingPreview.index === index) ?  (
+                                <Spinner className={`absolute -top-1 -right-1 !text-black ${
+                                    selectedIndex === index ? 'visible' : 'invisible'
+                                  } group-hover/result:visible !rounded-none`} />
+                              ) : (
+                                <Icon
+                                  name="launch"
+                                  size={18}
+                                  color="!text-neutral-900"
+                                  className={`absolute -top-[1px] -right-[1px] ${selectedIndex === index ? 'visible' : 'invisible'} group-hover/result:visible !rounded-none`}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handlePreviewClick(
+                                      result?.additionalInfo?.channelId || result?.channelId,
+                                      result?.additionalInfo?.id || result?.id,
+                                      resultIndex
                                     );
-                                  else
-                                    deleteRecentClickedResultMutation.mutate(
-                                      result.resultClickedId,
-                                    );
-                                }}
-                              />
-                            ) : null}
-                            {isDeleting && isResultDeleted(result) ? (
-                              <Spinner className="absolute -top-1 -right-1 !text-black" />
-                            ) : null}
-                          </div>
-                        )}
+                                  }}
+                                />
+                              )}
+                            </div>
+                          )}
+                          {isRecent ? (
+                            <div className="relative w-4 h-4 shrink-0">
+                              {!isDeleting ? (
+                                <IconButton
+                                  icon={'close2'}
+                                  className={`absolute -top-[1px] -right-[1px] ${
+                                    selectedIndex === index ? 'visible' : 'invisible'
+                                  } group-hover/result:visible !rounded-none`}
+                                  color="!text-neutral-900"
+                                  iconClassName="group-hover:!text-red-500 group-focus:!text-red-500"
+                                  size={18}
+                                  variant={IconButtonVariant.Secondary}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setDeletedResult({
+                                      module: entity.module,
+                                      id: result.id,
+                                      resultClickedId: result.resultClickedId,
+                                    });
+                                    if (entity.module === ISearchResultType.KEYWORD)
+                                      deleteRecentSearchTermMutation.mutate(result.id);
+                                    else
+                                      deleteRecentClickedResultMutation.mutate(result.resultClickedId);
+                                  }}
+                                />
+                              ) : null}
+                              {isDeleting && isResultDeleted(result) ? (
+                                <Spinner className="absolute -top-1 -right-1 !text-black" />
+                              ) : null}
+                            </div>
+                          ) : null}
+                        </div>
                       </li>
                     );
                   })}

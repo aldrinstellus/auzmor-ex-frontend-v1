@@ -176,17 +176,10 @@ export const CommentsRTE: FC<CommentFormProps> = ({
         (oldData) => {
           if (oldData) {
             return produce(oldData, (draft: any) => {
-              if(draft.pages[0].data.result) {
-                draft.pages[0].data.result.data = [
-                { id: data.id },
-                ...draft.pages[0].data.result.data,
+              draft.pages[0].data.result.data = [
+                { id: data?.id },
+                ...draft?.pages?.[0].data?.result?.data,
               ];
-              } else {
-                draft.pages[0].data.data.comments = [
-                { id: data.id },
-                ...draft.pages[0].data.data.comments,
-                ];
-              }
             });
           } else {
             queryClient.invalidateQueries(
@@ -221,6 +214,7 @@ export const CommentsRTE: FC<CommentFormProps> = ({
           [entityId]: updatedComment,
         });
       }
+      queryClient.invalidateQueries(['comment-count']);
     },
     onSettled: () => {
       setIsCreateCommentLoading(false);

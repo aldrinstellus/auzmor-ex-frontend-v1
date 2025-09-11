@@ -114,16 +114,21 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
           </div>
         ),
         cell: (info) => (
-          <div className="flex gap-2 font-medium text-neutral-900 leading-6">
+          <div className="flex gap-2 font-medium text-neutral-900 leading-6 flex-1 min-w-0 overflow-hidden">
             {!info.row?.original?.folderId ? (
               <SiteIcon name={info.getValue() as string} />
             ) : (
+              <div>
               <Icon name="folder" />
+              </div>
             )}
-            {info.getValue() as string}
+            <div className="line-clamp-2 break-all">
+              {info.getValue() as string}
+            </div>
           </div>
         ),
-        size: 302,
+        thClassName: '!w-[75%]',
+        tdClassName: '!w-[75%]',
       },
       {
         accessorKey: 'createdAt',
@@ -135,7 +140,8 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
             {moment(info.row.original.createdAt).format('MMM DD,YYYY')}
           </span>
         ),
-        size: 120,
+        thClassName: '!w-[20%]',
+        tdClassName: '!w-[20%]',
       },
     ],
     [totalRows, directoryId],
@@ -190,6 +196,8 @@ const EntitySelectModal: FC<IEntitySelectModalProps> = ({
     },
     dataGridProps: {
       columns,
+      trDataClassName: 'flex justify-between',
+      thDataClassName: 'flex justify-between',
       className: 'overflow-y-auto',
       view: 'LIST',
       isRowSelectionEnabled: true,

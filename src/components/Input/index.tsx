@@ -178,7 +178,7 @@ const Input: FC<InputProps> = ({
           </div>
           {showCounter && (
             <div className="text-sm text-neutral-500">
-              {inputRef?.current?.value.length || defaultValue.length || 0}/
+              {inputRef?.current?.value.length || field?.value?.length || defaultValue.length || 0}/
               {maxLength}
             </div>
           )}

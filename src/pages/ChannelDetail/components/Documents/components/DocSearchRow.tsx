@@ -23,22 +23,26 @@ const DocSearchRow = ({
   const matched = data?.customFields.find((field: any) => field.is_matched === true);
   return (
     <div
-      className="flex gap-2 items-center hover:bg-primary-50 cursor-pointer"
+      className="flex gap-2 hover:bg-primary-50 cursor-pointer"
       onPointerDown={(e) => e.preventDefault()}
       onClick={() => onClick(data)}
     >
-      <Icon name={iconName} />
-      <div className="flex flex-col gap-1">
-        <div className="text-xs">
-          <HighlightText text={data?.name || ''} subString={searchQuery} />
+      <div className='w-[5%]'>
+        <Icon name={iconName} />
+      </div>
+      <div className="flex flex-col gap-1 w-[93%]">
+        <div className="text-xs flex-1 min-w-0 overflow-hidden">
+          <div className='line-clamp-2 break-all'>
+            <HighlightText text={data?.name || ''} subString={searchQuery} />
+          </div>
         </div>
         <div className="text-xs text-neutral-700">
           {t('updatedOn', {
             date: moment(data?.updatedAt).format('DD MMM YYYY'),
           })}{' '}
           &nbsp;
-          {data?.externalModifiedBy &&
-            t('updatedBy', { name: data?.externalModifiedBy })}
+          {data?.ownerName &&
+            t('updatedBy', { name: data?.ownerName })}
         </div>
         {data?.customFields && Array.isArray(data.customFields) && data.customFields.length > 0 && matched && (
           <div className="text-xs text-neutral-700">

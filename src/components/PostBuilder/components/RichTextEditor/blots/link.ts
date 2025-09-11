@@ -13,7 +13,10 @@ export class LinkBlot extends Inline {
     // these are invisible to Parchment so must be static
     node.setAttribute('target', '_blank');
     node.setAttribute('role', 'button');
-    node.setAttribute('class', 'linkQuill');
+    node.setAttribute(
+      'class',
+      'linkQuill !text-primary-500'
+    );
     // fix: Clickable Link {https://github.com/quilljs/quill/issues/1966#issuecomment-528317638}
     node.setAttribute('contenteditable', 'false');
     return node;

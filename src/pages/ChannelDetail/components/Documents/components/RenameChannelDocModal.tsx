@@ -73,6 +73,8 @@ const RenameChannelDocModal: FC<IRenameChannelDocModalProps> = ({
             error: errors.name?.message,
             autofocus: true,
             onEnter: handleKeyDown,
+            maxLength: 250,
+            showCounter: true,
           },
         ]}
       />
