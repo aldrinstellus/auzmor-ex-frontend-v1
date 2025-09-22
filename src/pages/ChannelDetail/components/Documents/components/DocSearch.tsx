@@ -40,6 +40,7 @@ const DocSearch: FC<IDocSearchProps> = ({
   const { getApi } = usePermissions();
   const useChannelDocDeepSearch = getApi(ApiEnum.GetChannelDocDeepSearch);
   const { channelId } = useParams();
+  const [isSearching, setIsSearching] = React.useState(false);
   const documentSearchDebounceValue = useDebounce(documentSearch, 500);
   const shouldFetch = !!documentSearchDebounceValue && dirtyFields?.documentSearch;
 
@@ -52,6 +53,17 @@ const DocSearch: FC<IDocSearchProps> = ({
   const documents = isError
     ? []
     : data?.pages?.flatMap((page: { data: any }) => page?.data?.result?.data);
+
+  useEffect(() => {
+    if (!documentSearch) {
+      setIsSearching(false);
+      return;
+    }
+    setIsSearching(true);
+    if (!isFetching && shouldFetch) {
+      setIsSearching(false);
+    }
+  }, [documentSearch, isFetching]);
 
   useEffect(() => {
     const elem = document.getElementById(
@@ -83,6 +95,7 @@ const DocSearch: FC<IDocSearchProps> = ({
     'group-focus-within/searchdoc:opacity-100 group-focus-within/searchdoc:flex':
       true,
   });
+
   return (
     <div className="flex relative group/searchdoc">
       <Layout
@@ -107,7 +120,7 @@ const DocSearch: FC<IDocSearchProps> = ({
           className={style}
           style={{ boxShadow: '0px 4px 15px 0px rgba(0, 0, 0, 0.15)' }}
         >
-          {isFetching ? (
+          {isSearching ? (
             [...Array(3)].map((each, index: number) => (
               <li key={`doc-deep-search-skeleton-${index}`}>
                 <div className="flex items-center gap-2">
@@ -119,7 +132,7 @@ const DocSearch: FC<IDocSearchProps> = ({
                 </div>
               </li>
             ))
-          ) : (documents || []).length <= 0 ? (
+          ) : (documents || []).length === 0 ? (
             <NoDataFound illustrationClassName="h-24" hideClearBtn />
           ) : (
             (documents || []).map((doc: Doc) => (

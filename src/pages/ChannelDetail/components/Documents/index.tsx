@@ -1,3 +1,5 @@
+import isBoolean from 'lodash/isBoolean';
+import isEmpty from 'lodash/isEmpty';
 import React, {
   FC,
   Fragment,
@@ -839,7 +841,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           </div>
         ),
         cell: (info: CellContext<DocType, unknown>) => {
-          const matched = info.row.original?.customFields.find((field: any) => field.is_matched === true);
+          const customFields = info.row.original?.customFields;
+          const matchedValue = Array.isArray(customFields)
+            ? customFields.find((field: any) => field.is_matched === true)
+            : {};
           return (
             <Link to={getRowUrl(info?.row?.original?.pathWithId)} onClick={(e) => e.preventDefault}>
               <div className="flex gap-2 font-medium text-neutral-900 leading-6 w-full">
@@ -857,13 +862,13 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                   <div className="line-clamp-2 break-all">
                     {info.getValue() as string}
                   </div>
-                  {info.row.original?.customFields && Array.isArray(info.row.original.customFields) && info.row.original?.customFields.length > 0 && matched && (
+                  {!isEmpty!(matchedValue) && !isBoolean(matchedValue.field_values) && (
                     <div className="text-xs text-neutral-700">
                       &quot;
                       <HighlightText
-                        text={Array.isArray(matched.field_values)
-                          ? matched.field_values.find((val: any) => val?.toLowerCase?.().includes(applyDocumentSearch?.toLowerCase?.()))
-                          : matched.field_values?.Description ?? matched.field_values}
+                        text={Array.isArray(matchedValue.field_values)
+                          ? matchedValue.field_values.find((val: any) => val?.toLowerCase?.().includes(applyDocumentSearch?.toLowerCase?.()))
+                          : matchedValue.field_values?.Description ?? matchedValue.field_values}
                         subString={applyDocumentSearch}
                       />
                       &quot;
@@ -871,7 +876,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
                       {t('foundIn')}
                       &nbsp;
                       <span className="font-semibold">
-                        {matched.field_name}
+                        {matchedValue.field_name}
                       </span>
                     </div>
                   )}

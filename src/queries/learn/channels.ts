@@ -120,9 +120,11 @@ export const getChannelMembers = async (
 export const addChannelMembers = async (
   channelId: string,
   payload: IChannelMembersPayload,
+  addAllUsers: boolean,
 ) => {
+  const query = addAllUsers ? `?allUsers=${addAllUsers}` : "";
   const data = await apiService.post(
-    `/channels/${channelId}/members/bulk`,
+    `/channels/${channelId}/members/bulk${query}`,
     payload,
   );
   return data;

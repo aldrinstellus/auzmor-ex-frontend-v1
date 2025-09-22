@@ -185,7 +185,8 @@ export const getMembers = async ({
         ...item,
       };
     });
-    return { data: { result: { data: transformedData } } };
+    const totalCount = data?.result?.totalCount;
+    return { data: { result: { data: transformedData } }, totalCount };
   } else return apiService.get(pageParam);
 };
 
