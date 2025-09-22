@@ -330,7 +330,12 @@ const Poll: FC<IPoll & PollProps> = ({
                     {option.text}
                   </span>
 
-                  <span>
+                  <span 
+                    className={
+                      votedThisOption && getVotePercent(total, option.votes) === '100%'
+                        ? 'text-white'
+                        : 'text-inherit'
+                    }>
                     {showResults || voted || !timeLeft
                       ? getVotePercent(total, option.votes)
                       : ''}
