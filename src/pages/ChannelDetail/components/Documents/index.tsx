@@ -419,8 +419,10 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const deleteChannelDocMutation = useMutation({
     mutationFn: deleteChannelDoc,
     onSuccess: () => {
+      const fileName = deleteDocProps?.doc?.name;
+      const truncatedName = fileName.length > 50 ? fileName.slice(0, 50) + '…' : fileName;
       successToastConfig({
-        content: t('deleteFile.success', { name: deleteDocProps?.doc?.name }),
+        content: t('deleteFile.success', { name: truncatedName }),
       });
     },
     onError: (response: any) => {
