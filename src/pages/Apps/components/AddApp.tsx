@@ -148,11 +148,13 @@ const AddApp: FC<AddAppProps> = ({
         ? queryClient.invalidateQueries(['learnCategory'])
         : queryClient.invalidateQueries(['categories']);
     },
-    onError: async () =>
+    onError: async (e: any) => {
+      const errorMessage = e?.response?.data.errors?.[0]?.code;
       failureToastConfig({
-        content: t('failureToastContent'),
+        content: errorMessage ? errorMessage : t('failureToastContent'),
         dataTestId: 'app-create-error-toaster',
-      }),
+      });
+    }
   });
 
   const editApp = getApi(ApiEnum.EditApp);
@@ -173,11 +175,13 @@ const AddApp: FC<AddAppProps> = ({
         ? queryClient.invalidateQueries(['learnCategory'])
         : queryClient.invalidateQueries(['categories']);
     },
-    onError: (_error: any) =>
+    onError: (_error: any) => {
+      const errorMessage = _error?.response?.data.errors?.[0]?.code;
       failureToastConfig({
-        content: t('updateFailureToastContent'),
+        content: errorMessage ? errorMessage : t('updateFailureToastContent'),
         dataTestId: 'app-create-error-toaster',
-      }),
+      });
+    }
   });
   const { mutateAsync: uploadImageMutation, isLoading: isUploading } =
     useMutation(getApi(ApiEnum.UploadImage), {
