@@ -181,6 +181,7 @@ const LxpNotificationsOverview: FC = () => {
           underlineOffset={2}
           className="flex justify-start gap-x-1 px-2 border-b-1 border-neutral-200 w-full h-10"
           onTabChange={(index) => setActiveTabIndex(index)}
+          activeTabIndex={1}
         />
       </Card>
     </Popover>
