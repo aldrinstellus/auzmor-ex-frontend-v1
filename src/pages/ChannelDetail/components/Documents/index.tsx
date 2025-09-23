@@ -80,6 +80,7 @@ import { ColumnItem } from './components/ColumnSelector';
 import Truncate from 'components/Truncate';
 import HighlightText from 'components/HighlightText';
 import useRole from 'hooks/useRole';
+import truncate from 'lodash/truncate';
 // import { ICheckboxListOption } from 'components/CheckboxList';
 
 export enum DocIntegrationEnum {
@@ -421,10 +422,8 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
   const deleteChannelDocMutation = useMutation({
     mutationFn: deleteChannelDoc,
     onSuccess: () => {
-      const fileName = deleteDocProps?.doc?.name;
-      const truncatedName = fileName.length > 50 ? fileName.slice(0, 50) + '…' : fileName;
       successToastConfig({
-        content: t('deleteFile.success', { name: truncatedName }),
+        content: t('deleteFile.success', { name: truncate(deleteDocProps?.doc?.name, { length: 50 }) }),
       });
     },
     onError: (response: any) => {
