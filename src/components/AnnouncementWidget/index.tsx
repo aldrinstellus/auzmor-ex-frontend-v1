@@ -160,7 +160,7 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
                         }
                         image={getProfileImage(postData?.createdBy)}
                         size={32}
-                        className="border-2 border-white"
+                        className="w-[20%] border-2 border-white"
                         onClick={() => {
                           if (isLxp) return;
                           navigate(
@@ -172,9 +172,9 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
                         ariaLabel={getFullName(postData?.createdBy) || 'avatar'}
                       />
 
-                      <div className="w-full">
-                        <div className="flex w-full space-x-1 text-sm cursor-pointer">
-                          <span>
+                      <div className="w-[80%]">
+                        <div className="flex justify-between w-full space-x-1 text-sm cursor-pointer">
+                          <span className='w-[88%]'>
                             <Truncate
                               onClick={() => {
                                 if (isLxp) return;
@@ -185,13 +185,14 @@ const AnnouncementCard: FC<IAnnouncementCardProps> = ({
                                 );
                               }}
                               text={getFullName(postData?.createdBy)}
+                              maxLength={15}
                               className="text-neutral-900 font-bold inline mr-1"
                             />
                             {t('share-post')}
                           </span>
 
                           <div
-                            className="relative"
+                            className="relative w-[12%]"
                             data-testid="announcement-widget-ellipses"
                           >
                             <FeedPostMenu data={postData} />
