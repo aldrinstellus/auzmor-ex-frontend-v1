@@ -16,7 +16,7 @@ const HighlightText: FC<IHighlightTextProps> = ({
     return <span>{text || ''}</span>;
   }
 
-  const parts = text.split(new RegExp(`(${escapeRegExp(subString)})`, 'gi')) || [];
+  const parts = text?.split(new RegExp(`(${escapeRegExp(subString)})`, 'gi')) || [];
 
   return (
     <span>

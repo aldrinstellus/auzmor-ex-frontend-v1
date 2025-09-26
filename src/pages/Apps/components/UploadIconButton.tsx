@@ -120,20 +120,24 @@ const UploadIconButton: FC<UploadIconButtonProps> = ({ setValue, icon }) => {
         <Tooltip
           tooltipContent={
             <div>
-              <p className="font-bold text-white align-middle flex justify-center">
+              <p className="font-bold">
                 {t('logoAcceptanceTitle')}
               </p>
-              <p className="text-white">{`${t('fileTypes')} JPG, PNG ${
-                isLxp ? '' : ',SVG'
-              }`}</p>
-              <p className="text-white">{t('maxSize')}</p>
+              <ul className="list-disc list-inside text-sm text-gray-700">
+                <li>
+                  {`${t('fileTypes')} JPG, PNG${isLxp ? '' : ', SVG'}`}
+                </li>
+                <li>
+                  {t('maxSize')}
+                </li>
+              </ul>
             </div>
           }
           tooltipPosition="left"
         >
           <Icon
             name="infoCircle"
-            color="text-neutral-500"
+            color="text-neutral-500 cursor-pointer"
             hover={false}
             size={16}
             dataTestId="add-app-icon-info"

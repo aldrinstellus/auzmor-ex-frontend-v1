@@ -1,3 +1,5 @@
+import isBoolean from 'lodash/isBoolean';
+import isEmpty from 'lodash/isEmpty';
 import { Doc } from 'interfaces';
 import { getIconFromMime } from './Doc';
 import Icon from 'components/Icon';
@@ -20,7 +22,9 @@ const DocSearchRow = ({
     keyPrefix: 'documentTab',
   });
   const iconName = data?.isFolder ? 'folder' : getIconFromMime(data?.mimeType);
-  const matched = data?.customFields.find((field: any) => field.is_matched === true);
+  const matchedValue = Array.isArray(data?.customFields)
+    ? data.customFields.find((field: any) => field.is_matched === true)
+    : {};
   return (
     <div
       className="flex gap-2 hover:bg-primary-50 cursor-pointer"
@@ -44,13 +48,13 @@ const DocSearchRow = ({
           {data?.ownerName &&
             t('updatedBy', { name: data?.ownerName })}
         </div>
-        {data?.customFields && Array.isArray(data.customFields) && data.customFields.length > 0 && matched && (
+        {!isEmpty(matchedValue) && !isBoolean(matchedValue.field_values) && (
           <div className="text-xs text-neutral-700">
             &quot;
             <HighlightText
-              text={Array.isArray(matched.field_values)
-                ? matched.field_values.find((val: any) => val?.toLowerCase?.().includes(searchQuery?.toLowerCase?.()))
-                : matched.field_values?.Description ?? matched.field_values}
+              text={Array.isArray(matchedValue.field_values)
+                ? matchedValue.field_values.find((val: any) => val?.toLowerCase?.().includes(searchQuery?.toLowerCase?.()))
+                : matchedValue.field_values?.Description ?? matchedValue.field_values}
               subString={searchQuery}
             />
             &quot;
@@ -58,7 +62,7 @@ const DocSearchRow = ({
             {t('foundIn')}
             &nbsp;
             <span className="font-semibold">
-              {matched.field_name}
+              {matchedValue.field_name}
             </span>
           </div>
         )}

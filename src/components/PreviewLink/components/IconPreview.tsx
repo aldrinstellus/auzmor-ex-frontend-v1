@@ -55,7 +55,7 @@ const IconPreview: FC<IconPreviewProps> = ({ metaData, dataTestId, previewUrl, v
             <img
               src={metaData?.favicon}
               alt={metaData?.title}
-              className="w-12 h-12 rounded-7xl"
+              className="w-8 h-8 rounded-7xl"
             />
             <div className="flex flex-col justify-center">
               <div className="text-black text-sm font-bold break-normal [overflow-wrap:anywhere]">

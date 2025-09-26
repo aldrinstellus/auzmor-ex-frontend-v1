@@ -27,6 +27,7 @@ import { IMenuItem } from 'components/PopupMenu';
 import Icon from 'components/Icon';
 import {
   hideEmojiPalette,
+  hideMentionHashtagPalette,
   isRegularPost,
   quillHashtagConversion,
   removeEmptyLines,
@@ -713,6 +714,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
                 return null;
               }
               hideEmojiPalette();
+              hideMentionHashtagPalette();
               return mode === PostBuilderMode.Create && !isEmpty
                 ? showConfirm()
                 : handleOnClose();
