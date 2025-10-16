@@ -617,7 +617,7 @@ const Document: FC<IDocumentProps> = ({ permissions }) => {
           label: t('copyLink'),
           onClick: (e: Event) => {
             e.stopPropagation();
-            const lxpBaseUrl = `${window.location.origin}/lxp`;
+            const lxpBaseUrl = `${window.location.origin}/lxp${isAdmin ? '/user' : ''}`;
             const url = `${lxpBaseUrl}${getRowUrl(info?.row?.original?.pathWithId)}`;
             navigator.clipboard.writeText(url);
             successToastConfig({content: t('linkCopied')});
