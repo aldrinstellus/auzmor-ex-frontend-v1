@@ -32,6 +32,10 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
     state.getAccessibleModules()
   );
 
+  const isAdministrativeDashboardAccessEnabled = isModuleAccessible(
+    accessibleModules, ADMIN_MODULES.DASHBOARD_ADMIN,
+  );
+
   const isAdministrativeCourseAccessEnabled = isModuleAccessible(
     accessibleModules, ADMIN_MODULES.COURSE_ADMIN,
   );
@@ -80,11 +84,11 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
   );
 
   const isAdministrativeFeedsAccessEnabled = isModuleAccessible(
-    accessibleModules, ADMIN_MODULES.FEED_ADMIN, // FIXME: 4.4
+    accessibleModules, ADMIN_MODULES.FEEDS_ADMIN,
   );
 
-  const isAdministrativeChannelsAccessEnabled = isModuleAccessible(
-    accessibleModules, ADMIN_MODULES.CHANNELS_ADMIN, // FIXME: 4.4
+  const isAdministrativeChannelAccessEnabled = isModuleAccessible(
+    accessibleModules, ADMIN_MODULES.CHANNEL_ADMIN,
   );
 
 
@@ -127,7 +131,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       id: 'home',
       label: t('learn.home'),
       to: getLearnUrl(),
-      show: true,
+      show: isAdministrativeDashboardAccessEnabled,
       options: [],
     },
     {
@@ -142,7 +146,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           label: t('learn.feed'),
           dataTestId: 'feed-menu',
           onClick: () => navigate('/feed'),
-          show: true,
+          show: isAdministrativeFeedsAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: `!text-[15px] !leading-4 !text-black hover:!text-black leading-4 ${
             pathname.startsWith('/feed') && '!font-bold !text-primary-500'
@@ -153,7 +157,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           label: t('learn.channels'),
           dataTestId: 'channels-menu',
           onClick: () => navigate('/channels'),
-          show: true,
+          show: isAdministrativeChannelAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: `!text-[15px] !leading-4 !text-black hover:!text-black leading-4 ${
             pathname.startsWith('/channels') && '!font-bold !text-primary-500 '

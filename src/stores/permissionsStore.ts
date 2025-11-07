@@ -34,7 +34,6 @@ const usePermissionStore = create<PermissionState>((set, get) => ({
     }
   },
 
-  // ✅ selector to read modules array directly
   getAccessibleModules: () => get().accessibleModules,
 }));
 
