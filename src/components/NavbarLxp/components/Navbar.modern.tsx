@@ -285,7 +285,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
               <div className="w-[1px] h-5 bg-[#e5e5e5]"></div>
               <ul className="flex items-center gap-[10px]">
                 <li>
-                  <GlobalSearch />
+                  <GlobalSearch permissions= {{ canReadTrainings: isTrainingsAccessEnabled }} />
                 </li>
                 <li>
                   <div title={t('learn.helpAndSupportTitle')}>

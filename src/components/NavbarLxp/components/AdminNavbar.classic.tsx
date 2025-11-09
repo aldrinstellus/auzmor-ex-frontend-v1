@@ -478,7 +478,13 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
               <ul className="flex items-center gap-[19px]">
                 <div className="w-[1px] h-5 bg-[#e5e5e5]"></div>
                 <li>
-                  <GlobalSearch />
+                  <GlobalSearch
+                    permissions={{
+                      canReadTrainings: isAdministrativeCourseAccessEnabled || isAdministrativeEventAccessEnabled || isAdministrativePathAccessEnabled,
+                      canReadPeoples: isAdministrativeUserAccessEnabled,
+                      canReadTeams: isAdministrativeTeamAccessEnabled,
+                    }}
+                  />
                 </li>
                 <li>
                   <IconButton
