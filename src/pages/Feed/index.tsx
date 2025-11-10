@@ -5,12 +5,15 @@ import { useLocation } from 'react-router-dom';
 import { CELEBRATION_TYPE } from 'components/CelebrationWidget';
 import { FeedModeEnum } from 'stores/feedStore';
 import { ComponentEnum } from 'utils/permissions/enums/componentEnum';
-import { ADMIN_MODULES, LEARNER_MODULES } from 'constants/permissions';
-import { isModuleAccessible } from 'utils/customRolesPermissions/permissions';
-import usePermissionStore from 'stores/permissionsStore';
-import { LEARNER_ACCESSIBLE_TRAININGS } from 'constants/training';
 
-interface IHomeFeedProps {}
+interface IHomeFeedProps {
+  permissions?: {
+    canReadTeamsWidget?: boolean,
+    canReadTrainings?: boolean,
+    canReadCourseModule?: boolean,
+    canReadEventModule: boolean,
+  }
+}
 
 export interface IProfileImage {
   blurHash: string;
@@ -33,24 +36,16 @@ export interface IMyReactions {
   createdBy?: ICreated;
 }
 
-const HomeFeed: FC<IHomeFeedProps> = () => {
+const HomeFeed: FC<IHomeFeedProps> = ({
+  permissions = {
+    canReadTeamsWidget: true,
+    canReadTrainings: true,
+    canReadCourseModule: true,
+    canReadEventModule: true,
+  }
+}) => {
   const { pathname } = useLocation();
-  const accessibleModules = usePermissionStore((state) =>
-      state.getAccessibleModules()
-  );
-
-  const canReadTeamsWidget = isModuleAccessible(
-      accessibleModules, ADMIN_MODULES.TEAM_ADMIN,
-  );
-  const isCoursesModuleAccessible = isModuleAccessible(
-      accessibleModules, ADMIN_MODULES.COURSE_ADMIN,
-  );
-  const isEventsModuleAccessible = isModuleAccessible(
-      accessibleModules, ADMIN_MODULES.EVENT_ADMIN,
-  );
-
-  const isLearnersTrainingsModulesAccessible = isModuleAccessible(accessibleModules, LEARNER_ACCESSIBLE_TRAININGS);
-  const isLearnersEventsModulesAccessible = isModuleAccessible(accessibleModules, LEARNER_MODULES.EVENT_LEARNER);
+  const { canReadTeamsWidget = false, canReadTrainings = false, canReadCourseModule = false, canReadEventModule } = permissions;
 
   const bookmarks = pathname === '/bookmarks' || pathname == '/user/bookmarks';
   const scheduled =
@@ -79,13 +74,13 @@ const HomeFeed: FC<IHomeFeedProps> = () => {
         ...(canReadTeamsWidget ? [ComponentEnum.TeamsWidget] : []),
       ]}
       rightWidgets={[
-        ...(isLearnersTrainingsModulesAccessible ? [ComponentEnum.ProgressTrackerWidget] : []),
+        ...(canReadTrainings ? [ComponentEnum.ProgressTrackerWidget] : []),
         ComponentEnum.BirthdayCelebrationWidget,
         ComponentEnum.AnniversaryCelebrationWidget,
-        ...(isLearnersEventsModulesAccessible ? [ComponentEnum.EventWidget] : []),
+        ...(canReadEventModule ? [ComponentEnum.EventWidget] : []),
         ComponentEnum.AnnouncementWidget,
         ComponentEnum.ChannelRequestWidget, 
-        ...((isCoursesModuleAccessible || isEventsModuleAccessible) ? [ComponentEnum.EvaluationRequestWidget] : []),
+        ...((canReadCourseModule || canReadEventModule) ? [ComponentEnum.EvaluationRequestWidget] : []),
       ]}
       widgetProps={{
         [ComponentEnum.BirthdayCelebrationWidget]: {
@@ -96,8 +91,8 @@ const HomeFeed: FC<IHomeFeedProps> = () => {
         },
         [ComponentEnum.EvaluationRequestWidget]: {
           permissions: {
-            canReadCourses: isCoursesModuleAccessible,
-            canReadEvents: isEventsModuleAccessible,
+            canReadCourses: canReadCourseModule,
+            canReadEvents: canReadEventModule,
           },
         },
       }}
