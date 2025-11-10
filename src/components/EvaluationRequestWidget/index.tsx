@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import Button, { Variant } from 'components/Button';
-import React, { useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getLearnUrl } from 'utils/misc';
 import EvaluationRequestRow from './Component/EvaluationRequestRow';
@@ -11,17 +11,26 @@ import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
 
 export interface IEvaluationRequestWidgetProps {
+  permissions: {
+    canReadCourses: boolean,
+    canReadEvents: boolean,
+  };
   className?: string;
 }
 
-const EvaluationRequestWidget = ({ className = '' }) => {
+const EvaluationRequestWidget: FC<IEvaluationRequestWidgetProps> = ({ permissions, className = '' }) => {
   const { getApi } = usePermissions();
 
   const { t } = useTranslation('learnWidget', {
     keyPrefix: 'evaluationRequestWidget',
   });
 
-  const modules = ['Course', 'EventSession'];
+  const { canReadCourses, canReadEvents } = permissions;
+
+  const modules = [
+    canReadCourses ? 'Course' : null,
+    canReadEvents ? 'EventSession' : null,
+  ].filter(Boolean);
 
   const useGetEvaluations = getApi(ApiEnum.GetEvaluations);
   const { data, isLoading } = useGetEvaluations({

@@ -7,9 +7,15 @@ import { usePermissions } from 'hooks/usePermissions';
 import { ISearchResultType } from 'interfaces/search';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 
-export interface IGlobalSearchProps {}
+export interface IGlobalSearchProps {
+  permissions: {
+    canReadTrainings: boolean,
+    canReadPeoples?: boolean,
+    canReadTeams?: boolean,
+  };
+}
 
-const GlobalSearch: FC<IGlobalSearchProps> = () => {
+const GlobalSearch: FC<IGlobalSearchProps> = ({ permissions }) => {
   const { t } = useTranslation('components', { keyPrefix: 'GlobalSearch' });
   const { getApi } = usePermissions();
   const [isModalOpen, openModal, closeModal] = useModal();
@@ -63,6 +69,7 @@ const GlobalSearch: FC<IGlobalSearchProps> = () => {
           recentSearchResults={recentSearchResults}
           isRecentSearchResultsFetching={isRecentSearchResultsFetching}
           onClose={closeModal}
+          permissions={permissions}
         />
       )}
     </div>

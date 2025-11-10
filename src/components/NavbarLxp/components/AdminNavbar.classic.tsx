@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { FC, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -15,8 +16,10 @@ import AccountCard from './AccountCard';
 import useAuth from 'hooks/useAuth';
 import SubscriptionBanner from 'components/AppShell/components/SubscriptionBanner';
 import IconButton from 'components/IconButton';
-import useRole from 'hooks/useRole';
 import GlobalSearch from 'components/GlobalSearch';
+import usePermissionStore from 'stores/permissionsStore';
+import { isModuleAccessible } from 'utils/customRolesPermissions/permissions';
+import { ADMIN_MODULES } from 'constants/permissions';
 
 interface INavbarLxpProps {}
 
@@ -25,7 +28,70 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { user } = useAuth();
-  const { isSuperAdmin } = useRole();
+  const accessibleModules = usePermissionStore((state) =>
+    state.getAccessibleModules()
+  );
+
+  const isAdministrativeDashboardAccessEnabled = isModuleAccessible(
+    accessibleModules, ADMIN_MODULES.DASHBOARD_ADMIN,
+  );
+
+  const isAdministrativeCourseAccessEnabled = isModuleAccessible(
+    accessibleModules, ADMIN_MODULES.COURSE_ADMIN,
+  );
+
+  const isAdministrativePathAccessEnabled = isModuleAccessible(
+    accessibleModules, ADMIN_MODULES.LEARNING_PATH_ADMIN,
+  );
+
+  const isAdministrativeTaskAccessEnabled = isModuleAccessible(
+    accessibleModules, ADMIN_MODULES.TASK_ADMIN,
+  );
+
+  const isAdministrativeMentorshipAccessEnabled = isModuleAccessible(
+    accessibleModules, ADMIN_MODULES.MENTORSHIP_ADMIN,
+  );
+
+  const isAdministrativeUserAccessEnabled = isModuleAccessible(
+    accessibleModules, ADMIN_MODULES.USER_ADMIN,
+  );
+
+  const isAdministrativeTeamAccessEnabled = isModuleAccessible(
+    accessibleModules, ADMIN_MODULES.TEAM_ADMIN,
+  );
+  const isAdministrativeInsightAccessEnabled = isModuleAccessible(
+    accessibleModules, ADMIN_MODULES.INSIGHT_ADMIN,
+  );
+
+  const isAdministrativeBranchAccessEnabled = isModuleAccessible(
+    accessibleModules, ADMIN_MODULES.BRANCH_ADMIN,
+  );
+
+  const isAdministrativeEventAccessEnabled = isModuleAccessible(
+    accessibleModules, ADMIN_MODULES.EVENT_ADMIN,
+  );
+
+  const isAdministrativeEcommerceEnabled = isModuleAccessible(
+    accessibleModules, ADMIN_MODULES.ECOMMERCE_ADMIN,
+  );
+
+  const isAdministrativeForumAccessEnabled = isModuleAccessible(
+    accessibleModules, ADMIN_MODULES.FORUMS_ADMIN,
+  );
+
+  const isAdministrativeExternalTrainingAccessEnabled = isModuleAccessible(
+    accessibleModules, ADMIN_MODULES.EXTERNAL_TRAINING_ADMIN,
+  );
+
+  const isAdministrativeFeedsAccessEnabled = isModuleAccessible(
+    accessibleModules, ADMIN_MODULES.FEEDS_ADMIN,
+  );
+
+  const isAdministrativeChannelAccessEnabled = isModuleAccessible(
+    accessibleModules, ADMIN_MODULES.CHANNEL_ADMIN,
+  );
+
+
 
   const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(
     user?.subscription?.type === 'TRIAL' &&
@@ -65,7 +131,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       id: 'home',
       label: t('learn.home'),
       to: getLearnUrl(),
-      show: true,
+      show: isAdministrativeDashboardAccessEnabled,
       options: [],
     },
     {
@@ -80,7 +146,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           label: t('learn.feed'),
           dataTestId: 'feed-menu',
           onClick: () => navigate('/feed'),
-          show: true,
+          show: isAdministrativeFeedsAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: `!text-[15px] !leading-4 !text-black hover:!text-black leading-4 ${
             pathname.startsWith('/feed') && '!font-bold !text-primary-500'
@@ -91,7 +157,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           label: t('learn.channels'),
           dataTestId: 'channels-menu',
           onClick: () => navigate('/channels'),
-          show: true,
+          show: isAdministrativeChannelAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: `!text-[15px] !leading-4 !text-black hover:!text-black leading-4 ${
             pathname.startsWith('/channels') && '!font-bold !text-primary-500 '
@@ -102,7 +168,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           label: t('learn.forums'),
           dataTestId: 'forums-menu',
           onClick: () => window.location.assign(`${getLearnUrl('/forums')}`),
-          show: !!user?.organization?.setting?.enableSocialLearning,
+          show: !!user?.organization?.setting?.enableSocialLearning && isAdministrativeForumAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
             '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
@@ -120,7 +186,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           label: t('learn.courses'),
           dataTestId: 'courses-menu',
           onClick: () => window.location.assign(`${getLearnUrl('/courses')}`),
-          show: true,
+          show: isAdministrativeCourseAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
             '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
@@ -130,7 +196,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           label: t('learn.paths'),
           dataTestId: 'paths-menu',
           onClick: () => window.location.assign(`${getLearnUrl('/paths')}`),
-          show: true,
+          show: isAdministrativePathAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
             '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
@@ -140,7 +206,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           label: t('learn.events'),
           dataTestId: 'events-menu',
           onClick: () => window.location.assign(`${getLearnUrl('/events')}`),
-          show: true,
+          show: isAdministrativeEventAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
             '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
@@ -151,7 +217,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           dataTestId: 'external-menu',
           onClick: () =>
             window.location.assign(`${getLearnUrl('/external-trainings')}`),
-          show: true,
+          show: isAdministrativeExternalTrainingAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
             '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
@@ -170,7 +236,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           dataTestId: 'mentorship-menu',
           onClick: () =>
             window.location.assign(`${getLearnUrl('/mentorship/admin')}`),
-          show: !!user?.organization?.setting?.enableMentorship,
+          show: !!user?.organization?.setting?.enableMentorship && isAdministrativeMentorshipAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
             '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
@@ -180,7 +246,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           label: t('learn.tasks'),
           dataTestId: 'tasks-menu',
           onClick: () => window.location.assign(`${getLearnUrl('/tasks')}`),
-          show: !!user?.organization?.setting?.enablechecklist,
+          show: !!user?.organization?.setting?.enablechecklist && isAdministrativeTaskAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
             '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
@@ -201,7 +267,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
             window.location.assign(
               `${getLearnUrl('/peoples?tab=individuals')}`,
             ),
-          show: true,
+          show: isAdministrativeUserAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
             '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
@@ -212,7 +278,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           dataTestId: 'teams-menu',
           onClick: () =>
             window.location.assign(`${getLearnUrl('/peoples?tab=teams')}`),
-          show: true,
+          show: isAdministrativeTeamAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
             '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
@@ -221,7 +287,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           id: 'branches',
           label: t('learn.branches'),
           onClick: () => window.location.assign(`${getLearnUrl('/branches')}`),
-          show: !!user?.organization?.setting?.enableBranches && isSuperAdmin,
+          show: !!user?.organization?.setting?.enableBranches && isAdministrativeBranchAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
             '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
@@ -239,7 +305,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           label: t('learn.insights'),
           dataTestId: 'insights-menu',
           onClick: () => window.location.assign(`${getLearnUrl('/insights')}`),
-          show: true,
+          show: isAdministrativeInsightAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
             '!text-[15px] !leading-4 !text-black hover:!text-black leading-4',
@@ -271,7 +337,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
       id: 'ecommerce',
       label: t('learn.ecommerce'),
       to: '',
-      show: !!user?.organization?.setting?.enableEcommerce,
+      show: !!user?.organization?.setting?.enableEcommerce && isAdministrativeEcommerceEnabled,
       options: [
         {
           id: 'orders',
@@ -412,7 +478,13 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
               <ul className="flex items-center gap-[19px]">
                 <div className="w-[1px] h-5 bg-[#e5e5e5]"></div>
                 <li>
-                  <GlobalSearch />
+                  <GlobalSearch
+                    permissions={{
+                      canReadTrainings: isAdministrativeCourseAccessEnabled || isAdministrativeEventAccessEnabled || isAdministrativePathAccessEnabled,
+                      canReadPeoples: isAdministrativeUserAccessEnabled,
+                      canReadTeams: isAdministrativeTeamAccessEnabled,
+                    }}
+                  />
                 </li>
                 <li>
                   <IconButton
