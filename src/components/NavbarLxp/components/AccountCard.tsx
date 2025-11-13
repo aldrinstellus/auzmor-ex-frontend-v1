@@ -17,13 +17,15 @@ import useRole from 'hooks/useRole';
 import { useTranslation } from 'react-i18next';
 import { usePermissions } from 'hooks/usePermissions';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
-import { UserRole } from 'interfaces';
 import Divider from 'components/Divider';
 import { useState } from 'react';
 import useModal from 'hooks/useModal';
 import LearnLogo from 'images/LearnLogo.svg';
 import ConfirmationModal from './ConfirmationModal';
 import Truncate from 'components/Truncate';
+import usePermissionStore from 'stores/permissionsStore';
+import { isModuleAccessible } from 'utils/customRolesPermissions/permissions';
+import { ADMIN_MODULES, LEARNER_MODULES } from 'constants/permissions';
 
 const AccountCard = () => {
   const { user, reset } = useAuth();
@@ -32,6 +34,12 @@ const AccountCard = () => {
   const { t } = useTranslation('navbar', { keyPrefix: 'learn' });
   const { t: tp } = useTranslation('profile');
   const { getApi } = usePermissions();
+  const roles = usePermissionStore((state) => state.getRoles());
+  const userRole = roles.find(role => role.name === user?.role);
+  const accessibleModules = usePermissionStore((state) => state.getAccessibleModules());
+
+  const canAccessAdminView = isModuleAccessible(accessibleModules, ADMIN_MODULES);
+  const canAccessLearnerView = isModuleAccessible(accessibleModules, LEARNER_MODULES);
 
   const useGetBranches = getApi(ApiEnum.GetOrganizationBranch);
   const { data } = useGetBranches(user?.organization?.id || '');
@@ -71,10 +79,6 @@ const AccountCard = () => {
     },
     ...(branchData || []),
   ];
-
-  const isAdmin =
-    user?.role && [UserRole.Admin, UserRole.PrimaryAdmin].includes(user?.role);
-  const isManager = user?.role === UserRole.Manager;
 
   const logoutMutation = useMutation(getApi(ApiEnum.Logout), {
     onSuccess: async () => {
@@ -203,7 +207,7 @@ const AccountCard = () => {
                 </div>
               </Link>
             )}
-            {isManager || isAdmin ? (
+            {((isLearnerView && canAccessAdminView) || (!isLearnerView && canAccessLearnerView)) && (
               <Link
                 to={isLearnerView ? getLearnUrl() : `${getLearnUrl()}/user`}
               >
@@ -213,15 +217,13 @@ const AccountCard = () => {
                   onClick={close}
                 >
                   <div>
-                    {isLearnerView && isManager
-                      ? t('switchToMangersView')
-                      : null}
-                    {isLearnerView && isAdmin ? t('switchToAdminsView') : null}
-                    {!isLearnerView ? t('switchToLearnersView') : null}
+                    {isLearnerView
+                      ? t('profile.roleView', { role: userRole?.displayName })
+                      : t('profile.learnerView')}
                   </div>
                 </div>
               </Link>
-            ) : null}
+            )}
             <Divider className="my-[6px]" />
             {totalBranches > 0 && (
               <div
