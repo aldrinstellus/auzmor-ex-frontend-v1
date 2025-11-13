@@ -123,6 +123,9 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   const fetchAccessibleModules = usePermissionStore(
     (state) => state.fetchAccessibleModules
   );
+  const fetchRoles = usePermissionStore(
+    (state) => state.fetchRoles
+  );
 
   const setBranding = useBrandingStore((state) => state.setBranding);
 
@@ -234,6 +237,7 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
           });
           setBranding(data.branding);
           fetchAccessibleModules();
+          fetchRoles({ limit: 1000 });
         } else {
           window.location.host = `${data.org.domain}.${window.location.host}`;
         }

@@ -52,6 +52,10 @@
     "switchToAdminsView": "Switch to Admin's View",
     "switchToMangersView": "Switch to Manager's View",
     "switchToLearnersView": "Switch to Learner's View",
+    "profile": {
+      "roleView": "Switch to {{role}}'s View",
+      "learnerView": "Switch to Learner's View"
+    },
     "switchTheme": "Switch Theme",
     "classic": "Classic",
     "modern": "Modern",
