@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { FC, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -83,16 +82,6 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
     accessibleModules, ADMIN_MODULES.EXTERNAL_TRAINING_ADMIN,
   );
 
-  const isAdministrativeFeedsAccessEnabled = isModuleAccessible(
-    accessibleModules, ADMIN_MODULES.FEEDS_ADMIN,
-  );
-
-  const isAdministrativeChannelAccessEnabled = isModuleAccessible(
-    accessibleModules, ADMIN_MODULES.CHANNEL_ADMIN,
-  );
-
-
-
   const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(
     user?.subscription?.type === 'TRIAL' &&
       user?.subscription?.daysRemaining > -1,
@@ -146,7 +135,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           label: t('learn.feed'),
           dataTestId: 'feed-menu',
           onClick: () => navigate('/feed'),
-          show: isAdministrativeFeedsAccessEnabled,
+          show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: `!text-[15px] !leading-4 !text-black hover:!text-black leading-4 ${
             pathname.startsWith('/feed') && '!font-bold !text-primary-500'
@@ -157,7 +146,7 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
           label: t('learn.channels'),
           dataTestId: 'channels-menu',
           onClick: () => navigate('/channels'),
-          show: isAdministrativeChannelAccessEnabled,
+          show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: `!text-[15px] !leading-4 !text-black hover:!text-black leading-4 ${
             pathname.startsWith('/channels') && '!font-bold !text-primary-500 '

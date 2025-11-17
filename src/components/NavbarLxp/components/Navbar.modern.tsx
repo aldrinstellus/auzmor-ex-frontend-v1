@@ -39,8 +39,6 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
   const isMentorshipAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.MENTORSHIP_LEARNER);
   const isForumAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.FORUMS_LEARNER);
   const isEcommerceAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.ECOMMERCE_LEARNER);
-  const isFeedsAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.FEED_LEARNER);
-  const isChannelAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.CHANNELS_LEARNER);
 
   const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(
     user?.subscription?.type === 'TRIAL' &&
@@ -96,7 +94,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           label: t('learn.feed'),
           dataTestId: 'feed-menu',
           onClick: () => navigate('/user/feed'),
-          show: isFeedsAccessEnabled,
+          show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: `!text-sm !leading-4 !text-neutral-500 !font-normal group-hover:!text-black leading-4 ${
             pathname.startsWith('/user/feed') &&
@@ -108,7 +106,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           label: t('learn.channels'),
           dataTestId: 'channels-menu',
           onClick: () => navigate('/user/channels'),
-          show: isChannelAccessEnabled,
+          show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: `!text-sm !leading-4 !text-neutral-500 !font-normal group-hover:!text-black leading-4 ${
             pathname.startsWith('/user/channels') &&
