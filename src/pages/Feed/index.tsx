@@ -6,7 +6,14 @@ import { CELEBRATION_TYPE } from 'components/CelebrationWidget';
 import { FeedModeEnum } from 'stores/feedStore';
 import { ComponentEnum } from 'utils/permissions/enums/componentEnum';
 
-interface IHomeFeedProps {}
+interface IHomeFeedProps {
+  permissions?: {
+    canReadTeamsWidget?: boolean,
+    canReadTrainings?: boolean,
+    canReadCourseModule?: boolean,
+    canReadEventModule: boolean,
+  }
+}
 
 export interface IProfileImage {
   blurHash: string;
@@ -29,8 +36,16 @@ export interface IMyReactions {
   createdBy?: ICreated;
 }
 
-const HomeFeed: FC<IHomeFeedProps> = () => {
+const HomeFeed: FC<IHomeFeedProps> = ({
+  permissions = {
+    canReadTeamsWidget: true,
+    canReadTrainings: true,
+    canReadCourseModule: true,
+    canReadEventModule: true,
+  }
+}) => {
   const { pathname } = useLocation();
+  const { canReadTeamsWidget = false, canReadTrainings = false, canReadCourseModule = false, canReadEventModule } = permissions;
 
   const bookmarks = pathname === '/bookmarks' || pathname == '/user/bookmarks';
   const scheduled =
@@ -56,16 +71,16 @@ const HomeFeed: FC<IHomeFeedProps> = () => {
         ComponentEnum.UserCardWidget,
         ComponentEnum.AppLauncherWidget,
         ComponentEnum.ChannelsWidget,
-        ComponentEnum.TeamsWidget,
+        ...(canReadTeamsWidget ? [ComponentEnum.TeamsWidget] : []),
       ]}
       rightWidgets={[
-        ComponentEnum.ProgressTrackerWidget,
+        ...(canReadTrainings ? [ComponentEnum.ProgressTrackerWidget] : []),
         ComponentEnum.BirthdayCelebrationWidget,
         ComponentEnum.AnniversaryCelebrationWidget,
-        ComponentEnum.EventWidget,
+        ...(canReadEventModule ? [ComponentEnum.EventWidget] : []),
         ComponentEnum.AnnouncementWidget,
-        ComponentEnum.ChannelRequestWidget,
-        ComponentEnum.EvaluationRequestWidget,
+        ComponentEnum.ChannelRequestWidget, 
+        ...((canReadCourseModule || canReadEventModule) ? [ComponentEnum.EvaluationRequestWidget] : []),
       ]}
       widgetProps={{
         [ComponentEnum.BirthdayCelebrationWidget]: {
@@ -73,6 +88,12 @@ const HomeFeed: FC<IHomeFeedProps> = () => {
         },
         [ComponentEnum.AnniversaryCelebrationWidget]: {
           type: CELEBRATION_TYPE.WorkAnniversary,
+        },
+        [ComponentEnum.EvaluationRequestWidget]: {
+          permissions: {
+            canReadCourses: canReadCourseModule,
+            canReadEvents: canReadEventModule,
+          },
         },
       }}
       modeProps={{ [FeedModeEnum.Default]: {} }}

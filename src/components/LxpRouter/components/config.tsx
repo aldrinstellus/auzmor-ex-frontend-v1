@@ -12,7 +12,6 @@ import { ChannelDetailTabsEnum } from 'pages/ChannelDetail';
 import ViewManager from './ViewManager';
 
 const ErrorBoundary = lazy(() => import('components/ErrorBoundary'));
-const HomeFeed = lazy(() => import('pages/Feed'));
 const Apps = lazy(() => import('pages/Apps'));
 const Users = lazy(() => import('pages/Users'));
 const Channels = lazy(() => import('pages/Channels'));
@@ -23,6 +22,8 @@ const PostPage = lazy(() => import('pages/Post'));
 const SearchResults = lazy(() => import('pages/SearchResults'));
 const PageNotFound = lazy(() => import('pages/PageNotFound'));
 const ServerErrorPage = lazy(() => import('pages/ServerErrorPage'));
+const AdminFeedsRoute = lazy(() => import('pages/Feed/AdminFeedsRoute/AdminFeedsRoute'));
+const LearnerFeedsRoute = lazy(() => import('pages/Feed/LearnerFeedsRoute/LearnerFeedsRoute'));
 
 const routers = createBrowserRouter(
   createRoutesFromElements(
@@ -30,13 +31,13 @@ const routers = createBrowserRouter(
       <Route element={<RequireAuth />}>
         <Route element={<ViewManager />}>
           <Route path="/" element={<Navigate to="/feed" replace={true} />} />
-          <Route path="/home" element={<HomeFeed />} />
+          <Route path="/home" element={<AdminFeedsRoute />} />
           <Route path="/apps" element={<Apps />} />
           <Route path="/apps/:id/launch" element={<AppLaunchPage />} />
-          <Route path="/scheduledPosts" element={<HomeFeed />} />
-          <Route path="/bookmarks" element={<HomeFeed />} />
-          <Route path="/announcements" element={<HomeFeed />} />
-          <Route path="/feed" element={<HomeFeed />} />
+          <Route path="/scheduledPosts" element={<AdminFeedsRoute />} />
+          <Route path="/bookmarks" element={<AdminFeedsRoute />} />
+          <Route path="/announcements" element={<AdminFeedsRoute />} />
+          <Route path="/feed" element={<AdminFeedsRoute />} />
           <Route path="/posts/:id" element={<PostPage />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/channels" element={<Channels />} />
@@ -89,15 +90,15 @@ const routers = createBrowserRouter(
 
         <Route path="/user">
           <Route path="" element={<Navigate to="feed" replace={true} />} />
-          <Route path="home" element={<HomeFeed />} />
+          <Route path="home" element={<LearnerFeedsRoute />} />
           <Route path="teams" element={<Users />} />
           <Route path="teams/:teamId" element={<TeamDetail />} />
           <Route path="apps" element={<Apps />} />
           <Route path="apps/:id/launch" element={<AppLaunchPage />} />
-          <Route path="scheduledPosts" element={<HomeFeed />} />
-          <Route path="bookmarks" element={<HomeFeed />} />
-          <Route path="announcements" element={<HomeFeed />} />
-          <Route path="feed" element={<HomeFeed />} />
+          <Route path="scheduledPosts" element={<LearnerFeedsRoute />} />
+          <Route path="bookmarks" element={<LearnerFeedsRoute />} />
+          <Route path="announcements" element={<LearnerFeedsRoute />} />
+          <Route path="feed" element={<LearnerFeedsRoute />} />
           <Route path="posts/:id" element={<PostPage />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="channels" element={<Channels />} />

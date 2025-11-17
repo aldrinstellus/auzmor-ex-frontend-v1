@@ -20,6 +20,7 @@ import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
 import { useTranslation } from 'react-i18next';
 import { IS_PROD_OR_STAGING } from 'utils/constants';
+import usePermissionStore from 'stores/permissionsStore';
 
 type AuthContextProps = {
   children: ReactNode;
@@ -119,6 +120,12 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
   const [accountDeactivated, setAccountDeactivated] = useState(false);
   const { isLxp } = useProduct();
   const { getApi } = usePermissions();
+  const fetchAccessibleModules = usePermissionStore(
+    (state) => state.fetchAccessibleModules
+  );
+  const fetchRoles = usePermissionStore(
+    (state) => state.fetchRoles
+  );
 
   const setBranding = useBrandingStore((state) => state.setBranding);
 
@@ -229,6 +236,8 @@ const AuthProvider: FC<AuthContextProps> = ({ children }) => {
             profileColor: data?.profileColor,
           });
           setBranding(data.branding);
+          fetchAccessibleModules();
+          fetchRoles({ limit: 1000 });
         } else {
           window.location.host = `${data.org.domain}.${window.location.host}`;
         }

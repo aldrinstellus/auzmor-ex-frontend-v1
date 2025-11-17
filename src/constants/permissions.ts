@@ -1,0 +1,33 @@
+export const ADMIN_MODULES = {
+  COURSE_ADMIN: 'administrativeView:Course',
+  TASK_ADMIN: 'administrativeView:Checklist',
+  MENTORSHIP_ADMIN: 'administrativeView:Mentorship',
+  USER_ADMIN: 'administrativeView:User',
+  TEAM_ADMIN: 'administrativeView:Team',
+  INSIGHT_ADMIN: 'administrativeView:Insights',
+  BRANCH_ADMIN: 'administrativeView:SisterOrganization',
+  EVENT_ADMIN: 'administrativeView:Event',
+  EXTERNAL_TRAINING_ADMIN: 'administrativeView:ExternalTraining',
+  REPORTS_ADMIN: 'administrativeView:Reports',
+  FORUMS_ADMIN: 'administrativeView:Forums',
+  ECOMMERCE_ADMIN: 'administrativeView:Ecommerce',
+  LEARNING_PATH_ADMIN: 'administrativeView:LearningPath',
+  SETTINGS_ADMIN: 'administrativeView:Settings',
+  DASHBOARD_ADMIN: 'administrativeView:Dashboard',
+  FEEDS_ADMIN: 'administrativeView:Feeds',
+  CHANNEL_ADMIN: 'administrativeView:Channel',
+};
+
+export const LEARNER_MODULES = {
+  COURSE_LEARNER: 'learnerView:Course',
+  EVENT_LEARNER: 'learnerView:Event',
+  TASK_LEARNER: 'learnerView:Checklist',
+  MENTORSHIP_LEARNER: 'learnerView:Mentorship',
+  FORUMS_LEARNER: 'learnerView:Forums',
+  LEARNING_PATH_LEARNER: 'learnerView:LearningPath',
+  ECOMMERCE_LEARNER: 'learnerView:Ecommerce',
+  SETTINGS_LEARNER: 'learnerView:Settings',
+  DASHBOARD_LEARNER: 'learnerView:Dashboard',
+  FEED_LEARNER: 'learnerView:Feeds',
+  CHANNELS_LEARNER: 'learnerView:Channel',
+};
