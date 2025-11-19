@@ -59,8 +59,6 @@ const LinksWidget: FC<LinksWidgetProps> = ({ canEdit, className = '' }) => {
     [className],
   );
 
-  console.log(links);
-
   return (
     <Card className={style} shadowOnHover>
       <div
