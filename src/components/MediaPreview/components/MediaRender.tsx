@@ -15,7 +15,6 @@ export interface IMediaRenderProps {
   overlayCount?: number;
   localClassName?: string;
   mode?: Mode;
-  preferredSize?: PreferredSize;
   onClick?: (e: any) => void;
   coverImageUrl?: string;
   isAnnouncementWidgetPreview?: boolean;
@@ -26,13 +25,12 @@ const MediaRender: FC<IMediaRenderProps> = ({
   overlayCount = -1,
   localClassName,
   mode = Mode.View,
-  preferredSize = PreferredSize.Medium,
   onClick,
   coverImageUrl,
   isAnnouncementWidgetPreview = false,
 }) => {
   const blurImgProps = {
-    src: data?.transcodedData?.image?.[preferredSize] || data.original,
+    src: data.original,
     className: 'object-cover w-full h-full',
     key: data?.name,
     alt: data?.name,
