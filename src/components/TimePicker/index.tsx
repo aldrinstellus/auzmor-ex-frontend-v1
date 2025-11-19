@@ -10,8 +10,8 @@ import {
   UseFormSetValue,
   useController,
 } from 'react-hook-form';
-import { padZero } from 'utils/misc';
 import { TIME_PATTERN } from 'utils/time';
+import dayjs from "dayjs";
 
 export enum Variant {
   Text = 'TEXT',
@@ -162,18 +162,54 @@ const TimePicker: FC<TimePickerProps> = ({
   const [options, setOptions] = useState<string[]>([]);
 
   const getOptions = () => {
-    const hours =
-      new Date().getHours() + (new Date().getMinutes() >= 30 ? 1 : 0.5);
-    const options = [];
-    for (let i = hours; i < 24; i += 0.5) {
-      options.push(
-        `${
-          i > 12 ? padZero(Math.floor(i) - 12, 2) : padZero(Math.floor(i), 2)
-        }:${i % 1 === 0 ? '00' : '30'} ${i >= 12 ? 'pm' : 'am'}`,
-      );
+  const selectedDate = isDate(dateFieldName)
+    ? dayjs(dateFieldName)
+    : dayjs(getValues(dateFieldName));
+
+  const now = dayjs();
+  const isToday = selectedDate.isSame(now, "day");
+
+  const options: string[] = [];
+
+  const generateAllTimes = () => {
+    for (let h = 0; h < 24; h++) {
+      for (const m of [0, 30]) {
+        const t = dayjs().hour(h).minute(m).second(0);
+        options.push(t.format("hh:mm a"));
+      }
     }
-    return options;
   };
+
+  const generateTimesFromNow = () => {
+  const minute = now.minute();
+  const hour = now.hour();
+
+  let hours;
+
+  if (minute === 0) {
+    hours = hour;
+  } else if (minute <= 30) {
+    hours = hour + 0.5;
+  } else {
+    hours = hour + 1;
+  }
+
+  for (let i = hours; i < 24; i += 0.5) {
+    const t = dayjs().hour(Math.floor(i)).minute(i % 1 === 0 ? 0 : 30);
+    options.push(t.format("hh:mm a"));
+  }
+};
+
+  if (!selectedDate.isValid()) {
+    generateTimesFromNow();
+  } else if (isToday) {
+    generateTimesFromNow();
+  } else {
+    generateAllTimes();
+  }
+
+  return options;
+};
 
   const validateTime = (time: string) => {
     if (!TIME_PATTERN.test(time)) {

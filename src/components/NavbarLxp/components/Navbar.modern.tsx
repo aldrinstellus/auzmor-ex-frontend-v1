@@ -35,12 +35,12 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
 
   const isDashboardAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.DASHBOARD_LEARNER);
   const isTrainingsAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_ACCESSIBLE_TRAININGS);
-  const isTaskAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.TASK_LEARNER);
+  const isTaskAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.TASK_LEARNER) || isModuleAccessible(accessibleModules, LEARNER_MODULES.CHECKLIST_LEARNER);
   const isMentorshipAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.MENTORSHIP_LEARNER);
   const isForumAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.FORUMS_LEARNER);
   const isEcommerceAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.ECOMMERCE_LEARNER);
-  const isFeedsAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.FEED_LEARNER);
-  const isChannelAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.CHANNELS_LEARNER);
+
+  const showLearnerGlobalSearch = isTrainingsAccessEnabled;
 
   const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(
     user?.subscription?.type === 'TRIAL' &&
@@ -96,7 +96,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           label: t('learn.feed'),
           dataTestId: 'feed-menu',
           onClick: () => navigate('/user/feed'),
-          show: isFeedsAccessEnabled,
+          show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: `!text-sm !leading-4 !text-neutral-500 !font-normal group-hover:!text-black leading-4 ${
             pathname.startsWith('/user/feed') &&
@@ -108,7 +108,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           label: t('learn.channels'),
           dataTestId: 'channels-menu',
           onClick: () => navigate('/user/channels'),
-          show: isChannelAccessEnabled,
+          show: true,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName: `!text-sm !leading-4 !text-neutral-500 !font-normal group-hover:!text-black leading-4 ${
             pathname.startsWith('/user/channels') &&
@@ -284,9 +284,11 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
               </div>
               <div className="w-[1px] h-5 bg-[#e5e5e5]"></div>
               <ul className="flex items-center gap-[10px]">
-                <li>
-                  <GlobalSearch permissions= {{ canReadTrainings: isTrainingsAccessEnabled }} />
-                </li>
+                {showLearnerGlobalSearch && (
+                  <li>
+                    <GlobalSearch permissions= {{ canReadTrainings: isTrainingsAccessEnabled }} />
+                  </li>
+                )}
                 <li>
                   <div title={t('learn.helpAndSupportTitle')}>
                     <IconButton

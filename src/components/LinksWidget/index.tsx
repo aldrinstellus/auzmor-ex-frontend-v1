@@ -120,7 +120,7 @@ const LinksWidget: FC<LinksWidgetProps> = ({ canEdit, className = '' }) => {
                     >
                       {link.url || link.favicon ? (
                         <img
-                          src={`https://www.google.com/s2/favicons?domain=${link.url}`}
+                          src={`https://www.google.com/s2/favicons?domain=${link.url}&sz=64`}
                           height={16}
                           width={16}
                           alt={`${link.title} Image`}
