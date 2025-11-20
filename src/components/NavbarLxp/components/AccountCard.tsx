@@ -26,6 +26,7 @@ import Truncate from 'components/Truncate';
 import usePermissionStore from 'stores/permissionsStore';
 import { isModuleAccessible } from 'utils/customRolesPermissions/permissions';
 import { ADMIN_MODULES, LEARNER_MODULES } from 'constants/permissions';
+import useLearnerMeModulePermissions from 'hooks/permissions/useLearnerMeModulePermissions';
 
 const AccountCard = () => {
   const { user, reset } = useAuth();
@@ -38,8 +39,17 @@ const AccountCard = () => {
   const userRole = roles.find(role => role.name === user?.role);
   const accessibleModules = usePermissionStore((state) => state.getAccessibleModules());
 
+  const {
+    isMeOrdersReadLearnerAllowed, isMeCertificatesInternalReadLearnerAllowed,
+    isMeCertificatesExternalReadLearnerAllowed,
+    isMeActivitiesReadLearnerAllowed,
+  } = useLearnerMeModulePermissions();
+
   const canAccessAdminView = isModuleAccessible(accessibleModules, ADMIN_MODULES);
   const canAccessLearnerView = isModuleAccessible(accessibleModules, LEARNER_MODULES);
+  const canAccessSettings = () => (isLearnerView
+    ? isModuleAccessible(accessibleModules, [LEARNER_MODULES.SETTINGS_LEARNER, LEARNER_MODULES.ME_LEARNER])
+    : isModuleAccessible(accessibleModules, ADMIN_MODULES.SETTINGS_ADMIN));
 
   const useGetBranches = getApi(ApiEnum.GetOrganizationBranch);
   const { data } = useGetBranches(user?.organization?.id || '');
@@ -163,18 +173,20 @@ const AccountCard = () => {
             </div>
           </div>
           <div className="w-full mt-[14px]">
-            <Link
-              to={`${getLearnUrl()}${isLearnerView ? '/user' : ''}/settings`}
-            >
-              <div
-                className={`flex ${menuItemStyle}`}
-                data-testid="user-menu-user-settings"
-                onClick={close}
+            {canAccessSettings() && (
+              <Link
+                to={`${getLearnUrl()}${isLearnerView ? '/user' : ''}/settings`}
               >
-                <div>{t('settings')}</div>
-              </div>
-            </Link>
-            {isLearnerView && (
+                <div
+                  className={`flex ${menuItemStyle}`}
+                  data-testid="user-menu-user-settings"
+                  onClick={close}
+                >
+                  <div>{t('settings')}</div>
+                </div>
+              </Link>
+            )}
+            {isLearnerView && canAccessSettings() && (isMeCertificatesInternalReadLearnerAllowed || isMeCertificatesExternalReadLearnerAllowed) && (
               <Link to={`${getLearnUrl()}/user/settings/certificates`}>
                 <div
                   className={`flex ${menuItemStyle}`}
@@ -185,7 +197,7 @@ const AccountCard = () => {
                 </div>
               </Link>
             )}
-            {isLearnerView && user?.organization?.setting?.enableEcommerce && (
+            {isLearnerView && user?.organization?.setting?.enableEcommerce && canAccessSettings() && isMeOrdersReadLearnerAllowed && (
               <Link to={`${getLearnUrl()}/user/settings/orders`}>
                 <div
                   className={`flex ${menuItemStyle}`}
@@ -196,7 +208,7 @@ const AccountCard = () => {
                 </div>
               </Link>
             )}
-            {isLearnerView && (
+            {isLearnerView && canAccessSettings() && isMeActivitiesReadLearnerAllowed && (
               <Link to={`${getLearnUrl()}/user/settings/activity`}>
                 <div
                   className={`flex ${menuItemStyle}`}
