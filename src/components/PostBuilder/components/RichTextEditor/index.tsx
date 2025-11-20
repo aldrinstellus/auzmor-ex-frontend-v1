@@ -104,6 +104,7 @@ const RichTextEditor = forwardRef(
       setShoutoutUserIds,
       postType,
       setPostType,
+      setDisablePostButton,
     } = useContext(CreatePostContext);
 
     useEffect(() => {
@@ -172,6 +173,8 @@ const RichTextEditor = forwardRef(
           'silent',
         );
         setIsCharLimit(true);
+      } else if (editor.getLength() <= 2) {
+        setDisablePostButton(true);
       } else {
         ((ref as any).current as ReactQuill).getEditor().formatText(
           0,
@@ -182,6 +185,7 @@ const RichTextEditor = forwardRef(
           'silent',
         );
         setIsCharLimit(false);
+        setDisablePostButton(false);
       }
 
       if (!isPreviewRemoved) {
