@@ -85,7 +85,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
 
   // visibility flags
   const isChannelPrivate =
-    channelData?.settings?.visibility === ChannelVisibilityEnum.Private;
+    channelData?.settings?.visibility === ChannelVisibilityEnum.Private || channelData?.settings?.visibility === ChannelVisibilityEnum.Restricted;
   const isChannelPublic =
     channelData?.settings?.visibility === ChannelVisibilityEnum.Public;
 
@@ -606,7 +606,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
               </div>
               <div className="text-white text-sm" data-testid="channel-privacy">
                 {channelData?.settings?.visibility ===
-                ChannelVisibilityEnum.Private
+                ChannelVisibilityEnum.Private || channelData?.settings?.visibility === ChannelVisibilityEnum.Restricted
                   ? t('private')
                   : t('public')}
               </div>
