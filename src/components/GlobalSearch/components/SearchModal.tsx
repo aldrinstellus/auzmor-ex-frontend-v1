@@ -12,7 +12,6 @@ import { usePermissions } from 'hooks/usePermissions';
 import { ISearchResultGroup, ISearchResultType } from 'interfaces/search';
 import Modal from 'components/Modal';
 import { sumBy } from 'lodash';
-import useRole from 'hooks/useRole';
 
 const limit = 5;
 
@@ -20,16 +19,36 @@ export interface ISearchModalProps {
   onClose?: () => void;
   isRecentSearchResultsFetching: boolean;
   recentSearchResults: ISearchResultGroup[];
+  permissions: {
+    canReadTrainings: boolean,
+    canReadPeoples?: boolean,
+    canReadTeams?: boolean,
+  };
 }
 
 const SearchModal: FC<ISearchModalProps> = ({
   onClose,
   isRecentSearchResultsFetching,
   recentSearchResults,
+  permissions,
 }) => {
   const { getApi } = usePermissions();
   const { t } = useTranslation('components', { keyPrefix: 'GlobalSearch' });
-  const { isAdmin } = useRole();
+  const { canReadTrainings, canReadPeoples = false, canReadTeams = false } = permissions;
+
+  const searchParts = [];
+
+  if (canReadTrainings) searchParts.push(t('search.trainings'));
+  if (canReadPeoples) searchParts.push(t('search.people'));
+  if (canReadTeams) searchParts.push(t('search.teams'));
+
+  searchParts.push(
+    t('search.channels'),
+    t('search.documents'),
+    t('search.apps')
+  );
+
+  const placeholder = `${t('search.prefix')} ${searchParts.join(', ')}`;
 
   const queryClient = useQueryClient();
 
@@ -114,9 +133,7 @@ const SearchModal: FC<ISearchModalProps> = ({
       name: 'globalSearch',
       dataTestId: 'global-search',
       className: 'w-full',
-      placeholder: isAdmin
-        ? t('searchPlaceholder')
-        : t('searchPlaceholderLearner'),
+      placeholder,
       inputClassName:
         'border-none !p-0 rounded-none text-base font-medium mr-9',
       autofocus: true,

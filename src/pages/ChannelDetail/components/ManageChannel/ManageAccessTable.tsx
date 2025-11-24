@@ -183,6 +183,7 @@ const ManageAccessTable: FC<AppProps> = ({
                         ] as any
                       }
                       className=" w-fit "
+                      useCustomPopupPosition
                     />
                   </div>
                 </TableCell>

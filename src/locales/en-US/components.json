@@ -40,6 +40,15 @@
     "searchAriaLabel": "Search",
     "searchPlaceholder": "Search trainings, people, teams, channels, documents, apps",
     "searchPlaceholderLearner": "Search trainings, channels, documents, apps",
+    "search": {
+      "prefix": "Search",
+      "trainings": "trainings",
+      "people": "people",
+      "teams": "teams",
+      "channels": "channels",
+      "documents": "documents",
+      "apps": "apps"
+    },
     "noResultsHint": "We're a little lost. Can you give us a hint?",
     "connectStorageHint": "Connect your storage to enable document search.",
     "noDataFoundHeader": "No results found for \"<searchQuery />\"",

@@ -1,0 +1,43 @@
+export const ADMIN_MODULES = {
+  COURSE_ADMIN: 'administrativeView:Course',
+  CHECKLIST_ADMIN: 'administrativeView:Checklist',
+  TASK_ADMIN: 'administrativeView:Task',
+  MENTORSHIP_ADMIN: 'administrativeView:Mentorship',
+  USER_ADMIN: 'administrativeView:User',
+  TEAM_ADMIN: 'administrativeView:Team',
+  INSIGHT_ADMIN: 'administrativeView:Insights',
+  BRANCH_ADMIN: 'administrativeView:Branch',
+  EVENT_ADMIN: 'administrativeView:Event',
+  EXTERNAL_TRAINING_ADMIN: 'administrativeView:ExternalTraining',
+  REPORTS_ADMIN: 'administrativeView:Report',
+  FORUMS_ADMIN: 'administrativeView:Forum',
+  ECOMMERCE_ADMIN: 'administrativeView:Ecommerce',
+  LEARNING_PATH_ADMIN: 'administrativeView:LearningPath',
+  SETTINGS_ADMIN: 'administrativeView:Settings',
+  DASHBOARD_ADMIN: 'administrativeView:Dashboard',
+  FEEDS_ADMIN: 'administrativeView:Feeds',
+  CHANNEL_ADMIN: 'administrativeView:Channel',
+};
+
+export const LEARNER_MODULES = {
+  COURSE_LEARNER: 'learnerView:Course',
+  EVENT_LEARNER: 'learnerView:Event',
+  TASK_LEARNER: 'learnerView:Task',
+  CHECKLIST_LEARNER: 'learnerView:Checklist',
+  MENTORSHIP_LEARNER: 'learnerView:Mentorship',
+  FORUMS_LEARNER: 'learnerView:Forum',
+  LEARNING_PATH_LEARNER: 'learnerView:LearningPath',
+  ECOMMERCE_LEARNER: 'learnerView:Ecommerce',
+  SETTINGS_LEARNER: 'learnerView:Settings',
+  DASHBOARD_LEARNER: 'learnerView:Dashboard',
+  FEED_LEARNER: 'learnerView:Feeds',
+  CHANNELS_LEARNER: 'learnerView:Channel',
+  ME_LEARNER: 'learnerView:Me',
+};
+
+export const ME_PERMISSIONS = {
+  ME_CERTIFICATES_INTERNAL_READ_LEARNER: 'me:certificates:internal:read:learner',
+  ME_CERTIFICATES_EXTERNAL_READ_LEARNER: 'me:certificates:external:read:learner',
+  ME_ORDERS_READ_LEARNER: 'me:orders:summary:read:learner',
+  ME_ACTIVITIES_READ_LEARNER: 'me:activities:summary:read:learner',
+};

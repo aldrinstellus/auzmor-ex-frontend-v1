@@ -57,6 +57,9 @@ import AnnouncementFeedHeader from './components/AnnouncementFeedHeader';
 import { ApiEnum } from 'utils/permissions/enums/apiEnum';
 import { usePermissions } from 'hooks/usePermissions';
 import { ComponentEnum } from 'utils/permissions/enums/componentEnum';
+import usePermissionStore from 'stores/permissionsStore';
+import { isModuleAccessible } from 'utils/customRolesPermissions/permissions';
+import { LEARNER_MODULES } from 'constants/permissions';
 
 const EmptyWidget = () => <></>;
 
@@ -139,6 +142,12 @@ const Feed: FC<IFeedProps> = ({
   );
   const { getScrollTop, pauseRecordingScrollTop, resumeRecordingScrollTop } =
     useScrollTop('app-shell-container');
+  const accessibleModules = usePermissionStore((state) =>
+      state.getAccessibleModules()
+  );
+
+  const isLearnersCourseModulesAccessible = isModuleAccessible(accessibleModules, LEARNER_MODULES.COURSE_LEARNER);
+  const isLearnersPathModulesAccessible = isModuleAccessible(accessibleModules, LEARNER_MODULES.LEARNING_PATH_LEARNER);
 
   const hashtag = searchParams.get('hashtag') || '';
   let bookmarks = false;
@@ -811,11 +820,18 @@ const Feed: FC<IFeedProps> = ({
     getComponent(ComponentEnum.RecommendationWidget);
 
   const getListItem = (id: string, index: number) => {
+    const canReadRecommendation = isLearnersCourseModulesAccessible || isLearnersPathModulesAccessible; 
+    let recentlyAssignedTitle = t('recommendation.recentlyAssigned.title');
+    if (!isLearnersCourseModulesAccessible && isLearnersPathModulesAccessible) {
+      recentlyAssignedTitle = t('recommendation.recentlyAssigned.learningPath');
+    } else if (isLearnersCourseModulesAccessible && !isLearnersPathModulesAccessible) {
+      recentlyAssignedTitle = t('recommendation.recentlyAssigned.course');
+    }
     return (
       <Fragment key={`${id}-post-index-${index}-fragment`}>
         {mode === FeedModeEnum.Default && (
           <>
-            {(index === recommendationIndex.tIndex && Recommendation) && (
+            {canReadRecommendation && (index === recommendationIndex.tIndex && Recommendation) && (
               <li data-testid={`trending-content-post`}>
                 <Recommendation
                   cards={trendingCards}
@@ -825,12 +841,12 @@ const Feed: FC<IFeedProps> = ({
                 />
               </li>
             )}
-            {(index === recommendationIndex.rIndex && Recommendation) && (
+            {canReadRecommendation && (index === recommendationIndex.rIndex && Recommendation) && (
               <li data-testid={`recently-assigned-content-post`}>
                 <Recommendation
                   cards={recentlyAssignedCards}
-                  title={t('recommendation.recentlyAssigned.title')}
-                  isLoading={recentlyAssignedLoading}
+                  title={recentlyAssignedTitle}
+                  isLoading={recentlyAssignedLoading}s
                   onCLick={handleRecentlyAssignedContent}
                 />
               </li>

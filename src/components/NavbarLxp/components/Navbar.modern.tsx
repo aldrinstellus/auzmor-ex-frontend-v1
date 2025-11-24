@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Icon from 'components/Icon';
 import { Logo } from 'components/Logo';
 import PopupMenu from 'components/PopupMenu';
@@ -16,6 +17,10 @@ import IconButton from 'components/IconButton';
 import useNavigate from 'hooks/useNavigation';
 import Cart from './Cart';
 import GlobalSearch from 'components/GlobalSearch';
+import usePermissionStore from 'stores/permissionsStore';
+import { isModuleAccessible } from 'utils/customRolesPermissions/permissions';
+import { LEARNER_MODULES } from 'constants/permissions';
+import { LEARNER_ACCESSIBLE_TRAININGS } from 'constants/training';
 
 interface INavbarLxpProps {}
 
@@ -24,6 +29,18 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
   const { pathname } = useLocation();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const accessibleModules = usePermissionStore((state) =>
+    state.getAccessibleModules()
+  );
+
+  const isDashboardAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.DASHBOARD_LEARNER);
+  const isTrainingsAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_ACCESSIBLE_TRAININGS);
+  const isTaskAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.TASK_LEARNER) || isModuleAccessible(accessibleModules, LEARNER_MODULES.CHECKLIST_LEARNER);
+  const isMentorshipAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.MENTORSHIP_LEARNER);
+  const isForumAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.FORUMS_LEARNER);
+  const isEcommerceAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.ECOMMERCE_LEARNER);
+
+  const showLearnerGlobalSearch = isTrainingsAccessEnabled;
 
   const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(
     user?.subscription?.type === 'TRIAL' &&
@@ -63,7 +80,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       label: t('learn.home'),
       to: getLearnUrl('/user'),
       icon: 'home',
-      show: true,
+      show: isDashboardAccessEnabled,
       options: [],
       isActive: false,
     },
@@ -104,7 +121,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           dataTestId: 'forums-menu',
           onClick: () =>
             window.location.assign(`${getLearnUrl('/user/forums')}`),
-          show: !!user?.organization?.setting?.enableSocialLearning,
+          show: !!user?.organization?.setting?.enableSocialLearning && isForumAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
             '!text-sm !leading-4 !text-neutral-500 !font-normal group-hover:!text-black leading-4',
@@ -116,7 +133,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
       id: 'training',
       label: t('learn.training'),
       to: getLearnUrl('/user/trainings'),
-      show: true,
+      show: isTrainingsAccessEnabled,
       icon: 'training',
       options: [],
       isActive: false,
@@ -136,7 +153,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
             window.location.assign(
               `${getLearnUrl('/user/mentorship/overview')}`,
             ),
-          show: !!user?.organization?.setting?.enableMentorship,
+          show: !!user?.organization?.setting?.enableMentorship && isMentorshipAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
             '!text-sm !leading-4 !text-neutral-500 !font-normal group-hover:!text-black leading-4',
@@ -147,7 +164,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
           dataTestId: 'tasks-menu',
           onClick: () =>
             window.location.assign(`${getLearnUrl('/user/tasks')}`),
-          show: !!user?.organization?.setting?.enablechecklist,
+          show: !!user?.organization?.setting?.enablechecklist && isTaskAccessEnabled,
           className: '!py-[11px] !px-3 hover:!bg-neutral-100',
           labelClassName:
             '!text-sm !leading-4 !text-neutral-500 !font-normal group-hover:!text-black leading-4',
@@ -267,9 +284,11 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
               </div>
               <div className="w-[1px] h-5 bg-[#e5e5e5]"></div>
               <ul className="flex items-center gap-[10px]">
-                <li>
-                  <GlobalSearch />
-                </li>
+                {showLearnerGlobalSearch && (
+                  <li>
+                    <GlobalSearch permissions= {{ canReadTrainings: isTrainingsAccessEnabled }} />
+                  </li>
+                )}
                 <li>
                   <div title={t('learn.helpAndSupportTitle')}>
                     <IconButton
@@ -285,7 +304,7 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
                     />
                   </div>
                 </li>
-                {!!user?.organization?.setting?.enableEcommerce && (
+                {isEcommerceAccessEnabled && !!user?.organization?.setting?.enableEcommerce && (
                   <li>
                     <Cart />
                   </li>
