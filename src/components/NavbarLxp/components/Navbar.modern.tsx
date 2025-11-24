@@ -40,6 +40,8 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
   const isForumAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.FORUMS_LEARNER);
   const isEcommerceAccessEnabled = isModuleAccessible(accessibleModules, LEARNER_MODULES.ECOMMERCE_LEARNER);
 
+  const showLearnerGlobalSearch = isTrainingsAccessEnabled;
+
   const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(
     user?.subscription?.type === 'TRIAL' &&
       user?.subscription?.daysRemaining > -1,
@@ -282,9 +284,11 @@ const Navbar: FC<INavbarLxpProps> = ({}) => {
               </div>
               <div className="w-[1px] h-5 bg-[#e5e5e5]"></div>
               <ul className="flex items-center gap-[10px]">
-                <li>
-                  <GlobalSearch permissions= {{ canReadTrainings: isTrainingsAccessEnabled }} />
-                </li>
+                {showLearnerGlobalSearch && (
+                  <li>
+                    <GlobalSearch permissions= {{ canReadTrainings: isTrainingsAccessEnabled }} />
+                  </li>
+                )}
                 <li>
                   <div title={t('learn.helpAndSupportTitle')}>
                     <IconButton

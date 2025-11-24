@@ -84,6 +84,9 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
     accessibleModules, ADMIN_MODULES.EXTERNAL_TRAINING_ADMIN,
   );
 
+  const showGlobalSearch = isAdministrativeCourseAccessEnabled || isAdministrativeEventAccessEnabled || isAdministrativePathAccessEnabled
+    || isAdministrativeUserAccessEnabled || isAdministrativeTeamAccessEnabled;
+
   const [showSubscriptionBanner, setShowSubscriptionBanner] = useState(
     user?.subscription?.type === 'TRIAL' &&
       user?.subscription?.daysRemaining > -1,
@@ -468,15 +471,17 @@ const AdminNavbar: FC<INavbarLxpProps> = ({}) => {
               </ul>
               <ul className="flex items-center gap-[19px]">
                 <div className="w-[1px] h-5 bg-[#e5e5e5]"></div>
-                <li>
-                  <GlobalSearch
-                    permissions={{
-                      canReadTrainings: isAdministrativeCourseAccessEnabled || isAdministrativeEventAccessEnabled || isAdministrativePathAccessEnabled,
-                      canReadPeoples: isAdministrativeUserAccessEnabled,
-                      canReadTeams: isAdministrativeTeamAccessEnabled,
-                    }}
-                  />
-                </li>
+                {showGlobalSearch && (
+                  <li>
+                    <GlobalSearch
+                      permissions={{
+                        canReadTrainings: isAdministrativeCourseAccessEnabled || isAdministrativeEventAccessEnabled || isAdministrativePathAccessEnabled,
+                        canReadPeoples: isAdministrativeUserAccessEnabled,
+                        canReadTeams: isAdministrativeTeamAccessEnabled,
+                      }}
+                    />
+                  </li>
+                )}
                 <li>
                   <IconButton
                     icon="messageQuestionOutline"
