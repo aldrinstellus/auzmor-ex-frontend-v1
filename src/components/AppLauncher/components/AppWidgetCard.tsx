@@ -6,12 +6,14 @@ import DefaultAppIcon from 'images/DefaultAppIcon.svg';
 
 import { IApp } from 'interfaces';
 import Tooltip from 'components/Tooltip';
+import useRole from 'hooks/useRole';
 
 interface IAppWidgetCardProps {
   data: IApp;
 }
 
 const AppWidgetCard: FC<IAppWidgetCardProps> = ({ data }) => {
+  const { isLearner } = useRole();
   const blurImageProps = {
     src: data.icon?.original || DefaultAppIcon,
     className: 'rounded-full object-contain w-full',
@@ -22,7 +24,7 @@ const AppWidgetCard: FC<IAppWidgetCardProps> = ({ data }) => {
     ariaLabel: data.label,
   };
   return (
-    <Link to={`/apps/${data.id}/launch`} target="_blank">
+    <Link to={`${isLearner ? `/user/apps/${data.id}/launch` : `/apps/${data.id}/launch`}`} target="_blank">
       <div
         className="flex flex-col items-center gap-2"
         data-testid="app-launcher-app"
