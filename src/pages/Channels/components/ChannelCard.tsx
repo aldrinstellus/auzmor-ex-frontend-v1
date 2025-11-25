@@ -135,7 +135,7 @@ const ChannelCard: FC<IChannelCardProps> = ({ channel }) => {
               text={channel.name}
               className="text-sm font-semibold text-neutral-900 max-w-[208px]"
             />
-            {channel.settings?.visibility === ChannelVisibilityEnum.Private && (
+            {(channel.settings?.visibility === ChannelVisibilityEnum.Private || channel.settings?.visibility === ChannelVisibilityEnum.Restricted) && (
               <Icon
                 name={'lockFilled'}
                 size={14}
