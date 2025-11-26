@@ -101,6 +101,8 @@ export interface ICreatePostContext {
   shoutoutTemplate: any;
   postType: PostType | null;
   setPostType: (type: PostType) => void;
+  disablePostButton: boolean;
+  setDisablePostButton: (flag: boolean) => void;
 }
 
 export enum MediaValidationError {
@@ -188,6 +190,8 @@ export const CreatePostContext = createContext<ICreatePostContext>({
   shoutoutTemplate: {},
   postType: PostType.Update,
   setPostType: () => {},
+  disablePostButton: false,
+  setDisablePostButton: () => {},
 });
 
 const CreatePostProvider: FC<ICreatePostProviderProps> = ({
@@ -264,6 +268,7 @@ const CreatePostProvider: FC<ICreatePostProviderProps> = ({
   const [postType, setPostType] = useState<PostType>(
     data?.type || PostType.Update,
   );
+  const [disablePostButton, setDisablePostButton] = useState<boolean>(false);
 
   const setUploads = (uploads: File[], isCoverImage?: boolean) => {
     if (!isCoverImage) {
@@ -362,6 +367,7 @@ const CreatePostProvider: FC<ICreatePostProviderProps> = ({
     setShoutoutUsers({});
     setShoutoutTemplate({});
     setPostType(PostType.Update);
+    setDisablePostButton(false);
   };
 
   const updateCoverImageMap = (map: ICoverImageMap) => {
@@ -487,6 +493,8 @@ const CreatePostProvider: FC<ICreatePostProviderProps> = ({
         shoutoutTemplate,
         postType,
         setPostType,
+        disablePostButton,
+        setDisablePostButton,
       }}
     >
       {children}

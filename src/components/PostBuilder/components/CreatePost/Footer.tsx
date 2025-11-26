@@ -46,6 +46,7 @@ const Footer: FC<IFooterProps> = ({
     isEmpty,
     media,
     shoutoutUserIds,
+    disablePostButton,
   } = useContext(CreatePostContext);
   const { t } = useTranslation('postBuilder');
 
@@ -293,7 +294,8 @@ const Footer: FC<IFooterProps> = ({
             isLoading ||
             isCharLimit ||
             isEmpty ||
-            !!mediaValidationErrors?.length
+            !!mediaValidationErrors?.length ||
+            disablePostButton
           }
           labelClassName="text-sm leadind-snug"
           onClick={() => {
