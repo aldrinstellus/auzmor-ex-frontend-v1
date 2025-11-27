@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Switch } from '@headlessui/react';
 import clsx from 'clsx';
 
@@ -20,6 +20,11 @@ const SwitchToggle: FC<SwitchToggleProps> = ({
   className = '',
 }) => {
   const [checked, setChecked] = useState(defaultValue);
+  
+  useEffect(() => {
+    setChecked(defaultValue);
+  }, [defaultValue])
+
   const style = clsx({
     ['bg-gray-200 relative inline-flex h-5 w-10 items-center rounded-full']:
       true,
