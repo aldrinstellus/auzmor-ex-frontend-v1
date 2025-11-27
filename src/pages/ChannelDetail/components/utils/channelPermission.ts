@@ -364,7 +364,7 @@ export const getChannelPermissions: (
             });
           }
         }
-      } else if (channelPrivacy === ChannelVisibilityEnum.Private) {
+      } else if (channelPrivacy === ChannelVisibilityEnum.Private  || channelPrivacy === ChannelVisibilityEnum.Restricted) {
         if (!isChannelJoined) {
           // 10 -> LXP -> Learner view - > Private channel -> Not Joined
           channelPermissions = [];

@@ -162,7 +162,7 @@ const PrivateChannelBanner: FC<IChannelBannerProps> = ({
                 onClick={
                   isRequested
                     ? () =>
-                        withdrawJoinChannelRequest.mutate(channel.joinRequest!.id!)
+                      withdrawJoinChannelRequest.mutate(channel.joinRequest!.id!)
                     : () => joinChannelMutation.mutate(channel.id)
                 }
                 loading={
@@ -176,22 +176,22 @@ const PrivateChannelBanner: FC<IChannelBannerProps> = ({
                 }
               />
             )}
-            {admins.length > 0 && (
-              <>
-                <div
-                  className="text-neutral-500 mt-12 mb-4 text-sm font-semibold"
-                  data-testid="channel-admin-list"
-                >
-                  {t('privateChannel.bannerFotter')}
-                </div>
-                <AvatarChips
-                  users={admins}
-                  showCount={CHIPS_COUNT}
-                  dataTestId="channel-admin-list-"
-                  avatarClassName="text-sm py-[7px]"
-                />
-              </>
-            )}
+          </>
+        )}
+        {admins.length > 0 && (
+          <>
+            <div
+              className="text-neutral-500 mt-12 mb-4 text-sm font-semibold"
+              data-testid="channel-admin-list"
+            >
+              {t('privateChannel.bannerFotter')}
+            </div>
+            <AvatarChips
+              users={admins}
+              showCount={CHIPS_COUNT}
+              dataTestId="channel-admin-list-"
+              avatarClassName="text-sm py-[7px]"
+            />
           </>
         )}
       </div>
