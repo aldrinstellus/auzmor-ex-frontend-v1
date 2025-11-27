@@ -50,12 +50,12 @@ const ChannelVisibilityRow: FC<AppProps> = ({ data, canEdit }) => {
     <InfoRow
       icon={{
         name: 'global',
-        color: canEdit ? '!text-red-500' : '!text-gray-300',
-        bgColor: canEdit ? '!bg-red-50' : '!bg-gray-100',
+        color: '!text-red-500',
+        bgColor: '!bg-red-50',
       }}
       isEditButton={false}
       label={
-        <div className={`my-6 ${canEdit ? "" : "text-gray-400"}`}>
+        <div className="my-6">
           {t('label')}
         </div>
       }

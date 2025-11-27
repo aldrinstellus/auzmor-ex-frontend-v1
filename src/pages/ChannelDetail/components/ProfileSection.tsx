@@ -418,7 +418,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
   return (
     <div className="  rounded-9xl relative mb-4">
       <div className="relative z-30">
-        {isChannelOwner && canAccess ? (
+        {isChannelOwner ? (
           <div className="absolute top-4 left-4">
             <div className="bg-white rounded-7xl px-3 py-1.5 text-xxs text-primary-500 font-medium">
               {t('cover.you_own_this_space')}
@@ -427,7 +427,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         ) : null}
 
         <div className="absolute top-4 right-4 flex items-center space-x-2">
-          {channelData?.member && canAccess && (
+          {channelData?.member && (
             <IconButton
               icon={channelData?.member?.bookmarked ? 'star' : 'starOutline'}
               variant={IconVariant.Secondary}
@@ -442,7 +442,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
             />
           )}
           <div className="cursor-pointer">
-            {editMenuOptions.length > 0 && canAccess && (
+            {editMenuOptions.length > 0 && (
               <PopupMenu
                 triggerNode={
                   <div className="bg-white rounded-full  text-black">

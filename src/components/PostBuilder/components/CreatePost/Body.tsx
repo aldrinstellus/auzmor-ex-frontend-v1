@@ -24,11 +24,12 @@ export interface IBodyProps {
   dataTestId?: string;
   quillRef: RefObject<ReactQuill>;
   mode: PostBuilderMode;
+  isFeedType: boolean;
 }
 
 const Body = forwardRef(
   (
-    { data, dataTestId, quillRef, mode }: IBodyProps,
+    { data, dataTestId, quillRef, mode, isFeedType }: IBodyProps,
     ref: ForwardedRef<ReactQuill>,
   ) => {
     const {
@@ -174,7 +175,6 @@ const Body = forwardRef(
       return () => editor.root.removeEventListener('click', handleClick);
     }, []);
 
-
     return (
       <div className="text-sm text-neutral-900">
         <div className="max-h-[75vh] overflow-y-auto flex flex-col gap-2">
@@ -196,7 +196,7 @@ const Body = forwardRef(
                 }
               }
             />
-            <div className="flex items-center cursor-pointer">
+            <div className={`flex items-center cursor-pointer ${isFeedType && "hidden"}`}>
               {audience && audience.length > 0 ? (
                 <div className="flex gap-2">
                   <Button

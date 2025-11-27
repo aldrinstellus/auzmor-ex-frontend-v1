@@ -24,6 +24,7 @@ interface ICreatePostProps {
   isLoading?: boolean;
   dataTestId?: string;
   mode: PostBuilderMode;
+  isFeedType: boolean;
 }
 
 const CreatePost: FC<ICreatePostProps> = ({
@@ -33,6 +34,7 @@ const CreatePost: FC<ICreatePostProps> = ({
   isLoading = false,
   dataTestId,
   mode,
+  isFeedType,
 }) => {
   const quillRef = useRef<ReactQuill>(null);
   const { t } = useTranslation('postBuilder');
@@ -85,6 +87,7 @@ const CreatePost: FC<ICreatePostProps> = ({
         quillRef={quillRef}
         dataTestId={dataTestId}
         mode={mode}
+        isFeedType={isFeedType}
       />
       <Footer
         isLoading={isLoading}

@@ -16,6 +16,7 @@ import { IComment } from 'components/Comments';
 import { useCommentStore } from 'stores/commentStore';
 import { deleteParams } from 'components/Comments/components/Comment';
 import { addCdnUrlParamsToComment } from 'utils/misc';
+import { failureToastConfig } from 'components/Toast/variants/FailureToast';
 
 
 export const getAllChannels = async (
@@ -65,9 +66,15 @@ export const getChannelDetails = async (
   id: string,
   setChannel: (channel: IChannel) => void,
 ) => {
-  const data = await apiService.get(`/channels/${id}`);
-  if (data?.data?.result?.data) setChannel(data?.data?.result?.data);
-  return data;
+  try {
+    const response = await apiService.get(`/channels/${id}`);
+    const channelData = response?.data?.result?.data;
+    if (channelData) setChannel(channelData);
+    return response;
+  } catch (error: any) {
+    const message = error?.response?.data?.errors?.[0].message;
+    failureToastConfig({ content: message });
+  }
 };
 
 export const createChannel = async (payload: IChannelPayload) => {

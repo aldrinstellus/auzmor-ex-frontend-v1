@@ -723,6 +723,7 @@ const CreatePostModal: FC<ICreatePostModal> = ({
             isLoading={loading}
             dataTestId="feed-createpost"
             mode={mode}
+            isFeedType={!!channelData}
           />
         )}
         {activeFlow === CreatePostFlow.CreateAnnouncement && (
