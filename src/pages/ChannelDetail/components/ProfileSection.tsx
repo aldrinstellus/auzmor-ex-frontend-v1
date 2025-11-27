@@ -568,7 +568,7 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
                 onClick={() => joinChannelMutation.mutate(channelData.id)}
               />
             )}
-            {showRequestBtn && (
+            {showRequestBtn && canAccess && (
               <Button
                 label={tc('privateChannel.joinRequestCTA')}
                 variant={Variant.Primary}
