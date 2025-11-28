@@ -8,7 +8,6 @@ import PrivacyRow from './PrivacyRow';
 // import RestrictionRow from './RestrictionRow';
 import { useTranslation } from 'react-i18next';
 import ChannelVisibilityRow from './ChannelVisibilityRow';
-import useRole from 'hooks/useRole';
 
 type AppProps = {
   channelData: IChannel;
@@ -17,8 +16,7 @@ type AppProps = {
 
 const PrivacySetting: FC<AppProps> = ({ channelData, canEdit }) => {
   const { t } = useTranslation('channelDetail', { keyPrefix: 'setting' });
-  const { isLearner } = useRole();
-  const canEditLearnerDiscoveryAndRequest = !isLearner && (channelData?.settings?.visibility === ChannelVisibilityEnum.Private || channelData?.settings?.visibility === ChannelVisibilityEnum.Restricted);
+  const canEditLearnerDiscoveryAndRequest = canEdit && (channelData?.settings?.visibility === ChannelVisibilityEnum.Private || channelData?.settings?.visibility === ChannelVisibilityEnum.Restricted);
 
   return (
     <div className="flex flex-col gap-3">
