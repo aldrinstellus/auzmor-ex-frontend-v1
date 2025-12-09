@@ -17,7 +17,7 @@ type AppProps = {
 
 const PrivacySetting: FC<AppProps> = ({ channelData, canEdit }) => {
   const { t } = useTranslation('channelDetail', { keyPrefix: 'setting' });
-  const { isLearner } = useRole();
+  const { isLearner } = useRole()
   const canEditLearnerDiscoveryAndRequest = !isLearner && (channelData?.settings?.visibility === ChannelVisibilityEnum.Private || channelData?.settings?.visibility === ChannelVisibilityEnum.Restricted);
 
   return (

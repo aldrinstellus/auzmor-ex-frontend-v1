@@ -102,7 +102,7 @@ const ChannelRow: FC<IChannelRowProps> = ({ channel }) => {
             >
               <Icon
                 name={
-                  channel.settings?.visibility === ChannelVisibilityEnum.Private
+                  (channel.settings?.visibility === ChannelVisibilityEnum.Private || channel?.settings?.visibility === ChannelVisibilityEnum.Restricted)
                     ? 'lock'
                     : 'website'
                 }
@@ -112,7 +112,7 @@ const ChannelRow: FC<IChannelRowProps> = ({ channel }) => {
               />
             </IconWrapper>
             <p className="text-xs text-neutral-500">
-              {channel.settings?.visibility === ChannelVisibilityEnum.Private
+              {(channel.settings?.visibility === ChannelVisibilityEnum.Private || channel?.settings?.visibility === ChannelVisibilityEnum.Restricted)
                 ? t('private')
                 : t('public')}
             </p>

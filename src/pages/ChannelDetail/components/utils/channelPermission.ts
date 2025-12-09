@@ -474,7 +474,7 @@ export const getChannelPermissions: (
           ];
         }
       }
-    } else if (channelPrivacy === ChannelVisibilityEnum.Private) {
+    } else if (channelPrivacy === ChannelVisibilityEnum.Private || channelPrivacy === ChannelVisibilityEnum.Restricted) {
       if (!isChannelJoined) {
         if (isAdmin) {
           // 16 -> Office -> Private channel -> Not Joined -> Admin

@@ -40,7 +40,7 @@ const getChannelPrivacyOption = (
   visibility: ChannelVisibilityEnum,
   t: TFunction,
 ) => {
-  if (visibility === ChannelVisibilityEnum.Private) {
+  if (visibility === ChannelVisibilityEnum.Restricted) {
     return {
       label: (
         <div className="flex gap-2 items-center">
@@ -48,7 +48,7 @@ const getChannelPrivacyOption = (
           <p>{t('private')}</p>
         </div>
       ),
-      value: ChannelVisibilityEnum.Private,
+      value: ChannelVisibilityEnum.Restricted,
       dataTestId: 'channel-privacy-private',
     };
   }
@@ -332,7 +332,7 @@ const ChannelModal: FC<IChannelModalProps> = ({
                   options: [
                     {
                       ...getChannelPrivacyOption(
-                        ChannelVisibilityEnum.Private,
+                        ChannelVisibilityEnum.Restricted,
                         t,
                       ),
                       render: () => (

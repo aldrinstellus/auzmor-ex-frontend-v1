@@ -43,7 +43,7 @@ const PrivacyRow: FC<AppProps> = ({ data, canEdit }) => {
       privacySetting:
         data?.settings?.visibility === ChannelVisibilityEnum.Restricted ||
         data?.settings?.visibility === ChannelVisibilityEnum.Private
-          ? ChannelVisibilityEnum.Private
+          ? ChannelVisibilityEnum.Restricted
           : ChannelVisibilityEnum.Public,
     },
   });
@@ -61,7 +61,8 @@ const PrivacyRow: FC<AppProps> = ({ data, canEdit }) => {
   const privacySettingOptions: IRadioListOption[] = [
     {
       data: {
-        value: ChannelVisibilityEnum.Private,
+        title: ChannelVisibilityEnum.Private,
+        value: ChannelVisibilityEnum.Restricted,
         label: t('privateDescription'),
         onChange: handleChange,
       },
@@ -69,6 +70,7 @@ const PrivacyRow: FC<AppProps> = ({ data, canEdit }) => {
     },
     {
       data: {
+        title: ChannelVisibilityEnum.Public,
         value: ChannelVisibilityEnum.Public,
         label: t('publicDescription'),
         onChange: handleChange,
@@ -90,7 +92,7 @@ const PrivacyRow: FC<AppProps> = ({ data, canEdit }) => {
           <>
             <div className="text-sm ml-2 mt-2 flex flex-col gap-2 text-black font-normal">
               <span className="capitalize">
-                {option.data.value.toLowerCase()}
+                {option.data.title.toLowerCase()}
               </span>
               <span className="text-gray-500 leading-4">
                 {option.data.label}
