@@ -644,6 +644,8 @@ const SearchResults: FC<ISearchResultsProps> = ({
                         ? (result.sourceType.toLowerCase() as ISearchResultType)
                         : entity.module;
                     const isFolder = isRecent ? result?.additionalInfo?.isFolder : result?.isFolder;
+                    const isDocument = entityType === ISearchResultType.DOCUMENT;
+                    if (isDocument && !result?.additionalInfo) return null;
                     return (
                       <li
                         id={`search-item-${index}`}
@@ -664,7 +666,7 @@ const SearchResults: FC<ISearchResultsProps> = ({
                       >
                         {getEntityRenderer(result, entityType, isRecent)}
                         <div className='flex gap-2 items-center'>
-                          {entityType === ISearchResultType.DOCUMENT && !isFolder && (
+                          {isDocument && !isFolder && (
                             <div className="relative w-4 h-4 shrink-0">
                               {(fetchingPreview.id === (result?.additionalInfo?.id || result?.id) && fetchingPreview.index === index) ?  (
                                 <Spinner className={`absolute -top-1 -right-1 !text-black ${
