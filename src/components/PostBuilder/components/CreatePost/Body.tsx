@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import Truncate from 'components/Truncate';
 import AddLinkModal from './AddLinkModal';
 import LinkPopup from './LinkPopup';
+import useRole from 'hooks/useRole';
 
 export interface IBodyProps {
   data?: IPost;
@@ -45,6 +46,7 @@ const Body = forwardRef(
       poll,
     } = useContext(CreatePostContext);
     const { user } = useAuth();
+    const { isLearner } = useRole();
     const { t } = useTranslation('postBuilder');
     const { currentTimezone } = useCurrentTimezone();
     const [isLinkModalOpen, setIsLinkModalOpen] = useState(false);
@@ -231,7 +233,7 @@ const Body = forwardRef(
                     />
                   )}
                 </div>
-              ) : audience && audience.length === 0 ? (
+              ) : audience && audience.length === 0 && !isLearner ? (
                 <Button
                   variant={Variant.Secondary}
                   leftIcon={'profileUser'}

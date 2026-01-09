@@ -482,17 +482,16 @@ const CreatePostModal: FC<ICreatePostModal> = ({
             ),
           ],
         } as IPost);
-        clearPostContext();
-        closeModal();
         return { previousData };
       }
     },
-    onError: (error, variables, context) => {
+    onError: (error: any, variables, context) => {
       if (context?.previousData && variables?.id) {
         updateFeed(variables.id, context?.previousData);
       }
+      const errorMsg = error?.response?.data?.errors?.[0].message || 'Error updating post';
       failureToastConfig({
-        content: 'Error updating post',
+        content: errorMsg,
         dataTestId: 'post-update-toaster',
       });
     },
@@ -507,6 +506,8 @@ const CreatePostModal: FC<ICreatePostModal> = ({
         content: 'Post updated successfully',
         dataTestId: 'post-update-toaster',
       });
+      clearPostContext();
+      closeModal();
       await queryClient.invalidateQueries(['feed-announcements-widget']);
       await queryClient.invalidateQueries(['post-announcements-widget']);
     },
