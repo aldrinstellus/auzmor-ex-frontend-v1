@@ -31,3 +31,4 @@ yarn-error.log*
 /src/styles/tailwind-output-styles.css
 
 .scannerwork/
+.vercel
