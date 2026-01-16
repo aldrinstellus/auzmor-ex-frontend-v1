@@ -34,20 +34,25 @@ const chatMessages = [
   "You're amazing! ⭐",
 ];
 
-// Fixed positions for avatar cards
+// Fixed positions for avatar cards with depth layers
 const avatarPositions = [
-  { top: '5%', left: '12%', rotate: -5 },
-  { top: '3%', left: '52%', rotate: 3 },
-  { top: '18%', left: '32%', rotate: -2 },
-  { top: '16%', left: '72%', rotate: 4 },
-  { top: '35%', left: '8%', rotate: 2 },
-  { top: '38%', left: '48%', rotate: -3 },
-  { top: '52%', left: '28%', rotate: 5 },
-  { top: '55%', left: '68%', rotate: -4 },
-  { top: '70%', left: '15%', rotate: -1 },
-  { top: '72%', left: '52%', rotate: 3 },
-  { top: '85%', left: '35%', rotate: -2 },
-  { top: '82%', left: '75%', rotate: 1 },
+  // Back layer (smaller, more transparent)
+  { top: '8%', left: '15%', rotate: -8, scale: 0.7, zIndex: 1, depth: 'back' },
+  { top: '12%', left: '65%', rotate: 6, scale: 0.65, zIndex: 1, depth: 'back' },
+  { top: '75%', left: '25%', rotate: -4, scale: 0.7, zIndex: 1, depth: 'back' },
+  { top: '70%', left: '70%', rotate: 5, scale: 0.68, zIndex: 1, depth: 'back' },
+
+  // Middle layer
+  { top: '25%', left: '8%', rotate: -5, scale: 0.85, zIndex: 5, depth: 'middle' },
+  { top: '20%', left: '45%', rotate: 4, scale: 0.88, zIndex: 5, depth: 'middle' },
+  { top: '50%', left: '60%', rotate: -3, scale: 0.82, zIndex: 5, depth: 'middle' },
+  { top: '55%', left: '20%', rotate: 6, scale: 0.85, zIndex: 5, depth: 'middle' },
+
+  // Front layer (larger, more prominent)
+  { top: '35%', left: '30%', rotate: -2, scale: 1, zIndex: 10, depth: 'front' },
+  { top: '40%', left: '75%', rotate: 3, scale: 0.95, zIndex: 10, depth: 'front' },
+  { top: '65%', left: '45%', rotate: -4, scale: 1, zIndex: 10, depth: 'front' },
+  { top: '85%', left: '55%', rotate: 2, scale: 0.92, zIndex: 10, depth: 'front' },
 ];
 
 interface ChatBubble {
@@ -66,40 +71,48 @@ const LoginBackground: FC<LoginBackgroundProps> = ({ className = '' }) => {
   const [chatBubbles, setChatBubbles] = useState<ChatBubble[]>([]);
   const bubbleIdRef = useRef(0);
 
-  // GSAP floating animation for each avatar
+  // GSAP floating animation for each avatar with 3D depth
   useEffect(() => {
     avatarRefs.current.forEach((avatarEl, index) => {
       if (!avatarEl) return;
 
-      // Initial entrance animation
+      const position = avatarPositions[index];
+      const depthMultiplier = position.depth === 'back' ? 0.5 : position.depth === 'middle' ? 0.75 : 1;
+
+      // Initial entrance animation with 3D effect
       gsap.fromTo(
         avatarEl,
         {
           scale: 0,
           opacity: 0,
-          rotation: (Math.random() - 0.5) * 30
+          rotationY: -90,
+          rotationX: 20,
         },
         {
-          scale: 1,
-          opacity: 1,
-          rotation: avatarPositions[index].rotate,
-          duration: 0.6,
-          delay: index * 0.08,
-          ease: 'back.out(1.7)'
+          scale: position.scale,
+          opacity: position.depth === 'back' ? 0.6 : position.depth === 'middle' ? 0.85 : 1,
+          rotationY: 0,
+          rotationX: 0,
+          rotation: position.rotate,
+          duration: 0.8,
+          delay: index * 0.1,
+          ease: 'back.out(1.4)',
         }
       );
 
-      // Continuous floating animation
+      // Continuous floating animation with depth-based movement
       const floatAnimation = () => {
-        const randomX = (Math.random() - 0.5) * 60;
-        const randomY = (Math.random() - 0.5) * 40;
-        const randomRotation = avatarPositions[index].rotate + (Math.random() - 0.5) * 8;
-        const duration = 3 + Math.random() * 3;
+        const randomX = (Math.random() - 0.5) * 80 * depthMultiplier;
+        const randomY = (Math.random() - 0.5) * 60 * depthMultiplier;
+        const randomRotation = position.rotate + (Math.random() - 0.5) * 12;
+        const randomRotationY = (Math.random() - 0.5) * 15 * depthMultiplier;
+        const duration = 4 + Math.random() * 4;
 
         const tween = gsap.to(avatarEl, {
           x: randomX,
           y: randomY,
           rotation: randomRotation,
+          rotationY: randomRotationY,
           duration,
           ease: 'sine.inOut',
           onComplete: floatAnimation,
@@ -108,7 +121,7 @@ const LoginBackground: FC<LoginBackgroundProps> = ({ className = '' }) => {
       };
 
       // Start floating with staggered delay
-      setTimeout(floatAnimation, 800 + index * 150);
+      setTimeout(floatAnimation, 1000 + index * 200);
     });
 
     return () => {
@@ -119,12 +132,17 @@ const LoginBackground: FC<LoginBackgroundProps> = ({ className = '' }) => {
   // Random chat bubbles appearing
   useEffect(() => {
     const showRandomBubble = () => {
-      const randomAvatarIndex = Math.floor(Math.random() * uniqueAvatars.length);
+      // Prefer front/middle layer avatars for bubbles
+      const frontMiddleIndices = avatarPositions
+        .map((p, i) => ({ depth: p.depth, index: i }))
+        .filter(p => p.depth !== 'back')
+        .map(p => p.index);
+
+      const randomAvatarIndex = frontMiddleIndices[Math.floor(Math.random() * frontMiddleIndices.length)];
       const randomMessage = chatMessages[Math.floor(Math.random() * chatMessages.length)];
       const newBubbleId = bubbleIdRef.current++;
 
       setChatBubbles(prev => {
-        // Only allow max 3 bubbles at a time
         const filtered = prev.length >= 3 ? prev.slice(1) : prev;
         return [...filtered, { id: newBubbleId, avatarIndex: randomAvatarIndex, message: randomMessage }];
       });
@@ -132,148 +150,263 @@ const LoginBackground: FC<LoginBackgroundProps> = ({ className = '' }) => {
       // Remove bubble after delay
       setTimeout(() => {
         setChatBubbles(prev => prev.filter(b => b.id !== newBubbleId));
-      }, 2500 + Math.random() * 1500);
+      }, 3000 + Math.random() * 2000);
     };
 
     // Show initial bubbles
-    setTimeout(showRandomBubble, 1000);
-    setTimeout(showRandomBubble, 2000);
+    setTimeout(showRandomBubble, 1200);
+    setTimeout(showRandomBubble, 2400);
 
     // Continue showing bubbles at intervals
-    const interval = setInterval(showRandomBubble, 2000 + Math.random() * 1500);
+    const interval = setInterval(showRandomBubble, 2500 + Math.random() * 1500);
 
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className={`relative w-full h-full overflow-hidden ${className}`}>
-      {/* Green gradient background */}
+    <div
+      className={`relative w-full h-full overflow-hidden ${className}`}
+      style={{ perspective: '1200px' }}
+    >
+      {/* Gradient background with depth */}
       <div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(135deg, #0d9488 0%, #0f766e 50%, #115e59 100%)',
+          background: 'linear-gradient(135deg, #0d9488 0%, #0f766e 40%, #115e59 70%, #134e4a 100%)',
         }}
       />
 
-      {/* Subtle floating particles */}
-      {[...Array(15)].map((_, i) => (
-        <motion.div
-          key={`particle-${i}`}
-          className="absolute w-2 h-2 rounded-full bg-white/10"
-          style={{
-            left: `${10 + Math.random() * 80}%`,
-            top: `${10 + Math.random() * 80}%`,
-          }}
-          animate={{
-            y: [0, -20, 0],
-            opacity: [0.1, 0.3, 0.1],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 4 + Math.random() * 2,
-            repeat: Infinity,
-            delay: Math.random() * 2,
-            ease: 'easeInOut',
-          }}
-        />
-      ))}
+      {/* Animated gradient overlay for depth */}
+      <motion.div
+        className="absolute inset-0 opacity-30"
+        animate={{
+          background: [
+            'radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 50%)',
+            'radial-gradient(ellipse at 80% 70%, rgba(255,255,255,0.15) 0%, transparent 50%)',
+            'radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.15) 0%, transparent 50%)',
+            'radial-gradient(ellipse at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 50%)',
+          ],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: 'easeInOut',
+        }}
+      />
 
-      {/* Animated Avatar Cards */}
-      {uniqueAvatars.map((avatar, index) => {
-        const position = avatarPositions[index];
-        const bubble = chatBubbles.find(b => b.avatarIndex === index);
+      {/* Connection lines between avatars */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
+        <defs>
+          <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="rgba(255,255,255,0)" />
+            <stop offset="50%" stopColor="rgba(255,255,255,0.15)" />
+            <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+          </linearGradient>
+        </defs>
+        {/* Animated connection lines */}
+        {[
+          { x1: '15%', y1: '15%', x2: '45%', y2: '25%' },
+          { x1: '45%', y1: '25%', x2: '75%', y2: '40%' },
+          { x1: '30%', y1: '40%', x2: '60%', y2: '55%' },
+          { x1: '20%', y1: '55%', x2: '45%', y2: '70%' },
+          { x1: '65%', y1: '15%', x2: '75%', y2: '40%' },
+          { x1: '45%', y1: '70%', x2: '70%', y2: '75%' },
+        ].map((line, i) => (
+          <motion.line
+            key={i}
+            x1={line.x1}
+            y1={line.y1}
+            x2={line.x2}
+            y2={line.y2}
+            stroke="url(#lineGradient)"
+            strokeWidth="1"
+            initial={{ pathLength: 0, opacity: 0 }}
+            animate={{
+              pathLength: [0, 1, 1, 0],
+              opacity: [0, 0.5, 0.5, 0],
+            }}
+            transition={{
+              duration: 6,
+              delay: i * 1.5,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+          />
+        ))}
+      </svg>
+
+      {/* Floating particles with depth */}
+      {[...Array(25)].map((_, i) => {
+        const depth = i % 3; // 0 = back, 1 = middle, 2 = front
+        const size = depth === 0 ? 4 : depth === 1 ? 6 : 8;
+        const opacity = depth === 0 ? 0.1 : depth === 1 ? 0.2 : 0.3;
 
         return (
-          <div
-            key={avatar.id}
-            ref={el => avatarRefs.current[index] = el}
-            className="absolute"
+          <motion.div
+            key={`particle-${i}`}
+            className="absolute rounded-full"
             style={{
-              top: position.top,
-              left: position.left,
-              zIndex: 10 + index,
+              width: size,
+              height: size,
+              backgroundColor: 'white',
+              left: `${5 + Math.random() * 90}%`,
+              top: `${5 + Math.random() * 90}%`,
+              zIndex: depth,
             }}
-          >
-            {/* Chat Bubble */}
-            <AnimatePresence>
-              {bubble && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8, y: 10 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.8, y: -10 }}
-                  transition={{ duration: 0.3, ease: 'easeOut' }}
-                  className="absolute -top-14 left-1/2 -translate-x-1/2 whitespace-nowrap z-20"
-                >
-                  <div
-                    className="px-3 py-2 rounded-2xl text-sm font-medium text-white/90 backdrop-blur-sm"
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.2)',
-                      border: '1px solid rgba(255, 255, 255, 0.3)',
-                      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-                    }}
-                  >
-                    {bubble.message}
-                    {/* Bubble tail */}
-                    <div
-                      className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0"
-                      style={{
-                        borderLeft: '8px solid transparent',
-                        borderRight: '8px solid transparent',
-                        borderTop: '8px solid rgba(255, 255, 255, 0.2)',
-                      }}
-                    />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            animate={{
+              y: [0, -30 - depth * 10, 0],
+              x: [0, (Math.random() - 0.5) * 20, 0],
+              opacity: [opacity * 0.5, opacity, opacity * 0.5],
+              scale: [1, 1.3, 1],
+            }}
+            transition={{
+              duration: 5 + Math.random() * 3,
+              repeat: Infinity,
+              delay: Math.random() * 3,
+              ease: 'easeInOut',
+            }}
+          />
+        );
+      })}
 
-            {/* Avatar Card */}
-            <motion.div
-              whileHover={{ scale: 1.08 }}
-              className="relative"
+      {/* 3D Container for avatars */}
+      <div
+        className="absolute inset-0"
+        style={{
+          transformStyle: 'preserve-3d',
+          transform: 'rotateX(5deg)',
+        }}
+      >
+        {/* Animated Avatar Cards */}
+        {uniqueAvatars.map((avatar, index) => {
+          const position = avatarPositions[index];
+          const bubble = chatBubbles.find(b => b.avatarIndex === index);
+          const baseSize = position.depth === 'back' ? 60 : position.depth === 'middle' ? 70 : 80;
+
+          return (
+            <div
+              key={avatar.id}
+              ref={el => avatarRefs.current[index] = el}
+              className="absolute"
+              style={{
+                top: position.top,
+                left: position.left,
+                zIndex: position.zIndex,
+                transformStyle: 'preserve-3d',
+                filter: position.depth === 'back' ? 'blur(1px)' : 'none',
+              }}
             >
-              {/* Glow effect */}
-              <div
-                className="absolute -inset-2 rounded-2xl opacity-0 hover:opacity-40 transition-opacity duration-300"
-                style={{
-                  background: 'radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%)',
-                }}
-              />
+              {/* Chat Bubble */}
+              <AnimatePresence>
+                {bubble && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.6, y: 15, rotateX: -20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
+                    exit={{ opacity: 0, scale: 0.6, y: -15, rotateX: 20 }}
+                    transition={{ duration: 0.4, ease: 'backOut' }}
+                    className="absolute -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap"
+                    style={{ zIndex: 100 }}
+                  >
+                    <div
+                      className="px-3 py-1.5 rounded-full text-xs font-medium text-teal-900"
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.95)',
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255,255,255,0.5)',
+                      }}
+                    >
+                      {bubble.message}
+                      {/* Bubble tail */}
+                      <div
+                        className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rotate-45"
+                        style={{
+                          background: 'rgba(255, 255, 255, 0.95)',
+                          boxShadow: '2px 2px 4px rgba(0, 0, 0, 0.1)',
+                        }}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
-              {/* Card */}
-              <div
-                className="bg-white rounded-xl p-1.5 shadow-xl relative"
-                style={{
-                  boxShadow: '0 10px 40px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.1)',
+              {/* Avatar Card with 3D effect */}
+              <motion.div
+                whileHover={{
+                  scale: 1.1,
+                  rotateY: 5,
+                  transition: { duration: 0.3 }
                 }}
+                className="relative"
+                style={{ transformStyle: 'preserve-3d' }}
               >
-                <img
-                  src={avatar.src}
-                  alt={avatar.name}
-                  className="w-20 h-24 xl:w-24 xl:h-28 object-cover rounded-lg"
-                  loading="lazy"
+                {/* Card shadow for 3D depth */}
+                <div
+                  className="absolute rounded-lg"
+                  style={{
+                    width: baseSize + 8,
+                    height: baseSize + 20,
+                    background: 'rgba(0,0,0,0.2)',
+                    filter: 'blur(8px)',
+                    transform: 'translateZ(-20px) translateY(5px)',
+                    top: 0,
+                    left: -4,
+                  }}
                 />
+
+                {/* Main Card */}
+                <div
+                  className="bg-white rounded-lg overflow-hidden"
+                  style={{
+                    width: baseSize,
+                    height: baseSize + 12,
+                    boxShadow: position.depth === 'front'
+                      ? '0 20px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.8)'
+                      : '0 10px 25px rgba(0,0,0,0.2)',
+                    transform: 'translateZ(0)',
+                  }}
+                >
+                  <img
+                    src={avatar.src}
+                    alt={avatar.name}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
 
                 {/* Online indicator */}
                 <motion.div
                   animate={{
-                    scale: [1, 1.2, 1],
+                    scale: [1, 1.3, 1],
+                    boxShadow: [
+                      '0 0 0 0 rgba(74, 222, 128, 0.7)',
+                      '0 0 0 6px rgba(74, 222, 128, 0)',
+                      '0 0 0 0 rgba(74, 222, 128, 0.7)',
+                    ],
                   }}
                   transition={{
                     duration: 2,
                     repeat: Infinity,
                     ease: 'easeInOut',
                   }}
-                  className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"
+                  className="absolute -bottom-1 -right-1 bg-green-400 rounded-full border-2 border-white"
                   style={{
-                    boxShadow: '0 0 8px rgba(74, 222, 128, 0.6)',
+                    width: position.depth === 'front' ? 14 : 10,
+                    height: position.depth === 'front' ? 14 : 10,
+                    transform: 'translateZ(10px)',
                   }}
                 />
-              </div>
-            </motion.div>
-          </div>
-        );
-      })}
+              </motion.div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Vignette overlay for depth */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.2) 100%)',
+        }}
+      />
     </div>
   );
 };

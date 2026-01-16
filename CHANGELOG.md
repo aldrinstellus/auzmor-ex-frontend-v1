@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2026-01-16
+
+### Added
+- **3D Depth Effects** - Enhanced login background with parallax-like depth
+  - Three depth layers (back/middle/front) with different scales and opacity
+  - Back layer avatars are smaller and slightly blurred
+  - Front layer avatars are larger with stronger shadows
+  - CSS perspective (1200px) for true 3D feel
+  - Animated connection lines between avatars (SVG with gradient stroke)
+  - Vignette overlay for cinematic depth
+  - 25 floating particles at different depth levels
+  - Animated gradient spotlight effect
+
+### Changed
+- Avatar cards now have thinner, cleaner solid white backgrounds
+- Chat bubbles now have rounded pill shape with improved shadows
+- Improved 3D rotation animations (rotationY added to floating)
+
 ## [1.1.0] - 2026-01-16
 
 ### Added
