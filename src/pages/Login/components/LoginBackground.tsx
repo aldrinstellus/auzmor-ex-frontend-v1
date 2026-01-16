@@ -36,10 +36,10 @@ const chatMessages = [
 
 // Avatar positions mapped to geographic locations on world map
 const avatarPositions = [
-  // North America - USA (New York area)
-  { top: '22%', left: '18%', rotate: -3, scale: 0.95, zIndex: 10, depth: 'front', region: 'USA' },
+  // North America - USA (Main/Hero avatar - largest and most prominent)
+  { top: '25%', left: '15%', rotate: -2, scale: 1.15, zIndex: 15, depth: 'front', region: 'USA' },
   // North America - Canada
-  { top: '10%', left: '22%', rotate: 5, scale: 0.7, zIndex: 1, depth: 'back', region: 'Canada' },
+  { top: '8%', left: '25%', rotate: 5, scale: 0.7, zIndex: 1, depth: 'back', region: 'Canada' },
   // South America - Brazil
   { top: '58%', left: '28%', rotate: -4, scale: 0.9, zIndex: 8, depth: 'middle', region: 'Brazil' },
   // Europe - UK
@@ -191,21 +191,19 @@ const LoginBackground: FC<LoginBackgroundProps> = ({ className = '' }) => {
         transition={{ duration: 2, ease: 'easeOut' }}
         style={{ zIndex: 1 }}
       >
-        {/* World map outline using img with filter - scaled larger */}
+        {/* World map outline using img with filter - proportional, full view */}
         <img
           src="https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg"
           alt=""
           className="absolute pointer-events-none select-none"
           style={{
-            width: '130%',
+            width: '100%',
             height: 'auto',
             left: '50%',
             top: '50%',
             transform: 'translate(-50%, -50%)',
             opacity: 0.22,
             filter: 'brightness(0) invert(1)',
-            minHeight: '110%',
-            objectFit: 'cover',
           }}
         />
 
