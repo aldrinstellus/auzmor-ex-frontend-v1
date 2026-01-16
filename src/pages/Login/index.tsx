@@ -2,6 +2,7 @@ import { FC, useEffect, useState } from 'react';
 import OfficeLogoSvg from 'components/Logo/images/OfficeLogo.svg';
 import LoginViaCred from './components/LoginViaCred';
 import LoginViaSSO from './components/LoginViaSSO';
+import LoginBackground from './components/LoginBackground';
 import useAuth from 'hooks/useAuth';
 import { Navigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
@@ -67,21 +68,13 @@ const Login: FC<ILoginProps> = () => {
       <div
         className={`hidden lg:block w-1/2 h-full absolute top-0 left-0 ${
           branding?.loginConfig?.layout === 'CENTER' &&
-          'bg-welcome-to-office-large w-screen !block'
-        } bg-no-repeat bg-cover bg-bottom ${
+          'w-screen !block'
+        } ${
           branding?.loginConfig?.layout === 'LEFT' && '!right-0 !left-auto'
         } ${branding?.loginConfig?.layout === 'RIGHT' && 'left-0'}`}
         data-testid="signin-cover-image"
       >
-        {branding?.loginConfig?.layout === 'LEFT' && (
-          <div className="w-full float-right bg-welcome-to-office h-full bg-no-repeat bg-cover bg-bottom"></div>
-        )}
-        {branding?.loginConfig?.layout === 'RIGHT' && (
-          <div className="w-full float-left bg-welcome-to-office h-full bg-no-repeat bg-cover bg-bottom"></div>
-        )}
-        {branding?.loginConfig?.layout !== 'LEFT' && branding?.loginConfig?.layout !== 'RIGHT' && branding?.loginConfig?.layout !== 'CENTER' && (
-          <div className="w-full bg-welcome-to-office h-full bg-no-repeat bg-cover bg-bottom"></div>
-        )}
+        <LoginBackground />
       </div>
     );
     if (branding?.loginConfig) {
