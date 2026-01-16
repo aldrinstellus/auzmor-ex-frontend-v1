@@ -34,25 +34,32 @@ const chatMessages = [
   "You're amazing! ⭐",
 ];
 
-// Fixed positions for avatar cards with depth layers
+// Avatar positions mapped to geographic locations on world map
 const avatarPositions = [
-  // Back layer (smaller, more transparent)
-  { top: '8%', left: '15%', rotate: -8, scale: 0.7, zIndex: 1, depth: 'back' },
-  { top: '12%', left: '65%', rotate: 6, scale: 0.65, zIndex: 1, depth: 'back' },
-  { top: '75%', left: '25%', rotate: -4, scale: 0.7, zIndex: 1, depth: 'back' },
-  { top: '70%', left: '70%', rotate: 5, scale: 0.68, zIndex: 1, depth: 'back' },
-
-  // Middle layer
-  { top: '25%', left: '8%', rotate: -5, scale: 0.85, zIndex: 5, depth: 'middle' },
-  { top: '20%', left: '45%', rotate: 4, scale: 0.88, zIndex: 5, depth: 'middle' },
-  { top: '50%', left: '60%', rotate: -3, scale: 0.82, zIndex: 5, depth: 'middle' },
-  { top: '55%', left: '20%', rotate: 6, scale: 0.85, zIndex: 5, depth: 'middle' },
-
-  // Front layer (larger, more prominent)
-  { top: '35%', left: '30%', rotate: -2, scale: 1, zIndex: 10, depth: 'front' },
-  { top: '40%', left: '75%', rotate: 3, scale: 0.95, zIndex: 10, depth: 'front' },
-  { top: '65%', left: '45%', rotate: -4, scale: 1, zIndex: 10, depth: 'front' },
-  { top: '85%', left: '55%', rotate: 2, scale: 0.92, zIndex: 10, depth: 'front' },
+  // North America - USA (New York area)
+  { top: '22%', left: '18%', rotate: -3, scale: 0.95, zIndex: 10, depth: 'front', region: 'USA' },
+  // North America - Canada
+  { top: '10%', left: '22%', rotate: 5, scale: 0.7, zIndex: 1, depth: 'back', region: 'Canada' },
+  // South America - Brazil
+  { top: '58%', left: '28%', rotate: -4, scale: 0.9, zIndex: 8, depth: 'middle', region: 'Brazil' },
+  // Europe - UK
+  { top: '18%', left: '42%', rotate: 4, scale: 0.85, zIndex: 5, depth: 'middle', region: 'UK' },
+  // Europe - Germany/Central
+  { top: '22%', left: '50%', rotate: -2, scale: 0.78, zIndex: 3, depth: 'back', region: 'Europe' },
+  // Africa - Nigeria/Central
+  { top: '48%', left: '48%', rotate: 3, scale: 0.88, zIndex: 6, depth: 'middle', region: 'Africa' },
+  // Middle East - Dubai
+  { top: '35%', left: '58%', rotate: -5, scale: 0.82, zIndex: 4, depth: 'middle', region: 'Dubai' },
+  // India
+  { top: '38%', left: '68%', rotate: 2, scale: 1, zIndex: 10, depth: 'front', region: 'India' },
+  // China/East Asia
+  { top: '28%', left: '78%', rotate: -3, scale: 0.9, zIndex: 7, depth: 'middle', region: 'China' },
+  // Japan
+  { top: '25%', left: '88%', rotate: 4, scale: 0.75, zIndex: 2, depth: 'back', region: 'Japan' },
+  // Southeast Asia - Singapore
+  { top: '50%', left: '75%', rotate: -2, scale: 0.85, zIndex: 5, depth: 'middle', region: 'Singapore' },
+  // Australia
+  { top: '68%', left: '85%', rotate: 3, scale: 0.92, zIndex: 9, depth: 'front', region: 'Australia' },
 ];
 
 interface ChatBubble {
@@ -176,6 +183,136 @@ const LoginBackground: FC<LoginBackgroundProps> = ({ className = '' }) => {
         }}
       />
 
+      {/* World Map - Using external SVG image for accurate outline */}
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center overflow-hidden"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 2, ease: 'easeOut' }}
+        style={{ zIndex: 1 }}
+      >
+        {/* World map outline using img with filter - scaled larger */}
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/e/ec/World_map_blank_without_borders.svg"
+          alt=""
+          className="absolute pointer-events-none select-none"
+          style={{
+            width: '130%',
+            height: 'auto',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            opacity: 0.22,
+            filter: 'brightness(0) invert(1)',
+            minHeight: '110%',
+            objectFit: 'cover',
+          }}
+        />
+
+        {/* Overlay SVG for animated elements */}
+        <svg
+          viewBox="0 0 1000 500"
+          className="absolute w-[130%] h-[130%]"
+          style={{ left: '-15%', top: '-15%' }}
+          preserveAspectRatio="xMidYMid slice"
+        >
+          {/* Animated pulse circles on major cities/regions */}
+          {[
+            { cx: 200, cy: 180, delay: 0 },     // North America
+            { cx: 280, cy: 350, delay: 0.5 },   // South America
+            { cx: 480, cy: 160, delay: 0.3 },   // Europe
+            { cx: 520, cy: 300, delay: 1 },     // Africa
+            { cx: 700, cy: 200, delay: 0.8 },   // Middle East
+            { cx: 780, cy: 220, delay: 1.2 },   // India
+            { cx: 850, cy: 200, delay: 1.5 },   // China
+            { cx: 920, cy: 180, delay: 1.8 },   // Japan
+            { cx: 880, cy: 380, delay: 2.2 },   // Australia
+            { cx: 850, cy: 280, delay: 2 },     // Southeast Asia
+          ].map((city, i) => (
+            <g key={i}>
+              {/* Base dot */}
+              <motion.circle
+                cx={city.cx}
+                cy={city.cy}
+                r="4"
+                fill="white"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 0.9, scale: 1 }}
+                transition={{ delay: city.delay + 1, duration: 0.5 }}
+              />
+              {/* Pulse ring 1 */}
+              <motion.circle
+                cx={city.cx}
+                cy={city.cy}
+                r="4"
+                fill="none"
+                stroke="white"
+                strokeWidth="1.5"
+                initial={{ scale: 1, opacity: 0 }}
+                animate={{
+                  scale: [1, 3, 4],
+                  opacity: [0.6, 0.2, 0],
+                }}
+                transition={{
+                  duration: 3,
+                  delay: city.delay + 1.5,
+                  repeat: Infinity,
+                  ease: 'easeOut',
+                }}
+              />
+              {/* Pulse ring 2 - offset */}
+              <motion.circle
+                cx={city.cx}
+                cy={city.cy}
+                r="4"
+                fill="none"
+                stroke="white"
+                strokeWidth="1"
+                initial={{ scale: 1, opacity: 0 }}
+                animate={{
+                  scale: [1, 2.5, 3.5],
+                  opacity: [0.4, 0.1, 0],
+                }}
+                transition={{
+                  duration: 3,
+                  delay: city.delay + 2.5,
+                  repeat: Infinity,
+                  ease: 'easeOut',
+                }}
+              />
+            </g>
+          ))}
+
+          {/* Connection arc lines between regions */}
+          {[
+            { x1: 200, y1: 180, x2: 480, y2: 160 },   // NA to Europe
+            { x1: 480, y1: 160, x2: 780, y2: 220 },   // Europe to India
+            { x1: 780, y1: 220, x2: 850, y2: 200 },   // India to China
+            { x1: 850, y1: 200, x2: 920, y2: 180 },   // China to Japan
+            { x1: 920, y1: 180, x2: 880, y2: 380 },   // Japan to Australia
+            { x1: 280, y1: 350, x2: 520, y2: 300 },   // SA to Africa
+            { x1: 700, y1: 200, x2: 850, y2: 280 },   // ME to SEA
+            { x1: 200, y1: 180, x2: 280, y2: 350 },   // NA to SA
+          ].map((line, i) => (
+            <motion.path
+              key={`arc-${i}`}
+              d={`M${line.x1},${line.y1} Q${(line.x1 + line.x2) / 2},${Math.min(line.y1, line.y2) - 40} ${line.x2},${line.y2}`}
+              fill="none"
+              stroke="white"
+              strokeWidth="0.5"
+              strokeDasharray="4,4"
+              initial={{ pathLength: 0, opacity: 0 }}
+              animate={{ pathLength: 1, opacity: 0.35 }}
+              transition={{
+                duration: 2.5,
+                delay: 2 + i * 0.3,
+                ease: 'easeInOut',
+              }}
+            />
+          ))}
+        </svg>
+      </motion.div>
+
       {/* Animated gradient overlay for depth */}
       <motion.div
         className="absolute inset-0 opacity-30"
@@ -192,6 +329,7 @@ const LoginBackground: FC<LoginBackgroundProps> = ({ className = '' }) => {
           repeat: Infinity,
           ease: 'easeInOut',
         }}
+        style={{ zIndex: 2 }}
       />
 
       {/* Connection lines between avatars */}
