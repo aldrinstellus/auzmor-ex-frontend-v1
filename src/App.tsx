@@ -2,7 +2,6 @@ import './App.css';
 import Router from './components/Router';
 import AuthProvider from 'contexts/AuthContext';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import queryClient from 'utils/queryClient';
 import Toast from 'components/Toast';
@@ -33,11 +32,6 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ProductProvider>
         <AuthProvider>
-          {process.env.NODE_ENV === 'development' ? (
-            <section tabIndex={-1}>
-              <ReactQueryDevtools initialIsOpen={false} />
-            </section>
-          ) : null}
           <UserOnboard />
           <FontFamilySwitcher>
             {getProduct() === ProductEnum.Lxp ? <LxpRouter /> : <Router />}

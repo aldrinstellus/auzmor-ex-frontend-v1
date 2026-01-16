@@ -1,6 +1,16 @@
-## Auzmor Office Frontend
+## Auzmor Office Frontend (v1 Demo)
 
-Office Frontend Application that uses Typescript, TailwindCSS and PWA (Service Wroker).
+Office Frontend Application that uses TypeScript, TailwindCSS, and PWA (Service Worker).
+
+**Live Demo:** [auzmor-ex-demo.vercel.app](https://auzmor-ex-demo.vercel.app)
+
+### Features
+
+- **Animated Login Page** - GSAP and Framer Motion powered animations
+  - 12 unique floating avatar cards
+  - Random chat bubbles with friendly messages
+  - Smooth entrance and floating animations
+  - Professional teal gradient background
 
 ### Requirements
 
